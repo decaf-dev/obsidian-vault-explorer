@@ -9,5 +9,6 @@
 .frontmatter-view-card__tags {
 	display: flex;
 	column-gap: 0.25rem;
-	height: min-content
+	height: min-content;
+	overflow-x: auto;
 }
