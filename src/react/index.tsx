@@ -12,7 +12,7 @@ interface Props {
 export default function ReactView({ app }: Props) {
 	const [folderPath, setFolderPath] = React.useState<string | null>(null);
 	const [search, setSearch] = React.useState<string>("");
-	const [onlyNext, setOnlyNext] = React.useState<boolean>(false);
+	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
 
 	const folders = app.vault
 		.getAllLoadedFiles()
@@ -73,7 +73,7 @@ export default function ReactView({ app }: Props) {
 			return false;
 		})
 		.filter((file) => {
-			if (onlyNext) {
+			if (onlyFavorites) {
 				return file.next;
 			}
 			return true;
@@ -103,12 +103,12 @@ export default function ReactView({ app }: Props) {
 				</div>
 				<div className="frontmatter-view-header__row">
 					<div className="frontmatter-view-checkbox">
-						<label htmlFor="only-next">Only next</label>
+						<label htmlFor="only-favorites">Only favorites</label>
 						<input
-							id="only-next"
+							id="only-favorites"
 							type="checkbox"
-							checked={onlyNext}
-							onChange={(e) => setOnlyNext(e.target.checked)}
+							checked={onlyFavorites}
+							onChange={(e) => setOnlyFavorites(e.target.checked)}
 						/>
 					</div>
 					<div>
