@@ -9,6 +9,9 @@
 .frontmatter-view-card__header {
 	display: flex;
 	justify-content: space-between;
+	align-items: flex-start;
+	column-gap: 0.5rem;
+
 }
 
 .frontmatter-view-card__title {
