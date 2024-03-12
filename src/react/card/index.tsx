@@ -64,6 +64,7 @@ export default function Card({ name, path, url, tags, source }: Props) {
 				</div>
 				{url !== null && (
 					<div
+						aria-label="Open link"
 						className="clickable-icon"
 						ref={urlIconRef}
 						onClick={handleUrlClick}
