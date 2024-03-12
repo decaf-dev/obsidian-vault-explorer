@@ -3,7 +3,7 @@
 	flex-direction: column;
 	padding: 1rem;
 	border: 1px solid var(--background-modifier-border);
-	row-gap: 0.5rem;
+	row-gap: 1rem;
 }
 
 .frontmatter-view-card__header {
