@@ -1,7 +1,7 @@
 {
 	"id": "frontmatter-views",
 	"name": "Frontmatter Views",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"minAppVersion": "1.4.13",
 	"description": "Create dynamic views based on frontmatter",
 	"author": "Trey Wallis",

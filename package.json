@@ -1,32 +1,32 @@
 {
-  "name": "obsidian-frontmatter-views",
-  "version": "0.0.1",
-  "description": "Create dynamic views based on frontmatter",
-  "main": "main.js",
-  "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "version": "node version-bump.mjs && git add manifest.json versions.json"
-  },
-  "keywords": [],
-  "author": "Trey Wallis",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/node": "^16.11.6",
-    "@types/react": "^18.2.65",
-    "@types/react-dom": "^18.2.21",
-    "@typescript-eslint/eslint-plugin": "5.29.0",
-    "@typescript-eslint/parser": "5.29.0",
-    "builtin-modules": "3.3.0",
-    "esbuild": "0.17.3",
-    "obsidian": "latest",
-    "tslib": "2.4.0",
-    "typescript": "4.7.4"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-virtuoso": "^4.7.2"
-  }
+	"name": "obsidian-frontmatter-views",
+	"version": "0.0.2",
+	"description": "Create dynamic views based on frontmatter",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"version": "node version-bump.mjs && git add manifest.json versions.json"
+	},
+	"keywords": [],
+	"author": "Trey Wallis",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/node": "^16.11.6",
+		"@types/react": "^18.2.65",
+		"@types/react-dom": "^18.2.21",
+		"@typescript-eslint/eslint-plugin": "5.29.0",
+		"@typescript-eslint/parser": "5.29.0",
+		"builtin-modules": "3.3.0",
+		"esbuild": "0.17.3",
+		"obsidian": "latest",
+		"tslib": "2.4.0",
+		"typescript": "4.7.4"
+	},
+	"dependencies": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-virtuoso": "^4.7.2"
+	}
 }
