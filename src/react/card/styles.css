@@ -12,3 +12,7 @@
 	height: min-content;
 	overflow-x: auto;
 }
+
+.frontmatter-view-card__tags::-webkit-scrollbar {
+	display: none;
+}
