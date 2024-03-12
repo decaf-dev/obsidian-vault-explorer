@@ -5,6 +5,7 @@ import { createRoot, Root } from "react-dom/client";
 
 import { FRONTMATTER_VIEW } from "src/constants";
 import ReactView from "src/react/index";
+import AppMountProvider from "src/react/AppMountProvider";
 
 export default class FrontmatterView extends ItemView {
 	root: Root | null;
@@ -28,7 +29,9 @@ export default class FrontmatterView extends ItemView {
 		this.root = createRoot(container);
 		this.root.render(
 			<React.StrictMode>
-				<ReactView app={this.app} />
+				<AppMountProvider app={this.app} leaf={this.leaf}>
+					<ReactView app={this.app} />
+				</AppMountProvider>
 			</React.StrictMode>
 		);
 	}

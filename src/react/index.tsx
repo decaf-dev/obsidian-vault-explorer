@@ -39,11 +39,13 @@ export default function ReactView({ app }: Props) {
 				file as TFile
 			)?.frontmatter;
 			const tags: string[] = frontmatter?.tags ?? [];
+			const url: string | null = frontmatter?.url ?? null;
 			return {
 				name: file.basename,
 				path: file.path,
 				tags,
 				next: frontmatter?.next ?? false,
+				url,
 			};
 		});
 
@@ -117,8 +119,16 @@ export default function ReactView({ app }: Props) {
 			</div>
 			<div className="frontmatter-view-list">
 				{filteredData.map((file) => {
-					const { name, tags } = file;
-					return <Card key={file.path} name={name} tags={tags} />;
+					const { name, tags, path, url } = file;
+					return (
+						<Card
+							key={path}
+							name={name}
+							path={path}
+							url={url}
+							tags={tags}
+						/>
+					);
 				})}
 				{/* <Virtuoso
 					style={{ height: 400 }}
