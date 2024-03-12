@@ -12,12 +12,24 @@ interface Props {
 export default function ReactView({ app }: Props) {
 	const [folderPath, setFolderPath] = React.useState<string | null>(null);
 	const [search, setSearch] = React.useState<string>("");
-	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
+	const [onlyNext, setOnlyNext] = React.useState<boolean>(false);
 
 	const folders = app.vault
 		.getAllLoadedFiles()
 		.filter((file) => file instanceof TFolder)
 		.map((folder) => folder.path);
+
+	const folderFiles = app.vault
+		.getMarkdownFiles()
+		.filter((file) => file instanceof TFile)
+		.filter((file) => {
+			if (folderPath === "") {
+				return true;
+			} else if (folderPath === "/") {
+				return true;
+			}
+			return file.path.startsWith(folderPath ?? "/");
+		});
 
 	const data = app.vault
 		.getMarkdownFiles()
@@ -31,7 +43,7 @@ export default function ReactView({ app }: Props) {
 				name: file.basename,
 				path: file.path,
 				tags,
-				favorite: frontmatter?.favorite ?? false,
+				next: frontmatter?.next ?? false,
 			};
 		});
 
@@ -40,7 +52,6 @@ export default function ReactView({ app }: Props) {
 			if (folderPath === "/") {
 				return true;
 			} else if (folderPath) {
-				console.log(file.path, folderPath);
 				return file.path.startsWith(folderPath);
 			}
 			return false;
@@ -60,8 +71,8 @@ export default function ReactView({ app }: Props) {
 			return false;
 		})
 		.filter((file) => {
-			if (onlyFavorites) {
-				return file.favorite;
+			if (onlyNext) {
+				return file.next;
 			}
 			return true;
 		});
@@ -90,16 +101,17 @@ export default function ReactView({ app }: Props) {
 				</div>
 				<div className="frontmatter-view-header__row">
 					<div className="frontmatter-view-checkbox">
-						<label htmlFor="only-favorites">Only favorites</label>
+						<label htmlFor="only-next">Only next</label>
 						<input
-							id="only-favorites"
+							id="only-next"
 							type="checkbox"
-							checked={onlyFavorites}
-							onChange={(e) => setOnlyFavorites(e.target.checked)}
+							checked={onlyNext}
+							onChange={(e) => setOnlyNext(e.target.checked)}
 						/>
 					</div>
 					<div>
-						Showing {filteredData.length} out of {data.length}
+						Showing {filteredData.length} out of{" "}
+						{folderFiles.length}
 					</div>
 				</div>
 			</div>
