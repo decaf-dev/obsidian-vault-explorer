@@ -12,7 +12,8 @@ export default function ReactView() {
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
 	const { app, settings } = useAppMount();
 
-	const { favoritePropertyName, urlPropertyName } = settings;
+	const { favoritePropertyName, urlPropertyName, sourcePropertyName } =
+		settings;
 
 	const folders = app.vault
 		.getAllLoadedFiles()
@@ -41,11 +42,13 @@ export default function ReactView() {
 			const tags: string[] = frontmatter?.tags ?? [];
 			const url: string | null = frontmatter?.[urlPropertyName] ?? null;
 			const favorite = frontmatter?.[favoritePropertyName] ?? false;
+			const source = frontmatter?.[sourcePropertyName] ?? null;
 
 			return {
 				name: file.basename,
 				path: file.path,
 				tags,
+				source,
 				favorite,
 				url,
 			};
@@ -87,7 +90,7 @@ export default function ReactView() {
 				<div className="frontmatter-view-header__row">
 					<input
 						type="text"
-						placeholder="Search"
+						placeholder="Search..."
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 					/>
@@ -121,7 +124,7 @@ export default function ReactView() {
 			</div>
 			<div className="frontmatter-view-list">
 				{filteredData.map((file) => {
-					const { name, tags, path, url } = file;
+					const { name, tags, path, url, source } = file;
 					return (
 						<Card
 							key={path}
@@ -129,6 +132,7 @@ export default function ReactView() {
 							path={path}
 							url={url}
 							tags={tags}
+							source={source}
 						/>
 					);
 				})}

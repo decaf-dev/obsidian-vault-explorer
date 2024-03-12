@@ -11,6 +11,7 @@ import { FrontmatterViewsPluginSettings } from './types';
 const DEFAULT_SETTINGS: FrontmatterViewsPluginSettings = {
 	favoritePropertyName: "favorite",
 	urlPropertyName: "url",
+	sourcePropertyName: "source",
 }
 
 export default class FrontmatterViewsPlugin extends Plugin {

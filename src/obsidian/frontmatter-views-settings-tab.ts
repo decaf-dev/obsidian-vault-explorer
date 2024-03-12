@@ -34,6 +34,15 @@ export default class FrontmatterViewsSettingTabs extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
+		new Setting(containerEl)
+			.setName('Source property name')
+			.setDesc('The name of the property used to store the source name of the content.')
+			.addText(text => text
+				.setValue(this.plugin.settings.sourcePropertyName)
+				.onChange(async (value) => {
+					this.plugin.settings.sourcePropertyName = value;
+					await this.plugin.saveSettings();
+				}));
 
 	}
 }

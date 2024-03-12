@@ -1,18 +1,22 @@
-import { MarkdownEditView, MarkdownView, setIcon } from "obsidian";
+import { MarkdownView, setIcon } from "obsidian";
+
+import React from "react";
+
 import { useAppMount } from "../AppMountProvider";
 import Tag from "../tag";
+import Spacer from "../spacer";
 
 import "./styles.css";
-import React from "react";
 
 interface Props {
 	name: string;
 	path: string;
 	url: string | null;
 	tags: string[];
+	source: string | null;
 }
 
-export default function Card({ name, path, url, tags }: Props) {
+export default function Card({ name, path, url, tags, source }: Props) {
 	const { app } = useAppMount();
 	const urlIconRef = React.useRef<HTMLDivElement>(null);
 
@@ -40,6 +44,15 @@ export default function Card({ name, path, url, tags }: Props) {
 		}
 	}
 
+	function handleSourceClick() {
+		const searchPlugin = (app as any).internalPlugins.plugins[
+			"global-search"
+		];
+		if (searchPlugin) {
+			searchPlugin.instance.openGlobalSearch(`["source":${source}`);
+		}
+	}
+
 	return (
 		<div className="frontmatter-view-card">
 			<div className="frontmatter-view-card__header">
@@ -59,11 +72,26 @@ export default function Card({ name, path, url, tags }: Props) {
 					</div>
 				)}
 			</div>
+			<Spacer size="md" />
 			<div className="frontmatter-view-card__tags">
 				{tags.map((tag) => (
 					<Tag key={tag} name={tag} />
 				))}
 			</div>
+			{source !== null && (
+				<>
+					<Spacer size="sm" />
+					<a
+						// href={`["${source}"]`}
+						className="tag frontmatter-view-card__source"
+						target="_blank"
+						rel="noopener"
+						onClick={handleSourceClick}
+					>
+						{source}
+					</a>
+				</>
+			)}
 		</div>
 	);
 }
