@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+	"id": "frontmatter-views",
+	"name": "Frontmatter Views",
+	"version": "0.0.1",
+	"minAppVersion": "1.4.13",
+	"description": "Create dynamic views using note frontmatter",
+	"author": "Trey Wallis",
+	"authorUrl": "https://github.com/trey-wallis",
+	"fundingUrl": "https://buymeacoffee.com/treywallis",
+	"isDesktopOnly": true
 }
