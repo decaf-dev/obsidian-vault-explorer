@@ -1,10 +1,12 @@
 import { App, WorkspaceLeaf } from "obsidian";
 
 import React from "react";
+import { FrontmatterViewsPluginSettings } from "src/types";
 
 interface ContextProps {
 	app: App;
 	leaf: WorkspaceLeaf;
+	settings: FrontmatterViewsPluginSettings;
 }
 
 const MountContext = React.createContext<ContextProps | null>(null);
@@ -24,9 +26,14 @@ interface Props extends ContextProps {
 	children: React.ReactNode;
 }
 
-export default function AppMountProvider({ app, leaf, children }: Props) {
+export default function AppMountProvider({
+	app,
+	leaf,
+	settings,
+	children,
+}: Props) {
 	return (
-		<MountContext.Provider value={{ app, leaf }}>
+		<MountContext.Provider value={{ app, leaf, settings }}>
 			{children}
 		</MountContext.Provider>
 	);

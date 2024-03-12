@@ -15,14 +15,25 @@ export default class FrontmatterViewsSettingTabs extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
+			.setName('Favorite property name')
+			.setDesc('The name of the frontmatter property used to mark a note as a favorite.')
 			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+				.setValue(this.plugin.settings.favoritePropertyName)
 				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.favoritePropertyName = value;
 					await this.plugin.saveSettings();
 				}));
+
+		new Setting(containerEl)
+			.setName('URL property name')
+			.setDesc('The name of the property used to store the URL of the content.')
+			.addText(text => text
+				.setValue(this.plugin.settings.urlPropertyName)
+				.onChange(async (value) => {
+					this.plugin.settings.urlPropertyName = value;
+					await this.plugin.saveSettings();
+				}));
+
+
 	}
 }

@@ -4,15 +4,15 @@ import React from "react";
 import Card from "./card";
 
 import "./styles.css";
+import { useAppMount } from "./AppMountProvider";
 
-interface Props {
-	app: App;
-}
-
-export default function ReactView({ app }: Props) {
+export default function ReactView() {
 	const [folderPath, setFolderPath] = React.useState<string | null>(null);
 	const [search, setSearch] = React.useState<string>("");
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
+	const { app, settings } = useAppMount();
+
+	const { favoritePropertyName, urlPropertyName } = settings;
 
 	const folders = app.vault
 		.getAllLoadedFiles()
@@ -39,12 +39,14 @@ export default function ReactView({ app }: Props) {
 				file as TFile
 			)?.frontmatter;
 			const tags: string[] = frontmatter?.tags ?? [];
-			const url: string | null = frontmatter?.url ?? null;
+			const url: string | null = frontmatter?.[urlPropertyName] ?? null;
+			const favorite = frontmatter?.[favoritePropertyName] ?? false;
+
 			return {
 				name: file.basename,
 				path: file.path,
 				tags,
-				next: frontmatter?.next ?? false,
+				favorite,
 				url,
 			};
 		});
@@ -74,7 +76,7 @@ export default function ReactView({ app }: Props) {
 		})
 		.filter((file) => {
 			if (onlyFavorites) {
-				return file.next;
+				return file.favorite;
 			}
 			return true;
 		});

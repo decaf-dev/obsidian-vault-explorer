@@ -4,14 +4,13 @@ import { FRONTMATTER_VIEW } from './constants';
 import FrontmatterView from './obsidian/frontmatter-view';
 
 import "./styles.css";
+import FrontmatterViewsSettingTabs from './obsidian/frontmatter-views-settings-tab';
+import { FrontmatterViewsPluginSettings } from './types';
 
-
-interface FrontmatterViewsPluginSettings {
-	mySetting: string;
-}
 
 const DEFAULT_SETTINGS: FrontmatterViewsPluginSettings = {
-	mySetting: 'default'
+	favoritePropertyName: "favorite",
+	urlPropertyName: "url",
 }
 
 export default class FrontmatterViewsPlugin extends Plugin {
@@ -22,7 +21,7 @@ export default class FrontmatterViewsPlugin extends Plugin {
 
 		this.registerView(
 			FRONTMATTER_VIEW,
-			(leaf) => new FrontmatterView(leaf, this.app)
+			(leaf) => new FrontmatterView(leaf, this.app, this.settings)
 		);
 
 		this.addRibbonIcon("layout-list", "Frontmatter View", async () => {
@@ -39,7 +38,7 @@ export default class FrontmatterViewsPlugin extends Plugin {
 		});
 
 
-		//this.addSettingTab(new FrontmatterViewsSettingTabs(this.app, this));
+		this.addSettingTab(new FrontmatterViewsSettingTabs(this.app, this));
 	}
 
 	onunload() {
