@@ -83,6 +83,21 @@ export default function ReactView() {
 				return true;
 			} else if (file.path.toLowerCase().includes(search.toLowerCase())) {
 				return true;
+			} else if (
+				file.source &&
+				file.source.toLowerCase().includes(search.toLowerCase())
+			) {
+				return true;
+			} else if (
+				file.revision &&
+				file.revision.toLowerCase().includes(search.toLowerCase())
+			) {
+				return true;
+			} else if (
+				file.status &&
+				file.status.toLowerCase().includes(search.toLowerCase())
+			) {
+				return true;
 			}
 			return false;
 		})
