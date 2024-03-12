@@ -1,0 +1,13 @@
+.frontmatter-view-card {
+	display: flex;
+	flex-direction: column;
+	padding: 1rem;
+	border: 1px solid var(--background-modifier-border);
+	row-gap: 0.5rem;
+}
+
+.frontmatter-view-card__tags {
+	display: flex;
+	column-gap: 0.25rem;
+	height: min-content
+}

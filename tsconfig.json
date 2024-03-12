@@ -6,6 +6,8 @@
     "module": "ESNext",
     "target": "ES6",
     "allowJs": true,
+	"jsx": "react-jsx",
+	"allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
     "importHelpers": true,
@@ -20,5 +22,5 @@
   },
   "include": [
     "**/*.ts"
-  ]
+, "src/obsidian/frontmatter-view.tsx"  ]
 }
