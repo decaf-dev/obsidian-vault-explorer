@@ -44,5 +44,25 @@ export default class FrontmatterViewsSettingTabs extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
+		new Setting(containerEl)
+			.setName('Status property name')
+			.setDesc('The name of the property used to store the status of the content.')
+			.addText(text => text
+				.setValue(this.plugin.settings.statusPropertyName)
+				.onChange(async (value) => {
+					this.plugin.settings.statusPropertyName = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Revision property name')
+			.setDesc('The name of the property used to store the revision status of the content.')
+			.addText(text => text
+				.setValue(this.plugin.settings.revisionPropertyName)
+				.onChange(async (value) => {
+					this.plugin.settings.revisionPropertyName = value;
+					await this.plugin.saveSettings();
+				}));
+
 	}
 }

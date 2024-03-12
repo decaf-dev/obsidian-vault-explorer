@@ -12,8 +12,13 @@ export default function ReactView() {
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
 	const { app, settings } = useAppMount();
 
-	const { favoritePropertyName, urlPropertyName, sourcePropertyName } =
-		settings;
+	const {
+		favoritePropertyName,
+		urlPropertyName,
+		sourcePropertyName,
+		revisionPropertyName,
+		statusPropertyName,
+	} = settings;
 
 	const folders = app.vault
 		.getAllLoadedFiles()
@@ -43,6 +48,8 @@ export default function ReactView() {
 			const url: string | null = frontmatter?.[urlPropertyName] ?? null;
 			const favorite = frontmatter?.[favoritePropertyName] ?? false;
 			const source = frontmatter?.[sourcePropertyName] ?? null;
+			const revision = frontmatter?.[revisionPropertyName] ?? null;
+			const status = frontmatter?.[statusPropertyName] ?? null;
 
 			return {
 				name: file.basename,
@@ -51,6 +58,8 @@ export default function ReactView() {
 				source,
 				favorite,
 				url,
+				revision,
+				status,
 			};
 		});
 
@@ -124,7 +133,8 @@ export default function ReactView() {
 			</div>
 			<div className="frontmatter-view-list">
 				{filteredData.map((file) => {
-					const { name, tags, path, url, source } = file;
+					const { name, tags, path, url, source, revision, status } =
+						file;
 					return (
 						<Card
 							key={path}
@@ -133,6 +143,8 @@ export default function ReactView() {
 							url={url}
 							tags={tags}
 							source={source}
+							revision={revision}
+							status={status}
 						/>
 					);
 				})}

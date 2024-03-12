@@ -1,17 +1,19 @@
 import { Plugin, } from 'obsidian';
 
-import { FRONTMATTER_VIEW } from './constants';
 import FrontmatterView from './obsidian/frontmatter-view';
+import FrontmatterViewsSettingTabs from './obsidian/frontmatter-views-settings-tab';
+
+import { FrontmatterViewsPluginSettings } from './types';
+import { FRONTMATTER_VIEW } from './constants';
 
 import "./styles.css";
-import FrontmatterViewsSettingTabs from './obsidian/frontmatter-views-settings-tab';
-import { FrontmatterViewsPluginSettings } from './types';
-
 
 const DEFAULT_SETTINGS: FrontmatterViewsPluginSettings = {
 	favoritePropertyName: "favorite",
 	urlPropertyName: "url",
 	sourcePropertyName: "source",
+	revisionPropertyName: "revision",
+	statusPropertyName: "status",
 }
 
 export default class FrontmatterViewsPlugin extends Plugin {

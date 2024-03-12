@@ -1,0 +1,10 @@
+.frontmatter-view-property {
+	background-color: var(--color-base-20) !important;
+	color: var(--text-normal) !important;
+	width: max-content;
+	text-wrap: nowrap;
+}
+
+.frontmatter-view-property:hover {
+	background-color: var(--color-base-30) !important;
+}

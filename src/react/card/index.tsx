@@ -5,6 +5,7 @@ import React from "react";
 import { useAppMount } from "../AppMountProvider";
 import Tag from "../tag";
 import Spacer from "../spacer";
+import Property from "../property";
 
 import "./styles.css";
 
@@ -14,9 +15,19 @@ interface Props {
 	url: string | null;
 	tags: string[];
 	source: string | null;
+	status: string | null;
+	revision: string | null;
 }
 
-export default function Card({ name, path, url, tags, source }: Props) {
+export default function Card({
+	name,
+	path,
+	url,
+	tags,
+	source,
+	revision,
+	status,
+}: Props) {
 	const { app } = useAppMount();
 	const urlIconRef = React.useRef<HTMLDivElement>(null);
 
@@ -44,15 +55,6 @@ export default function Card({ name, path, url, tags, source }: Props) {
 		}
 	}
 
-	function handleSourceClick() {
-		const searchPlugin = (app as any).internalPlugins.plugins[
-			"global-search"
-		];
-		if (searchPlugin) {
-			searchPlugin.instance.openGlobalSearch(`["source":${source}`);
-		}
-	}
-
 	return (
 		<div className="frontmatter-view-card">
 			<div className="frontmatter-view-card__header">
@@ -74,25 +76,35 @@ export default function Card({ name, path, url, tags, source }: Props) {
 				)}
 			</div>
 			<Spacer size="md" />
-			<div className="frontmatter-view-card__tags">
-				{tags.map((tag) => (
-					<Tag key={tag} name={tag} />
-				))}
+			<div className="frontmatter-view-card__content">
+				<div className="frontmatter-view-card__tags">
+					{tags.map((tag) => (
+						<Tag key={tag} name={tag} />
+					))}
+				</div>
+				{source !== null && <Property name="source" value={source} />}
+				<div className="frontmatter-view-card__labels">
+					{status !== null && (
+						<div>
+							<Property name="status" value={status} />
+							<Spacer size="xs" />
+							<div className="frontmatter-view-property-label">
+								Status
+							</div>
+						</div>
+					)}
+					<Spacer size="xs" direction="horizontal" />
+					{revision !== null && (
+						<div>
+							<Property name="revision" value={revision} />
+							<Spacer size="xs" />
+							<div className="frontmatter-view-property-label">
+								Revision
+							</div>
+						</div>
+					)}
+				</div>
 			</div>
-			{source !== null && (
-				<>
-					<Spacer size="sm" />
-					<a
-						// href={`["${source}"]`}
-						className="tag frontmatter-view-card__source"
-						target="_blank"
-						rel="noopener"
-						onClick={handleSourceClick}
-					>
-						{source}
-					</a>
-				</>
-			)}
 		</div>
 	);
 }
