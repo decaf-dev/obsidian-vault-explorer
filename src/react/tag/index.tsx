@@ -13,7 +13,7 @@ export default function Tag({ name }: Props) {
 			"global-search"
 		];
 		if (searchPlugin) {
-			searchPlugin.instance.openGlobalSearch("tag:" + name);
+			searchPlugin.instance.openGlobalSearch(`tag:#${name}`);
 		}
 	}
 
