@@ -18,7 +18,7 @@ export default class FrontmatterViewsPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.addSettingTab(new FrontmatterViewsSettingTabs(this.app, this));
+		//this.addSettingTab(new FrontmatterViewsSettingTabs(this.app, this));
 	}
 
 	onunload() {
