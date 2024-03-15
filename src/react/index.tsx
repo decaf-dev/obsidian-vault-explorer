@@ -144,7 +144,7 @@ export default function ReactView() {
 						<option value="">Select a folder</option>
 						{folders.map((folder) => (
 							<option key={folder} value={folder}>
-								{folder === "/" ? "root" : folder}
+								{folder}
 							</option>
 						))}
 					</select>
