@@ -14,3 +14,14 @@ This plugin allows you to explore your vault in visual format
 6. Click **Add plugin**
 
 ## Usage
+
+## Development
+
+1. Clone the GitHub repository
+2. Install [Bun](https://bun.sh)
+3. Build the project `bun run build`
+4. Add a symbolic link from the `dist` folder to your vault's plugin folder
+
+-   `ln -s <folder-path>/obsidian-vault-explorer/dist <vault-path>/.obsidian/plugins/vault-explorer`
+
+5. Enable the plugin
