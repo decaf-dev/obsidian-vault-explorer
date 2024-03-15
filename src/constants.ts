@@ -1,1 +1,1 @@
-export const FRONTMATTER_VIEW = "frontmatter-view";
+export const VAULT_EXPLORER_VIEW = "vault-explorer";

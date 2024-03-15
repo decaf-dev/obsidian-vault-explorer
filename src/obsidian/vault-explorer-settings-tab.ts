@@ -1,10 +1,10 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import FrontmatterViewsPlugin from "src/main";
+import VaultExplorerPlugin from "src/main";
 
-export default class FrontmatterViewsSettingTabs extends PluginSettingTab {
-	plugin: FrontmatterViewsPlugin;
+export default class VaultExplorerSettingsTab extends PluginSettingTab {
+	plugin: VaultExplorerPlugin;
 
-	constructor(app: App, plugin: FrontmatterViewsPlugin) {
+	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}

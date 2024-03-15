@@ -21,7 +21,7 @@ export default function Property({ name, value }: Props) {
 	return (
 		<a
 			// href={`["${source}"]`}
-			className="tag frontmatter-view-property"
+			className="tag vault-explorer-property"
 			target="_blank"
 			rel="noopener"
 			onClick={handleClick}

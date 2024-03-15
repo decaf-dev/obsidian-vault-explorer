@@ -1,9 +1,9 @@
 {
-	"id": "frontmatter-views",
-	"name": "Frontmatter Views",
+	"id": "vault-explorer",
+	"name": "Vault Explorer",
 	"version": "0.0.8",
 	"minAppVersion": "1.4.13",
-	"description": "Create dynamic views based on frontmatter",
+	"description": "Explore your vault in visual format",
 	"author": "Trey Wallis",
 	"authorUrl": "https://github.com/trey-wallis",
 	"fundingUrl": "https://buymeacoffee.com/treywallis",

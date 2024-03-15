@@ -1,8 +1,8 @@
-# Obsidian Frontmatter Views
+# Obsidian Vault Explorer
 
 ## About
 
-This plugin allows you to create dynamic views based on frontmatter
+This plugin allows you to explore your vault in visual format
 
 ## Installation
 
@@ -10,7 +10,7 @@ This plugin allows you to create dynamic views based on frontmatter
 2. Enable the plugin
 3. Open the plugin settings
 4. Click **Add beta plugin**
-5. Enter the repository url: **https://github.com/trey-wallis/obsidian-frontmatter-views**
+5. Enter the repository url: **https://github.com/trey-wallis/obsidian-vault-explorer**
 6. Click **Add plugin**
 
 ## Usage

@@ -1,12 +1,12 @@
 import { App, WorkspaceLeaf } from "obsidian";
 
 import React from "react";
-import { FrontmatterViewsPluginSettings } from "src/types";
+import { VaultExplorerPluginSettings } from "src/types";
 
 interface ContextProps {
 	app: App;
 	leaf: WorkspaceLeaf;
-	settings: FrontmatterViewsPluginSettings;
+	settings: VaultExplorerPluginSettings;
 }
 
 const MountContext = React.createContext<ContextProps | null>(null);

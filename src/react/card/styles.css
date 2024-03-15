@@ -1,43 +1,43 @@
-.frontmatter-view-card {
+.vault-explorer-card {
 	padding: 20px;
 	box-shadow: var(--shadow-s);
 	border: 1px solid var(--background-modifier-border);
 }
 
-.frontmatter-view-card__header {
+.vault-explorer-card__header {
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
 	column-gap: 0.5rem;
 }
 
-.frontmatter-view-card__content {
+.vault-explorer-card__content {
 	display: flex;
 	flex-direction: column;
 	row-gap: 0.5rem;
 }
 
-.frontmatter-view-card__title {
+.vault-explorer-card__title {
 	cursor: pointer;
 	color: var(--text-accent)
 }
 
-.frontmatter-view-card__tags {
+.vault-explorer-card__tags {
 	display: flex;
 	column-gap: 0.25rem;
 	height: min-content;
 	overflow-x: auto;
 }
 
-.frontmatter-view-card__tags::-webkit-scrollbar {
+.vault-explorer-card__tags::-webkit-scrollbar {
 	display: none;
 }
 
-.frontmatter-view-card__labels {
+.vault-explorer-card__labels {
 	display: flex;
 }
 
-.frontmatter-view-property-label {
+.vault-explorer-property-label {
 	margin-left: 8px;
 	font-size: var(--font-smallest);
 	color: var(--text-muted);

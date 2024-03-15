@@ -128,8 +128,8 @@ export default function ReactView() {
 		});
 
 	return (
-		<div className="frontmatter-view">
-			<div className="frontmatter-view-header">
+		<div className="vault-explorer">
+			<div className="vault-explorer-header">
 				<Stack spacing="md">
 					<input
 						type="text"
@@ -176,7 +176,7 @@ export default function ReactView() {
 					</div>
 				</Flex>
 			</div>
-			<div className="frontmatter-view-list">
+			<div className="vault-explorer-list">
 				{filteredData.map((file) => {
 					const { name, tags, path, url, source, revision, status } =
 						file;

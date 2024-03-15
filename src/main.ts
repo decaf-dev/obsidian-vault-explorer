@@ -1,13 +1,13 @@
 import { Plugin, } from 'obsidian';
 
-import FrontmatterView from './obsidian/frontmatter-view';
-import FrontmatterViewsSettingTabs from './obsidian/frontmatter-views-settings-tab';
+import VaultExplorerView from './obsidian/vault-explorer-view';
+import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { FrontmatterViewsPluginSettings } from './types';
-import { FRONTMATTER_VIEW } from './constants';
+import { VaultExplorerPluginSettings } from './types';
+import { VAULT_EXPLORER_VIEW } from './constants';
 
 
-const DEFAULT_SETTINGS: FrontmatterViewsPluginSettings = {
+const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	favoritePropertyName: "favorite",
 	urlPropertyName: "url",
 	sourcePropertyName: "source",
@@ -15,32 +15,32 @@ const DEFAULT_SETTINGS: FrontmatterViewsPluginSettings = {
 	statusPropertyName: "status",
 }
 
-export default class FrontmatterViewsPlugin extends Plugin {
-	settings: FrontmatterViewsPluginSettings;
+export default class VaultExplorerPlugin extends Plugin {
+	settings: VaultExplorerPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
 
 		this.registerView(
-			FRONTMATTER_VIEW,
-			(leaf) => new FrontmatterView(leaf, this.app, this.settings)
+			VAULT_EXPLORER_VIEW,
+			(leaf) => new VaultExplorerView(leaf, this.app, this.settings)
 		);
 
-		this.addRibbonIcon("layout-list", "Frontmatter View", async () => {
-			const leaves = this.app.workspace.getLeavesOfType(FRONTMATTER_VIEW);
+		this.addRibbonIcon("map", "Vault Explorer", async () => {
+			const leaves = this.app.workspace.getLeavesOfType(VAULT_EXPLORER_VIEW);
 			if (leaves.length !== 0) {
 				const leaf = leaves[0];
 				this.app.workspace.revealLeaf(leaf);
 			} else {
 				this.app.workspace.getLeaf().setViewState({
-					type: FRONTMATTER_VIEW,
+					type: VAULT_EXPLORER_VIEW,
 					active: true,
 				});
 			}
 		});
 
 
-		this.addSettingTab(new FrontmatterViewsSettingTabs(this.app, this));
+		this.addSettingTab(new VaultExplorerSettingsTab(this.app, this));
 	}
 
 	onunload() {

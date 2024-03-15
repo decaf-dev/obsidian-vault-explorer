@@ -1,23 +1,23 @@
-.frontmatter-view {
+.vault-explorer {
 	display: flex;
 	flex-direction: column;
 }
 
-.frontmatter-view-list {
+.vault-explorer-list {
 	display: grid;
 	row-gap: 2rem;
 	column-gap: 2rem;
 	grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
 }
 
-.frontmatter-view-header {
+.vault-explorer-header {
 	display: flex;
 	flex-direction: column;
 	row-gap: 1rem;
 	margin-bottom: 2rem;
 }
 
-.frontmatter-view input[type="text"] {
+.vault-explorer input[type="text"] {
 	width: 100%;
 	max-width: 300px;
 }

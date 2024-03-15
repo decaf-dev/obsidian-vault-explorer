@@ -19,7 +19,7 @@ export default function Tag({ name }: Props) {
 
 	return (
 		<a
-			className="tag frontmatter-view-tag "
+			className="tag vault-explorer-tag "
 			href={`#${name}`}
 			target="_blank"
 			rel="noopener"

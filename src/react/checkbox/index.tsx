@@ -9,7 +9,7 @@ interface Props {
 
 export default function Checkbox({ id, label, value, onChange }: Props) {
 	return (
-		<div className="frontmatter-view-checkbox">
+		<div className="vault-explorer-checkbox">
 			<label htmlFor={id}>{label}</label>
 			<input
 				id={id}

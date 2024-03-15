@@ -31,7 +31,7 @@ export default function Stack({
 	}
 	return (
 		<div
-			className="frontmatter-view-stack"
+			className="vault-explorer-stack"
 			style={{
 				display: "flex",
 				flexDirection: direction,

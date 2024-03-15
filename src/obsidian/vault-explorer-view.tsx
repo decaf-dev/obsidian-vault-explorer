@@ -3,20 +3,20 @@ import { App, ItemView, WorkspaceLeaf } from "obsidian";
 import React from "react";
 import { createRoot, Root } from "react-dom/client";
 
-import { FRONTMATTER_VIEW } from "src/constants";
+import { VAULT_EXPLORER_VIEW } from "src/constants";
 import ReactView from "src/react/index";
 import AppMountProvider from "src/react/app-mount-provider";
-import { FrontmatterViewsPluginSettings } from "src/types";
+import { VaultExplorerPluginSettings } from "src/types";
 
-export default class FrontmatterView extends ItemView {
+export default class VaultExplorerView extends ItemView {
 	root: Root | null;
 	app: App;
-	settings: FrontmatterViewsPluginSettings;
+	settings: VaultExplorerPluginSettings;
 
 	constructor(
 		leaf: WorkspaceLeaf,
 		app: App,
-		settings: FrontmatterViewsPluginSettings
+		settings: VaultExplorerPluginSettings
 	) {
 		super(leaf);
 		this.root = null;
@@ -25,10 +25,10 @@ export default class FrontmatterView extends ItemView {
 	}
 
 	getViewType(): string {
-		return FRONTMATTER_VIEW;
+		return VAULT_EXPLORER_VIEW;
 	}
 	getDisplayText(): string {
-		return "Frontmatter View";
+		return "Explorer";
 	}
 
 	async onOpen() {

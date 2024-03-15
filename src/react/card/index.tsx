@@ -45,7 +45,7 @@ export default function Card({
 		if (leaf) {
 			app.workspace.setActiveLeaf(leaf);
 		} else {
-			app.workspace.openLinkText(path, "frontmatter-view");
+			app.workspace.openLinkText(path, "vault-explorer");
 		}
 	}
 
@@ -56,10 +56,10 @@ export default function Card({
 	}
 
 	return (
-		<div className="frontmatter-view-card">
-			<div className="frontmatter-view-card__header">
+		<div className="vault-explorer-card">
+			<div className="vault-explorer-card__header">
 				<div
-					className="frontmatter-view-card__title"
+					className="vault-explorer-card__title"
 					onClick={handleTitleClick}
 				>
 					{name}
@@ -76,19 +76,19 @@ export default function Card({
 				)}
 			</div>
 			<Spacer size="md" />
-			<div className="frontmatter-view-card__content">
-				<div className="frontmatter-view-card__tags">
+			<div className="vault-explorer-card__content">
+				<div className="vault-explorer-card__tags">
 					{tags.map((tag) => (
 						<Tag key={tag} name={tag} />
 					))}
 				</div>
 				{source !== null && <Property name="source" value={source} />}
-				<div className="frontmatter-view-card__labels">
+				<div className="vault-explorer-card__labels">
 					{status !== null && (
 						<div>
 							<Property name="status" value={status} />
 							<Spacer size="xs" />
-							<div className="frontmatter-view-property-label">
+							<div className="vault-explorer-property-label">
 								Status
 							</div>
 						</div>
@@ -98,7 +98,7 @@ export default function Card({
 						<div>
 							<Property name="revision" value={revision} />
 							<Spacer size="xs" />
-							<div className="frontmatter-view-property-label">
+							<div className="vault-explorer-property-label">
 								Revision
 							</div>
 						</div>

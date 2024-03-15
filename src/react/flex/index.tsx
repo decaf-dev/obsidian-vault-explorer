@@ -24,7 +24,7 @@ export default function Flex({
 	}
 	return (
 		<div
-			className="frontmatter-view-flex"
+			className="vault-explorer-flex"
 			style={{
 				display: "flex",
 				flexDirection: direction,

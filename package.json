@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-frontmatter-views",
+	"name": "obsidian-vault-explorer",
 	"version": "0.0.8",
-	"description": "Create dynamic views based on frontmatter",
+	"description": "Explore your vault in visual format",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
