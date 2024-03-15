@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-frontmatter-views",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "Create dynamic views based on frontmatter",
 	"main": "main.js",
 	"scripts": {
