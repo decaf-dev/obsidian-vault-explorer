@@ -4,7 +4,7 @@ import React from "react";
 import Card from "./card";
 
 import "./styles.css";
-import { useAppMount } from "./AppMountProvider";
+import { useAppMount } from "./app-mount-provider";
 
 export default function ReactView() {
 	const [folderPath, setFolderPath] = React.useState<string | null>(null);

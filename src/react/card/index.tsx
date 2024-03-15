@@ -2,7 +2,7 @@ import { MarkdownView, setIcon } from "obsidian";
 
 import React from "react";
 
-import { useAppMount } from "../AppMountProvider";
+import { useAppMount } from "../app-mount-provider";
 import Tag from "../tag";
 import Spacer from "../spacer";
 import Property from "../property";
