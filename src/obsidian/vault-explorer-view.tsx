@@ -6,22 +6,25 @@ import { createRoot, Root } from "react-dom/client";
 import { VAULT_EXPLORER_VIEW } from "src/constants";
 import ReactView from "src/react/index";
 import AppMountProvider from "src/react/app-mount-provider";
-import { VaultExplorerPluginSettings } from "src/types";
+import { onSettingsChange, VaultExplorerPluginSettings } from "src/types";
 
 export default class VaultExplorerView extends ItemView {
 	root: Root | null;
 	app: App;
 	settings: VaultExplorerPluginSettings;
+	onSettingsChange: onSettingsChange;
 
 	constructor(
 		leaf: WorkspaceLeaf,
 		app: App,
-		settings: VaultExplorerPluginSettings
+		settings: VaultExplorerPluginSettings,
+		onSettingsChange: onSettingsChange
 	) {
 		super(leaf);
 		this.root = null;
 		this.app = app;
 		this.settings = settings;
+		this.onSettingsChange = onSettingsChange;
 	}
 
 	getViewType(): string {
@@ -40,6 +43,7 @@ export default class VaultExplorerView extends ItemView {
 					app={this.app}
 					leaf={this.leaf}
 					settings={this.settings}
+					onSettingsChange={this.onSettingsChange}
 				>
 					<ReactView />
 				</AppMountProvider>

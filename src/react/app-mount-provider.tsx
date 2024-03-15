@@ -1,12 +1,13 @@
 import { App, WorkspaceLeaf } from "obsidian";
 
 import React from "react";
-import { VaultExplorerPluginSettings } from "src/types";
+import { VaultExplorerPluginSettings, onSettingsChange } from "src/types";
 
 interface ContextProps {
 	app: App;
 	leaf: WorkspaceLeaf;
 	settings: VaultExplorerPluginSettings;
+	onSettingsChange: onSettingsChange;
 }
 
 const MountContext = React.createContext<ContextProps | null>(null);
@@ -30,10 +31,13 @@ export default function AppMountProvider({
 	app,
 	leaf,
 	settings,
+	onSettingsChange,
 	children,
 }: Props) {
 	return (
-		<MountContext.Provider value={{ app, leaf, settings }}>
+		<MountContext.Provider
+			value={{ app, leaf, settings, onSettingsChange }}
+		>
 			{children}
 		</MountContext.Provider>
 	);

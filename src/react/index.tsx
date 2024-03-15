@@ -10,14 +10,40 @@ import Flex from "./flex";
 import Stack from "./stack";
 
 export default function ReactView() {
-	const [folderPath, setFolderPath] = React.useState<string | null>(null);
+	const [folderPath, setFolderPath] = React.useState<string>("");
 	const [search, setSearch] = React.useState<string>("");
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
 	const [onlyModifiedToday, setOnlyModifiedToday] =
 		React.useState<boolean>(false);
 	const [onlyCreatedToday, setOnlyCreatedToday] =
 		React.useState<boolean>(false);
-	const { app, settings } = useAppMount();
+	const { app, settings, onSettingsChange } = useAppMount();
+
+	React.useEffect(() => {
+		setFolderPath(settings.folderFilter);
+		setSearch(settings.searchFilter);
+		setOnlyFavorites(settings.onlyFavorites);
+		setOnlyModifiedToday(settings.onlyModifiedToday);
+		setOnlyCreatedToday(settings.onlyCreatedToday);
+	}, []);
+
+	React.useEffect(() => {
+		onSettingsChange({
+			...settings,
+			folderFilter: folderPath,
+			searchFilter: search,
+			onlyFavorites,
+			onlyModifiedToday,
+			onlyCreatedToday,
+		});
+	}, [
+		onSettingsChange,
+		folderPath,
+		search,
+		onlyFavorites,
+		onlyModifiedToday,
+		onlyCreatedToday,
+	]);
 
 	const {
 		favoritePropertyName,
@@ -138,7 +164,7 @@ export default function ReactView() {
 						onChange={(e) => setSearch(e.target.value)}
 					/>
 					<select
-						value={folderPath ?? ""}
+						value={folderPath}
 						onChange={(e) => setFolderPath(e.target.value)}
 					>
 						<option value="">Select a folder</option>

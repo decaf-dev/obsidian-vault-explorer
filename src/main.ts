@@ -5,6 +5,7 @@ import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
 import { VaultExplorerPluginSettings } from './types';
 import { VAULT_EXPLORER_VIEW } from './constants';
+import _ from 'lodash';
 
 
 const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
@@ -13,6 +14,11 @@ const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	sourcePropertyName: "source",
 	revisionPropertyName: "revision",
 	statusPropertyName: "status",
+	folderFilter: "",
+	searchFilter: "",
+	onlyFavorites: false,
+	onlyCreatedToday: false,
+	onlyModifiedToday: false,
 }
 
 export default class VaultExplorerPlugin extends Plugin {
@@ -21,9 +27,15 @@ export default class VaultExplorerPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
+		const debounceSettingsChange = _.debounce(async (value: VaultExplorerPluginSettings) => {
+			this.settings = value;
+			await this.saveSettings();
+			//console.log("Settings saved", this.settings);
+		}, 1000);
+
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
-			(leaf) => new VaultExplorerView(leaf, this.app, this.settings)
+			(leaf) => new VaultExplorerView(leaf, this.app, this.settings, debounceSettingsChange)
 		);
 
 		this.addRibbonIcon("map", "Vault Explorer", async () => {
