@@ -16,14 +16,16 @@ const rebuildPlugin = {
 	name: "rebuild-handler",
 	setup(build) {
 		build.onEnd(async () => {
-			await fs.promises.rename(
-				path.join(path.resolve(), "dist", "main.css"),
-				path.join(path.resolve(), "dist", "styles.css")
-			);
-			await fs.promises.copyFile(
-				path.join(path.resolve(), "manifest.json"),
-				path.join(path.resolve(), "dist", "manifest.json")
-			);
+			try {
+				await fs.promises.rename(
+					path.join(path.resolve(), "dist", "main.css"),
+					path.join(path.resolve(), "dist", "styles.css")
+				);
+				await fs.promises.copyFile(
+					path.join(path.resolve(), "manifest.json"),
+					path.join(path.resolve(), "dist", "manifest.json")
+				);
+			} catch (err) {}
 		});
 	},
 };
