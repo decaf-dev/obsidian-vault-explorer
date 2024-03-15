@@ -31,7 +31,7 @@ export default class VaultExplorerView extends ItemView {
 		return VAULT_EXPLORER_VIEW;
 	}
 	getDisplayText(): string {
-		return "Explorer";
+		return "Vault Explorer";
 	}
 
 	async onOpen() {
