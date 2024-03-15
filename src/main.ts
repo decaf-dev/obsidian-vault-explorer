@@ -40,7 +40,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			(leaf) => new VaultExplorerView(leaf, this.app, this.settings, debounceSettingsChange)
 		);
 
-		this.addRibbonIcon("map", "Vault Explorer", async () => {
+		this.addRibbonIcon("map", "Open vault explorer", async () => {
 			const leaves = this.app.workspace.getLeavesOfType(VAULT_EXPLORER_VIEW);
 			if (leaves.length !== 0) {
 				const leaf = leaves[0];
