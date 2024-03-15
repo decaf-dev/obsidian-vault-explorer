@@ -6,7 +6,6 @@ import FrontmatterViewsSettingTabs from './obsidian/frontmatter-views-settings-t
 import { FrontmatterViewsPluginSettings } from './types';
 import { FRONTMATTER_VIEW } from './constants';
 
-import "./styles.css";
 
 const DEFAULT_SETTINGS: FrontmatterViewsPluginSettings = {
 	favoritePropertyName: "favorite",

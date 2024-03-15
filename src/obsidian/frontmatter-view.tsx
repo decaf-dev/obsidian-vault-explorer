@@ -5,7 +5,7 @@ import { createRoot, Root } from "react-dom/client";
 
 import { FRONTMATTER_VIEW } from "src/constants";
 import ReactView from "src/react/index";
-import AppMountProvider from "src/react/AppMountProvider";
+import AppMountProvider from "src/react/app-mount-provider";
 import { FrontmatterViewsPluginSettings } from "src/types";
 
 export default class FrontmatterView extends ItemView {

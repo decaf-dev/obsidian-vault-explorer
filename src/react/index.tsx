@@ -1,15 +1,22 @@
-import { App, TFile, TFolder } from "obsidian";
+import { moment, TFile, TFolder } from "obsidian";
 
 import React from "react";
 import Card from "./card";
 
 import "./styles.css";
 import { useAppMount } from "./app-mount-provider";
+import Checkbox from "./checkbox";
+import Flex from "./flex";
+import Stack from "./stack";
 
 export default function ReactView() {
 	const [folderPath, setFolderPath] = React.useState<string | null>(null);
 	const [search, setSearch] = React.useState<string>("");
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
+	const [onlyModifiedToday, setOnlyModifiedToday] =
+		React.useState<boolean>(false);
+	const [onlyCreatedToday, setOnlyCreatedToday] =
+		React.useState<boolean>(false);
 	const { app, settings } = useAppMount();
 
 	const {
@@ -37,9 +44,23 @@ export default function ReactView() {
 			return file.path.startsWith(folderPath ?? "/");
 		});
 
-	const data = app.vault
+	const filteredData = app.vault
 		.getMarkdownFiles()
 		.filter((file) => file instanceof TFile)
+		.filter((file) => {
+			if (onlyModifiedToday) {
+				const midnightToday = moment().startOf("day").valueOf();
+				return file.stat.mtime > midnightToday;
+			}
+			return true;
+		})
+		.filter((file) => {
+			if (onlyCreatedToday) {
+				const midnightToday = moment().startOf("day").valueOf();
+				return file.stat.ctime > midnightToday;
+			}
+			return true;
+		})
 		.map((file) => {
 			const frontmatter = app.metadataCache.getFileCache(
 				file as TFile
@@ -61,9 +82,7 @@ export default function ReactView() {
 				revision,
 				status,
 			};
-		});
-
-	const filteredData = data
+		})
 		.filter((file) => {
 			if (folderPath === "/") {
 				return true;
@@ -111,7 +130,7 @@ export default function ReactView() {
 	return (
 		<div className="frontmatter-view">
 			<div className="frontmatter-view-header">
-				<div className="frontmatter-view-header__row">
+				<Stack spacing="md">
 					<input
 						type="text"
 						placeholder="Search..."
@@ -129,22 +148,33 @@ export default function ReactView() {
 							</option>
 						))}
 					</select>
-				</div>
-				<div className="frontmatter-view-header__row">
-					<div className="frontmatter-view-checkbox">
-						<label htmlFor="only-favorites">Only favorites</label>
-						<input
-							id="only-favorites"
-							type="checkbox"
-							checked={onlyFavorites}
-							onChange={(e) => setOnlyFavorites(e.target.checked)}
+				</Stack>
+				<Flex justify="space-between">
+					<Stack spacing="md">
+						<Checkbox
+							id="favorites"
+							label="Favorites"
+							value={onlyFavorites}
+							onChange={setOnlyFavorites}
 						/>
-					</div>
+						<Checkbox
+							id="modified-today"
+							label="Modified today"
+							value={onlyModifiedToday}
+							onChange={setOnlyModifiedToday}
+						/>
+						<Checkbox
+							id="created-today"
+							label="Created today"
+							value={onlyCreatedToday}
+							onChange={setOnlyCreatedToday}
+						/>
+					</Stack>
 					<div>
 						Showing {filteredData.length} out of{" "}
 						{folderFiles.length}
 					</div>
-				</div>
+				</Flex>
 			</div>
 			<div className="frontmatter-view-list">
 				{filteredData.map((file) => {
