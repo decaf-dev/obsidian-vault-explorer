@@ -4,11 +4,13 @@ export interface VaultExplorerPluginSettings {
 	sourcePropertyName: string;
 	revisionPropertyName: string;
 	statusPropertyName: string;
-	folderFilter: string;
-	searchFilter: string;
-	onlyFavorites: boolean;
-	onlyCreatedToday: boolean;
-	onlyModifiedToday: boolean;
+	filters: {
+		folder: string;
+		search: string;
+		onlyFavorites: boolean;
+		onlyCreatedToday: boolean;
+		onlyModifiedToday: boolean;
+	}
 }
 
 export type onSettingsChange = (value: VaultExplorerPluginSettings) => void;

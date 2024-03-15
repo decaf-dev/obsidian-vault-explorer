@@ -20,21 +20,23 @@ export default function ReactView() {
 	const { app, settings, onSettingsChange } = useAppMount();
 
 	React.useEffect(() => {
-		setFolderPath(settings.folderFilter);
-		setSearch(settings.searchFilter);
-		setOnlyFavorites(settings.onlyFavorites);
-		setOnlyModifiedToday(settings.onlyModifiedToday);
-		setOnlyCreatedToday(settings.onlyCreatedToday);
+		setFolderPath(settings.filters.folder);
+		setSearch(settings.filters.search);
+		setOnlyFavorites(settings.filters.onlyFavorites);
+		setOnlyModifiedToday(settings.filters.onlyModifiedToday);
+		setOnlyCreatedToday(settings.filters.onlyCreatedToday);
 	}, []);
 
 	React.useEffect(() => {
 		onSettingsChange({
 			...settings,
-			folderFilter: folderPath,
-			searchFilter: search,
-			onlyFavorites,
-			onlyModifiedToday,
-			onlyCreatedToday,
+			filters: {
+				folder: folderPath,
+				search,
+				onlyFavorites,
+				onlyModifiedToday,
+				onlyCreatedToday,
+			},
 		});
 	}, [
 		onSettingsChange,

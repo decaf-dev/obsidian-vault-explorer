@@ -14,11 +14,13 @@ const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	sourcePropertyName: "source",
 	revisionPropertyName: "revision",
 	statusPropertyName: "status",
-	folderFilter: "",
-	searchFilter: "",
-	onlyFavorites: false,
-	onlyCreatedToday: false,
-	onlyModifiedToday: false,
+	filters: {
+		folder: "",
+		search: "",
+		onlyFavorites: false,
+		onlyCreatedToday: false,
+		onlyModifiedToday: false,
+	},
 }
 
 export default class VaultExplorerPlugin extends Plugin {
