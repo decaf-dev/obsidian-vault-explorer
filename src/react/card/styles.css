@@ -1,5 +1,6 @@
 .frontmatter-view-card {
-	padding: 1rem;
+	padding: 20px;
+	box-shadow: var(--shadow-s);
 	border: 1px solid var(--background-modifier-border);
 }
 
