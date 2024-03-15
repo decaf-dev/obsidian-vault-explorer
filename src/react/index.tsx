@@ -19,7 +19,7 @@ export default function ReactView() {
 		React.useState<boolean>(false);
 	const { app, settings, onSettingsChange } = useAppMount();
 
-	React.useEffect(() => {
+	React.useLayoutEffect(() => {
 		setFolderPath(settings.filters.folder);
 		setSearch(settings.filters.search);
 		setOnlyFavorites(settings.filters.onlyFavorites);
