@@ -21,6 +21,7 @@
     ]
   },
   "include": [
-    "**/*.ts"
-, "src/obsidian/frontmatter-view.tsx"  ]
+    "**/*.ts",
+	"**/*.tsx"
+	]
 }
