@@ -8,6 +8,7 @@ import { useAppMount } from "./app-mount-provider";
 import Checkbox from "./checkbox";
 import Flex from "./flex";
 import Stack from "./stack";
+import EventManager from "src/event/event-manager";
 
 export default function ReactView() {
 	const [folderPath, setFolderPath] = React.useState<string>("");
@@ -25,6 +26,57 @@ export default function ReactView() {
 		setOnlyFavorites(settings.filters.onlyFavorites);
 		setOnlyModifiedToday(settings.filters.onlyModifiedToday);
 		setOnlyCreatedToday(settings.filters.onlyCreatedToday);
+	}, []);
+
+	const [, setRefreshTime] = React.useState(0);
+
+	//TODO optimize
+	React.useEffect(() => {
+		const handleRenameFile = (oldPath: string, newPath: string) => {
+			setRefreshTime(Date.now());
+		};
+
+		EventManager.getInstance().on("rename-file", handleRenameFile);
+		return () => {
+			EventManager.getInstance().off("rename-file", handleRenameFile);
+		};
+	}, []);
+
+	//TODO optimize
+	React.useEffect(() => {
+		const handleCreateFile = (oldPath: string, newPath: string) => {
+			setRefreshTime(Date.now());
+		};
+
+		EventManager.getInstance().on("create-file", handleCreateFile);
+		return () => {
+			EventManager.getInstance().off("create-file", handleCreateFile);
+		};
+	}, []);
+
+	//TODO optimize
+	React.useEffect(() => {
+		const handleDeleteFile = (oldPath: string, newPath: string) => {
+			setRefreshTime(Date.now());
+		};
+
+		EventManager.getInstance().on("delete-file", handleDeleteFile);
+		return () => {
+			EventManager.getInstance().off("delete-file", handleDeleteFile);
+		};
+	}, []);
+
+	//TODO optimize
+	//TODO should we use handle frontmatter change?
+	React.useEffect(() => {
+		const handleModifyFile = (oldPath: string, newPath: string) => {
+			setRefreshTime(Date.now());
+		};
+
+		EventManager.getInstance().on("modify-file", handleModifyFile);
+		return () => {
+			EventManager.getInstance().off("modify-file", handleModifyFile);
+		};
 	}, []);
 
 	React.useEffect(() => {
