@@ -1,4 +1,4 @@
-import { Plugin, } from 'obsidian';
+import { Plugin, TFile, } from 'obsidian';
 
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
@@ -6,6 +6,7 @@ import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 import { VaultExplorerPluginSettings } from './types';
 import { VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
+import EventManager from './event/event-manager';
 
 
 const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
@@ -53,8 +54,39 @@ export default class VaultExplorerPlugin extends Plugin {
 			}
 		});
 
+		this.registerEvents();
 
 		this.addSettingTab(new VaultExplorerSettingsTab(this.app, this));
+	}
+
+	private registerEvents() {
+		//Callback if the file is renamed or moved
+		//This callback is already debounced by Obsidian
+		this.registerEvent(this.app.vault.on("rename", (file: TFile, oldPath: string) => {
+			if (file.extension !== "md") return;
+			EventManager.getInstance().emit("rename-file", oldPath, file.path);
+		}));
+
+		//Callback if a file is deleted
+		//This callback is already debounced by Obsidian
+		this.registerEvent(this.app.vault.on("delete", (file: TFile) => {
+			if (file.extension !== "md") return;
+			EventManager.getInstance().emit("delete-file", file.path);
+		}));
+
+		//Callback if a file is created
+		//This callback is already debounced by Obsidian
+		this.registerEvent(this.app.vault.on("create", (file: TFile) => {
+			if (file.extension !== "md") return;
+			EventManager.getInstance().emit("create-file", file.path);
+		}));
+
+		//Callback if a file is modified
+		//This callback is already debounced by Obsidian
+		this.registerEvent(this.app.vault.on("modify", (file: TFile) => {
+			if (file.extension !== "md") return;
+			EventManager.getInstance().emit("modify-file", file.path);
+		}));
 	}
 
 	onunload() {
