@@ -166,9 +166,8 @@ export default function ReactApp() {
 			return file.path.startsWith(folderPath ?? "/");
 		});
 
-	const sortedMarkdownFiles = app.vault
-		.getMarkdownFiles()
-		.toSorted((a, b) => {
+	const sortedMarkdownFiles = [...app.vault.getMarkdownFiles()].sort(
+		(a, b) => {
 			if (sort === "file-name-asc") {
 				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 			} else if (sort === "file-name-desc") {
@@ -179,7 +178,8 @@ export default function ReactApp() {
 				return b.stat.mtime - a.stat.mtime;
 			}
 			return 0;
-		});
+		}
+	);
 
 	const filteredData: MarkdownFileData[] = sortedMarkdownFiles
 		.filter((file) => {
