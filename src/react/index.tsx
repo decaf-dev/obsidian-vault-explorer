@@ -151,9 +151,9 @@ export default function ReactView() {
 			//Tags can be an array or just a string
 			//This seems like a bug in Obsidian
 			if (typeof frontmatter?.tags === "string") {
-				tags = [frontmatter?.tags];
+				tags = [frontmatter?.tags as string];
 			} else if (Array.isArray(frontmatter?.tags)) {
-				tags = frontmatter?.tags;
+				tags = frontmatter?.tags as string[];
 			}
 
 			const url: string | null = frontmatter?.[urlPropertyName] ?? null;
