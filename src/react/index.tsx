@@ -35,6 +35,7 @@ export default function ReactApp() {
 		setOnlyFavorites(settings.filters.onlyFavorites);
 		setCurrentView(settings.currentView);
 		setTimestampFilter(settings.filters.timestamp);
+		setSortFilter(settings.filters.sort);
 	}, []);
 
 	const [, setRefreshTime] = React.useState(0);
