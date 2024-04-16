@@ -13,6 +13,8 @@ import GridView from "./grid-view";
 import ListView from "./list-view";
 import { MarkdownFileData } from "./types";
 import { CurrentView } from "src/types";
+import Tab from "./tab";
+import TabList from "./tab-list";
 
 export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("");
@@ -273,8 +275,10 @@ export default function ReactApp() {
 					</div>
 				</Flex>
 				<Stack spacing="sm">
-					<button onClick={() => setView("grid")}>Grid</button>
-					<button onClick={() => setView("list")}>List</button>
+					<TabList>
+						<Tab onClick={() => setView("grid")}>Grid</Tab>
+						<Tab onClick={() => setView("list")}>List</Tab>
+					</TabList>
 				</Stack>
 			</div>
 			{view === "grid" && <GridView data={filteredData} />}
