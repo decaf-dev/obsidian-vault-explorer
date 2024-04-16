@@ -21,6 +21,7 @@ const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		onlyFavorites: false,
 		onlyCreatedToday: false,
 		onlyModifiedToday: false,
+		sort: "file-name-asc",
 	},
 	currentView: "grid",
 }

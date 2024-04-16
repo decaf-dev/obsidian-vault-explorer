@@ -1,20 +1,22 @@
-import { moment, TFile, TFolder } from "obsidian";
+import { Menu, moment, TFile, TFolder } from "obsidian";
 
 import React from "react";
-import Card from "./card";
 
-import "./styles.css";
 import { useAppMount } from "./app-mount-provider";
 import Checkbox from "./checkbox";
 import Flex from "./flex";
 import Stack from "./stack";
-import EventManager from "src/event/event-manager";
 import GridView from "./grid-view";
 import ListView from "./list-view";
-import { MarkdownFileData } from "./types";
-import { CurrentView } from "src/types";
 import Tab from "./tab";
 import TabList from "./tab-list";
+import IconButton from "./icon-button";
+
+import EventManager from "src/event/event-manager";
+import { MarkdownFileData } from "./types";
+import { CurrentView, SortFilter } from "src/types";
+
+import "./styles.css";
 
 export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("");
@@ -25,6 +27,7 @@ export default function ReactApp() {
 	const [onlyCreatedToday, setOnlyCreatedToday] =
 		React.useState<boolean>(false);
 	const [view, setView] = React.useState<CurrentView>("grid");
+	const [sort, setSort] = React.useState<SortFilter>("file-name-asc");
 	const { app, settings, onSettingsChange } = useAppMount();
 
 	React.useLayoutEffect(() => {
@@ -96,11 +99,13 @@ export default function ReactApp() {
 				onlyFavorites,
 				onlyModifiedToday,
 				onlyCreatedToday,
+				sort,
 			},
 			currentView: view,
 		});
 	}, [
 		onSettingsChange,
+		sort,
 		folderPath,
 		search,
 		onlyFavorites,
@@ -108,6 +113,33 @@ export default function ReactApp() {
 		onlyCreatedToday,
 		view,
 	]);
+
+	function openSortMenu(e: React.MouseEvent) {
+		const menu = new Menu();
+		menu.setUseNativeMenu(true);
+		menu.addItem((item) => {
+			item.setTitle("File name (A-Z)");
+			item.setChecked(sort === "file-name-asc");
+			item.onClick(() => setSort("file-name-asc"));
+		});
+		menu.addItem((item) => {
+			item.setTitle("File name (Z-A)");
+			item.setChecked(sort === "file-name-desc");
+			item.onClick(() => setSort("file-name-desc"));
+		});
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item.setTitle("Modified time (new to old)");
+			item.setChecked(sort === "modified-desc");
+			item.onClick(() => setSort("modified-desc"));
+		});
+		menu.addItem((item) => {
+			item.setTitle("Modified time (old to new)");
+			item.setChecked(sort === "modified-asc");
+			item.onClick(() => setSort("modified-asc"));
+		});
+		menu.showAtMouseEvent(e.nativeEvent);
+	}
 
 	const {
 		favoritePropertyName,
@@ -134,9 +166,22 @@ export default function ReactApp() {
 			return file.path.startsWith(folderPath ?? "/");
 		});
 
-	const filteredData: MarkdownFileData[] = app.vault
+	const sortedMarkdownFiles = app.vault
 		.getMarkdownFiles()
-		.filter((file) => file instanceof TFile)
+		.toSorted((a, b) => {
+			if (sort === "file-name-asc") {
+				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+			} else if (sort === "file-name-desc") {
+				return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+			} else if (sort === "modified-asc") {
+				return a.stat.mtime - b.stat.mtime;
+			} else if (sort === "modified-desc") {
+				return b.stat.mtime - a.stat.mtime;
+			}
+			return 0;
+		});
+
+	const filteredData: MarkdownFileData[] = sortedMarkdownFiles
 		.filter((file) => {
 			if (onlyModifiedToday) {
 				const midnightToday = moment().startOf("day").valueOf();
@@ -267,6 +312,10 @@ export default function ReactApp() {
 							label="Created today"
 							value={onlyCreatedToday}
 							onChange={setOnlyCreatedToday}
+						/>
+						<IconButton
+							iconId="arrow-up-narrow-wide"
+							onClick={openSortMenu}
 						/>
 					</Stack>
 					<div>

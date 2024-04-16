@@ -8,6 +8,7 @@ import Spacer from "../spacer";
 import Property from "../property";
 
 import "./styles.css";
+import IconButton from "../icon-button";
 
 interface Props {
 	name: string;
@@ -29,13 +30,6 @@ export default function Card({
 	status,
 }: Props) {
 	const { app } = useAppMount();
-	const urlIconRef = React.useRef<HTMLDivElement>(null);
-
-	React.useEffect(() => {
-		if (urlIconRef.current) {
-			setIcon(urlIconRef.current, "external-link");
-		}
-	}, []);
 
 	function handleTitleClick() {
 		const leaves = app.workspace.getLeavesOfType("markdown");
@@ -66,14 +60,10 @@ export default function Card({
 					{name}
 				</div>
 				{url !== null && (
-					<div
-						aria-label="Open link"
-						className="clickable-icon"
-						ref={urlIconRef}
+					<IconButton
+						iconId="external-link"
 						onClick={handleUrlClick}
-					>
-						{url}
-					</div>
+					/>
 				)}
 			</div>
 			<Spacer size="md" />
