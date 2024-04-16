@@ -142,6 +142,12 @@ export default function ReactApp() {
 		const menu = new Menu();
 		menu.setUseNativeMenu(true);
 		menu.addItem((item) => {
+			item.setTitle("All");
+			item.setChecked(timestampFilter === "all");
+			item.onClick(() => setTimestampFilter("all"));
+		});
+		menu.addSeparator();
+		menu.addItem((item) => {
 			item.setTitle("Modified today");
 			item.setChecked(timestampFilter === "modified-today");
 			item.onClick(() => setTimestampFilter("modified-today"));
