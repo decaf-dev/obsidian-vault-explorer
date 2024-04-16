@@ -14,7 +14,7 @@ import IconButton from "./icon-button";
 
 import EventManager from "src/event/event-manager";
 import { MarkdownFileData } from "./types";
-import { CurrentView, SortFilter } from "src/types";
+import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 
 import "./styles.css";
 
@@ -22,10 +22,8 @@ export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("");
 	const [search, setSearch] = React.useState<string>("");
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
-	const [onlyModifiedToday, setOnlyModifiedToday] =
-		React.useState<boolean>(false);
-	const [onlyCreatedToday, setOnlyCreatedToday] =
-		React.useState<boolean>(false);
+	const [timestampFilter, setTimestampFilter] =
+		React.useState<TimestampFilter>("all");
 	const [view, setView] = React.useState<CurrentView>("grid");
 	const [sort, setSort] = React.useState<SortFilter>("file-name-asc");
 	const { app, settings, onSettingsChange } = useAppMount();
@@ -34,8 +32,6 @@ export default function ReactApp() {
 		setFolderPath(settings.filters.folder);
 		setSearch(settings.filters.search);
 		setOnlyFavorites(settings.filters.onlyFavorites);
-		setOnlyModifiedToday(settings.filters.onlyModifiedToday);
-		setOnlyCreatedToday(settings.filters.onlyCreatedToday);
 		setView(settings.currentView);
 	}, []);
 
@@ -97,8 +93,7 @@ export default function ReactApp() {
 				folder: folderPath,
 				search,
 				onlyFavorites,
-				onlyModifiedToday,
-				onlyCreatedToday,
+				timestamp: timestampFilter,
 				sort,
 			},
 			currentView: view,
@@ -109,8 +104,7 @@ export default function ReactApp() {
 		folderPath,
 		search,
 		onlyFavorites,
-		onlyModifiedToday,
-		onlyCreatedToday,
+		timestampFilter,
 		view,
 	]);
 
@@ -138,6 +132,45 @@ export default function ReactApp() {
 			item.setChecked(sort === "modified-asc");
 			item.onClick(() => setSort("modified-asc"));
 		});
+		menu.showAtMouseEvent(e.nativeEvent);
+	}
+
+	function openListFilterMenu(e: React.MouseEvent) {
+		const menu = new Menu();
+		menu.setUseNativeMenu(true);
+		menu.addItem((item) => {
+			item.setTitle("Modified today");
+			item.setChecked(timestampFilter === "modified-today");
+			item.onClick(() => setTimestampFilter("modified-today"));
+		});
+		menu.addItem((item) => {
+			item.setTitle("Created today");
+			item.setChecked(timestampFilter === "created-today");
+			item.onClick(() => setTimestampFilter("created-today"));
+		});
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item.setTitle("Modifed this week");
+			item.setChecked(timestampFilter === "modified-this-week");
+			item.onClick(() => setTimestampFilter("modified-this-week"));
+		});
+		menu.addItem((item) => {
+			item.setTitle("Created this week");
+			item.setChecked(timestampFilter === "created-this-week");
+			item.onClick(() => setTimestampFilter("created-this-week"));
+		});
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item.setTitle("Modifed 2 weeks");
+			item.setChecked(timestampFilter === "modified-2-weeks");
+			item.onClick(() => setTimestampFilter("modified-2-weeks"));
+		});
+		menu.addItem((item) => {
+			item.setTitle("Created 2 weeks");
+			item.setChecked(timestampFilter === "created-2-weeks");
+			item.onClick(() => setTimestampFilter("created-2-weeks"));
+		});
+
 		menu.showAtMouseEvent(e.nativeEvent);
 	}
 
@@ -182,20 +215,20 @@ export default function ReactApp() {
 	);
 
 	const filteredData: MarkdownFileData[] = sortedMarkdownFiles
-		.filter((file) => {
-			if (onlyModifiedToday) {
-				const midnightToday = moment().startOf("day").valueOf();
-				return file.stat.mtime > midnightToday;
-			}
-			return true;
-		})
-		.filter((file) => {
-			if (onlyCreatedToday) {
-				const midnightToday = moment().startOf("day").valueOf();
-				return file.stat.ctime > midnightToday;
-			}
-			return true;
-		})
+		// .filter((file) => {
+		// 	if (onlyModifiedToday) {
+		// 		const midnightToday = moment().startOf("day").valueOf();
+		// 		return file.stat.mtime > midnightToday;
+		// 	}
+		// 	return true;
+		// })
+		// .filter((file) => {
+		// 	if (onlyCreatedToday) {
+		// 		const midnightToday = moment().startOf("day").valueOf();
+		// 		return file.stat.ctime > midnightToday;
+		// 	}
+		// 	return true;
+		// })
 		.map((file) => {
 			const frontmatter = app.metadataCache.getFileCache(
 				file as TFile
@@ -301,17 +334,9 @@ export default function ReactApp() {
 							value={onlyFavorites}
 							onChange={setOnlyFavorites}
 						/>
-						<Checkbox
-							id="modified-today"
-							label="Modified today"
-							value={onlyModifiedToday}
-							onChange={setOnlyModifiedToday}
-						/>
-						<Checkbox
-							id="created-today"
-							label="Created today"
-							value={onlyCreatedToday}
-							onChange={setOnlyCreatedToday}
+						<IconButton
+							iconId="list-filter"
+							onClick={openListFilterMenu}
 						/>
 						<IconButton
 							iconId="arrow-up-narrow-wide"
