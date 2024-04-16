@@ -9,6 +9,7 @@ import Checkbox from "./checkbox";
 import Flex from "./flex";
 import Stack from "./stack";
 import EventManager from "src/event/event-manager";
+import { isArray } from "lodash";
 
 export default function ReactView() {
 	const [folderPath, setFolderPath] = React.useState<string>("");
@@ -145,7 +146,16 @@ export default function ReactView() {
 			const frontmatter = app.metadataCache.getFileCache(
 				file as TFile
 			)?.frontmatter;
-			const tags: string[] = frontmatter?.tags ?? [];
+
+			let tags: string[] = [];
+			//Tags can be an array or just a string
+			//This seems like a bug in Obsidian
+			if (typeof frontmatter?.tags === "string") {
+				tags = [frontmatter?.tags];
+			} else if (Array.isArray(frontmatter?.tags)) {
+				tags = frontmatter?.tags;
+			}
+
 			const url: string | null = frontmatter?.[urlPropertyName] ?? null;
 			const favorite = frontmatter?.[favoritePropertyName] ?? false;
 			const source = frontmatter?.[sourcePropertyName] ?? null;
