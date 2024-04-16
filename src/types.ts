@@ -10,7 +10,10 @@ export interface VaultExplorerPluginSettings {
 		onlyFavorites: boolean;
 		onlyCreatedToday: boolean;
 		onlyModifiedToday: boolean;
-	}
+	},
+	currentView: CurrentView;
 }
+
+export type CurrentView = "grid" | "list";
 
 export type onSettingsChange = (value: VaultExplorerPluginSettings) => void;

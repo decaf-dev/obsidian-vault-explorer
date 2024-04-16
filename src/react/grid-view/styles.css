@@ -1,0 +1,6 @@
+.vault-explorer-grid-view {
+	display: grid;
+	row-gap: 2rem;
+	column-gap: 2rem;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
+}

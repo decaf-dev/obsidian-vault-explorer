@@ -42,6 +42,7 @@ export default function Card({
 		const leaf = leaves.find((leaf) => {
 			return ((leaf.view as MarkdownView).file?.path ?? "") === path;
 		});
+
 		if (leaf) {
 			app.workspace.setActiveLeaf(leaf);
 		} else {
