@@ -9,9 +9,14 @@ import Checkbox from "./checkbox";
 import Flex from "./flex";
 import Stack from "./stack";
 import EventManager from "src/event/event-manager";
-import { isArray } from "lodash";
+import GridView from "./grid-view";
+import ListView from "./list-view";
+import { MarkdownFileData } from "./types";
+import { CurrentView } from "src/types";
+import Tab from "./tab";
+import TabList from "./tab-list";
 
-export default function ReactView() {
+export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("");
 	const [search, setSearch] = React.useState<string>("");
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
@@ -19,6 +24,7 @@ export default function ReactView() {
 		React.useState<boolean>(false);
 	const [onlyCreatedToday, setOnlyCreatedToday] =
 		React.useState<boolean>(false);
+	const [view, setView] = React.useState<CurrentView>("grid");
 	const { app, settings, onSettingsChange } = useAppMount();
 
 	React.useLayoutEffect(() => {
@@ -27,6 +33,7 @@ export default function ReactView() {
 		setOnlyFavorites(settings.filters.onlyFavorites);
 		setOnlyModifiedToday(settings.filters.onlyModifiedToday);
 		setOnlyCreatedToday(settings.filters.onlyCreatedToday);
+		setView(settings.currentView);
 	}, []);
 
 	const [, setRefreshTime] = React.useState(0);
@@ -90,6 +97,7 @@ export default function ReactView() {
 				onlyModifiedToday,
 				onlyCreatedToday,
 			},
+			currentView: view,
 		});
 	}, [
 		onSettingsChange,
@@ -98,6 +106,7 @@ export default function ReactView() {
 		onlyFavorites,
 		onlyModifiedToday,
 		onlyCreatedToday,
+		view,
 	]);
 
 	const {
@@ -125,7 +134,7 @@ export default function ReactView() {
 			return file.path.startsWith(folderPath ?? "/");
 		});
 
-	const filteredData = app.vault
+	const filteredData: MarkdownFileData[] = app.vault
 		.getMarkdownFiles()
 		.filter((file) => file instanceof TFile)
 		.filter((file) => {
@@ -265,30 +274,15 @@ export default function ReactView() {
 						{folderFiles.length}
 					</div>
 				</Flex>
+				<Stack spacing="sm">
+					<TabList>
+						<Tab onClick={() => setView("grid")}>Grid</Tab>
+						<Tab onClick={() => setView("list")}>List</Tab>
+					</TabList>
+				</Stack>
 			</div>
-			<div className="vault-explorer-list">
-				{filteredData.map((file) => {
-					const { name, tags, path, url, source, revision, status } =
-						file;
-					return (
-						<Card
-							key={path}
-							name={name}
-							path={path}
-							url={url}
-							tags={tags}
-							source={source}
-							revision={revision}
-							status={status}
-						/>
-					);
-				})}
-				{/* <Virtuoso
-					style={{ height: 400 }}
-					data={data}
-					itemContent={(index, file) => <Card name={file} />}
-				/> */}
-			</div>
+			{view === "grid" && <GridView data={filteredData} />}
+			{view === "list" && <ListView data={filteredData} />}
 		</div>
 	);
 }

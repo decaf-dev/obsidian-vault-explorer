@@ -22,6 +22,7 @@ const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		onlyCreatedToday: false,
 		onlyModifiedToday: false,
 	},
+	currentView: "grid",
 }
 
 export default class VaultExplorerPlugin extends Plugin {
