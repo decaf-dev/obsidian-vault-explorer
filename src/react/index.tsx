@@ -34,6 +34,7 @@ export default function ReactApp() {
 		setSearch(settings.filters.search);
 		setOnlyFavorites(settings.filters.onlyFavorites);
 		setCurrentView(settings.currentView);
+		setTimestampFilter(settings.filters.timestamp);
 	}, []);
 
 	const [, setRefreshTime] = React.useState(0);
