@@ -27,7 +27,7 @@ export default function ReactApp() {
 	const [onlyCreatedToday, setOnlyCreatedToday] =
 		React.useState<boolean>(false);
 	const [view, setView] = React.useState<CurrentView>("grid");
-	const [sort, setSort] = React.useState<SortFilter>("modified-desc");
+	const [sort, setSort] = React.useState<SortFilter>("file-name-asc");
 	const { app, settings, onSettingsChange } = useAppMount();
 
 	React.useLayoutEffect(() => {
