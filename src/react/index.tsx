@@ -24,7 +24,7 @@ export default function ReactApp() {
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
 	const [timestampFilter, setTimestampFilter] =
 		React.useState<TimestampFilter>("all");
-	const [view, setView] = React.useState<CurrentView>("grid");
+	const [currentView, setCurrentView] = React.useState<CurrentView>("grid");
 	const [sortFilter, setSortFilter] =
 		React.useState<SortFilter>("file-name-asc");
 	const { app, settings, onSettingsChange } = useAppMount();
@@ -33,7 +33,7 @@ export default function ReactApp() {
 		setFolderPath(settings.filters.folder);
 		setSearch(settings.filters.search);
 		setOnlyFavorites(settings.filters.onlyFavorites);
-		setView(settings.currentView);
+		setCurrentView(settings.currentView);
 	}, []);
 
 	const [, setRefreshTime] = React.useState(0);
@@ -97,7 +97,7 @@ export default function ReactApp() {
 				timestamp: timestampFilter,
 				sort: sortFilter,
 			},
-			currentView: view,
+			currentView: currentView,
 		});
 	}, [
 		onSettingsChange,
@@ -106,7 +106,7 @@ export default function ReactApp() {
 		search,
 		onlyFavorites,
 		timestampFilter,
-		view,
+		currentView,
 	]);
 
 	function openSortMenu(e: React.MouseEvent) {
@@ -351,13 +351,13 @@ export default function ReactApp() {
 				</Flex>
 				<Stack spacing="sm">
 					<TabList>
-						<Tab onClick={() => setView("grid")}>Grid</Tab>
-						<Tab onClick={() => setView("list")}>List</Tab>
+						<Tab onClick={() => setCurrentView("grid")}>Grid</Tab>
+						<Tab onClick={() => setCurrentView("list")}>List</Tab>
 					</TabList>
 				</Stack>
 			</div>
-			{view === "grid" && <GridView data={filteredData} />}
-			{view === "list" && <ListView data={filteredData} />}
+			{currentView === "grid" && <GridView data={filteredData} />}
+			{currentView === "list" && <ListView data={filteredData} />}
 		</div>
 	);
 }
