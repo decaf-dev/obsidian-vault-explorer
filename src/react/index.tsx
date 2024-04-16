@@ -9,9 +9,8 @@ import Checkbox from "./checkbox";
 import Flex from "./flex";
 import Stack from "./stack";
 import EventManager from "src/event/event-manager";
-import { isArray } from "lodash";
 
-export default function ReactView() {
+export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("");
 	const [search, setSearch] = React.useState<string>("");
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);

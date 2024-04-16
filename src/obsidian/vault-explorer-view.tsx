@@ -4,7 +4,7 @@ import React from "react";
 import { createRoot, Root } from "react-dom/client";
 
 import { VAULT_EXPLORER_VIEW } from "src/constants";
-import ReactView from "src/react/index";
+import ReactApp from "src/react/index";
 import AppMountProvider from "src/react/app-mount-provider";
 import { onSettingsChange, VaultExplorerPluginSettings } from "src/types";
 
@@ -45,7 +45,7 @@ export default class VaultExplorerView extends ItemView {
 					settings={this.settings}
 					onSettingsChange={this.onSettingsChange}
 				>
-					<ReactView />
+					<ReactApp />
 				</AppMountProvider>
 			</React.StrictMode>
 		);
