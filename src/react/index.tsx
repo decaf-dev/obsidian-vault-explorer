@@ -119,19 +119,23 @@ export default function ReactApp() {
 		menu.setUseNativeMenu(true);
 		menu.addItem((item) => {
 			item.setTitle("File name (A-Z)");
+			item.setChecked(sort === "file-name-asc");
 			item.onClick(() => setSort("file-name-asc"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("File name (Z-A)");
+			item.setChecked(sort === "file-name-desc");
 			item.onClick(() => setSort("file-name-desc"));
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("Modified time (new to old)");
+			item.setChecked(sort === "modified-desc");
 			item.onClick(() => setSort("modified-desc"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("Modified time (old to new)");
+			item.setChecked(sort === "modified-asc");
 			item.onClick(() => setSort("modified-asc"));
 		});
 		menu.showAtMouseEvent(e.nativeEvent);
