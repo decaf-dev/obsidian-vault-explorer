@@ -27,6 +27,10 @@ export default class VaultExplorerView extends ItemView {
 		this.onSettingsChange = onSettingsChange;
 	}
 
+	getIcon(): string {
+		return "compass";
+	}
+
 	getViewType(): string {
 		return VAULT_EXPLORER_VIEW;
 	}
