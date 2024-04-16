@@ -25,7 +25,8 @@ export default function ReactApp() {
 	const [timestampFilter, setTimestampFilter] =
 		React.useState<TimestampFilter>("all");
 	const [view, setView] = React.useState<CurrentView>("grid");
-	const [sort, setSort] = React.useState<SortFilter>("file-name-asc");
+	const [sortFilter, setSortFilter] =
+		React.useState<SortFilter>("file-name-asc");
 	const { app, settings, onSettingsChange } = useAppMount();
 
 	React.useLayoutEffect(() => {
@@ -94,13 +95,13 @@ export default function ReactApp() {
 				search,
 				onlyFavorites,
 				timestamp: timestampFilter,
-				sort,
+				sort: sortFilter,
 			},
 			currentView: view,
 		});
 	}, [
 		onSettingsChange,
-		sort,
+		sortFilter,
 		folderPath,
 		search,
 		onlyFavorites,
@@ -113,24 +114,24 @@ export default function ReactApp() {
 		menu.setUseNativeMenu(true);
 		menu.addItem((item) => {
 			item.setTitle("File name (A-Z)");
-			item.setChecked(sort === "file-name-asc");
-			item.onClick(() => setSort("file-name-asc"));
+			item.setChecked(sortFilter === "file-name-asc");
+			item.onClick(() => setSortFilter("file-name-asc"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("File name (Z-A)");
-			item.setChecked(sort === "file-name-desc");
-			item.onClick(() => setSort("file-name-desc"));
+			item.setChecked(sortFilter === "file-name-desc");
+			item.onClick(() => setSortFilter("file-name-desc"));
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("Modified time (new to old)");
-			item.setChecked(sort === "modified-desc");
-			item.onClick(() => setSort("modified-desc"));
+			item.setChecked(sortFilter === "modified-desc");
+			item.onClick(() => setSortFilter("modified-desc"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("Modified time (old to new)");
-			item.setChecked(sort === "modified-asc");
-			item.onClick(() => setSort("modified-asc"));
+			item.setChecked(sortFilter === "modified-asc");
+			item.onClick(() => setSortFilter("modified-asc"));
 		});
 		menu.showAtMouseEvent(e.nativeEvent);
 	}
@@ -201,13 +202,13 @@ export default function ReactApp() {
 
 	const sortedMarkdownFiles = [...app.vault.getMarkdownFiles()].sort(
 		(a, b) => {
-			if (sort === "file-name-asc") {
+			if (sortFilter === "file-name-asc") {
 				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-			} else if (sort === "file-name-desc") {
+			} else if (sortFilter === "file-name-desc") {
 				return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-			} else if (sort === "modified-asc") {
+			} else if (sortFilter === "modified-asc") {
 				return a.stat.mtime - b.stat.mtime;
-			} else if (sort === "modified-desc") {
+			} else if (sortFilter === "modified-desc") {
 				return b.stat.mtime - a.stat.mtime;
 			}
 			return 0;
