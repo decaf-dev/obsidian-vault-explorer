@@ -19,7 +19,7 @@ import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 import "./styles.css";
 
 export default function ReactApp() {
-	const [folderPath, setFolderPath] = React.useState<string>("");
+	const [folderPath, setFolderPath] = React.useState<string>("/");
 	const [search, setSearch] = React.useState<string>("");
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
 	const [timestampFilter, setTimestampFilter] =
@@ -135,6 +135,21 @@ export default function ReactApp() {
 			item.setChecked(sortFilter === "modified-asc");
 			item.onClick(() => setSortFilter("modified-asc"));
 		});
+		menu.showAtMouseEvent(e.nativeEvent);
+	}
+
+	function openFolderFilterMenu(e: React.MouseEvent) {
+		const menu = new Menu();
+		menu.setUseNativeMenu(true);
+
+		for (const folder of folders) {
+			menu.addItem((item) => {
+				item.setTitle(folder === "/" ? "All" : folder);
+				item.setChecked(folderPath === folder);
+				item.onClick(() => setFolderPath(folder));
+			});
+		}
+
 		menu.showAtMouseEvent(e.nativeEvent);
 	}
 
@@ -334,34 +349,32 @@ export default function ReactApp() {
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 					/>
-					<select
-						value={folderPath}
-						onChange={(e) => setFolderPath(e.target.value)}
-					>
-						<option value="">Select a folder</option>
-						{folders.map((folder) => (
-							<option key={folder} value={folder}>
-								{folder}
-							</option>
-						))}
-					</select>
 				</Stack>
 				<Flex justify="space-between">
-					<Stack spacing="md">
+					<Stack spacing="sm">
 						<Checkbox
 							id="favorites"
 							label="Favorites"
 							value={onlyFavorites}
 							onChange={setOnlyFavorites}
 						/>
-						<IconButton
-							iconId="list-filter"
-							onClick={openListFilterMenu}
-						/>
-						<IconButton
-							iconId="arrow-up-narrow-wide"
-							onClick={openSortMenu}
-						/>
+						<Flex>
+							<IconButton
+								ariaLabel="Change folder filter"
+								iconId="folder"
+								onClick={openFolderFilterMenu}
+							/>
+							<IconButton
+								ariaLabel="Change timestamp filter"
+								iconId="clock"
+								onClick={openListFilterMenu}
+							/>
+							<IconButton
+								ariaLabel="Change sort order"
+								iconId="arrow-up-narrow-wide"
+								onClick={openSortMenu}
+							/>
+						</Flex>
 					</Stack>
 					<div>
 						Showing {filteredData.length} out of{" "}
