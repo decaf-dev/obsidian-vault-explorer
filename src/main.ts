@@ -10,11 +10,11 @@ import EventManager from './event/event-manager';
 
 
 const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
-	favoritePropertyName: "favorite",
-	urlPropertyName: "url",
-	sourcePropertyName: "source",
-	revisionPropertyName: "revision",
-	statusPropertyName: "status",
+	favoritePropertyName: "",
+	urlPropertyName: "",
+	sourcePropertyName: "",
+	revisionPropertyName: "",
+	statusPropertyName: "",
 	filters: {
 		folder: "",
 		search: "",
@@ -87,6 +87,13 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.registerEvent(this.app.vault.on("modify", (file: TFile) => {
 			if (file.extension !== "md") return;
 			EventManager.getInstance().emit("modify-file", file.path);
+		}));
+
+		//Callback if the frontmatter is changed
+		//This callback is already debounced by Obsidian
+		this.registerEvent(this.app.metadataCache.on("changed", (file) => {
+			if (file.extension !== "md") return;
+			EventManager.getInstance().emit("metadata-change", file.path);
 		}));
 	}
 
