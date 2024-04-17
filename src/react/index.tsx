@@ -77,7 +77,6 @@ export default function ReactApp() {
 	}, []);
 
 	//TODO optimize
-	//TODO should we use handle frontmatter change?
 	React.useEffect(() => {
 		const handleModifyFile = (oldPath: string, newPath: string) => {
 			setRefreshTime(Date.now());
@@ -86,6 +85,21 @@ export default function ReactApp() {
 		EventManager.getInstance().on("modify-file", handleModifyFile);
 		return () => {
 			EventManager.getInstance().off("modify-file", handleModifyFile);
+		};
+	}, []);
+
+	//TODO optimize
+	React.useEffect(() => {
+		const handleMetadataChange = (filePath: string) => {
+			setRefreshTime(Date.now());
+		};
+
+		EventManager.getInstance().on("metadata-change", handleMetadataChange);
+		return () => {
+			EventManager.getInstance().off(
+				"metadata-change",
+				handleMetadataChange
+			);
 		};
 	}, []);
 
