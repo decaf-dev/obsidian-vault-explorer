@@ -5,14 +5,13 @@
 	import Checkbox from "../shared/checkbox.svelte";
 	import TabList from "../shared/tab-list.svelte";
 	import Tab from "../shared/tab.svelte";
-	import { Menu, TAbstractFile, TFile, TFolder } from "obsidian";
+	import { Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 	import store from "./store";
 	import VaultExplorerPlugin from "src/main";
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";
-	import { MarkdownFileRenderData } from "./types";
 	import { favoriteFilter } from "./services/filters/favorite-filter";
 	import { filterByFolder } from "./services/filters/folder-filter";
 	import { filterBySearch } from "./services/filters/search-filter";
@@ -24,6 +23,7 @@
 		getMidnightThisWeek,
 		getMidnightLastWeek,
 	} from "./services/time-utils";
+	import _ from "lodash";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -41,6 +41,15 @@
 	let currentView: CurrentView = "grid";
 
 	let markdownFiles: TFile[] = [];
+
+	const debounceSearchFilter = _.debounce((e) => {
+		searchFilter = e.target.value;
+	}, 300);
+
+	const debounceFavoriteFilter = _.debounce((value) => {
+		onlyFavorites = value;
+	}, 300);
+
 	$: folderFiles = markdownFiles.filter((file) => {
 		if (folderPath === "") {
 			return true;
@@ -205,7 +214,8 @@
 
 	function handleOnlyFavoritesChange(e: CustomEvent) {
 		const nativeEvent = e.detail.nativeEvent;
-		onlyFavorites = (nativeEvent.target as HTMLInputElement).checked;
+		const value = (nativeEvent.target as HTMLInputElement).checked;
+		debounceFavoriteFilter(value);
 	}
 </script>
 
@@ -215,7 +225,8 @@
 			<input
 				type="text"
 				placeholder="Search..."
-				bind:value={searchFilter}
+				value={searchFilter}
+				on:input={debounceSearchFilter}
 			/>
 		</Stack>
 		<Flex justify="space-between">
