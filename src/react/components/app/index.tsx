@@ -14,11 +14,17 @@ import IconButton from "../shared/icon-button";
 
 import EventManager from "src/event/event-manager";
 import { MarkdownFileData } from "./types";
-import { CurrentView, SortFilter, TimestampFilter } from "src/types";
+import {
+	CurrentView,
+	SortFilter,
+	TextFilterCondition,
+	TimestampFilter,
+} from "src/types";
 
 import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 
 import "./styles.css";
+import { matchesPropertyFilter } from "./utils";
 
 //TODO add MillionJS
 export default function ReactApp() {
@@ -299,6 +305,61 @@ export default function ReactApp() {
 				return file.stat.ctime > midnightToday;
 			}
 			return true;
+		})
+		.filter((file) => {
+			const frontmatter = app.metadataCache.getFileCache(
+				file as TFile
+			)?.frontmatter;
+
+			const { groups } = settings.filters.properties;
+
+			let isValid = true;
+			groups.forEach((group) => {
+				if (!group.isEnabled) return;
+
+				group.filters.forEach((filter) => {
+					if (!filter.isEnabled) return;
+
+					const { propertyName, condition, value } = filter;
+					if (propertyName === "") return;
+					if (frontmatter === undefined) {
+						isValid = false;
+						return;
+					}
+
+					const propertyValue = frontmatter?.[propertyName] ?? null;
+
+					if (
+						propertyValue === null &&
+						(value.length > 0 ||
+							condition === TextFilterCondition.IS_EMPTY ||
+							condition === TextFilterCondition.IS_NOT_EMPTY)
+					) {
+						isValid = false;
+						return;
+					}
+
+					//TODO handle array
+					//TODO handle date
+					//TODO handle number
+					if (typeof propertyValue !== "string") {
+						isValid = false;
+						return;
+					}
+
+					const doesMatch = matchesPropertyFilter(
+						condition,
+						propertyValue,
+						value,
+						true
+					);
+
+					if (!doesMatch) {
+						isValid = false;
+					}
+				});
+			});
+			return isValid;
 		})
 		.map((file) => {
 			const frontmatter = app.metadataCache.getFileCache(
