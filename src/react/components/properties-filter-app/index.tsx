@@ -10,6 +10,7 @@ import { useAppSelector } from "src/redux/hooks";
 import { useAppMount } from "../shared/app-mount-provider";
 
 export default function PropertiesFilterApp() {
+	const [editMenu, setEditMenu] = React.useState(false);
 	const [selectedGroupId, setSelectedGroupId] = React.useState("");
 	const [groups, setGroups] = React.useState<PropertyFilterGroup[]>([]);
 
@@ -83,6 +84,16 @@ export default function PropertiesFilterApp() {
 		setGroups(newGroups);
 	}
 
+	function handleGroupNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? { ...group, name: e.target.value }
+				: group
+		);
+
+		setGroups(newGroups);
+	}
+
 	return (
 		<div>
 			<Stack direction="column" spacing="sm">
@@ -100,12 +111,12 @@ export default function PropertiesFilterApp() {
 				</Flex>
 				<Divider />
 			</Stack>
-			{selectedGroup !== undefined && (
+			{selectedGroup !== undefined && editMenu === false && (
 				<Stack align="center">
 					<IconButton
 						ariaLabel="Edit property filter group"
 						iconId="pencil"
-						onClick={() => {}}
+						onClick={() => setEditMenu(true)}
 					/>
 					<IconButton
 						ariaLabel="Delete property filter group"
@@ -119,6 +130,20 @@ export default function PropertiesFilterApp() {
 							onToggle={handlePropertyGroupToggle}
 						/>
 					</Flex>
+				</Stack>
+			)}
+			{editMenu === true && selectedGroup !== undefined && (
+				<Stack>
+					<IconButton
+						ariaLabel="Back"
+						iconId="arrow-left"
+						onClick={() => setEditMenu(false)}
+					/>
+					<input
+						type="text"
+						value={selectedGroup.name}
+						onChange={handleGroupNameChange}
+					/>
 				</Stack>
 			)}
 		</div>
