@@ -5,7 +5,7 @@
 	import Checkbox from "../shared/checkbox.svelte";
 	import TabList from "../shared/tab-list.svelte";
 	import Tab from "../shared/tab.svelte";
-	import { Menu, TFile, TFolder } from "obsidian";
+	import { Menu, TAbstractFile, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 	import store from "./store";
@@ -25,86 +25,86 @@
 		getMidnightLastWeek,
 	} from "./services/time-utils";
 
-	let searchFilter = "";
-	let folderPath = "/";
-	let folders = ["/"];
-	let sortFilter: SortFilter = "file-name-asc";
-	let timestampFilter: TimestampFilter = "all";
-	let onlyFavorites = false;
-	let renderData: MarkdownFileRenderData[] = [];
-	let currentView: CurrentView = "grid";
-
 	let plugin: VaultExplorerPlugin;
-	let folderFiles: TFile[] = [];
 
 	//TODO move to store
 	const midnightToday = getMidnightToday();
 	const midnightThisWeek = getMidnightThisWeek();
 	const midnightLastWeek = getMidnightLastWeek();
 
+	let searchFilter: string = "";
+	let folderPath: string = "/";
+	let folders: string[] = [];
+	let sortFilter: SortFilter = "file-name-asc";
+	let timestampFilter: TimestampFilter = "all";
+	let onlyFavorites: boolean = false;
+	let currentView: CurrentView = "grid";
+
+	let markdownFiles: TFile[] = [];
+	$: folderFiles = markdownFiles.filter((file) => {
+		if (folderPath === "") {
+			return true;
+		} else if (folderPath === "/") {
+			return true;
+		}
+		return file.path.startsWith(folderPath ?? "/");
+	});
+
+	$: sorted = [...markdownFiles].sort((a, b) => {
+		if (sortFilter === "file-name-asc") {
+			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+		} else if (sortFilter === "file-name-desc") {
+			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+		} else if (sortFilter === "modified-asc") {
+			return a.stat.mtime - b.stat.mtime;
+		} else if (sortFilter === "modified-desc") {
+			return b.stat.mtime - a.stat.mtime;
+		}
+		return 0;
+	});
+
+	//TODO update values every minute
+	$: filteredTimestamp = sorted.filter((file) =>
+		filterByTimestamp(file, timestampFilter, {
+			midnightToday,
+			midnightThisWeek,
+			midnightLastWeek,
+		}),
+	);
+
+	$: filteredProperty = filteredTimestamp.filter((file) =>
+		filterByProperty(
+			plugin.app,
+			file,
+			plugin.settings.filters.properties.groups,
+		),
+	);
+
+	$: filteredFolder = filteredProperty.filter((file) =>
+		filterByFolder(file, folderPath),
+	);
+
+	$: formatted = filteredFolder.map((file) =>
+		formatFileDataForRender(plugin.app, plugin.settings, file),
+	);
+
+	$: filterSearch = formatted.filter((file) =>
+		filterBySearch(file, searchFilter),
+	);
+
+	$: renderData = filterSearch.filter((file) =>
+		favoriteFilter(file, onlyFavorites),
+	);
+
 	store.plugin.subscribe((p) => {
 		plugin = p;
 
-		const allFiles = plugin.app.vault.getFiles();
+		const allFiles = plugin.app.vault.getAllLoadedFiles();
 		folders = allFiles
 			.filter((file) => file instanceof TFolder)
 			.map((folder) => folder.path);
 
-		const markdownFiles = plugin.app.vault.getMarkdownFiles();
-
-		folderFiles = markdownFiles
-			.filter((file) => file instanceof TFile)
-			.filter((file) => {
-				if (folderPath === "") {
-					return true;
-				} else if (folderPath === "/") {
-					return true;
-				}
-				return file.path.startsWith(folderPath ?? "/");
-			});
-
-		const sortedMarkdownFiles = [...markdownFiles].sort((a, b) => {
-			if (sortFilter === "file-name-asc") {
-				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-			} else if (sortFilter === "file-name-desc") {
-				return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-			} else if (sortFilter === "modified-asc") {
-				return a.stat.mtime - b.stat.mtime;
-			} else if (sortFilter === "modified-desc") {
-				return b.stat.mtime - a.stat.mtime;
-			}
-			return 0;
-		});
-
-		let filteredData: TFile[] = sortedMarkdownFiles;
-		//TODO update every minute
-		filteredData = filteredData.filter((file) =>
-			filterByTimestamp(file, timestampFilter, {
-				midnightToday,
-				midnightThisWeek,
-				midnightLastWeek,
-			}),
-		);
-		filteredData = filteredData.filter((file) =>
-			filterByProperty(
-				app,
-				file,
-				plugin.settings.filters.properties.groups,
-			),
-		);
-		filteredData = filteredData.filter((file) =>
-			filterByFolder(file, folderPath),
-		);
-
-		renderData = filteredData.map((file) =>
-			formatFileDataForRender(plugin.app, plugin.settings, file),
-		);
-		renderData = renderData.filter((file) =>
-			filterBySearch(file, searchFilter),
-		);
-		renderData = renderData.filter((file) =>
-			favoriteFilter(file, onlyFavorites),
-		);
+		markdownFiles = plugin.app.vault.getMarkdownFiles();
 	});
 
 	function openPropertiesFilterModal() {
