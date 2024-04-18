@@ -1,16 +1,15 @@
-import { TFile, moment } from "obsidian";
+import { TFile } from "obsidian";
 import { TimestampFilter } from "src/types";
 
-export const filterByTimestamp = (file: TFile, timestampFilter: TimestampFilter) => {
-	const midnightToday = moment().startOf("day").valueOf();
-	const midnightThisWeek = moment().startOf("week").valueOf();
-
-	//This is the Sunday the previous week
-	const midnightLastWeek = moment()
-		.subtract(1, "weeks")
-		.startOf("week")
-		.valueOf();
-
+export const filterByTimestamp = (file: TFile, timestampFilter: TimestampFilter, {
+	midnightToday,
+	midnightThisWeek,
+	midnightLastWeek,
+}: {
+	midnightToday: number;
+	midnightThisWeek: number;
+	midnightLastWeek: number;
+}) => {
 	const { mtime, ctime } = file.stat;
 	if (timestampFilter === "modified-this-week") {
 		return mtime > midnightThisWeek;

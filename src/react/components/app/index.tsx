@@ -25,8 +25,16 @@ import { filterByFolder } from "./services/filters/folder-filter";
 import { favoriteFilter as filterByFavorite } from "./services/filters/favorite-filter";
 import { filterBySearch } from "./services/filters/search-filter";
 import { formatFileDataForRender } from "./services/render-utils";
+import {
+	getMidnightLastWeek,
+	getMidnightThisWeek,
+	getMidnightToday,
+} from "./services/time-utils";
 
-//TODO add MillionJS
+const midnightToday = getMidnightToday();
+const midnightThisWeek = getMidnightThisWeek();
+const midnightLastWeek = getMidnightLastWeek();
+
 export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("/");
 	const [searchFilter, setSearch] = React.useState<string>("");
@@ -49,7 +57,7 @@ export default function ReactApp() {
 		setSortFilter(settings.filters.sort);
 	}, []);
 
-	const [, setRefreshTime] = React.useState(0);
+	const [refreshTime, setRefreshTime] = React.useState(0);
 
 	//TODO optimize
 	React.useEffect(() => {
@@ -248,8 +256,12 @@ export default function ReactApp() {
 		menu.showAtMouseEvent(e.nativeEvent);
 	}
 
-	const folders = app.vault
-		.getAllLoadedFiles()
+	//TODO update for folder
+	const allFiles = React.useMemo(() => {
+		return app.vault.getAllLoadedFiles();
+	}, [refreshTime]);
+
+	const folders = allFiles
 		.filter((file) => file instanceof TFolder)
 		.map((folder) => folder.path);
 
@@ -265,30 +277,52 @@ export default function ReactApp() {
 			return file.path.startsWith(folderPath ?? "/");
 		});
 
-	const sortedMarkdownFiles = [...app.vault.getMarkdownFiles()].sort(
-		(a, b) => {
-			if (sortFilter === "file-name-asc") {
-				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-			} else if (sortFilter === "file-name-desc") {
-				return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-			} else if (sortFilter === "modified-asc") {
-				return a.stat.mtime - b.stat.mtime;
-			} else if (sortFilter === "modified-desc") {
-				return b.stat.mtime - a.stat.mtime;
-			}
-			return 0;
-		}
+	const sortedMarkdownFiles = React.useMemo(
+		() =>
+			[...app.vault.getMarkdownFiles()].sort((a, b) => {
+				if (sortFilter === "file-name-asc") {
+					return a.name
+						.toLowerCase()
+						.localeCompare(b.name.toLowerCase());
+				} else if (sortFilter === "file-name-desc") {
+					return b.name
+						.toLowerCase()
+						.localeCompare(a.name.toLowerCase());
+				} else if (sortFilter === "modified-asc") {
+					return a.stat.mtime - b.stat.mtime;
+				} else if (sortFilter === "modified-desc") {
+					return b.stat.mtime - a.stat.mtime;
+				}
+				return 0;
+			}),
+		[refreshTime]
 	);
 
-	const filteredData: MarkdownFileRenderData[] = sortedMarkdownFiles
-		.filter((file) => filterByTimestamp(file, timestampFilter))
-		.filter((file) =>
-			filterByProperty(app, file, settings.filters.properties.groups)
-		)
-		.filter((file) => filterByFolder(file, folderPath))
-		.map((file) => formatFileDataForRender(app, settings, file))
-		.filter((file) => filterBySearch(file, searchFilter))
-		.filter((file) => filterByFavorite(file, onlyFavorites));
+	let filteredData: TFile[] = sortedMarkdownFiles;
+	//TODO update every minute
+	filteredData = filteredData.filter((file) =>
+		filterByTimestamp(file, timestampFilter, {
+			midnightToday,
+			midnightThisWeek,
+			midnightLastWeek,
+		})
+	);
+	filteredData = filteredData.filter((file) =>
+		filterByProperty(app, file, settings.filters.properties.groups)
+	);
+	filteredData = filteredData.filter((file) =>
+		filterByFolder(file, folderPath)
+	);
+
+	let renderData = filteredData.map((file) =>
+		formatFileDataForRender(app, settings, file)
+	);
+	renderData = renderData.filter((file) =>
+		filterBySearch(file, searchFilter)
+	);
+	renderData = renderData.filter((file) =>
+		filterByFavorite(file, onlyFavorites)
+	);
 
 	return (
 		<div className="vault-explorer">
@@ -333,8 +367,7 @@ export default function ReactApp() {
 						</Flex>
 					</Stack>
 					<div>
-						Showing {filteredData.length} out of{" "}
-						{folderFiles.length}
+						Showing {renderData.length} out of {folderFiles.length}
 					</div>
 				</Flex>
 				<Stack spacing="sm">
@@ -344,8 +377,8 @@ export default function ReactApp() {
 					</TabList>
 				</Stack>
 			</div>
-			{currentView === "grid" && <GridView data={filteredData} />}
-			{currentView === "list" && <ListView data={filteredData} />}
+			{currentView === "grid" && <GridView data={renderData} />}
+			{currentView === "list" && <ListView data={renderData} />}
 		</div>
 	);
 }
