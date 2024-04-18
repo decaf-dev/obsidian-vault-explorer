@@ -3,21 +3,21 @@ import { FilterCondition, TextFilterCondition } from "src/types";
 export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 	switch (type) {
 		case TextFilterCondition.IS:
-			return "is";
+			return "Is";
 		case TextFilterCondition.IS_NOT:
-			return "is not";
+			return "Is not";
 		case TextFilterCondition.CONTAINS:
-			return "contains";
+			return "Contains";
 		case TextFilterCondition.DOES_NOT_CONTAIN:
-			return "does not contain";
+			return "Does not contain";
 		case TextFilterCondition.STARTS_WITH:
-			return "starts with";
+			return "Starts with";
 		case TextFilterCondition.ENDS_WITH:
-			return "ends with";
+			return "Ends with";
 		case TextFilterCondition.IS_EMPTY:
-			return "is empty";
+			return "Is empty";
 		case TextFilterCondition.IS_NOT_EMPTY:
-			return "is not empty";
+			return "Is not empty";
 		default:
 			return "";
 	}
