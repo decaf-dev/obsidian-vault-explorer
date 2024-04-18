@@ -1,1 +1,1 @@
-<div>My modal</div>;
+<div>My modal</div>

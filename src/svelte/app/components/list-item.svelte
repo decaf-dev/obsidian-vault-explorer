@@ -26,9 +26,13 @@
 </script>
 
 <div class="vault-explorer-list-item">
-	<button class="vault-explorer-list-item__title" on:click={handleTitleClick}>
+	<a
+		href="empty"
+		class="vault-explorer-list-item__title"
+		on:click={handleTitleClick}
+	>
 		{name}
-	</button>
+	</a>
 </div>
 
 <style>

@@ -41,12 +41,13 @@
 
 <div class="vault-explorer-grid-card">
 	<div class="vault-explorer-grid-card__header">
-		<button
+		<a
+			href="empty"
 			class="vault-explorer-grid-card__title"
 			on:click={handleTitleClick}
 		>
 			{name}
-		</button>
+		</a>
 		{#if url !== null}
 			<IconButton iconId="external-link" on:click={handleUrlClick} />
 		{/if}
