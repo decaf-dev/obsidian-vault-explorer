@@ -1,7 +1,9 @@
+import { generateUUID } from "./react/services/uuid";
 import { VaultExplorerPluginSettings } from "./types";
 
 export const VAULT_EXPLORER_VIEW = "vault-explorer";
 
+const uuid = generateUUID();
 export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	properties: {
 		favorite: "",
@@ -16,11 +18,11 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		timestamp: "all",
 		sort: "file-name-asc",
 		properties: {
-			selectedGroupId: "0",
+			selectedGroupId: uuid,
 			groups:
 				[
 					{
-						id: "0",
+						id: uuid,
 						name: "Group 1",
 						filters: [],
 						position: 0,

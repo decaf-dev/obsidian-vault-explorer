@@ -10,6 +10,7 @@ import {
 } from "src/types";
 import { useAppMount } from "../shared/app-mount-provider";
 import EventManager from "src/event/event-manager";
+import { generateUUID } from "src/react/services/uuid";
 
 export default function PropertiesFilterApp() {
 	const [editMenu, setEditMenu] = React.useState(false);
@@ -51,8 +52,7 @@ export default function PropertiesFilterApp() {
 
 	function handleAddPropertyGroupClick() {
 		const newGroup: PropertyFilterGroup = {
-			//TODO change id
-			id: Math.random().toString(),
+			id: generateUUID(),
 			name: `Group ${groups.length + 1}`,
 			filters: [],
 			position: groups.length,
@@ -103,7 +103,7 @@ export default function PropertiesFilterApp() {
 
 	function handleAddPropertyFilterClick() {
 		const newFilter: TextPropertyFilter = {
-			id: Math.random().toString(),
+			id: generateUUID(),
 			propertyName: "",
 			operator: "and",
 			isEnabled: true,
