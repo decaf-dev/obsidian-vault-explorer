@@ -1,4 +1,4 @@
-import { MarkdownFileRenderData } from "../../types";
+import { MarkdownFileRenderData } from "../../../../react/components/app/types";
 
 export const filterBySearch = (file: MarkdownFileRenderData, search: string) => {
 	if (search === "") {

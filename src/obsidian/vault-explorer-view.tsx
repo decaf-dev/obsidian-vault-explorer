@@ -1,26 +1,18 @@
-import { App, ItemView, WorkspaceLeaf } from "obsidian";
+import { ItemView, WorkspaceLeaf } from "obsidian";
 
 import { VAULT_EXPLORER_VIEW } from "src/constants";
-import { getCurrentSettings, onSettingsChange } from "src/types";
-import Component from "../svelte/component.svelte";
+import Component from "../svelte/app/index.svelte";
+import store from "../svelte/app/store";
+import VaultExplorerPlugin from "src/main";
 
 export default class VaultExplorerView extends ItemView {
 	component: Component | null;
-	app: App;
-	onSettingsChange: onSettingsChange;
-	getCurrentSettings: getCurrentSettings;
+	plugin: VaultExplorerPlugin;
 
-	constructor(
-		leaf: WorkspaceLeaf,
-		app: App,
-		getCurrentSettings: getCurrentSettings,
-		onSettingsChange: onSettingsChange
-	) {
+	constructor(leaf: WorkspaceLeaf, plugin: VaultExplorerPlugin) {
 		super(leaf);
 		this.component = null;
-		this.app = app;
-		this.getCurrentSettings = getCurrentSettings;
-		this.onSettingsChange = onSettingsChange;
+		this.plugin = plugin;
 	}
 
 	getIcon(): string {
@@ -37,30 +29,13 @@ export default class VaultExplorerView extends ItemView {
 	async onOpen() {
 		const containerEl = this.containerEl.children[1];
 
+		store.plugin.set(this.plugin);
 		this.component = new Component({
 			target: containerEl,
-			props: {
-				variable: 1,
-			},
 		});
-		// this.root = createRoot(container);
-		// this.root.render(
-		// 	<React.StrictMode>
-		// 		<Provider store={store}>
-		// 			<AppMountProvider
-		// 				app={this.app}
-		// 				getCurrentSettings={this.getCurrentSettings}
-		// 				onSettingsChange={this.onSettingsChange}
-		// 			>
-		// 				<ReactApp />
-		// 			</AppMountProvider>
-		// 		</Provider>
-		// 	</React.StrictMode>
-		// );
 	}
 
 	async onClose() {
 		this.component?.$destroy();
-		// this.root?.unmount();
 	}
 }

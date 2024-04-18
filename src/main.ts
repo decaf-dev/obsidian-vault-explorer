@@ -18,7 +18,7 @@ export default class VaultExplorerPlugin extends Plugin {
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
-			(leaf) => new VaultExplorerView(leaf, this.app, () => this.settings, this.handleSettingsChange)
+			(leaf) => new VaultExplorerView(leaf, this)
 		);
 
 		this.addRibbonIcon("compass", "Open vault explorer", async () => {

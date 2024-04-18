@@ -163,101 +163,6 @@ export {};
 // 		currentView,
 // 	]);
 
-// 	function openPropertiesFilterModal() {
-// 		new PropertiesFilterModal(
-// 			app,
-// 			getCurrentSettings,
-// 			onSettingsChange
-// 		).open();
-// 	}
-
-// 	function openSortMenu(e: React.MouseEvent) {
-// 		const menu = new Menu();
-// 		menu.setUseNativeMenu(true);
-// 		menu.addItem((item) => {
-// 			item.setTitle("File name (A-Z)");
-// 			item.setChecked(sortFilter === "file-name-asc");
-// 			item.onClick(() => setSortFilter("file-name-asc"));
-// 		});
-// 		menu.addItem((item) => {
-// 			item.setTitle("File name (Z-A)");
-// 			item.setChecked(sortFilter === "file-name-desc");
-// 			item.onClick(() => setSortFilter("file-name-desc"));
-// 		});
-// 		menu.addSeparator();
-// 		menu.addItem((item) => {
-// 			item.setTitle("Modified time (new to old)");
-// 			item.setChecked(sortFilter === "modified-desc");
-// 			item.onClick(() => setSortFilter("modified-desc"));
-// 		});
-// 		menu.addItem((item) => {
-// 			item.setTitle("Modified time (old to new)");
-// 			item.setChecked(sortFilter === "modified-asc");
-// 			item.onClick(() => setSortFilter("modified-asc"));
-// 		});
-// 		menu.showAtMouseEvent(e.nativeEvent);
-// 	}
-
-// 	function openFolderFilterMenu(e: React.MouseEvent) {
-// 		const menu = new Menu();
-// 		menu.setUseNativeMenu(true);
-
-// 		for (const folder of folders) {
-// 			menu.addItem((item) => {
-// 				item.setTitle(folder === "/" ? "All" : folder);
-// 				item.setChecked(folderPath === folder);
-// 				item.onClick(() => setFolderPath(folder));
-// 			});
-// 		}
-
-// 		menu.showAtMouseEvent(e.nativeEvent);
-// 	}
-
-// 	function openListFilterMenu(e: React.MouseEvent) {
-// 		const menu = new Menu();
-// 		menu.setUseNativeMenu(true);
-// 		menu.addItem((item) => {
-// 			item.setTitle("All");
-// 			item.setChecked(timestampFilter === "all");
-// 			item.onClick(() => setTimestampFilter("all"));
-// 		});
-// 		menu.addSeparator();
-// 		menu.addItem((item) => {
-// 			item.setTitle("Modified today");
-// 			item.setChecked(timestampFilter === "modified-today");
-// 			item.onClick(() => setTimestampFilter("modified-today"));
-// 		});
-// 		menu.addItem((item) => {
-// 			item.setTitle("Created today");
-// 			item.setChecked(timestampFilter === "created-today");
-// 			item.onClick(() => setTimestampFilter("created-today"));
-// 		});
-// 		menu.addSeparator();
-// 		menu.addItem((item) => {
-// 			item.setTitle("Modifed this week");
-// 			item.setChecked(timestampFilter === "modified-this-week");
-// 			item.onClick(() => setTimestampFilter("modified-this-week"));
-// 		});
-// 		menu.addItem((item) => {
-// 			item.setTitle("Created this week");
-// 			item.setChecked(timestampFilter === "created-this-week");
-// 			item.onClick(() => setTimestampFilter("created-this-week"));
-// 		});
-// 		menu.addSeparator();
-// 		menu.addItem((item) => {
-// 			item.setTitle("Modifed 2 weeks");
-// 			item.setChecked(timestampFilter === "modified-2-weeks");
-// 			item.onClick(() => setTimestampFilter("modified-2-weeks"));
-// 		});
-// 		menu.addItem((item) => {
-// 			item.setTitle("Created 2 weeks");
-// 			item.setChecked(timestampFilter === "created-2-weeks");
-// 			item.onClick(() => setTimestampFilter("created-2-weeks"));
-// 		});
-
-// 		menu.showAtMouseEvent(e.nativeEvent);
-// 	}
-
 // 	//TODO update for folder
 // 	const allFiles = React.useMemo(() => {
 // 		return app.vault.getAllLoadedFiles();
@@ -279,52 +184,42 @@ export {};
 // 			return file.path.startsWith(folderPath ?? "/");
 // 		});
 
-// 	const sortedMarkdownFiles = React.useMemo(
-// 		() =>
-// 			[...app.vault.getMarkdownFiles()].sort((a, b) => {
-// 				if (sortFilter === "file-name-asc") {
-// 					return a.name
-// 						.toLowerCase()
-// 						.localeCompare(b.name.toLowerCase());
-// 				} else if (sortFilter === "file-name-desc") {
-// 					return b.name
-// 						.toLowerCase()
-// 						.localeCompare(a.name.toLowerCase());
-// 				} else if (sortFilter === "modified-asc") {
-// 					return a.stat.mtime - b.stat.mtime;
-// 				} else if (sortFilter === "modified-desc") {
-// 					return b.stat.mtime - a.stat.mtime;
-// 				}
-// 				return 0;
-// 			}),
-// 		[refreshTime]
-// 	);
+const sortedMarkdownFiles = React.useMemo(
+	() =>
+		[...app.vault.getMarkdownFiles()].sort((a, b) => {
+			if (sortFilter === "file-name-asc") {
+				return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+			} else if (sortFilter === "file-name-desc") {
+				return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+			} else if (sortFilter === "modified-asc") {
+				return a.stat.mtime - b.stat.mtime;
+			} else if (sortFilter === "modified-desc") {
+				return b.stat.mtime - a.stat.mtime;
+			}
+			return 0;
+		}),
+	[refreshTime]
+);
 
-// 	let filteredData: TFile[] = sortedMarkdownFiles;
-// 	//TODO update every minute
-// 	filteredData = filteredData.filter((file) =>
-// 		filterByTimestamp(file, timestampFilter, {
-// 			midnightToday,
-// 			midnightThisWeek,
-// 			midnightLastWeek,
-// 		})
-// 	);
-// 	filteredData = filteredData.filter((file) =>
-// 		filterByProperty(app, file, settings.filters.properties.groups)
-// 	);
-// 	filteredData = filteredData.filter((file) =>
-// 		filterByFolder(file, folderPath)
-// 	);
+let filteredData: TFile[] = sortedMarkdownFiles;
+//TODO update every minute
+filteredData = filteredData.filter((file) =>
+	filterByTimestamp(file, timestampFilter, {
+		midnightToday,
+		midnightThisWeek,
+		midnightLastWeek,
+	})
+);
+filteredData = filteredData.filter((file) =>
+	filterByProperty(app, file, settings.filters.properties.groups)
+);
+filteredData = filteredData.filter((file) => filterByFolder(file, folderPath));
 
-// 	let renderData = filteredData.map((file) =>
-// 		formatFileDataForRender(app, settings, file)
-// 	);
-// 	renderData = renderData.filter((file) =>
-// 		filterBySearch(file, searchFilter)
-// 	);
-// 	renderData = renderData.filter((file) =>
-// 		filterByFavorite(file, onlyFavorites)
-// 	);
+let renderData = filteredData.map((file) =>
+	formatFileDataForRender(app, settings, file)
+);
+renderData = renderData.filter((file) => filterBySearch(file, searchFilter));
+renderData = renderData.filter((file) => filterByFavorite(file, onlyFavorites));
 
 // 	return (
 // 		<div className="vault-explorer">
