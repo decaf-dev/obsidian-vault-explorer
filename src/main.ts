@@ -12,20 +12,16 @@ import { store } from './redux/store';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings;
+	debounceSaveSettings: () => void;
 
 	async onload() {
-		await this.loadSettings();
+		this.debounceSaveSettings = _.debounce(this.saveSettings, 1000);
 
-		const debounceSettingsChange = _.debounce(async (value: VaultExplorerPluginSettings) => {
-			this.settings = value;
-			await this.saveSettings();
-			console.log("Debounce settings change", this.settings.filters.properties);
-			//console.log("Settings saved", this.settings);
-		}, 1000);
+		await this.loadSettings();
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
-			(leaf) => new VaultExplorerView(leaf, this.app, debounceSettingsChange)
+			(leaf) => new VaultExplorerView(leaf, this.app, this.handleSettingsChange)
 		);
 
 		this.addRibbonIcon("compass", "Open vault explorer", async () => {
@@ -93,6 +89,11 @@ export default class VaultExplorerPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-		store.dispatch(setSettings(this.settings));
+	}
+
+	private handleSettingsChange = async (value: VaultExplorerPluginSettings) => {
+		store.dispatch(setSettings(value));
+		this.settings = value;
+		this.debounceSaveSettings();
 	}
 }
