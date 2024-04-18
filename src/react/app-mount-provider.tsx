@@ -5,7 +5,6 @@ import { VaultExplorerPluginSettings, onSettingsChange } from "src/types";
 
 interface ContextProps {
 	app: App;
-	leaf: WorkspaceLeaf;
 	settings: VaultExplorerPluginSettings;
 	onSettingsChange: onSettingsChange;
 }
@@ -29,15 +28,12 @@ interface Props extends ContextProps {
 
 export default function AppMountProvider({
 	app,
-	leaf,
 	settings,
 	onSettingsChange,
 	children,
 }: Props) {
 	return (
-		<MountContext.Provider
-			value={{ app, leaf, settings, onSettingsChange }}
-		>
+		<MountContext.Provider value={{ app, settings, onSettingsChange }}>
 			{children}
 		</MountContext.Provider>
 	);

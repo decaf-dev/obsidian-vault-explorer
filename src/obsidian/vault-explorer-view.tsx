@@ -45,7 +45,6 @@ export default class VaultExplorerView extends ItemView {
 			<React.StrictMode>
 				<AppMountProvider
 					app={this.app}
-					leaf={this.leaf}
 					settings={this.settings}
 					onSettingsChange={this.onSettingsChange}
 				>

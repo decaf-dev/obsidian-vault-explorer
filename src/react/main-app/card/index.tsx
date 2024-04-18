@@ -2,13 +2,13 @@ import { MarkdownView, setIcon } from "obsidian";
 
 import React from "react";
 
-import { useAppMount } from "../app-mount-provider";
-import Tag from "../tag";
-import Spacer from "../spacer";
-import Property from "../property";
+import { useAppMount } from "../../app-mount-provider";
+import Tag from "../../shared/tag";
+import Spacer from "../../shared/spacer";
+import Property from "../../shared/property";
 
 import "./styles.css";
-import IconButton from "../icon-button";
+import IconButton from "../../shared/icon-button";
 
 interface Props {
 	name: string;
