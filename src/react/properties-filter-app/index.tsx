@@ -7,16 +7,18 @@ import Flex from "../shared/flex";
 import Stack from "../shared/stack";
 import Divider from "../shared/divider";
 import Switch from "../shared/switch";
+import { useAppSelector } from "src/redux/hooks";
 
 export default function PropertiesFilterApp() {
 	const [selectedGroupId, setSelectedGroupId] = React.useState("");
 	const [groups, setGroups] = React.useState<PropertyFilterGroup[]>([]);
 
-	const { settings, onSettingsChange } = useAppMount();
+	const { onSettingsChange } = useAppMount();
+	const { settings } = useAppSelector((state) => state.global);
 
 	const selectedGroup = groups.find((group) => group.id === selectedGroupId);
 
-	console.log(settings);
+	console.log("properties filter", settings.filters.properties);
 
 	React.useLayoutEffect(() => {
 		setSelectedGroupId(settings.filters.properties.selectedGroupId);
@@ -49,16 +51,31 @@ export default function PropertiesFilterApp() {
 			isEnabled: true,
 		};
 
+		setSelectedGroupId(newGroup.id);
 		setGroups([...groups, newGroup]);
 	}
 
 	function handleDeletePropertyGroupClick() {
 		if (confirm("Are you sure you want to delete this group?")) {
+			const index = groups.findIndex(
+				(group) => group.id === selectedGroupId
+			);
 			const newGroups = groups.filter(
 				(group) => group.id !== selectedGroupId
 			);
+
+			let newIndex = index - 1;
+			if (newIndex < 0) {
+				newIndex = 0;
+			}
+
 			setGroups(newGroups);
-			setSelectedGroupId(newGroups[0].id);
+
+			if (newGroups.length === 0) {
+				setSelectedGroupId("");
+			} else {
+				setSelectedGroupId(newGroups[newIndex].id);
+			}
 		}
 	}
 

@@ -4,40 +4,11 @@ import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
 import { VaultExplorerPluginSettings } from './types';
-import { VAULT_EXPLORER_VIEW } from './constants';
+import { DEFAULT_SETTINGS, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
-
-
-const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
-	properties: {
-		favorite: "",
-		url: "",
-		source: "",
-		status: "",
-	},
-	filters: {
-		folder: "",
-		search: "",
-		onlyFavorites: false,
-		timestamp: "all",
-		sort: "file-name-asc",
-		properties: {
-			selectedGroupId: "0",
-			groups:
-				[
-					{
-						id: "0",
-						name: "Unnamed group",
-						filters: [],
-						position: 0,
-						isEnabled: true
-					}
-				]
-		}
-	},
-	currentView: "grid",
-}
+import { setSettings } from './redux/global-slice';
+import { store } from './redux/store';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings;
@@ -48,12 +19,13 @@ export default class VaultExplorerPlugin extends Plugin {
 		const debounceSettingsChange = _.debounce(async (value: VaultExplorerPluginSettings) => {
 			this.settings = value;
 			await this.saveSettings();
-			console.log("Settings saved", this.settings);
+			console.log("Debounce settings change", this.settings.filters.properties);
+			//console.log("Settings saved", this.settings);
 		}, 1000);
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
-			(leaf) => new VaultExplorerView(leaf, this.app, this.settings, debounceSettingsChange)
+			(leaf) => new VaultExplorerView(leaf, this.app, debounceSettingsChange)
 		);
 
 		this.addRibbonIcon("compass", "Open vault explorer", async () => {
@@ -121,5 +93,6 @@ export default class VaultExplorerPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		store.dispatch(setSettings(this.settings));
 	}
 }

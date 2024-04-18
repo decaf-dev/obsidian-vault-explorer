@@ -1,7 +1,10 @@
 import { App, Modal } from "obsidian";
+import React from "react";
 import { Root, createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
 import AppMountProvider from "src/react/app-mount-provider";
 import PropertiesFilterApp from "src/react/properties-filter-app";
+import { store } from "src/redux/store";
 import { VaultExplorerPluginSettings, onSettingsChange } from "src/types";
 
 export default class PropertiesFilterModal extends Modal {
@@ -27,13 +30,16 @@ export default class PropertiesFilterModal extends Modal {
 
 		const root = createRoot(contentEl);
 		root.render(
-			<AppMountProvider
-				app={this.app}
-				settings={this.settings}
-				onSettingsChange={this.onSettingsChange}
-			>
-				<PropertiesFilterApp />
-			</AppMountProvider>
+			<React.StrictMode>
+				<Provider store={store}>
+					<AppMountProvider
+						app={this.app}
+						onSettingsChange={this.onSettingsChange}
+					>
+						<PropertiesFilterApp />
+					</AppMountProvider>
+				</Provider>
+			</React.StrictMode>
 		);
 		this.root = root;
 	}

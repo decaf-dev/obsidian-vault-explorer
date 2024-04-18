@@ -26,7 +26,7 @@ export default function GroupTagList({
 							: id === selectedGroupId;
 					return (
 						<GroupTag
-							key={name}
+							key={id}
 							name={name}
 							isSelected={isSelected}
 							onClick={() => onGroupClick(id)}

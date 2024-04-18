@@ -14,16 +14,12 @@ import IconButton from "./shared/icon-button";
 
 import EventManager from "src/event/event-manager";
 import { MarkdownFileData } from "./types";
-import {
-	CurrentView,
-	PropertyFilterGroup,
-	SortFilter,
-	TimestampFilter,
-} from "src/types";
+import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 
 import "./styles.css";
 
 import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
+import { useAppSelector } from "src/redux/hooks";
 
 export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("/");
@@ -35,7 +31,8 @@ export default function ReactApp() {
 	const [sortFilter, setSortFilter] =
 		React.useState<SortFilter>("file-name-asc");
 
-	const { app, settings, onSettingsChange } = useAppMount();
+	const { app, onSettingsChange } = useAppMount();
+	const { settings } = useAppSelector((state) => state.global);
 
 	React.useLayoutEffect(() => {
 		setFolderPath(settings.filters.folder);
