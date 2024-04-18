@@ -21,7 +21,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 				[
 					{
 						id: "0",
-						name: "New group 1",
+						name: "Group 1",
 						filters: [],
 						position: 0,
 						isEnabled: true
