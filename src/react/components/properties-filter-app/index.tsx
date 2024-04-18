@@ -1,5 +1,4 @@
 import React from "react";
-import { useAppMount } from "../app-mount-provider";
 import GroupTagList from "./group-tag-list";
 import { PropertyFilterGroup } from "src/types";
 import IconButton from "../shared/icon-button";
@@ -8,6 +7,7 @@ import Stack from "../shared/stack";
 import Divider from "../shared/divider";
 import Switch from "../shared/switch";
 import { useAppSelector } from "src/redux/hooks";
+import { useAppMount } from "../shared/app-mount-provider";
 
 export default function PropertiesFilterApp() {
 	const [selectedGroupId, setSelectedGroupId] = React.useState("");
@@ -17,8 +17,6 @@ export default function PropertiesFilterApp() {
 	const { settings } = useAppSelector((state) => state.global);
 
 	const selectedGroup = groups.find((group) => group.id === selectedGroupId);
-
-	console.log("properties filter", settings.filters.properties);
 
 	React.useLayoutEffect(() => {
 		setSelectedGroupId(settings.filters.properties.selectedGroupId);
@@ -36,7 +34,7 @@ export default function PropertiesFilterApp() {
 				},
 			},
 		});
-	}, [onSettingsChange, selectedGroupId, groups]);
+	}, [selectedGroupId, groups]);
 
 	function handleGroupClick(id: string) {
 		setSelectedGroupId(id);
@@ -56,26 +54,22 @@ export default function PropertiesFilterApp() {
 	}
 
 	function handleDeletePropertyGroupClick() {
-		if (confirm("Are you sure you want to delete this group?")) {
-			const index = groups.findIndex(
-				(group) => group.id === selectedGroupId
-			);
-			const newGroups = groups.filter(
-				(group) => group.id !== selectedGroupId
-			);
+		const index = groups.findIndex((group) => group.id === selectedGroupId);
+		const newGroups = groups.filter(
+			(group) => group.id !== selectedGroupId
+		);
 
-			let newIndex = index - 1;
-			if (newIndex < 0) {
-				newIndex = 0;
-			}
+		let newIndex = index - 1;
+		if (newIndex < 0) {
+			newIndex = 0;
+		}
 
-			setGroups(newGroups);
+		setGroups(newGroups);
 
-			if (newGroups.length === 0) {
-				setSelectedGroupId("");
-			} else {
-				setSelectedGroupId(newGroups[newIndex].id);
-			}
+		if (newGroups.length === 0) {
+			setSelectedGroupId("");
+		} else {
+			setSelectedGroupId(newGroups[newIndex].id);
 		}
 	}
 

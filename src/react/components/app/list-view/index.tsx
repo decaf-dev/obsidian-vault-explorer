@@ -1,6 +1,6 @@
 import ListItem from "../list-item";
 
-import { MarkdownFileData } from "../../types";
+import { MarkdownFileData } from "../types";
 
 import "./styles.css";
 

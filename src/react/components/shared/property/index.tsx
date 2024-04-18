@@ -1,4 +1,4 @@
-import { useAppMount } from "../../app-mount-provider";
+import { useAppMount } from "../app-mount-provider";
 import "./styles.css";
 
 interface Props {

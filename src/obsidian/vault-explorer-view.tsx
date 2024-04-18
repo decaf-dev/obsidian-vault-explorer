@@ -4,8 +4,8 @@ import React from "react";
 import { createRoot, Root } from "react-dom/client";
 
 import { VAULT_EXPLORER_VIEW } from "src/constants";
-import ReactApp from "src/react/index";
-import AppMountProvider from "src/react/app-mount-provider";
+import ReactApp from "src/react/components/app/index";
+import AppMountProvider from "src/react/components/shared/app-mount-provider";
 import { onSettingsChange, VaultExplorerPluginSettings } from "src/types";
 import { Provider } from "react-redux";
 import { store } from "src/redux/store";

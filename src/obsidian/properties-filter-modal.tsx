@@ -2,8 +2,8 @@ import { App, Modal } from "obsidian";
 import React from "react";
 import { Root, createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import AppMountProvider from "src/react/app-mount-provider";
-import PropertiesFilterApp from "src/react/properties-filter-app";
+import AppMountProvider from "src/react/components/shared/app-mount-provider";
+import PropertiesFilterApp from "src/react/components/properties-filter-app";
 import { store } from "src/redux/store";
 import { VaultExplorerPluginSettings, onSettingsChange } from "src/types";
 

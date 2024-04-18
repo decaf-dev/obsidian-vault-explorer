@@ -1,6 +1,6 @@
 import Card from "../card";
 
-import { MarkdownFileData } from "../../types";
+import { MarkdownFileData } from "../types";
 
 import "./styles.css";
 

@@ -2,15 +2,15 @@ import { Menu, moment, TFile, TFolder } from "obsidian";
 
 import React from "react";
 
-import { useAppMount } from "./app-mount-provider";
-import Checkbox from "./shared/checkbox";
-import Flex from "./shared/flex";
-import Stack from "./shared/stack";
-import GridView from "./main-app/grid-view";
-import ListView from "./main-app/list-view";
-import Tab from "./shared/tab";
-import TabList from "./shared/tab-list";
-import IconButton from "./shared/icon-button";
+import { useAppMount } from "../shared/app-mount-provider";
+import Checkbox from "../shared/checkbox";
+import Flex from "../shared/flex";
+import Stack from "../shared/stack";
+import GridView from "./grid-view";
+import ListView from "./list-view";
+import Tab from "../shared/tab";
+import TabList from "../shared/tab-list";
+import IconButton from "../shared/icon-button";
 
 import EventManager from "src/event/event-manager";
 import { MarkdownFileData } from "./types";
@@ -122,7 +122,6 @@ export default function ReactApp() {
 			currentView: currentView,
 		});
 	}, [
-		settings,
 		onSettingsChange,
 		sortFilter,
 		folderPath,

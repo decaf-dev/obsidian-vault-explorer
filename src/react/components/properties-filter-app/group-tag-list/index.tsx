@@ -1,6 +1,6 @@
 import "./styles.css";
 
-import Stack from "src/react/shared/stack";
+import Stack from "src/react/components/shared/stack";
 import { PropertyFilterGroup } from "src/types";
 import GroupTag from "../group-tag";
 
