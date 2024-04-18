@@ -1,4 +1,4 @@
-import { Menu, moment, TFile, TFolder } from "obsidian";
+import { Menu, TFile, TFolder } from "obsidian";
 
 import React from "react";
 
@@ -14,23 +14,22 @@ import IconButton from "../shared/icon-button";
 
 import EventManager from "src/event/event-manager";
 import { MarkdownFileData } from "./types";
-import {
-	CurrentView,
-	SortFilter,
-	TextFilterCondition,
-	TimestampFilter,
-} from "src/types";
+import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 
 import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 
 import "./styles.css";
 import { filterByTimestamp } from "./services/filters/timestamp-filter";
 import { filterByProperty } from "./services/filters/property-filter";
+import { filterByFolder } from "./services/filters/folder-filter";
+import { favoriteFilter as filterByFavorite } from "./services/filters/favorite-filter";
+import { filterBySearch } from "./services/filters/search-filter";
+import { formatFileDataForRender } from "./services/render-utils";
 
 //TODO add MillionJS
 export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("/");
-	const [search, setSearch] = React.useState<string>("");
+	const [searchFilter, setSearch] = React.useState<string>("");
 	const [onlyFavorites, setOnlyFavorites] = React.useState<boolean>(false);
 	const [timestampFilter, setTimestampFilter] =
 		React.useState<TimestampFilter>("all");
@@ -136,7 +135,7 @@ export default function ReactApp() {
 			...settings,
 			filters: {
 				folder: folderPath,
-				search,
+				search: searchFilter,
 				onlyFavorites,
 				timestamp: timestampFilter,
 				sort: sortFilter,
@@ -148,7 +147,7 @@ export default function ReactApp() {
 		onSettingsChange,
 		sortFilter,
 		folderPath,
-		search,
+		searchFilter,
 		onlyFavorites,
 		timestampFilter,
 		currentView,
@@ -286,79 +285,10 @@ export default function ReactApp() {
 		.filter((file) =>
 			filterByProperty(app, file, settings.filters.properties.groups)
 		)
-		.map((file) => {
-			const frontmatter = app.metadataCache.getFileCache(
-				file as TFile
-			)?.frontmatter;
-
-			let tags: string[] = [];
-			//Tags can be an array or just a string
-			//This seems like a bug in Obsidian
-			if (typeof frontmatter?.tags === "string") {
-				tags = [frontmatter?.tags as string];
-			} else if (Array.isArray(frontmatter?.tags)) {
-				tags = frontmatter?.tags as string[];
-			}
-
-			const {
-				url: urlProp,
-				favorite: favoriteProp,
-				source: sourceProp,
-				status: statusProp,
-			} = settings.properties;
-			const url: string | null = frontmatter?.[urlProp] ?? null;
-			const favorite = frontmatter?.[favoriteProp] ?? false;
-			const source = frontmatter?.[sourceProp] ?? null;
-			const status = frontmatter?.[statusProp] ?? null;
-
-			return {
-				name: file.basename,
-				path: file.path,
-				tags,
-				source,
-				favorite,
-				url,
-				status,
-			};
-		})
-		.filter((file) => {
-			if (folderPath === "/") {
-				return true;
-			} else if (folderPath) {
-				return file.path.startsWith(folderPath);
-			}
-			return false;
-		})
-		.filter((file) => {
-			if (file.name.toLowerCase().includes(search.toLowerCase())) {
-				return true;
-			} else if (
-				file.tags.some((tag) =>
-					tag.toLowerCase().includes(search.toLowerCase())
-				)
-			) {
-				return true;
-			} else if (file.path.toLowerCase().includes(search.toLowerCase())) {
-				return true;
-			} else if (
-				file.source &&
-				file.source.toLowerCase().includes(search.toLowerCase())
-			) {
-				return true;
-			} else if (
-				file.status &&
-				file.status.toLowerCase().includes(search.toLowerCase())
-			) {
-				return true;
-			}
-			return false;
-		})
-		.filter((file) => {
-			if (onlyFavorites) {
-				return file.favorite;
-			}
-			return true;
-		});
+		.filter((file) => filterByFolder(file, folderPath))
+		.map((file) => formatFileDataForRender(app, settings, file))
+		.filter((file) => filterBySearch(file, searchFilter))
+		.filter((file) => filterByFavorite(file, onlyFavorites));
 
 	return (
 		<div className="vault-explorer">
@@ -367,7 +297,7 @@ export default function ReactApp() {
 					<input
 						type="text"
 						placeholder="Search..."
-						value={search}
+						value={searchFilter}
 						onChange={(e) => setSearch(e.target.value)}
 					/>
 				</Stack>
