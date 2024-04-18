@@ -57,7 +57,7 @@
 		{#if tags !== null}
 			<div class="vault-explorer-grid-card__tags">
 				{#each tags as tag}
-					<Tag key={tag} name={tag} />
+					<Tag name={tag} />
 				{/each}
 			</div>
 		{/if}
