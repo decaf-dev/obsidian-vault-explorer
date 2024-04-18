@@ -22,9 +22,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.setName('Favorite property name')
 			.setDesc('The name of the frontmatter property to use to mark a note as a favorite.')
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(checkboxProperties))
-				.setValue(this.plugin.settings.favoritePropertyName)
+				.setValue(this.plugin.settings.properties.favorite)
 				.onChange(async (value) => {
-					this.plugin.settings.favoritePropertyName = value;
+					this.plugin.settings.properties.favorite = value;
 					await this.plugin.saveSettings();
 				}));
 
@@ -32,9 +32,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.setName('URL property name')
 			.setDesc('The name of the property used to store the URL of the content.')
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(textProperties))
-				.setValue(this.plugin.settings.urlPropertyName)
+				.setValue(this.plugin.settings.properties.url)
 				.onChange(async (value) => {
-					this.plugin.settings.urlPropertyName = value;
+					this.plugin.settings.properties.url = value;
 					await this.plugin.saveSettings();
 				}));
 
@@ -42,9 +42,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.setName('Source property name')
 			.setDesc('The name of the property used to store the source name of the content.')
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(textProperties))
-				.setValue(this.plugin.settings.sourcePropertyName)
+				.setValue(this.plugin.settings.properties.source)
 				.onChange(async (value) => {
-					this.plugin.settings.sourcePropertyName = value;
+					this.plugin.settings.properties.source = value;
 					await this.plugin.saveSettings();
 				}));
 
@@ -52,19 +52,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.setName('Status property name')
 			.setDesc('The name of the property used to store the status of the content.')
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(textProperties))
-				.setValue(this.plugin.settings.statusPropertyName)
+				.setValue(this.plugin.settings.properties.status)
 				.onChange(async (value) => {
-					this.plugin.settings.statusPropertyName = value;
-					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName('Revision property name')
-			.setDesc('The name of the property used to store the revision status of the content.')
-			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(textProperties))
-				.setValue(this.plugin.settings.revisionPropertyName)
-				.onChange(async (value) => {
-					this.plugin.settings.revisionPropertyName = value;
+					this.plugin.settings.properties.status = value;
 					await this.plugin.saveSettings();
 				}));
 

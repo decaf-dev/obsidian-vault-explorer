@@ -212,14 +212,6 @@ export default function ReactApp() {
 		menu.showAtMouseEvent(e.nativeEvent);
 	}
 
-	const {
-		favoritePropertyName,
-		urlPropertyName,
-		sourcePropertyName,
-		revisionPropertyName,
-		statusPropertyName,
-	} = settings;
-
 	const folders = app.vault
 		.getAllLoadedFiles()
 		.filter((file) => file instanceof TFolder)
@@ -292,11 +284,16 @@ export default function ReactApp() {
 				tags = frontmatter?.tags as string[];
 			}
 
-			const url: string | null = frontmatter?.[urlPropertyName] ?? null;
-			const favorite = frontmatter?.[favoritePropertyName] ?? false;
-			const source = frontmatter?.[sourcePropertyName] ?? null;
-			const revision = frontmatter?.[revisionPropertyName] ?? null;
-			const status = frontmatter?.[statusPropertyName] ?? null;
+			const {
+				url: urlProp,
+				favorite: favoriteProp,
+				source: sourceProp,
+				status: statusProp,
+			} = settings.properties;
+			const url: string | null = frontmatter?.[urlProp] ?? null;
+			const favorite = frontmatter?.[favoriteProp] ?? false;
+			const source = frontmatter?.[sourceProp] ?? null;
+			const status = frontmatter?.[statusProp] ?? null;
 
 			return {
 				name: file.basename,
@@ -305,7 +302,6 @@ export default function ReactApp() {
 				source,
 				favorite,
 				url,
-				revision,
 				status,
 			};
 		})
@@ -331,11 +327,6 @@ export default function ReactApp() {
 			} else if (
 				file.source &&
 				file.source.toLowerCase().includes(search.toLowerCase())
-			) {
-				return true;
-			} else if (
-				file.revision &&
-				file.revision.toLowerCase().includes(search.toLowerCase())
 			) {
 				return true;
 			} else if (

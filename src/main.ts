@@ -10,11 +10,12 @@ import EventManager from './event/event-manager';
 
 
 const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
-	favoritePropertyName: "",
-	urlPropertyName: "",
-	sourcePropertyName: "",
-	revisionPropertyName: "",
-	statusPropertyName: "",
+	properties: {
+		favorite: "",
+		url: "",
+		source: "",
+		status: "",
+	},
 	filters: {
 		folder: "",
 		search: "",

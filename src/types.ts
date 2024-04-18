@@ -1,9 +1,10 @@
 export interface VaultExplorerPluginSettings {
-	favoritePropertyName: string;
-	urlPropertyName: string;
-	sourcePropertyName: string;
-	revisionPropertyName: string;
-	statusPropertyName: string;
+	properties: {
+		favorite: string;
+		url: string;
+		source: string;
+		status: string;
+	},
 	filters: {
 		folder: string;
 		search: string;

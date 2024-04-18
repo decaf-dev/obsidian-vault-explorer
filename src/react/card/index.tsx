@@ -17,18 +17,9 @@ interface Props {
 	tags: string[];
 	source: string | null;
 	status: string | null;
-	revision: string | null;
 }
 
-export default function Card({
-	name,
-	path,
-	url,
-	tags,
-	source,
-	revision,
-	status,
-}: Props) {
+export default function Card({ name, path, url, tags, source, status }: Props) {
 	const { app } = useAppMount();
 
 	function handleTitleClick() {
@@ -84,7 +75,7 @@ export default function Card({
 							</div>
 						</div>
 					)}
-					<Spacer size="xs" direction="horizontal" />
+					{/* <Spacer size="xs" direction="horizontal" />
 					{revision !== null && (
 						<div>
 							<Property name="revision" value={revision} />
@@ -93,7 +84,7 @@ export default function Card({
 								Revision
 							</div>
 						</div>
-					)}
+					)} */}
 				</div>
 			</div>
 		</div>
