@@ -1,6 +1,6 @@
-import { MarkdownFileData } from "../../types";
+import { MarkdownFileRenderData } from "../../types";
 
-export const favoriteFilter = (file: MarkdownFileData, onlyFavorites: boolean) => {
+export const favoriteFilter = (file: MarkdownFileRenderData, onlyFavorites: boolean) => {
 	if (onlyFavorites) {
 		return file.favorite;
 	}

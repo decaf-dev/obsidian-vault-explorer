@@ -13,7 +13,7 @@ import TabList from "../shared/tab-list";
 import IconButton from "../shared/icon-button";
 
 import EventManager from "src/event/event-manager";
-import { MarkdownFileData } from "./types";
+import { MarkdownFileRenderData } from "./types";
 import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 
 import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
@@ -280,7 +280,7 @@ export default function ReactApp() {
 		}
 	);
 
-	const filteredData: MarkdownFileData[] = sortedMarkdownFiles
+	const filteredData: MarkdownFileRenderData[] = sortedMarkdownFiles
 		.filter((file) => filterByTimestamp(file, timestampFilter))
 		.filter((file) =>
 			filterByProperty(app, file, settings.filters.properties.groups)

@@ -1,6 +1,6 @@
-import { MarkdownFileData } from "../../types";
+import { MarkdownFileRenderData } from "../../types";
 
-export const filterBySearch = (file: MarkdownFileData, search: string) => {
+export const filterBySearch = (file: MarkdownFileRenderData, search: string) => {
 	if (search === "") {
 		return true;
 	}

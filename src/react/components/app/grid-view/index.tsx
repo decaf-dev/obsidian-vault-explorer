@@ -1,11 +1,11 @@
 import Card from "../card";
 
-import { MarkdownFileData } from "../types";
+import { MarkdownFileRenderData } from "../types";
 
 import "./styles.css";
 
 interface Props {
-	data: MarkdownFileData[];
+	data: MarkdownFileRenderData[];
 }
 
 export default function GridView({ data }: Props) {
