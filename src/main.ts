@@ -95,6 +95,7 @@ export default class VaultExplorerPlugin extends Plugin {
 	private handleSettingsChange = async (value: VaultExplorerPluginSettings) => {
 		store.dispatch(setSettings(value));
 		this.settings = value;
+		console.log("Settings changed", value);
 		this.debounceSaveSettings();
 	}
 }

@@ -1,14 +1,17 @@
 import React from "react";
-import GroupTagList from "./group-tag-list";
-import { PropertyFilterGroup } from "src/types";
-import IconButton from "../shared/icon-button";
-import Flex from "../shared/flex";
-import Stack from "../shared/stack";
-import Divider from "../shared/divider";
-import Switch from "../shared/switch";
+
+import BaseView from "./base-view";
+import GroupEditView from "./group-edit-view";
+
+import {
+	PropertyFilterGroup,
+	TextFilterCondition,
+	TextPropertyFilter,
+} from "src/types";
 import { useAppSelector } from "src/redux/hooks";
 import { useAppMount } from "../shared/app-mount-provider";
 
+//TODO add MillionJS
 export default function PropertiesFilterApp() {
 	const [editMenu, setEditMenu] = React.useState(false);
 	const [selectedGroupId, setSelectedGroupId] = React.useState("");
@@ -84,10 +87,111 @@ export default function PropertiesFilterApp() {
 		setGroups(newGroups);
 	}
 
-	function handleGroupNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+	function handleGroupNameChange(name: string) {
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId ? { ...group, name } : group
+		);
+
+		setGroups(newGroups);
+	}
+
+	function handleAddPropertyFilterClick() {
+		const newFilter: TextPropertyFilter = {
+			id: Math.random().toString(),
+			propertyName: "",
+			operator: "and",
+			isEnabled: true,
+			condition: TextFilterCondition.IS,
+			value: "",
+		};
+
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
-				? { ...group, name: e.target.value }
+				? { ...group, filters: [...group.filters, newFilter] }
+				: group
+		);
+
+		setGroups(newGroups);
+	}
+
+	function handlePropertyChange(id: string, propertyName: string) {
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.map((filter) =>
+							filter.id === id
+								? { ...filter, propertyName }
+								: filter
+						),
+				  }
+				: group
+		);
+
+		setGroups(newGroups);
+	}
+
+	//TODO refactor?
+	function handlePropertyDelete(id: string) {
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.filter(
+							(filter) => filter.id !== id
+						),
+				  }
+				: group
+		);
+
+		setGroups(newGroups);
+	}
+
+	function handlePropertyToggle(id: string) {
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.map((filter) =>
+							filter.id === id
+								? { ...filter, isEnabled: !filter.isEnabled }
+								: filter
+						),
+				  }
+				: group
+		);
+
+		setGroups(newGroups);
+	}
+
+	function handlePropertyConditionChange(
+		id: string,
+		condition: TextFilterCondition
+	) {
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.map((filter) =>
+							filter.id === id ? { ...filter, condition } : filter
+						),
+				  }
+				: group
+		);
+
+		setGroups(newGroups);
+	}
+
+	//TODO optimize
+	function handlePropertyValueChange(id: string, value: string) {
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.map((filter) =>
+							filter.id === id ? { ...filter, value } : filter
+						),
+				  }
 				: group
 		);
 
@@ -96,55 +200,30 @@ export default function PropertiesFilterApp() {
 
 	return (
 		<div>
-			<Stack direction="column" spacing="sm">
-				<GroupTagList
-					groups={groups}
+			{editMenu === false && (
+				<BaseView
 					selectedGroupId={selectedGroupId}
+					groups={groups}
+					selectedGroup={selectedGroup}
+					onEditClick={() => setEditMenu(true)}
 					onGroupClick={handleGroupClick}
+					onAddPropertyGroupClick={handleAddPropertyGroupClick}
+					onDeletePropertyGroupClick={handleDeletePropertyGroupClick}
+					onPropertyGroupToggle={handlePropertyGroupToggle}
 				/>
-				<Flex>
-					<IconButton
-						ariaLabel="Add property filter group"
-						iconId="plus"
-						onClick={handleAddPropertyGroupClick}
-					/>
-				</Flex>
-				<Divider />
-			</Stack>
-			{selectedGroup !== undefined && editMenu === false && (
-				<Stack align="center">
-					<IconButton
-						ariaLabel="Edit property filter group"
-						iconId="pencil"
-						onClick={() => setEditMenu(true)}
-					/>
-					<IconButton
-						ariaLabel="Delete property filter group"
-						iconId="trash"
-						onClick={handleDeletePropertyGroupClick}
-					/>
-					<Flex justify="flex-end">
-						<Switch
-							ariaLabel="Toggle property filter group"
-							value={selectedGroup.isEnabled}
-							onToggle={handlePropertyGroupToggle}
-						/>
-					</Flex>
-				</Stack>
 			)}
 			{editMenu === true && selectedGroup !== undefined && (
-				<Stack>
-					<IconButton
-						ariaLabel="Back"
-						iconId="arrow-left"
-						onClick={() => setEditMenu(false)}
-					/>
-					<input
-						type="text"
-						value={selectedGroup.name}
-						onChange={handleGroupNameChange}
-					/>
-				</Stack>
+				<GroupEditView
+					selectedGroup={selectedGroup}
+					onBackClick={() => setEditMenu(false)}
+					onAddPropertyClick={handleAddPropertyFilterClick}
+					onGroupNameChange={handleGroupNameChange}
+					onPropertyChange={handlePropertyChange}
+					onPropertyDelete={handlePropertyDelete}
+					onPropertyToggle={handlePropertyToggle}
+					onPropertyConditionChange={handlePropertyConditionChange}
+					onPropertyValueChange={handlePropertyValueChange}
+				/>
 			)}
 		</div>
 	);

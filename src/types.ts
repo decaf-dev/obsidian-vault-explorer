@@ -30,6 +30,7 @@ export interface PropertyFilterGroup {
 type PropertyFilter = TextPropertyFilter;
 
 interface BasePropertyFilter {
+	id: string;
 	propertyName: string;
 	operator: FilterOperator;
 	isEnabled: boolean;
@@ -39,6 +40,8 @@ export interface TextPropertyFilter extends BasePropertyFilter {
 	condition: TextFilterCondition;
 	value: string;
 }
+
+export type FilterCondition = TextFilterCondition;
 
 export enum TextFilterCondition {
 	IS = "is",
