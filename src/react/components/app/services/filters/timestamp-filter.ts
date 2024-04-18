@@ -11,18 +11,19 @@ export const filterByTimestamp = (file: TFile, timestampFilter: TimestampFilter)
 		.startOf("week")
 		.valueOf();
 
+	const { mtime, ctime } = file.stat;
 	if (timestampFilter === "modified-this-week") {
-		return file.stat.mtime > midnightThisWeek;
+		return mtime > midnightThisWeek;
 	} else if (timestampFilter === "created-this-week") {
-		return file.stat.ctime > midnightThisWeek;
+		return ctime > midnightThisWeek;
 	} else if (timestampFilter === "modified-2-weeks") {
-		return file.stat.mtime > midnightLastWeek;
+		return mtime > midnightLastWeek;
 	} else if (timestampFilter === "created-2-weeks") {
-		return file.stat.ctime > midnightLastWeek;
+		return ctime > midnightLastWeek;
 	} else if (timestampFilter === "modified-today") {
-		return file.stat.mtime > midnightToday;
+		return mtime > midnightToday;
 	} else if (timestampFilter === "created-today") {
-		return file.stat.ctime > midnightToday;
+		return ctime > midnightToday;
 	}
 	return true;
 }
