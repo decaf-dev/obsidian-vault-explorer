@@ -26,7 +26,7 @@
 
 <div
 	style="
-		width: {width};
-		height: {height};
+		width: {width}px;
+		height: {height}px;
 	"
 ></div>
