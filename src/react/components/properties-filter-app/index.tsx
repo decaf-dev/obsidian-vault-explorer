@@ -8,23 +8,28 @@ import {
 	TextFilterCondition,
 	TextPropertyFilter,
 } from "src/types";
-import { useAppSelector } from "src/redux/hooks";
 import { useAppMount } from "../shared/app-mount-provider";
+import EventManager from "src/event/event-manager";
 
-//TODO add MillionJS
 export default function PropertiesFilterApp() {
 	const [editMenu, setEditMenu] = React.useState(false);
 	const [selectedGroupId, setSelectedGroupId] = React.useState("");
 	const [groups, setGroups] = React.useState<PropertyFilterGroup[]>([]);
 
-	const { onSettingsChange } = useAppMount();
-	const { settings } = useAppSelector((state) => state.global);
+	const { getCurrentSettings, onSettingsChange } = useAppMount();
 
 	const selectedGroup = groups.find((group) => group.id === selectedGroupId);
 
+	const settings = getCurrentSettings();
 	React.useLayoutEffect(() => {
 		setSelectedGroupId(settings.filters.properties.selectedGroupId);
 		setGroups(settings.filters.properties.groups);
+	}, []);
+
+	React.useEffect(() => {
+		return () => {
+			EventManager.getInstance().emit("properties-filter-update");
+		};
 	}, []);
 
 	React.useEffect(() => {
@@ -46,6 +51,7 @@ export default function PropertiesFilterApp() {
 
 	function handleAddPropertyGroupClick() {
 		const newGroup: PropertyFilterGroup = {
+			//TODO change id
 			id: Math.random().toString(),
 			name: `Group ${groups.length + 1}`,
 			filters: [],

@@ -7,8 +7,6 @@ import { VaultExplorerPluginSettings } from './types';
 import { DEFAULT_SETTINGS, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
-import { setSettings } from './redux/global-slice';
-import { store } from './redux/store';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings;
@@ -20,7 +18,7 @@ export default class VaultExplorerPlugin extends Plugin {
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
-			(leaf) => new VaultExplorerView(leaf, this.app, this.handleSettingsChange)
+			(leaf) => new VaultExplorerView(leaf, this.app, () => this.settings, this.handleSettingsChange)
 		);
 
 		this.addRibbonIcon("compass", "Open vault explorer", async () => {
@@ -85,17 +83,17 @@ export default class VaultExplorerPlugin extends Plugin {
 	async loadSettings() {
 		const data = await this.loadData();
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
-		store.dispatch(setSettings(this.settings));
+		//store.dispatch(setSettings(this.settings));
 	}
 
 	async saveSettings() {
+		console.log("Saving settings");
 		await this.saveData(this.settings);
 	}
 
 	private handleSettingsChange = async (value: VaultExplorerPluginSettings) => {
-		store.dispatch(setSettings(value));
+		//store.dispatch(setSettings(value));
 		this.settings = value;
-		console.log("Settings changed", value);
 		this.debounceSaveSettings();
 	}
 }

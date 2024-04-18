@@ -6,7 +6,7 @@ import { createRoot, Root } from "react-dom/client";
 import { VAULT_EXPLORER_VIEW } from "src/constants";
 import ReactApp from "src/react/components/app/index";
 import AppMountProvider from "src/react/components/shared/app-mount-provider";
-import { onSettingsChange, VaultExplorerPluginSettings } from "src/types";
+import { getCurrentSettings, onSettingsChange } from "src/types";
 import { Provider } from "react-redux";
 import { store } from "src/redux/store";
 
@@ -14,15 +14,18 @@ export default class VaultExplorerView extends ItemView {
 	root: Root | null;
 	app: App;
 	onSettingsChange: onSettingsChange;
+	getCurrentSettings: getCurrentSettings;
 
 	constructor(
 		leaf: WorkspaceLeaf,
 		app: App,
+		getCurrentSettings: getCurrentSettings,
 		onSettingsChange: onSettingsChange
 	) {
 		super(leaf);
 		this.root = null;
 		this.app = app;
+		this.getCurrentSettings = getCurrentSettings;
 		this.onSettingsChange = onSettingsChange;
 	}
 
@@ -45,6 +48,7 @@ export default class VaultExplorerView extends ItemView {
 				<Provider store={store}>
 					<AppMountProvider
 						app={this.app}
+						getCurrentSettings={this.getCurrentSettings}
 						onSettingsChange={this.onSettingsChange}
 					>
 						<ReactApp />

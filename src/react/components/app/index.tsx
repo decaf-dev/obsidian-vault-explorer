@@ -16,11 +16,11 @@ import EventManager from "src/event/event-manager";
 import { MarkdownFileData } from "./types";
 import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 
+import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
+
 import "./styles.css";
 
-import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
-import { useAppSelector } from "src/redux/hooks";
-
+//TODO add MillionJS
 export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("/");
 	const [search, setSearch] = React.useState<string>("");
@@ -31,8 +31,8 @@ export default function ReactApp() {
 	const [sortFilter, setSortFilter] =
 		React.useState<SortFilter>("file-name-asc");
 
-	const { app, onSettingsChange } = useAppMount();
-	const { settings } = useAppSelector((state) => state.global);
+	const { app, getCurrentSettings, onSettingsChange } = useAppMount();
+	const settings = getCurrentSettings();
 
 	React.useLayoutEffect(() => {
 		setFolderPath(settings.filters.folder);
@@ -44,6 +44,22 @@ export default function ReactApp() {
 	}, []);
 
 	const [, setRefreshTime] = React.useState(0);
+
+	//TODO optimize
+	React.useEffect(() => {
+		const handlePropertiesFilterUpdate = () => {
+			setRefreshTime(Date.now());
+		};
+
+		EventManager.getInstance().on(
+			"properties-filter-update",
+			handlePropertiesFilterUpdate
+		);
+
+		return () => {
+			EventManager.getInstance().emit("properties-filter-update");
+		};
+	}, []);
 
 	//TODO optimize
 	React.useEffect(() => {
@@ -132,7 +148,11 @@ export default function ReactApp() {
 	]);
 
 	function openPropertiesFilterModal() {
-		new PropertiesFilterModal(app, settings, onSettingsChange).open();
+		new PropertiesFilterModal(
+			app,
+			getCurrentSettings,
+			onSettingsChange
+		).open();
 	}
 
 	function openSortMenu(e: React.MouseEvent) {

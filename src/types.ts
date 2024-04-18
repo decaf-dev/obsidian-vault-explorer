@@ -63,3 +63,5 @@ export type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "
 export type TimestampFilter = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
 
 export type onSettingsChange = (value: VaultExplorerPluginSettings) => void;
+
+export type getCurrentSettings = () => VaultExplorerPluginSettings;

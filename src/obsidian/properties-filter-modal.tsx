@@ -5,23 +5,23 @@ import { Provider } from "react-redux";
 import AppMountProvider from "src/react/components/shared/app-mount-provider";
 import PropertiesFilterApp from "src/react/components/properties-filter-app";
 import { store } from "src/redux/store";
-import { VaultExplorerPluginSettings, onSettingsChange } from "src/types";
+import { getCurrentSettings, onSettingsChange } from "src/types";
 
 export default class PropertiesFilterModal extends Modal {
 	root: Root | null;
 	app: App;
-	settings: VaultExplorerPluginSettings;
+	getCurrentSettings: getCurrentSettings;
 	onSettingsChange: onSettingsChange;
 
 	constructor(
 		app: App,
-		settings: VaultExplorerPluginSettings,
+		getCurrentSettings: getCurrentSettings,
 		onSettingsChange: onSettingsChange
 	) {
 		super(app);
 		this.root = null;
 		this.app = app;
-		this.settings = settings;
+		this.getCurrentSettings = getCurrentSettings;
 		this.onSettingsChange = onSettingsChange;
 	}
 
@@ -34,6 +34,7 @@ export default class PropertiesFilterModal extends Modal {
 				<Provider store={store}>
 					<AppMountProvider
 						app={this.app}
+						getCurrentSettings={this.getCurrentSettings}
 						onSettingsChange={this.onSettingsChange}
 					>
 						<PropertiesFilterApp />

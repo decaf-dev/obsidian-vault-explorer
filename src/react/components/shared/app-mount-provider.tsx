@@ -1,10 +1,11 @@
 import { App } from "obsidian";
 
 import React from "react";
-import { onSettingsChange } from "src/types";
+import { getCurrentSettings, onSettingsChange } from "src/types";
 
 interface ContextProps {
 	app: App;
+	getCurrentSettings: getCurrentSettings;
 	onSettingsChange: onSettingsChange;
 }
 
@@ -28,10 +29,13 @@ interface Props extends ContextProps {
 export default function AppMountProvider({
 	app,
 	onSettingsChange,
+	getCurrentSettings,
 	children,
 }: Props) {
 	return (
-		<MountContext.Provider value={{ app, onSettingsChange }}>
+		<MountContext.Provider
+			value={{ app, onSettingsChange, getCurrentSettings }}
+		>
 			{children}
 		</MountContext.Provider>
 	);
