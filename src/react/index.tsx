@@ -14,9 +14,16 @@ import IconButton from "./icon-button";
 
 import EventManager from "src/event/event-manager";
 import { MarkdownFileData } from "./types";
-import { CurrentView, SortFilter, TimestampFilter } from "src/types";
+import {
+	CurrentView,
+	PropertyFilterGroup,
+	SortFilter,
+	TimestampFilter,
+} from "src/types";
 
 import "./styles.css";
+
+import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 
 export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("/");
@@ -27,6 +34,10 @@ export default function ReactApp() {
 	const [currentView, setCurrentView] = React.useState<CurrentView>("grid");
 	const [sortFilter, setSortFilter] =
 		React.useState<SortFilter>("file-name-asc");
+	const [propertiesFilter, setPropertiesFilter] = React.useState<
+		PropertyFilterGroup[]
+	>([]);
+
 	const { app, settings, onSettingsChange } = useAppMount();
 
 	React.useLayoutEffect(() => {
@@ -112,6 +123,7 @@ export default function ReactApp() {
 				onlyFavorites,
 				timestamp: timestampFilter,
 				sort: sortFilter,
+				properties: propertiesFilter,
 			},
 			currentView: currentView,
 		});
@@ -124,6 +136,10 @@ export default function ReactApp() {
 		timestampFilter,
 		currentView,
 	]);
+
+	function openPropertiesFilterModal() {
+		new PropertiesFilterModal(this.app).open();
+	}
 
 	function openSortMenu(e: React.MouseEvent) {
 		const menu = new Menu();
@@ -373,6 +389,11 @@ export default function ReactApp() {
 								ariaLabel="Change timestamp filter"
 								iconId="clock"
 								onClick={openListFilterMenu}
+							/>
+							<IconButton
+								ariaLabel="Change properties filter"
+								iconId="sliders-horizontal"
+								onClick={openPropertiesFilterModal}
 							/>
 							<IconButton
 								ariaLabel="Change sort order"
