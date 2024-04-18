@@ -1,17 +1,11 @@
 import { App, ItemView, WorkspaceLeaf } from "obsidian";
 
-import React from "react";
-import { createRoot, Root } from "react-dom/client";
-
 import { VAULT_EXPLORER_VIEW } from "src/constants";
-import ReactApp from "src/react/components/app/index";
-import AppMountProvider from "src/react/components/shared/app-mount-provider";
 import { getCurrentSettings, onSettingsChange } from "src/types";
-import { Provider } from "react-redux";
-import { store } from "src/redux/store";
+import Component from "../svelte/component.svelte";
 
 export default class VaultExplorerView extends ItemView {
-	root: Root | null;
+	component: Component | null;
 	app: App;
 	onSettingsChange: onSettingsChange;
 	getCurrentSettings: getCurrentSettings;
@@ -23,7 +17,7 @@ export default class VaultExplorerView extends ItemView {
 		onSettingsChange: onSettingsChange
 	) {
 		super(leaf);
-		this.root = null;
+		this.component = null;
 		this.app = app;
 		this.getCurrentSettings = getCurrentSettings;
 		this.onSettingsChange = onSettingsChange;
@@ -41,24 +35,32 @@ export default class VaultExplorerView extends ItemView {
 	}
 
 	async onOpen() {
-		const container = this.containerEl.children[1];
-		this.root = createRoot(container);
-		this.root.render(
-			<React.StrictMode>
-				<Provider store={store}>
-					<AppMountProvider
-						app={this.app}
-						getCurrentSettings={this.getCurrentSettings}
-						onSettingsChange={this.onSettingsChange}
-					>
-						<ReactApp />
-					</AppMountProvider>
-				</Provider>
-			</React.StrictMode>
-		);
+		const containerEl = this.containerEl.children[1];
+
+		this.component = new Component({
+			target: containerEl,
+			props: {
+				variable: 1,
+			},
+		});
+		// this.root = createRoot(container);
+		// this.root.render(
+		// 	<React.StrictMode>
+		// 		<Provider store={store}>
+		// 			<AppMountProvider
+		// 				app={this.app}
+		// 				getCurrentSettings={this.getCurrentSettings}
+		// 				onSettingsChange={this.onSettingsChange}
+		// 			>
+		// 				<ReactApp />
+		// 			</AppMountProvider>
+		// 		</Provider>
+		// 	</React.StrictMode>
+		// );
 	}
 
 	async onClose() {
-		this.root?.unmount();
+		this.component?.$destroy();
+		// this.root?.unmount();
 	}
 }

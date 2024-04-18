@@ -1,4 +1,4 @@
-import { moment } from "obsidian";
+import moment from "moment";
 
 export const getMidnightToday = () => {
 	const midnightToday = moment().startOf("day").valueOf();
