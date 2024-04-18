@@ -1,32 +1,52 @@
-import { PropertyFilterGroup } from "src/types";
+import {
+	PropertyFilterGroup,
+	TextFilterCondition,
+	TextPropertyFilter,
+} from "src/types";
 import IconButton from "../../shared/icon-button";
 import Stack from "../../shared/stack";
 import Divider from "../../shared/divider";
 import PropertyFilterList from "../property-filter-list";
+import { generateUUID } from "src/react/services/uuid";
 
 interface Props {
 	selectedGroup: PropertyFilterGroup;
-	onGroupNameChange: (name: string) => void;
-	onAddPropertyClick: () => void;
 	onBackClick: () => void;
-	onPropertyChange: (id: string, propertyName: string) => void;
-	onPropertyDelete: (id: string) => void;
-	onPropertyToggle: (id: string) => void;
-	onPropertyConditionChange: (id: string, condition: string) => void;
-	onPropertyValueChange: (id: string, value: string) => void;
+	onGroupsChange: React.Dispatch<React.SetStateAction<PropertyFilterGroup[]>>;
 }
 
 export default function GroupEditView({
 	selectedGroup,
-	onGroupNameChange,
-	onAddPropertyClick,
 	onBackClick,
-	onPropertyChange,
-	onPropertyDelete,
-	onPropertyToggle,
-	onPropertyConditionChange,
-	onPropertyValueChange,
+	onGroupsChange,
 }: Props) {
+	function handleAddPropertyClick() {
+		const newFilter: TextPropertyFilter = {
+			id: generateUUID(),
+			propertyName: "",
+			operator: "and",
+			isEnabled: true,
+			condition: TextFilterCondition.IS,
+			value: "",
+		};
+
+		onGroupsChange((groups) =>
+			groups.map((group) =>
+				group.id === selectedGroup.id
+					? { ...group, filters: [...group.filters, newFilter] }
+					: group
+			)
+		);
+	}
+
+	function handleGroupNameChange(name: string) {
+		onGroupsChange((groups) =>
+			groups.map((group) =>
+				group.id === selectedGroup.id ? { ...group, name } : group
+			)
+		);
+	}
+
 	return (
 		<Stack direction="column" align="flex-start" spacing="sm">
 			<Stack spacing="sm">
@@ -38,22 +58,18 @@ export default function GroupEditView({
 				<input
 					type="text"
 					value={selectedGroup.name}
-					onChange={(e) => onGroupNameChange(e.target.value)}
+					onChange={(e) => handleGroupNameChange(e.target.value)}
 				/>
 			</Stack>
 			<Divider />
 			<PropertyFilterList
 				selectedGroup={selectedGroup}
-				onPropertyChange={onPropertyChange}
-				onPropertyDelete={onPropertyDelete}
-				onPropertyToggle={onPropertyToggle}
-				onConditionChange={onPropertyConditionChange}
-				onValueChange={onPropertyValueChange}
+				onGroupsChange={onGroupsChange}
 			/>
 			<IconButton
 				ariaLabel="Add filter"
 				iconId="plus"
-				onClick={onAddPropertyClick}
+				onClick={handleAddPropertyClick}
 			/>
 		</Stack>
 	);
