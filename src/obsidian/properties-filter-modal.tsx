@@ -1,4 +1,4 @@
-import { App, Modal, WorkspaceLeaf } from "obsidian";
+import { App, Modal } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import AppMountProvider from "src/react/app-mount-provider";
 import PropertiesFilterApp from "src/react/properties-filter-app";

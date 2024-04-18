@@ -34,9 +34,6 @@ export default function ReactApp() {
 	const [currentView, setCurrentView] = React.useState<CurrentView>("grid");
 	const [sortFilter, setSortFilter] =
 		React.useState<SortFilter>("file-name-asc");
-	const [propertiesFilter, setPropertiesFilter] = React.useState<
-		PropertyFilterGroup[]
-	>([]);
 
 	const { app, settings, onSettingsChange } = useAppMount();
 
@@ -123,11 +120,12 @@ export default function ReactApp() {
 				onlyFavorites,
 				timestamp: timestampFilter,
 				sort: sortFilter,
-				properties: propertiesFilter,
+				properties: { ...settings.filters.properties },
 			},
 			currentView: currentView,
 		});
 	}, [
+		settings,
 		onSettingsChange,
 		sortFilter,
 		folderPath,

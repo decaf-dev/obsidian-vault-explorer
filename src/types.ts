@@ -11,15 +11,20 @@ export interface VaultExplorerPluginSettings {
 		onlyFavorites: boolean;
 		sort: SortFilter;
 		timestamp: TimestampFilter;
-		properties: PropertyFilterGroup[];
+		properties: {
+			selectedGroupId: string;
+			groups: PropertyFilterGroup[];
+		}
 	},
 	currentView: CurrentView;
 }
 
 export interface PropertyFilterGroup {
+	id: string;
 	name: string;
 	filters: PropertyFilter[];
 	position: number;
+	isEnabled: boolean;
 }
 
 type PropertyFilter = TextPropertyFilter;

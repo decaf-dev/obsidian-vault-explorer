@@ -22,7 +22,19 @@ const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		onlyFavorites: false,
 		timestamp: "all",
 		sort: "file-name-asc",
-		properties: [],
+		properties: {
+			selectedGroupId: "0",
+			groups:
+				[
+					{
+						id: "0",
+						name: "Unnamed group",
+						filters: [],
+						position: 0,
+						isEnabled: true
+					}
+				]
+		}
 	},
 	currentView: "grid",
 }
@@ -36,7 +48,7 @@ export default class VaultExplorerPlugin extends Plugin {
 		const debounceSettingsChange = _.debounce(async (value: VaultExplorerPluginSettings) => {
 			this.settings = value;
 			await this.saveSettings();
-			//console.log("Settings saved", this.settings);
+			console.log("Settings saved", this.settings);
 		}, 1000);
 
 		this.registerView(
