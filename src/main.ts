@@ -16,7 +16,6 @@ export default class VaultExplorerPlugin extends Plugin {
 
 	async onload() {
 		this.debounceSaveSettings = _.debounce(this.saveSettings, 1000);
-
 		await this.loadSettings();
 
 		this.registerView(
@@ -84,7 +83,9 @@ export default class VaultExplorerPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		const data = await this.loadData();
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
+		store.dispatch(setSettings(this.settings));
 	}
 
 	async saveSettings() {
