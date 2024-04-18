@@ -3,11 +3,7 @@ import React from "react";
 import BaseView from "./base-view";
 import GroupEditView from "./group-edit-view";
 
-import {
-	PropertyFilterGroup,
-	TextFilterCondition,
-	TextPropertyFilter,
-} from "src/types";
+import { PropertyFilterGroup } from "src/types";
 import { useAppMount } from "../shared/app-mount-provider";
 import EventManager from "src/event/event-manager";
 import { generateUUID } from "src/react/services/uuid";
@@ -112,13 +108,6 @@ export default function PropertiesFilterApp() {
 					selectedGroup={selectedGroup}
 					onBackClick={() => setEditMenu(false)}
 					onGroupsChange={setGroups}
-					// onAddPropertyClick={handleAddPropertyFilterClick}
-					// onGroupNameChange={handleGroupNameChange}
-					// onPropertyChange={handlePropertyChange}
-					// onPropertyDelete={handlePropertyDelete}
-					// onPropertyToggle={handlePropertyToggle}
-					// onPropertyConditionChange={handlePropertyConditionChange}
-					// onPropertyValueChange={handlePropertyValueChange}
 				/>
 			)}
 		</div>
