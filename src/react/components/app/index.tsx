@@ -24,7 +24,8 @@ import {
 import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 
 import "./styles.css";
-import { matchesPropertyFilter } from "./utils";
+import { filterByTimestamp } from "./services/filters/timestamp-filter";
+import { filterByProperty } from "./services/filters/property-filter";
 
 //TODO add MillionJS
 export default function ReactApp() {
@@ -281,86 +282,10 @@ export default function ReactApp() {
 	);
 
 	const filteredData: MarkdownFileData[] = sortedMarkdownFiles
-		.filter((file) => {
-			const midnightToday = moment().startOf("day").valueOf();
-			const midnightThisWeek = moment().startOf("week").valueOf();
-
-			//This is the Sunday the previous week
-			const midnightLastWeek = moment()
-				.subtract(1, "weeks")
-				.startOf("week")
-				.valueOf();
-
-			if (timestampFilter === "modified-this-week") {
-				return file.stat.mtime > midnightThisWeek;
-			} else if (timestampFilter === "created-this-week") {
-				return file.stat.ctime > midnightThisWeek;
-			} else if (timestampFilter === "modified-2-weeks") {
-				return file.stat.mtime > midnightLastWeek;
-			} else if (timestampFilter === "created-2-weeks") {
-				return file.stat.ctime > midnightLastWeek;
-			} else if (timestampFilter === "modified-today") {
-				return file.stat.mtime > midnightToday;
-			} else if (timestampFilter === "created-today") {
-				return file.stat.ctime > midnightToday;
-			}
-			return true;
-		})
-		.filter((file) => {
-			const frontmatter = app.metadataCache.getFileCache(
-				file as TFile
-			)?.frontmatter;
-
-			const { groups } = settings.filters.properties;
-
-			let isValid = true;
-			groups.forEach((group) => {
-				if (!group.isEnabled) return;
-
-				group.filters.forEach((filter) => {
-					if (!filter.isEnabled) return;
-
-					const { propertyName, condition, value } = filter;
-					if (propertyName === "") return;
-					if (frontmatter === undefined) {
-						isValid = false;
-						return;
-					}
-
-					const propertyValue = frontmatter?.[propertyName] ?? null;
-
-					if (
-						propertyValue === null &&
-						(value.length > 0 ||
-							condition === TextFilterCondition.IS_EMPTY ||
-							condition === TextFilterCondition.IS_NOT_EMPTY)
-					) {
-						isValid = false;
-						return;
-					}
-
-					//TODO handle array
-					//TODO handle date
-					//TODO handle number
-					if (typeof propertyValue !== "string") {
-						isValid = false;
-						return;
-					}
-
-					const doesMatch = matchesPropertyFilter(
-						condition,
-						propertyValue,
-						value,
-						true
-					);
-
-					if (!doesMatch) {
-						isValid = false;
-					}
-				});
-			});
-			return isValid;
-		})
+		.filter((file) => filterByTimestamp(file, timestampFilter))
+		.filter((file) =>
+			filterByProperty(app, file, settings.filters.properties.groups)
+		)
 		.map((file) => {
 			const frontmatter = app.metadataCache.getFileCache(
 				file as TFile

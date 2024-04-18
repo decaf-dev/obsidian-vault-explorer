@@ -74,11 +74,16 @@ export default function PropertyFilter({
 							);
 						})}
 					</select>
-					<input
-						type="text"
-						value={value}
-						onChange={(e) => onValueChange(id, e.target.value)}
-					/>
+					{condition !== TextFilterCondition.IS_EMPTY &&
+						condition !== TextFilterCondition.IS_NOT_EMPTY && (
+							<input
+								type="text"
+								value={value}
+								onChange={(e) =>
+									onValueChange(id, e.target.value)
+								}
+							/>
+						)}
 				</Stack>
 				<Stack spacing="sm" align="center">
 					<Switch value={isEnabled} onToggle={() => onToggle(id)} />
