@@ -1,11 +1,11 @@
 import ListItem from "../list-item";
 
-import { MarkdownFileData } from "../types";
+import { MarkdownFileRenderData } from "../types";
 
 import "./styles.css";
 
 interface Props {
-	data: MarkdownFileData[];
+	data: MarkdownFileRenderData[];
 }
 
 export default function ListView({ data }: Props) {

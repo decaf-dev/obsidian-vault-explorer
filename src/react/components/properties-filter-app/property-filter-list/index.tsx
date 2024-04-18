@@ -4,20 +4,12 @@ import PropertyFilter from "../property-filter";
 
 interface Props {
 	selectedGroup: PropertyFilterGroup;
-	onPropertyChange: (id: string, propertyName: string) => void;
-	onPropertyDelete: (id: string) => void;
-	onPropertyToggle: (id: string) => void;
-	onConditionChange: (id: string, condition: string) => void;
-	onValueChange: (id: string, value: string) => void;
+	onGroupsChange: React.Dispatch<React.SetStateAction<PropertyFilterGroup[]>>;
 }
 
 export default function PropertyFilterList({
 	selectedGroup,
-	onPropertyChange,
-	onPropertyDelete,
-	onPropertyToggle,
-	onConditionChange,
-	onValueChange,
+	onGroupsChange,
 }: Props) {
 	return (
 		<Stack direction="column" spacing="md" width="100%">
@@ -32,11 +24,7 @@ export default function PropertyFilterList({
 						condition={condition}
 						propertyName={propertyName}
 						isEnabled={isEnabled}
-						onPropertyChange={onPropertyChange}
-						onDelete={onPropertyDelete}
-						onToggle={onPropertyToggle}
-						onConditionChange={onConditionChange}
-						onValueChange={onValueChange}
+						onGroupsChange={onGroupsChange}
 					/>
 				);
 			})}

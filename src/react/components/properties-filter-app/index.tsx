@@ -3,11 +3,7 @@ import React from "react";
 import BaseView from "./base-view";
 import GroupEditView from "./group-edit-view";
 
-import {
-	PropertyFilterGroup,
-	TextFilterCondition,
-	TextPropertyFilter,
-} from "src/types";
+import { PropertyFilterGroup } from "src/types";
 import { useAppMount } from "../shared/app-mount-provider";
 import EventManager from "src/event/event-manager";
 import { generateUUID } from "src/react/services/uuid";
@@ -93,117 +89,6 @@ export default function PropertiesFilterApp() {
 		setGroups(newGroups);
 	}
 
-	function handleGroupNameChange(name: string) {
-		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId ? { ...group, name } : group
-		);
-
-		setGroups(newGroups);
-	}
-
-	function handleAddPropertyFilterClick() {
-		const newFilter: TextPropertyFilter = {
-			id: generateUUID(),
-			propertyName: "",
-			operator: "and",
-			isEnabled: true,
-			condition: TextFilterCondition.IS,
-			value: "",
-		};
-
-		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId
-				? { ...group, filters: [...group.filters, newFilter] }
-				: group
-		);
-
-		setGroups(newGroups);
-	}
-
-	function handlePropertyChange(id: string, propertyName: string) {
-		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId
-				? {
-						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id
-								? { ...filter, propertyName }
-								: filter
-						),
-				  }
-				: group
-		);
-
-		setGroups(newGroups);
-	}
-
-	//TODO refactor?
-	function handlePropertyDelete(id: string) {
-		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId
-				? {
-						...group,
-						filters: group.filters.filter(
-							(filter) => filter.id !== id
-						),
-				  }
-				: group
-		);
-
-		setGroups(newGroups);
-	}
-
-	function handlePropertyToggle(id: string) {
-		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId
-				? {
-						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id
-								? { ...filter, isEnabled: !filter.isEnabled }
-								: filter
-						),
-				  }
-				: group
-		);
-
-		setGroups(newGroups);
-	}
-
-	function handlePropertyConditionChange(
-		id: string,
-		condition: TextFilterCondition
-	) {
-		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId
-				? {
-						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id ? { ...filter, condition } : filter
-						),
-				  }
-				: group
-		);
-
-		setGroups(newGroups);
-	}
-
-	//TODO optimize
-	function handlePropertyValueChange(id: string, value: string) {
-		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId
-				? {
-						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id ? { ...filter, value } : filter
-						),
-				  }
-				: group
-		);
-
-		setGroups(newGroups);
-	}
-
 	return (
 		<div>
 			{editMenu === false && (
@@ -222,13 +107,7 @@ export default function PropertiesFilterApp() {
 				<GroupEditView
 					selectedGroup={selectedGroup}
 					onBackClick={() => setEditMenu(false)}
-					onAddPropertyClick={handleAddPropertyFilterClick}
-					onGroupNameChange={handleGroupNameChange}
-					onPropertyChange={handlePropertyChange}
-					onPropertyDelete={handlePropertyDelete}
-					onPropertyToggle={handlePropertyToggle}
-					onPropertyConditionChange={handlePropertyConditionChange}
-					onPropertyValueChange={handlePropertyValueChange}
+					onGroupsChange={setGroups}
 				/>
 			)}
 		</div>

@@ -14,7 +14,7 @@ interface Props {
 	name: string;
 	path: string;
 	url: string | null;
-	tags: string[];
+	tags: string[] | null;
 	source: string | null;
 	status: string | null;
 }
@@ -59,11 +59,13 @@ export default function Card({ name, path, url, tags, source, status }: Props) {
 			</div>
 			<Spacer size="md" />
 			<div className="vault-explorer-card__content">
-				<div className="vault-explorer-card__tags">
-					{tags.map((tag) => (
-						<Tag key={tag} name={tag} />
-					))}
-				</div>
+				{tags && (
+					<div className="vault-explorer-card__tags">
+						{tags.map((tag) => (
+							<Tag key={tag} name={tag} />
+						))}
+					</div>
+				)}
 				{source !== null && <Property name="source" value={source} />}
 				<div className="vault-explorer-card__labels">
 					{status !== null && (

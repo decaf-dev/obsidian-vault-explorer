@@ -4,7 +4,11 @@ import Flex from "../../shared/flex";
 import Stack from "../../shared/stack";
 import IconButton from "../../shared/icon-button";
 import Switch from "../../shared/switch";
-import { TextFilterCondition } from "src/types";
+import {
+	PropertyFilterGroup,
+	TextFilterCondition,
+	TextPropertyFilter,
+} from "src/types";
 
 import "./styles.css";
 import { getDisplayNameForFilterCondition } from "./utils";
@@ -15,11 +19,7 @@ interface Props {
 	value: string;
 	condition: TextFilterCondition;
 	isEnabled: boolean;
-	onPropertyChange: (id: string, propertyName: string) => void;
-	onConditionChange: (id: string, condition: TextFilterCondition) => void;
-	onDelete: (id: string) => void;
-	onToggle: (id: string) => void;
-	onValueChange: (id: string, value: string) => void;
+	onGroupsChange: React.Dispatch<React.SetStateAction<PropertyFilterGroup[]>>;
 }
 
 export default function PropertyFilter({
@@ -28,14 +28,64 @@ export default function PropertyFilter({
 	condition,
 	isEnabled,
 	value,
-	onPropertyChange,
-	onToggle,
-	onDelete,
-	onConditionChange,
-	onValueChange,
+	onGroupsChange,
 }: Props) {
 	const { app } = useAppMount();
 	const obsidianProperties = getAllObsidianProperties(app);
+
+	function handlePropertyChange(args: Partial<TextPropertyFilter>) {
+		onGroupsChange((groups) => {
+			return groups.map((group) => {
+				if (group.id === id) {
+					return {
+						...group,
+						filters: group.filters.map((filter) => {
+							if (filter.id === id) {
+								return {
+									...filter,
+									...args,
+								};
+							}
+							return filter;
+						}),
+					};
+				}
+				return group;
+			});
+		});
+	}
+
+	function handleDelete() {
+		onGroupsChange((groups) =>
+			groups.map((group) => {
+				if (group.id === id) {
+					return {
+						...group,
+						filters: group.filters.filter(
+							(filter) => filter.id !== id
+						),
+					};
+				}
+				return group;
+			})
+		);
+	}
+
+	function handlePropertyNameChange(value: string) {
+		handlePropertyChange({ propertyName: value });
+	}
+
+	function handleConditionChange(value: TextFilterCondition) {
+		handlePropertyChange({ condition: value });
+	}
+
+	function handleValueChange(value: string) {
+		handlePropertyChange({ value });
+	}
+
+	function handleToggle() {
+		handlePropertyChange({ isEnabled: !isEnabled });
+	}
 
 	return (
 		<div className="vault-explorer-property-filter">
@@ -43,7 +93,9 @@ export default function PropertyFilter({
 				<Stack spacing="md">
 					<select
 						value={propertyName}
-						onChange={(e) => onPropertyChange(id, e.target.value)}
+						onChange={(e) =>
+							handlePropertyNameChange(e.target.value)
+						}
 					>
 						<option value="">Select a property</option>
 						{obsidianProperties.map((prop) => {
@@ -58,8 +110,7 @@ export default function PropertyFilter({
 					<select
 						value={condition}
 						onChange={(e) =>
-							onConditionChange(
-								id,
+							handleConditionChange(
 								e.target.value as TextFilterCondition
 							)
 						}
@@ -80,14 +131,14 @@ export default function PropertyFilter({
 								type="text"
 								value={value}
 								onChange={(e) =>
-									onValueChange(id, e.target.value)
+									handleValueChange(e.target.value)
 								}
 							/>
 						)}
 				</Stack>
 				<Stack spacing="sm" align="center">
-					<Switch value={isEnabled} onToggle={() => onToggle(id)} />
-					<IconButton iconId="trash" onClick={() => onDelete(id)} />
+					<Switch value={isEnabled} onToggle={() => handleToggle()} />
+					<IconButton iconId="trash" onClick={() => handleDelete()} />
 				</Stack>
 			</Flex>
 		</div>
