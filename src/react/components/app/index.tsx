@@ -2,22 +2,32 @@ import { Menu, moment, TFile, TFolder } from "obsidian";
 
 import React from "react";
 
-import { useAppMount } from "./app-mount-provider";
-import Checkbox from "./checkbox";
-import Flex from "./flex";
-import Stack from "./stack";
+import { useAppMount } from "../shared/app-mount-provider";
+import Checkbox from "../shared/checkbox";
+import Flex from "../shared/flex";
+import Stack from "../shared/stack";
 import GridView from "./grid-view";
 import ListView from "./list-view";
-import Tab from "./tab";
-import TabList from "./tab-list";
-import IconButton from "./icon-button";
+import Tab from "../shared/tab";
+import TabList from "../shared/tab-list";
+import IconButton from "../shared/icon-button";
 
 import EventManager from "src/event/event-manager";
 import { MarkdownFileData } from "./types";
-import { CurrentView, SortFilter, TimestampFilter } from "src/types";
+import {
+	CurrentView,
+	SortFilter,
+	TextFilterCondition,
+	TimestampFilter,
+} from "src/types";
+
+import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 
 import "./styles.css";
+import { filterByTimestamp } from "./services/filters/timestamp-filter";
+import { filterByProperty } from "./services/filters/property-filter";
 
+//TODO add MillionJS
 export default function ReactApp() {
 	const [folderPath, setFolderPath] = React.useState<string>("/");
 	const [search, setSearch] = React.useState<string>("");
@@ -27,7 +37,9 @@ export default function ReactApp() {
 	const [currentView, setCurrentView] = React.useState<CurrentView>("grid");
 	const [sortFilter, setSortFilter] =
 		React.useState<SortFilter>("file-name-asc");
-	const { app, settings, onSettingsChange } = useAppMount();
+
+	const { app, getCurrentSettings, onSettingsChange } = useAppMount();
+	const settings = getCurrentSettings();
 
 	React.useLayoutEffect(() => {
 		setFolderPath(settings.filters.folder);
@@ -39,6 +51,22 @@ export default function ReactApp() {
 	}, []);
 
 	const [, setRefreshTime] = React.useState(0);
+
+	//TODO optimize
+	React.useEffect(() => {
+		const handlePropertiesFilterUpdate = () => {
+			setRefreshTime(Date.now());
+		};
+
+		EventManager.getInstance().on(
+			"properties-filter-update",
+			handlePropertiesFilterUpdate
+		);
+
+		return () => {
+			EventManager.getInstance().emit("properties-filter-update");
+		};
+	}, []);
 
 	//TODO optimize
 	React.useEffect(() => {
@@ -112,6 +140,7 @@ export default function ReactApp() {
 				onlyFavorites,
 				timestamp: timestampFilter,
 				sort: sortFilter,
+				properties: { ...settings.filters.properties },
 			},
 			currentView: currentView,
 		});
@@ -124,6 +153,14 @@ export default function ReactApp() {
 		timestampFilter,
 		currentView,
 	]);
+
+	function openPropertiesFilterModal() {
+		new PropertiesFilterModal(
+			app,
+			getCurrentSettings,
+			onSettingsChange
+		).open();
+	}
 
 	function openSortMenu(e: React.MouseEvent) {
 		const menu = new Menu();
@@ -212,14 +249,6 @@ export default function ReactApp() {
 		menu.showAtMouseEvent(e.nativeEvent);
 	}
 
-	const {
-		favoritePropertyName,
-		urlPropertyName,
-		sourcePropertyName,
-		revisionPropertyName,
-		statusPropertyName,
-	} = settings;
-
 	const folders = app.vault
 		.getAllLoadedFiles()
 		.filter((file) => file instanceof TFolder)
@@ -253,31 +282,10 @@ export default function ReactApp() {
 	);
 
 	const filteredData: MarkdownFileData[] = sortedMarkdownFiles
-		.filter((file) => {
-			const midnightToday = moment().startOf("day").valueOf();
-			const midnightThisWeek = moment().startOf("week").valueOf();
-
-			//This is the Sunday the previous week
-			const midnightLastWeek = moment()
-				.subtract(1, "weeks")
-				.startOf("week")
-				.valueOf();
-
-			if (timestampFilter === "modified-this-week") {
-				return file.stat.mtime > midnightThisWeek;
-			} else if (timestampFilter === "created-this-week") {
-				return file.stat.ctime > midnightThisWeek;
-			} else if (timestampFilter === "modified-2-weeks") {
-				return file.stat.mtime > midnightLastWeek;
-			} else if (timestampFilter === "created-2-weeks") {
-				return file.stat.ctime > midnightLastWeek;
-			} else if (timestampFilter === "modified-today") {
-				return file.stat.mtime > midnightToday;
-			} else if (timestampFilter === "created-today") {
-				return file.stat.ctime > midnightToday;
-			}
-			return true;
-		})
+		.filter((file) => filterByTimestamp(file, timestampFilter))
+		.filter((file) =>
+			filterByProperty(app, file, settings.filters.properties.groups)
+		)
 		.map((file) => {
 			const frontmatter = app.metadataCache.getFileCache(
 				file as TFile
@@ -292,11 +300,16 @@ export default function ReactApp() {
 				tags = frontmatter?.tags as string[];
 			}
 
-			const url: string | null = frontmatter?.[urlPropertyName] ?? null;
-			const favorite = frontmatter?.[favoritePropertyName] ?? false;
-			const source = frontmatter?.[sourcePropertyName] ?? null;
-			const revision = frontmatter?.[revisionPropertyName] ?? null;
-			const status = frontmatter?.[statusPropertyName] ?? null;
+			const {
+				url: urlProp,
+				favorite: favoriteProp,
+				source: sourceProp,
+				status: statusProp,
+			} = settings.properties;
+			const url: string | null = frontmatter?.[urlProp] ?? null;
+			const favorite = frontmatter?.[favoriteProp] ?? false;
+			const source = frontmatter?.[sourceProp] ?? null;
+			const status = frontmatter?.[statusProp] ?? null;
 
 			return {
 				name: file.basename,
@@ -305,7 +318,6 @@ export default function ReactApp() {
 				source,
 				favorite,
 				url,
-				revision,
 				status,
 			};
 		})
@@ -331,11 +343,6 @@ export default function ReactApp() {
 			} else if (
 				file.source &&
 				file.source.toLowerCase().includes(search.toLowerCase())
-			) {
-				return true;
-			} else if (
-				file.revision &&
-				file.revision.toLowerCase().includes(search.toLowerCase())
 			) {
 				return true;
 			} else if (
@@ -382,6 +389,11 @@ export default function ReactApp() {
 								ariaLabel="Change timestamp filter"
 								iconId="clock"
 								onClick={openListFilterMenu}
+							/>
+							<IconButton
+								ariaLabel="Change properties filter"
+								iconId="sliders-horizontal"
+								onClick={openPropertiesFilterModal}
 							/>
 							<IconButton
 								ariaLabel="Change sort order"

@@ -1,5 +1,5 @@
 import { MarkdownView } from "obsidian";
-import { useAppMount } from "../app-mount-provider";
+import { useAppMount } from "../../shared/app-mount-provider";
 import "./styles.css";
 
 interface Props {

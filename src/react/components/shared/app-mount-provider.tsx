@@ -1,12 +1,11 @@
-import { App, WorkspaceLeaf } from "obsidian";
+import { App } from "obsidian";
 
 import React from "react";
-import { VaultExplorerPluginSettings, onSettingsChange } from "src/types";
+import { getCurrentSettings, onSettingsChange } from "src/types";
 
 interface ContextProps {
 	app: App;
-	leaf: WorkspaceLeaf;
-	settings: VaultExplorerPluginSettings;
+	getCurrentSettings: getCurrentSettings;
 	onSettingsChange: onSettingsChange;
 }
 
@@ -29,14 +28,13 @@ interface Props extends ContextProps {
 
 export default function AppMountProvider({
 	app,
-	leaf,
-	settings,
 	onSettingsChange,
+	getCurrentSettings,
 	children,
 }: Props) {
 	return (
 		<MountContext.Provider
-			value={{ app, leaf, settings, onSettingsChange }}
+			value={{ app, onSettingsChange, getCurrentSettings }}
 		>
 			{children}
 		</MountContext.Provider>

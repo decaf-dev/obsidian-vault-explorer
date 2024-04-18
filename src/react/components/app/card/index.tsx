@@ -2,13 +2,13 @@ import { MarkdownView, setIcon } from "obsidian";
 
 import React from "react";
 
-import { useAppMount } from "../app-mount-provider";
-import Tag from "../tag";
-import Spacer from "../spacer";
-import Property from "../property";
+import { useAppMount } from "../../shared/app-mount-provider";
+import Tag from "../../shared/tag";
+import Spacer from "../../shared/spacer";
+import Property from "../../shared/property";
 
 import "./styles.css";
-import IconButton from "../icon-button";
+import IconButton from "../../shared/icon-button";
 
 interface Props {
 	name: string;
@@ -17,18 +17,9 @@ interface Props {
 	tags: string[];
 	source: string | null;
 	status: string | null;
-	revision: string | null;
 }
 
-export default function Card({
-	name,
-	path,
-	url,
-	tags,
-	source,
-	revision,
-	status,
-}: Props) {
+export default function Card({ name, path, url, tags, source, status }: Props) {
 	const { app } = useAppMount();
 
 	function handleTitleClick() {
@@ -84,7 +75,7 @@ export default function Card({
 							</div>
 						</div>
 					)}
-					<Spacer size="xs" direction="horizontal" />
+					{/* <Spacer size="xs" direction="horizontal" />
 					{revision !== null && (
 						<div>
 							<Property name="revision" value={revision} />
@@ -93,7 +84,7 @@ export default function Card({
 								Revision
 							</div>
 						</div>
-					)}
+					)} */}
 				</div>
 			</div>
 		</div>

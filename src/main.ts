@@ -4,42 +4,21 @@ import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
 import { VaultExplorerPluginSettings } from './types';
-import { VAULT_EXPLORER_VIEW } from './constants';
+import { DEFAULT_SETTINGS, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
 
-
-const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
-	favoritePropertyName: "",
-	urlPropertyName: "",
-	sourcePropertyName: "",
-	revisionPropertyName: "",
-	statusPropertyName: "",
-	filters: {
-		folder: "",
-		search: "",
-		onlyFavorites: false,
-		timestamp: "all",
-		sort: "file-name-asc",
-	},
-	currentView: "grid",
-}
-
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings;
+	debounceSaveSettings: () => void;
 
 	async onload() {
+		this.debounceSaveSettings = _.debounce(this.saveSettings, 1000);
 		await this.loadSettings();
-
-		const debounceSettingsChange = _.debounce(async (value: VaultExplorerPluginSettings) => {
-			this.settings = value;
-			await this.saveSettings();
-			//console.log("Settings saved", this.settings);
-		}, 1000);
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
-			(leaf) => new VaultExplorerView(leaf, this.app, this.settings, debounceSettingsChange)
+			(leaf) => new VaultExplorerView(leaf, this.app, () => this.settings, this.handleSettingsChange)
 		);
 
 		this.addRibbonIcon("compass", "Open vault explorer", async () => {
@@ -102,10 +81,19 @@ export default class VaultExplorerPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		const data = await this.loadData();
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
+		//store.dispatch(setSettings(this.settings));
 	}
 
 	async saveSettings() {
+		console.log("Saving settings");
 		await this.saveData(this.settings);
+	}
+
+	private handleSettingsChange = async (value: VaultExplorerPluginSettings) => {
+		//store.dispatch(setSettings(value));
+		this.settings = value;
+		this.debounceSaveSettings();
 	}
 }

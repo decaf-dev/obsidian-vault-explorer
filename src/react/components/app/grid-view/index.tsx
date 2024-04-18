@@ -12,8 +12,7 @@ export default function GridView({ data }: Props) {
 	return (
 		<div className="vault-explorer-grid-view">
 			{data.map((file) => {
-				const { name, tags, path, url, source, revision, status } =
-					file;
+				const { name, tags, path, url, source, status } = file;
 				return (
 					<Card
 						key={path}
@@ -22,7 +21,6 @@ export default function GridView({ data }: Props) {
 						url={url}
 						tags={tags}
 						source={source}
-						revision={revision}
 						status={status}
 					/>
 				);
