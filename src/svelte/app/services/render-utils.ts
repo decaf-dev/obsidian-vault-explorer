@@ -1,6 +1,6 @@
 import { App, FrontMatterCache, TFile } from "obsidian";
 import { VaultExplorerPluginSettings } from "src/types";
-import { MarkdownFileRenderData } from "../types";
+import { MarkdownFileRenderData } from "../../../react/components/app/types";
 
 export const formatFileDataForRender = (app: App, settings: VaultExplorerPluginSettings, file: TFile,): MarkdownFileRenderData => {
 	const frontmatter = app.metadataCache.getFileCache(

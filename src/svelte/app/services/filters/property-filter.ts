@@ -1,6 +1,6 @@
 import { App, TFile } from "obsidian";
 import { PropertyFilterGroup } from "src/types";
-import { matchesPropertyFilter } from "../../utils";
+import { matchesPropertyFilter } from "../../../../react/components/app/utils";
 
 //Tests
 //Group is enabled/disabled

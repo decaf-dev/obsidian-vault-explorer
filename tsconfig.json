@@ -1,8 +1,10 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+	"types": ["svelte", "node"],
     "baseUrl": ".",
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "inlineSourceMap": false,
+    "inlineSources": false,
     "module": "ESNext",
     "target": "ES6",
     "allowJs": true,
@@ -22,6 +24,5 @@
   },
   "include": [
     "**/*.ts",
-	"**/*.tsx"
 	]
 }

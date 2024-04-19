@@ -12,6 +12,7 @@
   "author": "Trey Wallis",
   "license": "MIT",
   "devDependencies": {
+    "@tsconfig/svelte": "^5.0.4",
     "@types/bun": "latest",
     "@types/lodash": "^4.17.0",
     "@types/node": "^16.11.6",
@@ -21,17 +22,15 @@
     "@typescript-eslint/parser": "5.29.0",
     "builtin-modules": "3.3.0",
     "esbuild": "0.17.3",
+    "esbuild-svelte": "^0.8.0",
     "obsidian": "latest",
+    "svelte-preprocess": "^5.1.4",
     "tslib": "2.4.0",
     "typescript": "4.7.4"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.2.3",
     "lodash": "^4.17.21",
     "nanoid": "^5.0.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-redux": "^9.1.1",
-    "react-virtuoso": "^4.7.2"
+    "svelte": "^4.2.15"
   }
 }
