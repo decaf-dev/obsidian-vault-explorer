@@ -32,9 +32,10 @@
 	const midnightThisWeek = getMidnightThisWeek();
 	const midnightLastWeek = getMidnightLastWeek();
 
+	let folders: string[] = [];
+
 	let searchFilter: string = "";
 	let folderPath: string = "/";
-	let folders: string[] = [];
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
 	let onlyFavorites: boolean = false;
@@ -106,6 +107,25 @@
 
 		markdownFiles = plugin.app.vault.getMarkdownFiles();
 	});
+
+	$: searchFilter,
+		folderPath,
+		sortFilter,
+		timestampFilter,
+		onlyFavorites,
+		currentView,
+		saveSettings();
+
+	async function saveSettings() {
+		console.log("updateSettings");
+		plugin.settings.filters.search = searchFilter;
+		plugin.settings.filters.folder = folderPath;
+		plugin.settings.filters.sort = sortFilter;
+		plugin.settings.filters.timestamp = timestampFilter;
+		plugin.settings.filters.onlyFavorites = onlyFavorites;
+		plugin.settings.currentView = currentView;
+		await plugin.saveSettings();
+	}
 
 	function openPropertiesFilterModal() {
 		new PropertiesFilterModal(plugin).open();
@@ -212,7 +232,7 @@
 	let currentPage = 1;
 	const pageSize = 50;
 	$: totalItems = renderData.length;
-	$: totalPages = Math.floor(totalItems / pageSize);
+	$: totalPages = Math.ceil(totalItems / pageSize);
 
 	function changePage(newPage: number) {
 		currentPage = newPage;
