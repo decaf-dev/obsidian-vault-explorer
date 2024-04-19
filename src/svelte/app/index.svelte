@@ -50,15 +50,6 @@
 		onlyFavorites = value;
 	}, 300);
 
-	$: folderFiles = markdownFiles.filter((file) => {
-		if (folderPath === "") {
-			return true;
-		} else if (folderPath === "/") {
-			return true;
-		}
-		return file.path.startsWith(folderPath ?? "/");
-	});
-
 	$: sorted = [...markdownFiles].sort((a, b) => {
 		if (sortFilter === "file-name-asc") {
 			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
@@ -217,6 +208,15 @@
 		const value = (nativeEvent.target as HTMLInputElement).checked;
 		debounceFavoriteFilter(value);
 	}
+
+	let currentPage = 1;
+	const pageSize = 50;
+	$: totalItems = renderData.length;
+	$: totalPages = Math.floor(totalItems / pageSize);
+
+	function changePage(newPage: number) {
+		currentPage = newPage;
+	}
 </script>
 
 <div class="vault-explorer">
@@ -260,9 +260,33 @@
 					/>
 				</Flex>
 			</Stack>
-			<div>
-				Showing {renderData.length} out of {folderFiles.length}
-			</div>
+			<Stack justify="flex-end" align="center">
+				<Flex>
+					<IconButton
+						iconId="chevrons-left"
+						ariaLabel="First page"
+						on:click={() => changePage(1)}
+					/>
+					<IconButton
+						iconId="chevron-left"
+						ariaLabel="Previous page"
+						disabled={currentPage === 1}
+						on:click={() => changePage(currentPage - 1)}
+					/>
+					<IconButton
+						iconId="chevron-right"
+						ariaLabel="Next page"
+						disabled={currentPage === totalPages}
+						on:click={() => changePage(currentPage + 1)}
+					/>
+					<IconButton
+						iconId="chevrons-right"
+						ariaLabel="Last page"
+						on:click={() => changePage(totalPages)}
+					/>
+				</Flex>
+				{currentPage} / {totalPages}
+			</Stack>
 		</Flex>
 		<Stack spacing="sm">
 			<TabList>
@@ -271,9 +295,9 @@
 			</TabList>
 		</Stack>
 		{#if currentView === "grid"}
-			<GridView data={renderData} />
+			<GridView data={renderData} {currentPage} {pageSize} />
 		{:else}
-			<ListView data={renderData} />
+			<ListView data={renderData} {currentPage} {pageSize} />
 		{/if}
 	</div>
 </div>
