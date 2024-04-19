@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { MarkdownView } from "obsidian";
-	import IconButton from "../../shared/icon-button.svelte";
-	import Tag from "../../shared/tag.svelte";
-	import Spacer from "../../shared/spacer.svelte";
-	import Property from "src/svelte/shared/property.svelte";
+	import IconButton from "../../shared/components/icon-button.svelte";
+	import Tag from "../../shared/components/tag.svelte";
+	import Spacer from "../../shared/components/spacer.svelte";
+	import Property from "../../shared/components/property.svelte";
 	import VaultExplorerPlugin from "src/main";
 	import store from "../store";
 

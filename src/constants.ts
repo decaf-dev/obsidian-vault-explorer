@@ -1,4 +1,4 @@
-import { generateUUID } from "./react/services/uuid";
+import { generateUUID } from "./svelte/shared/services/uuid";
 import { VaultExplorerPluginSettings } from "./types";
 
 export const VAULT_EXPLORER_VIEW = "vault-explorer";

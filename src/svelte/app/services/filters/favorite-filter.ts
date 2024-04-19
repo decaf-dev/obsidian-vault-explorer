@@ -1,4 +1,5 @@
-import { MarkdownFileRenderData } from "../../../../react/components/app/types";
+import { MarkdownFileRenderData } from "../../types";
+
 
 export const favoriteFilter = (file: MarkdownFileRenderData, onlyFavorites: boolean) => {
 	if (onlyFavorites) {

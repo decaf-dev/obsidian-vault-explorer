@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Stack from "../shared/stack.svelte";
-	import Flex from "../shared/flex.svelte";
-	import IconButton from "../shared/icon-button.svelte";
-	import Checkbox from "../shared/checkbox.svelte";
-	import TabList from "../shared/tab-list.svelte";
-	import Tab from "../shared/tab.svelte";
+	import Stack from "../shared/components/stack.svelte";
+	import Flex from "../shared/components/flex.svelte";
+	import IconButton from "../shared/components/icon-button.svelte";
+	import Checkbox from "../shared/components/checkbox.svelte";
+	import TabList from "../shared/components/tab-list.svelte";
+	import Tab from "../shared/components/tab.svelte";
 	import { Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import { CurrentView, SortFilter, TimestampFilter } from "src/types";
