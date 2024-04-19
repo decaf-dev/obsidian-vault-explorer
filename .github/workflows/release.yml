@@ -20,11 +20,17 @@ jobs:
               with:
                   bun-version: latest
 
+            - name: Install dependencies
+              run: bun install
+
+            - name: Fix tsconfig.json
+              run: |
+                   sed -i '/"verbatimModuleSyntax"/d' node_modules/@tsconfig/svelte/tsconfig.json
+                   sed -i '/"moduleResolution"/c\    "moduleResolution": "node",' node_modules/@tsconfig/svelte/tsconfig.json
+
             - name: Build
               id: build
-              run: |
-                  bun install
-                  bun run build
+              run: bun run build
 
             # Create the release on GitHub
             - name: Release
