@@ -286,6 +286,15 @@
 				</Flex>
 			</Stack>
 			<Stack justify="flex-end" align="center">
+				<Stack spacing="xs">
+					<Stack spacing="xs">
+						<span>{startIndex + 1}</span>
+						<span>-</span>
+						<span>{endIndex}</span>
+					</Stack>
+					<span>of</span>
+					<span>{renderData.length}</span>
+				</Stack>
 				<Flex>
 					<IconButton
 						iconId="chevrons-left"
@@ -310,15 +319,6 @@
 						on:click={() => changePage(totalPages)}
 					/>
 				</Flex>
-				<Stack spacing="xs">
-					<Stack spacing="xs">
-						<span>{startIndex + 1}</span>
-						<span>-</span>
-						<span>{endIndex}</span>
-					</Stack>
-					<span>of</span>
-					<span>{renderData.length}</span>
-				</Stack>
 			</Stack>
 		</Flex>
 		<Stack spacing="sm">
