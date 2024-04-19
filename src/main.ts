@@ -92,7 +92,6 @@ export default class VaultExplorerPlugin extends Plugin {
 	}
 
 	async saveSettings() {
-		console.log("Saving settings");
 		await this.saveData(this.settings);
 	}
 }

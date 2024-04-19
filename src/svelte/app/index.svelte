@@ -117,7 +117,6 @@
 		saveSettings();
 
 	async function saveSettings() {
-		console.log("updateSettings");
 		plugin.settings.filters.search = searchFilter;
 		plugin.settings.filters.folder = folderPath;
 		plugin.settings.filters.sort = sortFilter;
