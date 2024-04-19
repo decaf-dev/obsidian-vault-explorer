@@ -17,6 +17,8 @@
 				const index = startIndex + i;
 				return data[index];
 			});
+		} else {
+			displayedItems = [];
 		}
 	}
 	//TODO replace file.path with a unique id that is generated when the file is added
