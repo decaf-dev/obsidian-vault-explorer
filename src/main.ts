@@ -10,10 +10,8 @@ import EventManager from './event/event-manager';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
-	debounceSaveSettings: () => void = () => { };
 
 	async onload() {
-		this.debounceSaveSettings = _.debounce(this.saveSettings, 1000);
 		await this.loadSettings();
 
 		this.registerView(
@@ -96,10 +94,5 @@ export default class VaultExplorerPlugin extends Plugin {
 	async saveSettings() {
 		console.log("Saving settings");
 		await this.saveData(this.settings);
-	}
-
-	private handleSettingsChange = async (value: VaultExplorerPluginSettings) => {
-		this.settings = value;
-		this.debounceSaveSettings();
 	}
 }
