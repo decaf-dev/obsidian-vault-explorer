@@ -4,6 +4,7 @@
 
 	export let ariaLabel = "";
 	export let iconId = "";
+	export let disabled = false;
 
 	const dispatch = createEventDispatcher();
 	let ref: HTMLElement;
@@ -20,6 +21,7 @@
 
 <button
 	class="clickable-icon"
+	{disabled}
 	aria-label={ariaLabel}
 	bind:this={ref}
 	on:click={handleClick}
