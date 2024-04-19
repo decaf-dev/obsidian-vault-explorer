@@ -6,16 +6,25 @@
 	export let currentPage: number;
 	export let pageSize: number;
 
-	// Calculate the items to display based on the current page
-	$: displayedItems = Array.from({ length: pageSize }, (_, i) => ({
-		id: (currentPage - 1) * pageSize + i + 1,
-		...data[(currentPage - 1) * pageSize + i],
-	}));
+	let displayedItems: MarkdownFileRenderData[] = [];
+
+	$: {
+		const startIndex = (currentPage - 1) * pageSize;
+		const pageLength = Math.min(pageSize, data.length - startIndex);
+
+		if (startIndex < data.length) {
+			displayedItems = Array.from({ length: pageLength }, (_, i) => {
+				const index = startIndex + i;
+				return data[index];
+			});
+		}
+	}
+	//TODO replace file.path with a unique id that is generated when the file is added
 </script>
 
 <div class="vault-explorer-grid-view">
 	<div class="vault-explorer-grid-view__container">
-		{#each displayedItems as file (file.id)}
+		{#each displayedItems as file (file.path)}
 			<GridCard
 				name={file.name}
 				path={file.path}
