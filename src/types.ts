@@ -17,6 +17,7 @@ export interface VaultExplorerPluginSettings {
 		}
 	},
 	currentView: CurrentView;
+	pageSize: number;
 }
 
 export interface PropertyFilterGroup {

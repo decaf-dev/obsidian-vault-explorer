@@ -97,6 +97,8 @@
 		favoriteFilter(file, onlyFavorites),
 	);
 
+	let pageSize: number = 0;
+
 	store.plugin.subscribe((p) => {
 		plugin = p;
 
@@ -106,6 +108,7 @@
 			.map((folder) => folder.path);
 
 		markdownFiles = plugin.app.vault.getMarkdownFiles();
+		pageSize = plugin.settings.pageSize;
 	});
 
 	$: searchFilter,
@@ -229,9 +232,12 @@
 	}
 
 	let currentPage = 1;
-	const pageSize = 50;
 	$: totalItems = renderData.length;
 	$: totalPages = Math.ceil(totalItems / pageSize);
+
+	$: startIndex = (currentPage - 1) * pageSize;
+	$: pageLength = Math.min(pageSize, renderData.length - startIndex);
+	$: endIndex = startIndex + pageLength;
 
 	function changePage(newPage: number) {
 		currentPage = newPage;
@@ -304,7 +310,15 @@
 						on:click={() => changePage(totalPages)}
 					/>
 				</Flex>
-				{currentPage} / {totalPages}
+				<Stack spacing="xs">
+					<Stack spacing="xs">
+						<span>{startIndex + 1}</span>
+						<span>-</span>
+						<span>{endIndex}</span>
+					</Stack>
+					<span>of</span>
+					<span>{renderData.length}</span>
+				</Stack>
 			</Stack>
 		</Flex>
 		<Stack spacing="sm">
@@ -314,9 +328,9 @@
 			</TabList>
 		</Stack>
 		{#if currentView === "grid"}
-			<GridView data={renderData} {currentPage} {pageSize} />
+			<GridView data={renderData} {startIndex} {pageLength} />
 		{:else}
-			<ListView data={renderData} {currentPage} {pageSize} />
+			<ListView data={renderData} {startIndex} {pageLength} />
 		{/if}
 	</div>
 </div>

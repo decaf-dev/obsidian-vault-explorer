@@ -4,15 +4,12 @@
 	import { MarkdownFileRenderData } from "../types";
 
 	export let data: MarkdownFileRenderData[];
-	export let currentPage: number;
-	export let pageSize: number;
+	export let startIndex: number;
+	export let pageLength: number;
 
 	let displayedItems: MarkdownFileRenderData[] = [];
 
 	$: {
-		const startIndex = (currentPage - 1) * pageSize;
-		const pageLength = Math.min(pageSize, data.length - startIndex);
-
 		if (startIndex < data.length) {
 			displayedItems = Array.from({ length: pageLength }, (_, i) => {
 				const index = startIndex + i;

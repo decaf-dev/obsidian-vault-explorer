@@ -18,6 +18,25 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		const textProperties = getObsidianPropertiesByType(this.app, "text");
 		const checkboxProperties = getObsidianPropertiesByType(this.app, "checkbox");
 
+		new Setting(containerEl).setName("Views").setHeading();
+
+		new Setting(containerEl).setName("Page size").setDesc("The number of items to display per page.").addDropdown(dropdown => dropdown
+			.addOptions({
+				"10": "10",
+				"25": "25",
+				"50": "50",
+				"100": "100",
+				"250": "250",
+				"500": "500",
+			})
+			.setValue(this.plugin.settings.pageSize.toString())
+			.onChange(async (value) => {
+				this.plugin.settings.pageSize = parseInt(value);
+				await this.plugin.saveSettings();
+			}));
+
+		new Setting(containerEl).setName("Properties").setHeading();
+
 		new Setting(containerEl)
 			.setName('Favorite property name')
 			.setDesc('The name of the frontmatter property to use to mark a note as a favorite.')
