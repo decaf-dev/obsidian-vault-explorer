@@ -97,6 +97,8 @@
 		favoriteFilter(file, onlyFavorites),
 	);
 
+	let pageSize: number = 0;
+
 	store.plugin.subscribe((p) => {
 		plugin = p;
 
@@ -106,6 +108,7 @@
 			.map((folder) => folder.path);
 
 		markdownFiles = plugin.app.vault.getMarkdownFiles();
+		pageSize = plugin.settings.pageSize;
 	});
 
 	$: searchFilter,
@@ -229,12 +232,11 @@
 	}
 
 	let currentPage = 1;
-	const PAGE_SIZE = 50;
 	$: totalItems = renderData.length;
-	$: totalPages = Math.ceil(totalItems / PAGE_SIZE);
+	$: totalPages = Math.ceil(totalItems / pageSize);
 
-	$: startIndex = (currentPage - 1) * PAGE_SIZE;
-	$: pageLength = Math.min(PAGE_SIZE, renderData.length - startIndex);
+	$: startIndex = (currentPage - 1) * pageSize;
+	$: pageLength = Math.min(pageSize, renderData.length - startIndex);
 	$: endIndex = startIndex + pageLength;
 
 	function changePage(newPage: number) {
