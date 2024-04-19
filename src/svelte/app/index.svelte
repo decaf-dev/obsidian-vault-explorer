@@ -229,9 +229,13 @@
 	}
 
 	let currentPage = 1;
-	const pageSize = 50;
+	const PAGE_SIZE = 50;
 	$: totalItems = renderData.length;
-	$: totalPages = Math.ceil(totalItems / pageSize);
+	$: totalPages = Math.ceil(totalItems / PAGE_SIZE);
+
+	$: startIndex = (currentPage - 1) * PAGE_SIZE;
+	$: pageLength = Math.min(PAGE_SIZE, renderData.length - startIndex);
+	$: endIndex = startIndex + pageLength;
 
 	function changePage(newPage: number) {
 		currentPage = newPage;
@@ -304,7 +308,15 @@
 						on:click={() => changePage(totalPages)}
 					/>
 				</Flex>
-				{currentPage} / {totalPages}
+				<Stack spacing="xs">
+					<Stack spacing="xs">
+						<span>{startIndex + 1}</span>
+						<span>-</span>
+						<span>{endIndex}</span>
+					</Stack>
+					<span>of</span>
+					<span>{renderData.length}</span>
+				</Stack>
 			</Stack>
 		</Flex>
 		<Stack spacing="sm">
@@ -314,9 +326,9 @@
 			</TabList>
 		</Stack>
 		{#if currentView === "grid"}
-			<GridView data={renderData} {currentPage} {pageSize} />
+			<GridView data={renderData} {startIndex} {pageLength} />
 		{:else}
-			<ListView data={renderData} {currentPage} {pageSize} />
+			<ListView data={renderData} {startIndex} {pageLength} />
 		{/if}
 	</div>
 </div>
