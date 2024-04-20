@@ -503,7 +503,7 @@
 			</Stack>
 		</Flex>
 		<Stack spacing="sm">
-			<TabList>
+			<TabList initialSelectedIndex={currentView === "grid" ? 0 : 1}>
 				<Tab on:click={() => (currentView = "grid")}>Grid</Tab>
 				<Tab on:click={() => (currentView = "list")}>List</Tab>
 			</TabList>
