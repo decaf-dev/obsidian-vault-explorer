@@ -18,5 +18,5 @@ export const getDropdownOptionsForProperties = (properties: ObsidianProperty[]) 
 	return properties.reduce((acc: Record<string, string>, cur: ObsidianProperty) => {
 		acc[cur.name] = cur.name;
 		return acc;
-	}, { "": "Select an option" });
+	}, { "": "Select a property" });
 }

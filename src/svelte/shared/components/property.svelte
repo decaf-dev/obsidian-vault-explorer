@@ -5,6 +5,10 @@
 	export let name: string;
 	export let value: string;
 
+	let formattedValue = value;
+	formattedValue = formattedValue.replace(/\[/g, "");
+	formattedValue = formattedValue.replace(/\]/g, "");
+
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
 		plugin = p;
@@ -15,7 +19,9 @@
 			"global-search"
 		];
 		if (searchPlugin) {
-			searchPlugin.instance.openGlobalSearch(`["${name}":${value}`);
+			searchPlugin.instance.openGlobalSearch(
+				`["${name}":${formattedValue}]`,
+			);
 		}
 	}
 </script>
@@ -27,7 +33,7 @@
 	rel="noopener"
 	on:click={handleClick}
 >
-	{value}
+	{formattedValue}
 </a>
 
 <style>

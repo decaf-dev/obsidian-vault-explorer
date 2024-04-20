@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { MarkdownView } from "obsidian";
+	import Stack from "../../shared/components/stack.svelte";
 	import IconButton from "../../shared/components/icon-button.svelte";
 	import Tag from "../../shared/components/tag.svelte";
 	import Spacer from "../../shared/components/spacer.svelte";
@@ -11,8 +12,9 @@
 	export let path: string;
 	export let url: string | null;
 	export let tags: string[] | null;
-	export let source: string | null;
-	export let status: string | null;
+	export let custom1: string | null;
+	export let custom2: string | null;
+	export let custom3: string | null;
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
@@ -61,22 +63,28 @@
 				{/each}
 			</div>
 		{/if}
-		{#if source !== null}<Property
-				name={plugin.settings.properties.source}
-				value={source}
-			/>{/if}
-		<div class="vault-explorer-grid-card__labels">
-			{#if status !== null}
-				<div>
-					<Property
-						name={plugin.settings.properties.status}
-						value={status}
-					/>
-					<Spacer size="xs" />
-					<div class="vault-explorer-property-label">Status</div>
+		<Stack spacing="xs"
+			>{#if custom1 !== null}<Property
+					name={plugin.settings.properties.custom1}
+					value={custom1}
+				/>{/if}
+			{#if custom2 !== null}<Property
+					name={plugin.settings.properties.custom2}
+					value={custom2}
+				/>{/if}
+			{#if custom3 !== null}<Property
+					name={plugin.settings.properties.custom3}
+					value={custom3}
+				/>{/if}
+		</Stack>
+		<!-- <div class="vault-explorer-grid-card__labels">
+			<div>
+				<Property name={""} value={""} />
+				<Spacer size="xs" />
+				<div class="vault-explorer-property-label">
 				</div>
-			{/if}
-		</div>
+			</div>
+		</div> -->
 	</div>
 </div>
 
@@ -117,7 +125,7 @@
 		display: none;
 	}
 
-	.vault-explorer-grid-card__labels {
+	/* .vault-explorer-grid-card__labels {
 		display: flex;
 	}
 
@@ -125,5 +133,5 @@
 		margin-left: 8px;
 		font-size: var(--font-smallest);
 		color: var(--text-muted);
-	}
+	} */
 </style>

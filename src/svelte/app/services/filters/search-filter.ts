@@ -7,7 +7,7 @@ export const filterBySearch = (file: MarkdownFileRenderData, search: string) => 
 
 	search = search.toLowerCase().trim();
 
-	const { name, tags, path, status, source } = file;
+	const { name, tags, path, custom1, custom2, custom3 } = file;
 
 	if (name.toLowerCase().includes(search)) {
 		return true;
@@ -25,17 +25,15 @@ export const filterBySearch = (file: MarkdownFileRenderData, search: string) => 
 		return true;
 	}
 
-	if (
-		source !== null &&
-		source.toLowerCase().includes(search)
-	) {
+	if (custom1 !== null && custom1.toLowerCase().includes(search)) {
 		return true;
 	}
 
-	if (
-		status !== null &&
-		status.toLowerCase().includes(search)
-	) {
+	if (custom2 !== null && custom2.toLowerCase().includes(search)) {
+		return true;
+	}
+
+	if (custom3 !== null && custom3.toLowerCase().includes(search)) {
 		return true;
 	}
 

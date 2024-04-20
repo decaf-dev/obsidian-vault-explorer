@@ -8,8 +8,9 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	properties: {
 		favorite: "",
 		url: "",
-		source: "",
-		status: "",
+		custom1: "",
+		custom2: "",
+		custom3: ""
 	},
 	filters: {
 		folder: "/",

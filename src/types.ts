@@ -2,8 +2,9 @@ export interface VaultExplorerPluginSettings {
 	properties: {
 		favorite: string;
 		url: string;
-		source: string;
-		status: string;
+		custom1: string;
+		custom2: string;
+		custom3: string;
 	},
 	filters: {
 		folder: string;
@@ -36,6 +37,13 @@ interface BasePropertyFilter {
 	operator: FilterOperator;
 	isEnabled: boolean;
 }
+
+export interface CustomProperty {
+	name: string;
+	type: PropertyRenderType;
+}
+
+export type PropertyRenderType = "long" | "short";
 
 export interface TextPropertyFilter extends BasePropertyFilter {
 	condition: TextFilterCondition;
