@@ -81,14 +81,18 @@
 		markdownFiles = plugin.app.vault.getMarkdownFiles();
 		pageSize = plugin.settings.pageSize;
 
+		let localCache: Record<string, FrontMatterCache | undefined> = {};
 		markdownFiles.forEach((file) => {
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-			frontmatterCache = {
-				...frontmatterCache,
+			return {
+				...localCache,
 				[file.path]: frontmatter,
 			};
 		});
+		frontmatterCache = {
+			...localCache,
+		};
 	});
 
 	// onMount(() => {
