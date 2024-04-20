@@ -13,27 +13,35 @@ export const formatFileDataForRender = (app: App, settings: VaultExplorerPluginS
 	const {
 		url: urlProp,
 		favorite: favoriteProp,
-		source: sourceProp,
-		status: statusProp,
+		custom1: custom1Prop,
+		custom2: custom2Prop,
+		custom3: custom3Prop,
 	} = settings.properties;
 
 	const url: string | null = loadPropertyValue(frontmatter, urlProp);
 	const favorite: string | null = loadPropertyValue(frontmatter, favoriteProp);
-	const source: string | null = loadPropertyValue(frontmatter, sourceProp);
-	const status: string | null = loadPropertyValue(frontmatter, statusProp);
+	const custom1: string | null = loadPropertyValue(frontmatter, custom1Prop);
+	const custom2: string | null = loadPropertyValue(frontmatter, custom2Prop);
+	const custom3: string | null = loadPropertyValue(frontmatter, custom3Prop);
 
 	return {
 		name: file.basename,
 		path: file.path,
 		tags,
-		source,
 		favorite,
 		url,
-		status,
+		custom1,
+		custom2,
+		custom3,
+
 	};
 }
 
 const loadPropertyValue = (frontmatter: FrontMatterCache | undefined, propertyName: string, isArray = false) => {
+	if (propertyName === "") {
+		return null;
+	}
+
 	if (!frontmatter) {
 		return null;
 	}

@@ -29,8 +29,9 @@
 				path={file.path}
 				url={file.url}
 				tags={file.tags}
-				source={file.source}
-				status={file.status}
+				custom1={file.custom1}
+				custom2={file.custom2}
+				custom3={file.custom3}
 			/>
 		{/each}
 	</div>

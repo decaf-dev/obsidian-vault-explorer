@@ -35,11 +35,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				await this.plugin.saveSettings();
 			}));
 
-		new Setting(containerEl).setName("Properties").setHeading();
+		new Setting(containerEl).setName("Default properties").setHeading();
 
 		new Setting(containerEl)
-			.setName('Favorite property name')
-			.setDesc('The name of the frontmatter property to use to mark a note as a favorite.')
+			.setName('Favorite property')
+			.setDesc('The property used to mark a note as a favorite. This must be a checkbox property.')
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(checkboxProperties))
 				.setValue(this.plugin.settings.properties.favorite)
 				.onChange(async (value) => {
@@ -48,8 +48,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('URL property name')
-			.setDesc('The name of the property used to store the URL of the content.')
+			.setName('URL property')
+			.setDesc('The property used to store the URL of the content. This must be a text property.')
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(textProperties))
 				.setValue(this.plugin.settings.properties.url)
 				.onChange(async (value) => {
@@ -57,23 +57,35 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
+		new Setting(containerEl).setName("Custom properties").setHeading();
+
 		new Setting(containerEl)
-			.setName('Source property name')
-			.setDesc('The name of the property used to store the source name of the content.')
+			.setName('Custom property 1')
+			.setDesc('The first custom property. This must be a text property.')
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(textProperties))
-				.setValue(this.plugin.settings.properties.source)
+				.setValue(this.plugin.settings.properties.custom1)
 				.onChange(async (value) => {
-					this.plugin.settings.properties.source = value;
+					this.plugin.settings.properties.custom1 = value;
 					await this.plugin.saveSettings();
 				}));
 
 		new Setting(containerEl)
-			.setName('Status property name')
-			.setDesc('The name of the property used to store the status of the content.')
+			.setName('Custom property 2')
+			.setDesc('The second custom property. This must be a text property.')
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(textProperties))
-				.setValue(this.plugin.settings.properties.status)
+				.setValue(this.plugin.settings.properties.custom2)
 				.onChange(async (value) => {
-					this.plugin.settings.properties.status = value;
+					this.plugin.settings.properties.custom2 = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Custom property 3')
+			.setDesc('The third custom property. This must be a text property.')
+			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties(textProperties))
+				.setValue(this.plugin.settings.properties.custom3)
+				.onChange(async (value) => {
+					this.plugin.settings.properties.custom3 = value;
 					await this.plugin.saveSettings();
 				}));
 
