@@ -82,14 +82,18 @@
 		pageSize = plugin.settings.pageSize;
 
 		markdownFiles.forEach((file) => {
-			const cache =
+			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-			frontmatterCache[file.path] = cache;
+			frontmatterCache = {
+				...frontmatterCache,
+				[file.path]: frontmatter,
+			};
 		});
 	});
 
 	onMount(() => {
 		const handleModifyFile = (...data: unknown[]) => {
+			console.log("file-modify event triggered");
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const updatedFile = data[0] as TFile;
 				markdownFiles = markdownFiles.map((file) => {
@@ -109,6 +113,7 @@
 
 	onMount(() => {
 		const handleCreateFile = (...data: unknown[]) => {
+			console.log("file-create event triggered");
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
 				markdownFiles = [...markdownFiles, newFile];
@@ -123,6 +128,7 @@
 
 	onMount(() => {
 		const handleFolderCreate = (...data: unknown[]) => {
+			console.log("folder-create event triggered");
 			if (data.length > 0 && typeof data[0] === "string") {
 				const newFolder = data[0] as string;
 				folders = [...folders, newFolder];
@@ -154,6 +160,7 @@
 
 	onMount(() => {
 		const handleDeleteFolder = (...data: unknown[]) => {
+			console.log("folder-delete event triggered");
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
 				folders = folders.filter((folder) => folder !== path);
@@ -172,6 +179,7 @@
 
 	onMount(() => {
 		const handleFileRename = (...data: unknown[]) => {
+			console.log("file-rename event triggered");
 			if (data.length < 2) return;
 			if (typeof data[0] === "string" && typeof data[1] === "string") {
 				const oldPath = data[0] as string;
@@ -201,6 +209,7 @@
 
 	onMount(() => {
 		const handleFolderRename = (...data: unknown[]) => {
+			console.log("folder-rename event triggered");
 			if (data.length < 2) return;
 			if (typeof data[0] === "string" && typeof data[1] === "string") {
 				const oldPath = data[0] as string;
@@ -226,10 +235,16 @@
 
 	onMount(() => {
 		const handleMetadataChange = (...data: unknown[]) => {
+			console.log("metadata-change event triggered");
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const file = data[0] as TFile;
-				frontmatterCache[file.path] =
-					plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+
+				frontmatterCache = {
+					...frontmatterCache,
+					[file.path]:
+						plugin.app.metadataCache.getFileCache(file)
+							?.frontmatter,
+				};
 			}
 		};
 
