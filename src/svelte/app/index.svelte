@@ -12,7 +12,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";
-	import { favoriteFilter } from "./services/filters/favorite-filter";
+	import { filterByFavorites } from "./services/filters/favorite-filter";
 	import { filterByFolder } from "./services/filters/folder-filter";
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
@@ -85,14 +85,13 @@
 		markdownFiles.forEach((file) => {
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-			return {
+
+			localCache = {
 				...localCache,
 				[file.path]: frontmatter,
 			};
 		});
-		frontmatterCache = {
-			...localCache,
-		};
+		frontmatterCache = localCache;
 
 		searchFilter = plugin.settings.filters.search;
 		folderFilter = plugin.settings.filters.folder;
@@ -104,7 +103,7 @@
 
 	onMount(() => {
 		const handleCreateFile = (...data: unknown[]) => {
-			console.log("file-create event triggered");
+			// console.log("file-create event triggered");
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
 				markdownFiles = [...markdownFiles, newFile];
@@ -119,7 +118,7 @@
 
 	onMount(() => {
 		const handleFolderCreate = (...data: unknown[]) => {
-			console.log("folder-create event triggered");
+			// console.log("folder-create event triggered");
 			if (data.length > 0 && typeof data[0] === "string") {
 				const newFolder = data[0] as string;
 				folders = [...folders, newFolder];
@@ -134,7 +133,7 @@
 
 	onMount(() => {
 		const handleDeleteFile = (...data: unknown[]) => {
-			console.log("file-delete event triggered");
+			// console.log("file-delete event triggered");
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
 				markdownFiles = markdownFiles.filter(
@@ -151,7 +150,7 @@
 
 	onMount(() => {
 		const handleDeleteFolder = (...data: unknown[]) => {
-			console.log("folder-delete event triggered");
+			// console.log("folder-delete event triggered");
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
 				folders = folders.filter((folder) => folder !== path);
@@ -170,7 +169,7 @@
 
 	onMount(() => {
 		const handleFileRename = (...data: unknown[]) => {
-			console.log("file-rename event triggered");
+			// console.log("file-rename event triggered");
 			if (data.length < 2) return;
 			if (typeof data[0] === "string" && data[1] instanceof TFile) {
 				const oldPath = data[0] as string;
@@ -197,7 +196,7 @@
 
 	onMount(() => {
 		const handleFolderRename = (...data: unknown[]) => {
-			console.log("folder-rename event triggered");
+			// console.log("folder-rename event triggered");
 			if (data.length < 2) return;
 			if (typeof data[0] === "string" && data[1] instanceof TFolder) {
 				const oldPath = data[0] as string;
@@ -223,7 +222,7 @@
 
 	onMount(() => {
 		const handleMetadataChange = (...data: unknown[]) => {
-			console.log("metadata-change event triggered");
+			// console.log("metadata-change event triggered");
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const file = data[0] as TFile;
 
@@ -289,7 +288,7 @@
 	);
 
 	$: renderData = filterSearch.filter((file) =>
-		favoriteFilter(file, onlyFavorites),
+		filterByFavorites(file, onlyFavorites),
 	);
 
 	$: searchFilter,
