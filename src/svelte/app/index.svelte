@@ -86,11 +86,9 @@
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
-			localCache = {
-				...localCache,
-				[file.path]: frontmatter,
-			};
+			localCache[file.path] = frontmatter;
 		});
+
 		frontmatterCache = localCache;
 
 		searchFilter = plugin.settings.filters.search;
