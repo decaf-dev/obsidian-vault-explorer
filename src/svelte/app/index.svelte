@@ -91,25 +91,25 @@
 		});
 	});
 
-	onMount(() => {
-		const handleModifyFile = (...data: unknown[]) => {
-			console.log("file-modify event triggered");
-			if (data.length > 0 && data[0] instanceof TFile) {
-				const updatedFile = data[0] as TFile;
-				markdownFiles = markdownFiles.map((file) => {
-					if (file.path === updatedFile.path) {
-						return updatedFile;
-					}
-					return file;
-				});
-			}
-		};
+	// onMount(() => {
+	// 	const handleModifyFile = (...data: unknown[]) => {
+	// 		console.log("file-modify event triggered");
+	// 		if (data.length > 0 && data[0] instanceof TFile) {
+	// 			const updatedFile = data[0] as TFile;
+	// 			markdownFiles = markdownFiles.map((file) => {
+	// 				if (file.path === updatedFile.path) {
+	// 					return updatedFile;
+	// 				}
+	// 				return file;
+	// 			});
+	// 		}
+	// 	};
 
-		EventManager.getInstance().on("file-modify", handleModifyFile);
-		return () => {
-			EventManager.getInstance().off("file-modify", handleModifyFile);
-		};
-	});
+	// 	EventManager.getInstance().on("file-modify", handleModifyFile);
+	// 	return () => {
+	// 		EventManager.getInstance().off("file-modify", handleModifyFile);
+	// 	};
+	// });
 
 	onMount(() => {
 		const handleCreateFile = (...data: unknown[]) => {
@@ -239,11 +239,12 @@
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const file = data[0] as TFile;
 
+				const frontmatter =
+					plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+
 				frontmatterCache = {
 					...frontmatterCache,
-					[file.path]:
-						plugin.app.metadataCache.getFileCache(file)
-							?.frontmatter,
+					[file.path]: frontmatter,
 				};
 			}
 		};
