@@ -1,4 +1,4 @@
-import { Plugin, TAbstractFile, TFile, } from 'obsidian';
+import { Plugin, TAbstractFile, TFile, TFolder, } from 'obsidian';
 
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
@@ -41,27 +41,34 @@ export default class VaultExplorerPlugin extends Plugin {
 		//Callback if the file is renamed or moved
 		//This callback is already debounced by Obsidian
 		this.registerEvent(this.app.vault.on("rename", (file: TAbstractFile, oldPath: string) => {
-			if (file instanceof TFile) {
+			if (file instanceof TFolder) {
+				EventManager.getInstance().emit("folder-rename", oldPath, file);
+			} else if (file instanceof TFile) {
 				if (file.extension !== "md") return;
-				EventManager.getInstance().emit("rename-file", oldPath, file.path);
+				EventManager.getInstance().emit("file-rename", oldPath, file);
 			}
 		}));
 
 		//Callback if a file is deleted
 		//This callback is already debounced by Obsidian
 		this.registerEvent(this.app.vault.on("delete", (file: TAbstractFile) => {
-			if (file instanceof TFile) {
-				if (file.extension !== "md") return;
-				EventManager.getInstance().emit("delete-file", file.path);
-			}
+			if (file instanceof TFolder) {
+				EventManager.getInstance().emit("folder-delete", file.path);
+			} else
+				if (file instanceof TFile) {
+					if (file.extension !== "md") return;
+					EventManager.getInstance().emit("file-delete", file.path);
+				}
 		}));
 
 		//Callback if a file is created
 		//This callback is already debounced by Obsidian
 		this.registerEvent(this.app.vault.on("create", (file: TAbstractFile) => {
-			if (file instanceof TFile) {
+			if (file instanceof TFolder) {
+				EventManager.getInstance().emit("folder-create", file);
+			} else if (file instanceof TFile) {
 				if (file.extension !== "md") return;
-				EventManager.getInstance().emit("create-file", file.path);
+				EventManager.getInstance().emit("file-create", file);
 			}
 		}));
 
@@ -70,7 +77,7 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.registerEvent(this.app.vault.on("modify", (file: TAbstractFile) => {
 			if (file instanceof TFile) {
 				if (file.extension !== "md") return;
-				EventManager.getInstance().emit("modify-file", file.path);
+				EventManager.getInstance().emit("file-modify", file);
 			}
 		}));
 
@@ -78,7 +85,7 @@ export default class VaultExplorerPlugin extends Plugin {
 		//This callback is already debounced by Obsidian
 		this.registerEvent(this.app.metadataCache.on("changed", (file) => {
 			if (file.extension !== "md") return;
-			EventManager.getInstance().emit("metadata-change", file.path);
+			EventManager.getInstance().emit("metadata-change", file);
 		}));
 	}
 

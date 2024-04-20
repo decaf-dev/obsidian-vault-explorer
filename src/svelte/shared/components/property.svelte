@@ -5,9 +5,15 @@
 	export let name: string;
 	export let value: string;
 
-	let formattedValue = value;
-	formattedValue = formattedValue.replace(/\[/g, "");
-	formattedValue = formattedValue.replace(/\]/g, "");
+	let formattedValue: string;
+
+	$: {
+		if (typeof value === "string") {
+			formattedValue = value;
+			formattedValue = formattedValue.replace(/\[/g, "");
+			formattedValue = formattedValue.replace(/\]/g, "");
+		}
+	}
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
