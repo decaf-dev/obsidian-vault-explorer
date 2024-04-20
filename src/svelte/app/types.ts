@@ -1,5 +1,3 @@
-import { PropertyRenderType } from "src/types";
-
 export interface MarkdownFileRenderData {
 	name: string;
 	path: string;
