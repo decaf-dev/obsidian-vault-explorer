@@ -24,13 +24,28 @@
 		getMidnightLastWeek,
 	} from "./services/time-utils";
 	import _ from "lodash";
+	import { onMount } from "svelte";
 
 	let plugin: VaultExplorerPlugin;
 
-	//TODO move to store
-	const midnightToday = getMidnightToday();
-	const midnightThisWeek = getMidnightThisWeek();
-	const midnightLastWeek = getMidnightLastWeek();
+	let midnightToday: number;
+	let midnightThisWeek: number;
+	let midnightLastWeek: number;
+
+	function updateTimeValues() {
+		midnightToday = getMidnightToday();
+		midnightThisWeek = getMidnightThisWeek();
+		midnightLastWeek = getMidnightLastWeek();
+	}
+
+	onMount(() => {
+		updateTimeValues();
+		const interval = setInterval(updateTimeValues, 60000); // Update every minute
+
+		return () => {
+			clearInterval(interval);
+		};
+	});
 
 	let folders: string[] = [];
 
@@ -64,7 +79,6 @@
 		return 0;
 	});
 
-	//TODO update values every minute
 	$: filteredTimestamp = sorted.filter((file) =>
 		filterByTimestamp(file, timestampFilter, {
 			midnightToday,
