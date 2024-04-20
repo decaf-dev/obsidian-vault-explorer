@@ -185,15 +185,12 @@
 		const handleFileRename = (...data: unknown[]) => {
 			console.log("file-rename event triggered");
 			if (data.length < 2) return;
-			if (typeof data[0] === "string" && typeof data[1] === "string") {
+			if (typeof data[0] === "string" && data[1] instanceof TFile) {
 				const oldPath = data[0] as string;
-				const newPath = data[1] as string;
+				const updatedFile = data[1] as TFile;
 				markdownFiles = markdownFiles.map((file) => {
 					if (file.path === oldPath) {
-						return {
-							...file,
-							path: newPath,
-						};
+						return updatedFile;
 					}
 					return file;
 				});
@@ -215,18 +212,18 @@
 		const handleFolderRename = (...data: unknown[]) => {
 			console.log("folder-rename event triggered");
 			if (data.length < 2) return;
-			if (typeof data[0] === "string" && typeof data[1] === "string") {
+			if (typeof data[0] === "string" && data[1] instanceof TFolder) {
 				const oldPath = data[0] as string;
-				const newPath = data[1] as string;
+				const updatedFolder = data[1] as TFolder;
 				folders = folders.map((folder) => {
 					if (folder === oldPath) {
-						return newPath;
+						return updatedFolder.path;
 					}
 					return folder;
 				});
 
 				if (folderFilter === oldPath) {
-					folderFilter = newPath;
+					folderFilter = updatedFolder.path;
 				}
 			}
 		};
