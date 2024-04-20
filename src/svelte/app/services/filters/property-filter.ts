@@ -1,4 +1,4 @@
-import { App, TFile } from "obsidian";
+import { App, FrontMatterCache, TFile } from "obsidian";
 import { PropertyFilterGroup } from "src/types";
 import { FilterCondition, TextFilterCondition } from "src/types";
 
@@ -14,11 +14,7 @@ import { FilterCondition, TextFilterCondition } from "src/types";
 //Property value is an array
 //Property value is a date
 //Property value is a number
-export const filterByProperty = (app: App, file: TFile, groups: PropertyFilterGroup[]) => {
-	const frontmatter = app.metadataCache.getFileCache(
-		file as TFile
-	)?.frontmatter;
-
+export const filterByProperty = (frontmatter: FrontMatterCache | undefined, groups: PropertyFilterGroup[]) => {
 	let isValid = true;
 	groups.forEach((group) => {
 		if (!group.isEnabled) return;

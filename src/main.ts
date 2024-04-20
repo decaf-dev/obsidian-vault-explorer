@@ -41,12 +41,11 @@ export default class VaultExplorerPlugin extends Plugin {
 		//Callback if the file is renamed or moved
 		//This callback is already debounced by Obsidian
 		this.registerEvent(this.app.vault.on("rename", (file: TAbstractFile, oldPath: string) => {
-			const newPath = file.path;
 			if (file instanceof TFolder) {
-				EventManager.getInstance().emit("folder-rename", oldPath, newPath);
+				EventManager.getInstance().emit("folder-rename", oldPath, file);
 			} else if (file instanceof TFile) {
 				if (file.extension !== "md") return;
-				EventManager.getInstance().emit("file-rename", oldPath, newPath);
+				EventManager.getInstance().emit("file-rename", oldPath, file);
 			}
 		}));
 
@@ -86,7 +85,7 @@ export default class VaultExplorerPlugin extends Plugin {
 		//This callback is already debounced by Obsidian
 		this.registerEvent(this.app.metadataCache.on("changed", (file) => {
 			if (file.extension !== "md") return;
-			EventManager.getInstance().emit("metadata-change", file.path);
+			EventManager.getInstance().emit("metadata-change", file);
 		}));
 	}
 

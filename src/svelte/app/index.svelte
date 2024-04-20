@@ -5,7 +5,7 @@
 	import Checkbox from "../shared/components/checkbox.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { Menu, TFile, TFolder } from "obsidian";
+	import { FrontMatterCache, Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import { CurrentView, SortFilter, TimestampFilter } from "src/types";
 	import store from "./store";
@@ -58,6 +58,8 @@
 	let onlyFavorites: boolean = false;
 	let currentView: CurrentView = "grid";
 
+	let frontmatterCache: Record<string, FrontMatterCache | undefined> = {};
+
 	let markdownFiles: TFile[] = [];
 
 	const debounceSearchFilter = _.debounce((e) => {
@@ -78,6 +80,31 @@
 
 		markdownFiles = plugin.app.vault.getMarkdownFiles();
 		pageSize = plugin.settings.pageSize;
+
+		markdownFiles.forEach((file) => {
+			const cache =
+				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+			frontmatterCache[file.path] = cache;
+		});
+	});
+
+	onMount(() => {
+		const handleModifyFile = (...data: unknown[]) => {
+			if (data.length > 0 && data[0] instanceof TFile) {
+				const updatedFile = data[0] as TFile;
+				markdownFiles = markdownFiles.map((file) => {
+					if (file.path === updatedFile.path) {
+						return updatedFile;
+					}
+					return file;
+				});
+			}
+		};
+
+		EventManager.getInstance().on("file-modify", handleModifyFile);
+		return () => {
+			EventManager.getInstance().off("file-modify", handleModifyFile);
+		};
 	});
 
 	onMount(() => {
@@ -110,6 +137,7 @@
 
 	onMount(() => {
 		const handleDeleteFile = (...data: unknown[]) => {
+			console.log("file-delete event triggered");
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
 				markdownFiles = markdownFiles.filter(
@@ -160,9 +188,14 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-rename", handleFileRename);
+		const debounceHandleFileRename = _.debounce(handleFileRename, 300);
+
+		EventManager.getInstance().on("file-rename", debounceHandleFileRename);
 		return () => {
-			EventManager.getInstance().off("file-rename", handleFileRename);
+			EventManager.getInstance().off(
+				"file-rename",
+				debounceHandleFileRename,
+			);
 		};
 	});
 
@@ -191,6 +224,24 @@
 		};
 	});
 
+	onMount(() => {
+		const handleMetadataChange = (...data: unknown[]) => {
+			if (data.length > 0 && data[0] instanceof TFile) {
+				const file = data[0] as TFile;
+				frontmatterCache[file.path] =
+					plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+			}
+		};
+
+		EventManager.getInstance().on("metadata-change", handleMetadataChange);
+		return () => {
+			EventManager.getInstance().off(
+				"metadata-change",
+				handleMetadataChange,
+			);
+		};
+	});
+
 	$: sorted = [...markdownFiles].sort((a, b) => {
 		if (sortFilter === "file-name-asc") {
 			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
@@ -212,21 +263,22 @@
 		}),
 	);
 
-	$: filteredProperty = filteredTimestamp.filter((file) =>
-		filterByProperty(
-			plugin.app,
-			file,
+	$: filteredProperty = filteredTimestamp.filter((file) => {
+		const frontmatter = frontmatterCache[file.path];
+		return filterByProperty(
+			frontmatter,
 			plugin.settings.filters.properties.groups,
-		),
-	);
+		);
+	});
 
 	$: filteredFolder = filteredProperty.filter((file) =>
 		filterByFolder(file, folderFilter),
 	);
 
-	$: formatted = filteredFolder.map((file) =>
-		formatFileDataForRender(plugin.app, plugin.settings, file),
-	);
+	$: formatted = filteredFolder.map((file) => {
+		const frontmatter = frontmatterCache[file.path];
+		return formatFileDataForRender(plugin.settings, file, frontmatter);
+	});
 
 	$: filterSearch = formatted.filter((file) =>
 		filterBySearch(file, searchFilter),
