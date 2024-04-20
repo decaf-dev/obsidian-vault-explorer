@@ -61,11 +61,17 @@
 				{/each}
 			</div>
 		{/if}
-		{#if source !== null}<Property name="source" value={source} />{/if}
+		{#if source !== null}<Property
+				name={plugin.settings.properties.source}
+				value={source}
+			/>{/if}
 		<div class="vault-explorer-grid-card__labels">
 			{#if status !== null}
 				<div>
-					<Property name="status" value={status} />
+					<Property
+						name={plugin.settings.properties.status}
+						value={status}
+					/>
 					<Spacer size="xs" />
 					<div class="vault-explorer-property-label">Status</div>
 				</div>
