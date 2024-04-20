@@ -178,6 +178,13 @@
 					}
 					return file;
 				});
+
+				if (frontmatterCache[oldPath]) {
+					frontmatterCache = {
+						...frontmatterCache,
+						[updatedFile.path]: frontmatterCache[oldPath],
+					};
+				}
 			}
 		};
 
