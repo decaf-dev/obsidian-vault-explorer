@@ -25,6 +25,7 @@
 	} from "./services/time-utils";
 	import _ from "lodash";
 	import { onMount } from "svelte";
+	import EventManager from "src/event/event-manager";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -48,9 +49,10 @@
 	});
 
 	let folders: string[] = [];
+	let pageSize: number = 0;
 
 	let searchFilter: string = "";
-	let folderPath: string = "/";
+	let folderFilter: string = "/";
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
 	let onlyFavorites: boolean = false;
@@ -65,6 +67,129 @@
 	const debounceFavoriteFilter = _.debounce((value) => {
 		onlyFavorites = value;
 	}, 300);
+
+	store.plugin.subscribe((p) => {
+		plugin = p;
+
+		const allFiles = plugin.app.vault.getAllLoadedFiles();
+		folders = allFiles
+			.filter((file) => file instanceof TFolder)
+			.map((folder) => folder.path);
+
+		markdownFiles = plugin.app.vault.getMarkdownFiles();
+		pageSize = plugin.settings.pageSize;
+	});
+
+	onMount(() => {
+		const handleCreateFile = (...data: unknown[]) => {
+			if (data.length > 0 && data[0] instanceof TFile) {
+				const newFile = data[0] as TFile;
+				markdownFiles = [...markdownFiles, newFile];
+			}
+		};
+
+		EventManager.getInstance().on("file-create", handleCreateFile);
+		return () => {
+			EventManager.getInstance().off("file-create", handleCreateFile);
+		};
+	});
+
+	onMount(() => {
+		const handleFolderCreate = (...data: unknown[]) => {
+			if (data.length > 0 && typeof data[0] === "string") {
+				const newFolder = data[0] as string;
+				folders = [...folders, newFolder];
+			}
+		};
+
+		EventManager.getInstance().on("folder-create", handleFolderCreate);
+		return () => {
+			EventManager.getInstance().off("folder-create", handleFolderCreate);
+		};
+	});
+
+	onMount(() => {
+		const handleDeleteFile = (...data: unknown[]) => {
+			if (data.length > 0 && typeof data[0] === "string") {
+				const path = data[0] as string;
+				markdownFiles = markdownFiles.filter(
+					(file) => file.path !== path,
+				);
+			}
+		};
+
+		EventManager.getInstance().on("file-delete", handleDeleteFile);
+		return () => {
+			EventManager.getInstance().off("file-delete", handleDeleteFile);
+		};
+	});
+
+	onMount(() => {
+		const handleDeleteFolder = (...data: unknown[]) => {
+			if (data.length > 0 && typeof data[0] === "string") {
+				const path = data[0] as string;
+				folders = folders.filter((folder) => folder !== path);
+
+				if (folderFilter === path) {
+					folderFilter = "/";
+				}
+			}
+		};
+
+		EventManager.getInstance().on("folder-delete", handleDeleteFolder);
+		return () => {
+			EventManager.getInstance().off("folder-delete", handleDeleteFolder);
+		};
+	});
+
+	onMount(() => {
+		const handleFileRename = (...data: unknown[]) => {
+			if (data.length < 2) return;
+			if (typeof data[0] === "string" && typeof data[1] === "string") {
+				const oldPath = data[0] as string;
+				const newPath = data[1] as string;
+				markdownFiles = markdownFiles.map((file) => {
+					if (file.path === oldPath) {
+						return {
+							...file,
+							path: newPath,
+						};
+					}
+					return file;
+				});
+			}
+		};
+
+		EventManager.getInstance().on("file-rename", handleFileRename);
+		return () => {
+			EventManager.getInstance().off("file-rename", handleFileRename);
+		};
+	});
+
+	onMount(() => {
+		const handleFolderRename = (...data: unknown[]) => {
+			if (data.length < 2) return;
+			if (typeof data[0] === "string" && typeof data[1] === "string") {
+				const oldPath = data[0] as string;
+				const newPath = data[1] as string;
+				folders = folders.map((folder) => {
+					if (folder === oldPath) {
+						return newPath;
+					}
+					return folder;
+				});
+
+				if (folderFilter === oldPath) {
+					folderFilter = newPath;
+				}
+			}
+		};
+
+		EventManager.getInstance().on("folder-rename", handleFolderRename);
+		return () => {
+			EventManager.getInstance().off("folder-rename", handleFolderRename);
+		};
+	});
 
 	$: sorted = [...markdownFiles].sort((a, b) => {
 		if (sortFilter === "file-name-asc") {
@@ -96,7 +221,7 @@
 	);
 
 	$: filteredFolder = filteredProperty.filter((file) =>
-		filterByFolder(file, folderPath),
+		filterByFolder(file, folderFilter),
 	);
 
 	$: formatted = filteredFolder.map((file) =>
@@ -111,22 +236,8 @@
 		favoriteFilter(file, onlyFavorites),
 	);
 
-	let pageSize: number = 0;
-
-	store.plugin.subscribe((p) => {
-		plugin = p;
-
-		const allFiles = plugin.app.vault.getAllLoadedFiles();
-		folders = allFiles
-			.filter((file) => file instanceof TFolder)
-			.map((folder) => folder.path);
-
-		markdownFiles = plugin.app.vault.getMarkdownFiles();
-		pageSize = plugin.settings.pageSize;
-	});
-
 	$: searchFilter,
-		folderPath,
+		folderFilter,
 		sortFilter,
 		timestampFilter,
 		onlyFavorites,
@@ -135,7 +246,7 @@
 
 	async function saveSettings() {
 		plugin.settings.filters.search = searchFilter;
-		plugin.settings.filters.folder = folderPath;
+		plugin.settings.filters.folder = folderFilter;
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
@@ -184,8 +295,8 @@
 		for (const folder of folders) {
 			menu.addItem((item) => {
 				item.setTitle(folder === "/" ? "All" : folder);
-				item.setChecked(folderPath === folder);
-				item.onClick(() => (folderPath = folder));
+				item.setChecked(folderFilter === folder);
+				item.onClick(() => (folderFilter = folder));
 			});
 		}
 
