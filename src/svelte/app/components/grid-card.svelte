@@ -7,6 +7,7 @@
 	import Property from "../../shared/components/property.svelte";
 	import VaultExplorerPlugin from "src/main";
 	import store from "../store";
+	import Wrap from "src/svelte/shared/components/wrap.svelte";
 
 	export let name: string;
 	export let path: string;
@@ -63,7 +64,7 @@
 				{/each}
 			</div>
 		{/if}
-		<Stack spacing="xs"
+		<Wrap spacingX="xs" spacingY="xs"
 			>{#if custom1 !== null}<Property
 					name={plugin.settings.properties.custom1}
 					value={custom1}
@@ -76,7 +77,7 @@
 					name={plugin.settings.properties.custom3}
 					value={custom3}
 				/>{/if}
-		</Stack>
+		</Wrap>
 		<!-- <div class="vault-explorer-grid-card__labels">
 			<div>
 				<Property name={""} value={""} />
