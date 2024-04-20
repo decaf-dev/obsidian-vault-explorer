@@ -93,27 +93,14 @@
 		frontmatterCache = {
 			...localCache,
 		};
+
+		searchFilter = plugin.settings.filters.search;
+		folderFilter = plugin.settings.filters.folder;
+		sortFilter = plugin.settings.filters.sort;
+		timestampFilter = plugin.settings.filters.timestamp;
+		onlyFavorites = plugin.settings.filters.onlyFavorites;
+		currentView = plugin.settings.currentView;
 	});
-
-	// onMount(() => {
-	// 	const handleModifyFile = (...data: unknown[]) => {
-	// 		console.log("file-modify event triggered");
-	// 		if (data.length > 0 && data[0] instanceof TFile) {
-	// 			const updatedFile = data[0] as TFile;
-	// 			markdownFiles = markdownFiles.map((file) => {
-	// 				if (file.path === updatedFile.path) {
-	// 					return updatedFile;
-	// 				}
-	// 				return file;
-	// 			});
-	// 		}
-	// 	};
-
-	// 	EventManager.getInstance().on("file-modify", handleModifyFile);
-	// 	return () => {
-	// 		EventManager.getInstance().off("file-modify", handleModifyFile);
-	// 	};
-	// });
 
 	onMount(() => {
 		const handleCreateFile = (...data: unknown[]) => {
