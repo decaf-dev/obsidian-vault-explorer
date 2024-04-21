@@ -19,16 +19,17 @@
 		dispatch("change", { value: !value });
 	}
 
-	let className = "checkbox-container vault-explorer-switch";
-	if (value) className += " is-enabled";
+	$: className =
+		"checkbox-container vault-explorer-switch" +
+		(value ? " is-enabled" : "");
 </script>
 
 <div
 	tabindex="0"
 	role="switch"
 	aria-checked={value}
-	class={className}
 	aria-label={ariaLabel}
+	class={className}
 	on:click={handleClick}
 	on:keydown={handleKeyDown}
 >
@@ -73,10 +74,5 @@
 		width: calc(
 			(var(--toggle-thumb-width) * 0.75) + (var(--toggle-border-width))
 		);
-	}
-
-	.vault-explorer-switch:focus-visible {
-		outline: 2px solid var(--text-on-accent-inverted);
-		outline-offset: 0px;
 	}
 </style>
