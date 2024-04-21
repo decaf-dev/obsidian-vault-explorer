@@ -2,7 +2,7 @@ import { ItemView, WorkspaceLeaf } from "obsidian";
 
 import { VAULT_EXPLORER_VIEW } from "src/constants";
 import Component from "../svelte/app/index.svelte";
-import store from "../svelte/app/store";
+import store from "../svelte/shared/services/store";
 import VaultExplorerPlugin from "src/main";
 
 export default class VaultExplorerView extends ItemView {

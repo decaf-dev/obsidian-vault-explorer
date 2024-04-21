@@ -1,8 +1,0 @@
-.vault-explorer-group-tag-list {
-	max-width: calc(100% - 50px);
-	overflow-x: auto;
-}
-
-.vault-explorer-group-tag-list::-webkit-scrollbar {
-	display: none;
-}

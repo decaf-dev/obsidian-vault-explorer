@@ -7,8 +7,13 @@
 	import Tab from "../shared/components/tab.svelte";
 	import { FrontMatterCache, Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
-	import { CurrentView, SortFilter, TimestampFilter } from "src/types";
-	import store from "./store";
+	import {
+		CurrentView,
+		PropertyFilterGroup,
+		SortFilter,
+		TimestampFilter,
+	} from "src/types";
+	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";
@@ -57,6 +62,7 @@
 	let timestampFilter: TimestampFilter = "all";
 	let onlyFavorites: boolean = false;
 	let currentView: CurrentView = "grid";
+	let propertyFilterGroups: PropertyFilterGroup[] = [];
 
 	let frontmatterCache: Record<string, FrontMatterCache | undefined> = {};
 
@@ -97,6 +103,24 @@
 		timestampFilter = plugin.settings.filters.timestamp;
 		onlyFavorites = plugin.settings.filters.onlyFavorites;
 		currentView = plugin.settings.currentView;
+		propertyFilterGroups = plugin.settings.filters.properties.groups;
+	});
+
+	onMount(() => {
+		function handlePropertiesFilterUpdate() {
+			propertyFilterGroups = plugin.settings.filters.properties.groups;
+		}
+
+		EventManager.getInstance().on(
+			"properties-filter-update",
+			handlePropertiesFilterUpdate,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"properties-filter-update",
+				handlePropertiesFilterUpdate,
+			);
+		};
 	});
 
 	onMount(() => {
@@ -273,10 +297,7 @@
 
 	$: filteredProperty = filteredTimestamp.filter((file) => {
 		const frontmatter = frontmatterCache[file.path];
-		return filterByProperty(
-			frontmatter,
-			plugin.settings.filters.properties.groups,
-		);
+		return filterByProperty(frontmatter, propertyFilterGroups);
 	});
 
 	$: filteredFolder = filteredProperty.filter((file) =>

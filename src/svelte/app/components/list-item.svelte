@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { MarkdownView } from "obsidian";
 	import VaultExplorerPlugin from "src/main";
-	import store from "../store";
+	import store from "../../shared/services/store";
 
 	export let name: string;
 	export let path: string;

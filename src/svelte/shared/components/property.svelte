@@ -1,6 +1,6 @@
 <script lang="ts">
 	import VaultExplorerPlugin from "src/main";
-	import store from "../../app/store";
+	import store from "../services/store";
 
 	export let name: string;
 	export let value: string;

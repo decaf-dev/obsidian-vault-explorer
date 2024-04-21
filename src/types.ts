@@ -21,6 +21,13 @@ export interface VaultExplorerPluginSettings {
 	pageSize: number;
 }
 
+export interface TextPropertyFilter extends BasePropertyFilter {
+	condition: TextFilterCondition;
+	value: string;
+}
+
+export type PropertyFilter = TextPropertyFilter;
+
 export interface PropertyFilterGroup {
 	id: string;
 	name: string;
@@ -29,25 +36,11 @@ export interface PropertyFilterGroup {
 	isEnabled: boolean;
 }
 
-type PropertyFilter = TextPropertyFilter;
-
 interface BasePropertyFilter {
 	id: string;
 	propertyName: string;
 	operator: FilterOperator;
 	isEnabled: boolean;
-}
-
-export interface CustomProperty {
-	name: string;
-	type: PropertyRenderType;
-}
-
-export type PropertyRenderType = "long" | "short";
-
-export interface TextPropertyFilter extends BasePropertyFilter {
-	condition: TextFilterCondition;
-	value: string;
 }
 
 export type FilterCondition = TextFilterCondition;

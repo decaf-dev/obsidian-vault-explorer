@@ -1,9 +1,9 @@
 import { Modal } from "obsidian";
-import Component from "../svelte/properties-filter-app/index.svelte";
+import PropertiesFilterApp from "../svelte/properties-filter-app/index.svelte";
 import VaultExplorerPlugin from "src/main";
 
 export default class PropertiesFilterModal extends Modal {
-	component: Component | null;
+	component: PropertiesFilterApp | null;
 	plugin: VaultExplorerPlugin;
 
 	constructor(
@@ -17,7 +17,7 @@ export default class PropertiesFilterModal extends Modal {
 	onOpen(): void {
 		const { contentEl } = this;
 
-		this.component = new Component({
+		this.component = new PropertiesFilterApp({
 			target: contentEl,
 		});
 	}

@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { MarkdownView } from "obsidian";
-	import Stack from "../../shared/components/stack.svelte";
 	import IconButton from "../../shared/components/icon-button.svelte";
 	import Tag from "../../shared/components/tag.svelte";
 	import Spacer from "../../shared/components/spacer.svelte";
 	import Property from "../../shared/components/property.svelte";
 	import VaultExplorerPlugin from "src/main";
-	import store from "../store";
+	import store from "../../shared/services/store";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 
 	export let name: string;
