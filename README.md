@@ -1,8 +1,14 @@
 # Obsidian Vault Explorer
 
+Vault Explorer is an [Obsidian.md](https://obsidian.md) plugin for desktop only. It allows you to explore your vault in visual format.
+
+This plugin is a replacement for some of the functionality found in [Obsidian DataLoom](https://github.com/trey-wallis/obsidian-dataloom).
+
 ## About
 
-This plugin allows you to explore your vault in visual format
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [Settings](#settings)
 
 ## Installation
 
@@ -15,13 +21,42 @@ This plugin allows you to explore your vault in visual format
 
 ## Usage
 
+Start by opening the vault explorer view by clicking on the compass icon on the left-hand sidebar.
+
+The explorer vault is a read-only view for your vault. You may filter based on folders and property values.
+
+There are also additional views by which you can view your vault files.
+
+## Settings
+
+The vault explorer has several built-in properties.
+
+### URL
+
+The url property will render a button in the grid view that will allow you to navigate to URL pages.
+
+A url should be a valid url e.g. `https://google.com`
+
+### Favorite
+
+The favorite property will allow you to filter by favorites using the `Only favorites` button.
+
+This property should be of checkbox type.
+
 ## Development
 
 1. Clone the GitHub repository
+
+```shell
+git clone https://github.com/trey-wallis/obsidian-vault-explorer.git
+```
+
 2. Install [Bun](https://bun.sh)
 3. Build the project `bun run build`
 4. Add a symbolic link from the `dist` folder to your vault's plugin folder
 
--   `ln -s <folder-path>/obsidian-vault-explorer/dist <vault-path>/.obsidian/plugins/vault-explorer`
+```shell
+ln -s <folder-path>/obsidian-vault-explorer/dist <vault-path>/.obsidian/plugins/vault-explorer
+```
 
 5. Enable the plugin
