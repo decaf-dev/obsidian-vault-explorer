@@ -35,7 +35,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				await this.plugin.saveSettings();
 			}));
 
-		new Setting(containerEl).setName("Default properties").setHeading();
+		new Setting(containerEl).setName("Built-in properties").setHeading();
 
 		new Setting(containerEl)
 			.setName('Favorite property')
