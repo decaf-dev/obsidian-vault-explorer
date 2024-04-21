@@ -39,7 +39,7 @@ A url should be a valid url e.g. `https://google.com`
 
 ### Favorite
 
-The favorite property will allow you to filter by favorites using the `Only favorites` button.
+The favorite property will allow you to filter by favorites using the `Favorites` checkbox.
 
 This property should be of checkbox type.
 
