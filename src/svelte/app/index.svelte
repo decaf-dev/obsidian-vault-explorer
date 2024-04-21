@@ -8,7 +8,7 @@
 	import { FrontMatterCache, Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import { CurrentView, SortFilter, TimestampFilter } from "src/types";
-	import store from "./store";
+	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";

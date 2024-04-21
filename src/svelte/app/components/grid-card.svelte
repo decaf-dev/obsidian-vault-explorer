@@ -6,7 +6,7 @@
 	import Spacer from "../../shared/components/spacer.svelte";
 	import Property from "../../shared/components/property.svelte";
 	import VaultExplorerPlugin from "src/main";
-	import store from "../store";
+	import store from "../../shared/services/store";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 
 	export let name: string;
