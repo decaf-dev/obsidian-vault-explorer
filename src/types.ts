@@ -19,6 +19,11 @@ export interface VaultExplorerPluginSettings {
 	},
 	currentView: CurrentView;
 	pageSize: number;
+	pluginVersion: string | null;
+}
+
+export interface CustomProperty {
+	name: string;
 }
 
 export interface TextPropertyFilter extends BasePropertyFilter {
@@ -63,7 +68,3 @@ export type CurrentView = "grid" | "list";
 export type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
 
 export type TimestampFilter = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
-
-export type onSettingsChange = (value: VaultExplorerPluginSettings) => void;
-
-export type getCurrentSettings = () => VaultExplorerPluginSettings;

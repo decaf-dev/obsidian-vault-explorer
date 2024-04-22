@@ -33,5 +33,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		}
 	},
 	currentView: "grid",
-	pageSize: 50
+	pageSize: 50,
+	pluginVersion: null
 }

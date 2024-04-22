@@ -95,7 +95,14 @@ export default class VaultExplorerPlugin extends Plugin {
 
 	async loadSettings() {
 		const data = await this.loadData();
+
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
+
+		//TODO handle migrations
+		// if (this.settings.pluginVersion === null) {
+		this.settings.pluginVersion = this.manifest.version;
+		await this.saveSettings();
+		// }
 	}
 
 	async saveSettings() {
