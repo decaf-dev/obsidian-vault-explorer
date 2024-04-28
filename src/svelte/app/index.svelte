@@ -453,12 +453,28 @@
 <div class="vault-explorer">
 	<div class="vault-explorer-header">
 		<Stack spacing="md">
-			<input
-				type="text"
-				placeholder="Search..."
-				value={searchFilter}
-				on:input={debounceSearchFilter}
-			/>
+			<div class="vault-explorer-search-container">
+				<input
+					type="text"
+					placeholder="Search..."
+					value={searchFilter}
+					on:input={debounceSearchFilter}
+				/>
+				{#if searchFilter.length > 0}
+					<div
+						tabindex="0"
+						role="button"
+						aria-label="Clear search"
+						class="search-input-clear-button"
+						on:click={() => (searchFilter = "")}
+						on:keydown={(e) => {
+							if (e.key === "Enter") {
+								searchFilter = "";
+							}
+						}}
+					/>
+				{/if}
+			</div>
 		</Stack>
 		<Flex justify="space-between">
 			<Stack spacing="sm">
@@ -555,6 +571,11 @@
 	}
 
 	.vault-explorer input[type="text"] {
+		width: 100%;
+	}
+
+	.vault-explorer-search-container {
+		position: relative;
 		width: 100%;
 		max-width: 300px;
 	}
