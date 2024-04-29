@@ -492,78 +492,82 @@
 				{/if}
 			</div>
 		</Stack>
-		<Flex justify="space-between">
-			<Stack spacing="sm">
-				<Checkbox
-					id="favorites"
-					label="Favorites"
-					value={onlyFavorites}
-					on:change={handleOnlyFavoritesChange}
-				/>
-				<Flex>
-					<IconButton
-						ariaLabel="Change folder filter"
-						iconId="folder"
-						on:click={openFolderFilterMenu}
+		<Stack direction="column" spacing="sm">
+			<Flex justify="space-between">
+				<Stack spacing="sm">
+					<Checkbox
+						id="favorites"
+						label="Favorites"
+						value={onlyFavorites}
+						on:change={handleOnlyFavoritesChange}
 					/>
-					<IconButton
-						ariaLabel="Change timestamp filter"
-						iconId="clock"
-						on:click={openListFilterMenu}
-					/>
-					<IconButton
-						ariaLabel="Change properties filter"
-						iconId="sliders-horizontal"
-						on:click={openPropertiesFilterModal}
-					/>
-					<IconButton
-						ariaLabel="Change sort order"
-						iconId="arrow-up-narrow-wide"
-						on:click={openSortMenu}
-					/>
-				</Flex>
-			</Stack>
-			<Stack justify="flex-end" align="center">
-				<Stack spacing="xs">
-					<Stack spacing="xs">
-						<span>{startIndex + 1}</span>
-						<span>-</span>
-						<span>{endIndex}</span>
-					</Stack>
-					<span>of</span>
-					<span>{renderData.length}</span>
+					<Flex>
+						<IconButton
+							ariaLabel="Change folder filter"
+							iconId="folder"
+							on:click={openFolderFilterMenu}
+						/>
+						<IconButton
+							ariaLabel="Change timestamp filter"
+							iconId="clock"
+							on:click={openListFilterMenu}
+						/>
+						<IconButton
+							ariaLabel="Change sort order"
+							iconId="arrow-up-narrow-wide"
+							on:click={openSortMenu}
+						/>
+					</Flex>
 				</Stack>
-				<Flex>
-					<IconButton
-						iconId="chevrons-left"
-						ariaLabel="First page"
-						on:click={() => changePage(1)}
-					/>
-					<IconButton
-						iconId="chevron-left"
-						ariaLabel="Previous page"
-						disabled={currentPage === 1}
-						on:click={() => changePage(currentPage - 1)}
-					/>
-					<IconButton
-						iconId="chevron-right"
-						ariaLabel="Next page"
-						disabled={currentPage === totalPages}
-						on:click={() => changePage(currentPage + 1)}
-					/>
-					<IconButton
-						iconId="chevrons-right"
-						ariaLabel="Last page"
-						on:click={() => changePage(totalPages)}
-					/>
-				</Flex>
+				<Stack justify="flex-end" align="center">
+					<Stack spacing="xs">
+						<Stack spacing="xs">
+							<span>{startIndex + 1}</span>
+							<span>-</span>
+							<span>{endIndex}</span>
+						</Stack>
+						<span>of</span>
+						<span>{renderData.length}</span>
+					</Stack>
+					<Flex>
+						<IconButton
+							iconId="chevrons-left"
+							ariaLabel="First page"
+							on:click={() => changePage(1)}
+						/>
+						<IconButton
+							iconId="chevron-left"
+							ariaLabel="Previous page"
+							disabled={currentPage === 1}
+							on:click={() => changePage(currentPage - 1)}
+						/>
+						<IconButton
+							iconId="chevron-right"
+							ariaLabel="Next page"
+							disabled={currentPage === totalPages}
+							on:click={() => changePage(currentPage + 1)}
+						/>
+						<IconButton
+							iconId="chevrons-right"
+							ariaLabel="Last page"
+							on:click={() => changePage(totalPages)}
+						/>
+					</Flex>
+				</Stack>
+			</Flex>
+			<Stack align="center" spacing="sm">
+				<GroupTagList
+					groups={propertyFilterGroups}
+					selectedGroupId={selectedPropertyFilterGroupId}
+					on:groupClick={handleGroupClick}
+				/>
+				<IconButton
+					ariaLabel="Change properties filter"
+					iconId="ellipsis-vertical"
+					on:click={openPropertiesFilterModal}
+				/>
 			</Stack>
-		</Flex>
-		<GroupTagList
-			groups={propertyFilterGroups}
-			selectedGroupId={selectedPropertyFilterGroupId}
-			on:groupClick={handleGroupClick}
-		/>
+		</Stack>
 		<TabList initialSelectedIndex={currentView === "grid" ? 0 : 1}>
 			<Tab on:click={() => (currentView = "grid")}>Grid</Tab>
 			<Tab on:click={() => (currentView = "list")}>List</Tab>
