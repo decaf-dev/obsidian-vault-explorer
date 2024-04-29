@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Divider from "src/svelte/shared/components/divider.svelte";
-	import Flex from "src/svelte/shared/components/flex.svelte";
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Switch from "src/svelte/shared/components/switch.svelte";
@@ -10,7 +8,9 @@
 	export let selectedGroup: PropertyFilterGroup | undefined;
 
 	import { createEventDispatcher } from "svelte";
-	import GroupTagList from "./group-tag-list.svelte";
+	import Spacer from "src/svelte/shared/components/spacer.svelte";
+	import TabList from "src/svelte/shared/components/tab-list.svelte";
+	import Tab from "src/svelte/shared/components/tab.svelte";
 	const dispatch = createEventDispatcher();
 
 	function handleGroupToggle() {
@@ -28,43 +28,55 @@
 	function handleEditClick() {
 		dispatch("editClick");
 	}
+
+	function handleGroupClick(id: string) {
+		dispatch("groupClick", { id });
+	}
+
+	$: selectedIndex =
+		groups.findIndex((group) => group.id === selectedGroup?.id) ?? 0;
 </script>
 
 <div>
 	<Stack direction="column" spacing="sm">
-		<GroupTagList
-			{groups}
-			selectedGroupId={selectedGroup?.id}
-			on:groupClick
-		/>
-		<Flex>
+		<Stack spacing="sm" align="center">
+			{#if groups.length > 0}
+				<TabList variant="line" initialSelectedIndex={selectedIndex}>
+					{#each groups as group (group.id)}
+						<Tab on:click={() => handleGroupClick(group.id)}
+							>{group.name}</Tab
+						>
+					{/each}
+				</TabList>
+			{/if}
 			<IconButton
 				ariaLabel="Add property filter group"
 				iconId="plus"
 				on:click={() => handleAddGroupClick()}
 			/>
-		</Flex>
-		<Divider />
+			<Spacer size="md" />
+		</Stack>
 	</Stack>
 	{#if selectedGroup !== undefined}
+		<Spacer size="sm" direction="vertical" />
 		<Stack align="center">
 			<IconButton
 				ariaLabel="Edit property filter group"
 				iconId="pencil"
 				on:click={() => handleEditClick()}
 			/>
-			<IconButton
-				ariaLabel="Delete property filter group"
-				iconId="trash"
-				on:click={() => handleDeleteGroupClick()}
-			/>
-			<Flex justify="flex-end" width="100%">
+			<Stack justify="flex-end" width="100%" align="center">
 				<Switch
 					ariaLabel="Toggle property filter group"
 					value={selectedGroup.isEnabled}
 					on:change={() => handleGroupToggle()}
 				/>
-			</Flex>
+				<IconButton
+					ariaLabel="Delete property filter group"
+					iconId="trash"
+					on:click={() => handleDeleteGroupClick()}
+				/>
+			</Stack>
 		</Stack>
 	{/if}
 </div>

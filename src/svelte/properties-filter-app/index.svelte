@@ -7,6 +7,7 @@
 	import { generateUUID } from "../shared/services/uuid";
 	import BaseView from "./components/base-view.svelte";
 	import GroupEditView from "./components/group-edit-view.svelte";
+	import { createPropertyFilter } from "./utils";
 
 	let editMenu: boolean = false;
 	let selectedGroupId: string = "";
@@ -15,19 +16,19 @@
 
 	$: selectedGroup = groups.find((group) => group.id === selectedGroupId);
 
-	$: selectedGroupId, groups, saveSettings();
+	$: groups, selectedGroupId, saveSettings();
 
 	async function saveSettings() {
-		plugin.settings.filters.properties.selectedGroupId = selectedGroupId;
 		plugin.settings.filters.properties.groups = groups;
+		plugin.settings.filters.properties.selectedGroupId = selectedGroupId;
 		await plugin.saveSettings();
 	}
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
 
-		selectedGroupId = plugin.settings.filters.properties.selectedGroupId;
 		groups = plugin.settings.filters.properties.groups;
+		selectedGroupId = plugin.settings.filters.properties.selectedGroupId;
 	});
 
 	onMount(() => {
@@ -45,7 +46,7 @@
 		const newGroup: PropertyFilterGroup = {
 			id: generateUUID(),
 			name: `Group ${groups.length + 1}`,
-			filters: [],
+			filters: [createPropertyFilter()],
 			position: groups.length,
 			isEnabled: true,
 		};
@@ -100,7 +101,7 @@
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
 				? { ...group, isEnabled: !group.isEnabled }
-				: group,
+				: { ...group, isEnabled: false },
 		);
 
 		groups = newGroups;
@@ -108,8 +109,6 @@
 
 	function handleFilterConditionChange(e: CustomEvent) {
 		const { id, condition } = e.detail;
-
-		console.log(id, condition);
 
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
@@ -210,6 +209,14 @@
 			on:addGroupClick={handleAddGroupClick}
 			on:deleteGroupClick={handleDeleteGroupClick}
 			on:groupToggle={handleGroupToggle}
+			on:groupNameChange={handleGroupNameChange}
+			on:filterAddClick={handleFilterAddClick}
+			on:groupClick={handleGroupClick}
+			on:filterConditionChange={handleFilterConditionChange}
+			on:filterDeleteClick={handleFilterDeleteClick}
+			on:filterNameChange={handleFilterNameChange}
+			on:filterToggle={handleFilterToggle}
+			on:filterValueChange={handleFilterValueChange}
 		/>
 	{/if}
 	{#if editMenu === true && selectedGroup !== undefined}

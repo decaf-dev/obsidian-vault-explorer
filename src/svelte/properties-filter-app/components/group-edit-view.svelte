@@ -12,19 +12,13 @@
 	import PropertyFilterList from "./property-filter-list.svelte";
 
 	import { createEventDispatcher } from "svelte";
+	import { createPropertyFilter } from "../utils";
 	const dispatch = createEventDispatcher();
 
 	export let selectedGroup: PropertyFilterGroup;
 
 	function handleAddFilterClick() {
-		const newFilter: TextPropertyFilter = {
-			id: generateUUID(),
-			propertyName: "",
-			operator: "and",
-			isEnabled: true,
-			condition: TextFilterCondition.IS,
-			value: "",
-		};
+		const newFilter = createPropertyFilter();
 		dispatch("filterAddClick", { filter: newFilter });
 	}
 
@@ -52,15 +46,17 @@
 		/>
 	</Stack>
 	<Divider />
-	<PropertyFilterList
-		filters={selectedGroup.filters}
-		on:groupClick
-		on:filterConditionChange
-		on:filterNameChange
-		on:filterValueChange
-		on:filterToggle
-		on:filterDeleteClick
-	/>
+	{#if selectedGroup.filters.length > 0}
+		<PropertyFilterList
+			filters={selectedGroup.filters}
+			on:groupClick
+			on:filterConditionChange
+			on:filterNameChange
+			on:filterValueChange
+			on:filterToggle
+			on:filterDeleteClick
+		/>
+	{/if}
 	<IconButton
 		ariaLabel="Add filter"
 		iconId="plus"
