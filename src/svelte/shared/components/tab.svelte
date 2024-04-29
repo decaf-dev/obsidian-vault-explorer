@@ -6,6 +6,7 @@
 
 	const selectedTab = getContext("selectedTab") as Writable<number>;
 	const registerTab = getContext("registerTab") as () => number;
+	const variant = getContext("variant") as string;
 
 	// We use onMount to ensure the index is set after the component is mounted
 	import { onMount } from "svelte";
@@ -20,10 +21,23 @@
 	}
 
 	$: isSelected = $selectedTab === index;
+	$: className = findClassName(variant, isSelected);
 
-	$: className =
-		"vault-explorer-tab" +
-		(isSelected ? " vault-explorer-tab--active" : "");
+	function findClassName(variant: string, isSelected: boolean) {
+		let className = "vault-explorer-tab";
+		if (variant === "line") {
+			className += " vault-explorer-tab__line";
+			if (isSelected) {
+				className += "--active";
+			}
+		} else if (variant === "rounded") {
+			className += " vault-explorer-tab__rounded";
+			if (isSelected) {
+				className += "--active";
+			}
+		}
+		return className;
+	}
 </script>
 
 <button class={className} on:click={handleClick}><slot /></button>
@@ -32,13 +46,27 @@
 	.vault-explorer-tab {
 		all: unset;
 		padding: 4px 6px;
+		white-space: nowrap;
 	}
 
-	.vault-explorer-tab--active {
+	.vault-explorer-tab__line {
+		color: var(--text-faint);
+	}
+
+	.vault-explorer-tab__line--active {
+		border-bottom: 1px solid var(--color-accent);
+		color: var(--text-normal);
+	}
+
+	.vault-explorer-tab--rounded {
+		border-radius: 4px;
+	}
+
+	.vault-explorer-tab__rounded--active {
 		background-color: var(--background-modifier-hover);
 	}
 
-	.vault-explorer-tab:hover {
+	.vault-explorer-tab__rounded:hover {
 		background-color: var(--background-modifier-hover);
 	}
 </style>
