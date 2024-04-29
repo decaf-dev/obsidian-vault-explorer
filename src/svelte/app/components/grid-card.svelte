@@ -54,7 +54,7 @@
 			<IconButton iconId="external-link" on:click={handleUrlClick} />
 		{/if}
 	</div>
-	<Spacer size="md" />
+	<Spacer size="md" direction="vertical" />
 	<div class="vault-explorer-grid-card__content">
 		{#if tags !== null}
 			<div class="vault-explorer-grid-card__tags">
@@ -77,14 +77,6 @@
 					value={custom3}
 				/>{/if}
 		</Wrap>
-		<!-- <div class="vault-explorer-grid-card__labels">
-			<div>
-				<Property name={""} value={""} />
-				<Spacer size="xs" />
-				<div class="vault-explorer-property-label">
-				</div>
-			</div>
-		</div> -->
 	</div>
 </div>
 
