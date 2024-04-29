@@ -8,11 +8,11 @@
 
 <div class="vault-explorer-group-tag-list">
 	<Stack spacing="sm">
-		{#each groups as group, index (group.id)}
+		{#each groups as group (group.id)}
 			<GroupTag
 				id={group.id}
 				name={group.name}
-				isSelected={false}
+				isSelected={group.isEnabled}
 				on:groupClick
 			/>
 		{/each}

@@ -64,7 +64,6 @@
 	let onlyFavorites: boolean = false;
 	let currentView: CurrentView = "grid";
 	let propertyFilterGroups: PropertyFilterGroup[] = [];
-	let selectedPropertyFilterGroupId: string = "";
 
 	let frontmatterCache: Record<string, FrontMatterCache | undefined> = {};
 
@@ -325,7 +324,6 @@
 		timestampFilter,
 		onlyFavorites,
 		currentView,
-		selectedPropertyFilterGroupId,
 		propertyFilterGroups,
 		saveSettings();
 
@@ -342,11 +340,12 @@
 
 	function handleGroupClick(e: CustomEvent) {
 		const { id } = e.detail;
-		if (selectedPropertyFilterGroupId === id) {
-			selectedPropertyFilterGroupId = "";
-			return;
-		}
-		selectedPropertyFilterGroupId = id;
+
+		const newGroups = propertyFilterGroups.map((group) =>
+			group.id === id ? { ...group, isEnabled: !group.isEnabled } : group,
+		);
+
+		propertyFilterGroups = newGroups;
 	}
 
 	function openPropertiesFilterModal() {
