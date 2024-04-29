@@ -24,7 +24,7 @@
 
 <style>
 	.vault-explorer-group-tag-list {
-		max-width: calc(100% - 50px);
+		max-width: 390px;
 		overflow-x: auto;
 	}
 

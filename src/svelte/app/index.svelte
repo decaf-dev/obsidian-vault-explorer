@@ -31,7 +31,7 @@
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
-	import GroupTagList from "../properties-filter-app/components/group-tag-list.svelte";
+	import GroupTagList from "./components/group-tag-list.svelte";
 
 	let plugin: VaultExplorerPlugin;
 
