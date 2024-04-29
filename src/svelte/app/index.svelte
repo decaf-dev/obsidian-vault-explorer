@@ -342,7 +342,9 @@
 		const { id } = e.detail;
 
 		const newGroups = propertyFilterGroups.map((group) =>
-			group.id === id ? { ...group, isEnabled: !group.isEnabled } : group,
+			group.id === id
+				? { ...group, isEnabled: !group.isEnabled }
+				: { ...group, isEnabled: false },
 		);
 
 		propertyFilterGroups = newGroups;
