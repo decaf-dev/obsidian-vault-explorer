@@ -528,10 +528,15 @@
 				</Stack>
 			</Flex>
 			<Stack align="center" spacing="sm">
-				<GroupTagList
-					groups={propertyFilterGroups}
-					on:groupClick={handleGroupClick}
-				/>
+				{#if propertyFilterGroups.length > 0}
+					<GroupTagList
+						groups={propertyFilterGroups}
+						on:groupClick={handleGroupClick}
+					/>
+				{/if}
+				{#if propertyFilterGroups.length === 0}
+					<span class="vault-explorer-empty-label">No groups</span>
+				{/if}
 				<IconButton
 					ariaLabel="Change properties filter"
 					iconId="ellipsis-vertical"
@@ -609,5 +614,10 @@
 		position: relative;
 		width: 100%;
 		max-width: 300px;
+	}
+
+	.vault-explorer-empty-label {
+		color: var(--text-faint);
+		font-size: var(--font-smaller);
 	}
 </style>

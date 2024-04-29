@@ -38,20 +38,18 @@
 </script>
 
 <div>
-	<Stack direction="column" spacing="sm">
+	{#if groups.length > 0}
 		<Stack spacing="sm" align="center">
-			{#if groups.length > 0}
-				<TabList variant="line" initialSelectedIndex={selectedIndex}>
-					{#each groups as group (group.id)}
-						<Tab on:click={() => handleGroupClick(group.id)}
-							>{group.name}</Tab
-						>
-					{/each}
-				</TabList>
-			{/if}
+			<TabList variant="line" initialSelectedIndex={selectedIndex}>
+				{#each groups as group (group.id)}
+					<Tab on:click={() => handleGroupClick(group.id)}
+						>{group.name}</Tab
+					>
+				{/each}
+			</TabList>
 			<Spacer size="md" />
 		</Stack>
-	</Stack>
+	{/if}
 	{#if selectedGroup == undefined}
 		<IconButton
 			ariaLabel="Add property filter group"
