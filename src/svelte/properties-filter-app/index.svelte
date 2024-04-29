@@ -7,6 +7,7 @@
 	import { generateUUID } from "../shared/services/uuid";
 	import BaseView from "./components/base-view.svelte";
 	import GroupEditView from "./components/group-edit-view.svelte";
+	import { createPropertyFilter } from "./utils";
 
 	let editMenu: boolean = false;
 	let selectedGroupId: string = "";
@@ -45,7 +46,7 @@
 		const newGroup: PropertyFilterGroup = {
 			id: generateUUID(),
 			name: `Group ${groups.length + 1}`,
-			filters: [],
+			filters: [createPropertyFilter()],
 			position: groups.length,
 			isEnabled: true,
 		};
