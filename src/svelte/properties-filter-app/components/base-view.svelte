@@ -65,7 +65,7 @@
 				iconId="pencil"
 				on:click={() => handleEditClick()}
 			/>
-			<Stack justify="flex-end" width="100%" align="center">
+			<Stack justify="flex-end" width="100%" align="center" spacing="sm">
 				<Switch
 					ariaLabel="Toggle property filter group"
 					value={selectedGroup.isEnabled}
@@ -76,6 +76,7 @@
 					iconId="trash"
 					on:click={() => handleDeleteGroupClick()}
 				/>
+				<Spacer size="2xl" />
 			</Stack>
 		</Stack>
 	{/if}
