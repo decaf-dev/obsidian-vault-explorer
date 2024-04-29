@@ -49,11 +49,6 @@
 					{/each}
 				</TabList>
 			{/if}
-			<IconButton
-				ariaLabel="Add property filter group"
-				iconId="plus"
-				on:click={() => handleAddGroupClick()}
-			/>
 			<Spacer size="md" />
 		</Stack>
 	</Stack>
@@ -64,6 +59,11 @@
 				ariaLabel="Edit property filter group"
 				iconId="pencil"
 				on:click={() => handleEditClick()}
+			/>
+			<IconButton
+				ariaLabel="Add property filter group"
+				iconId="plus"
+				on:click={() => handleAddGroupClick()}
 			/>
 			<Stack justify="flex-end" width="100%" align="center" spacing="sm">
 				<Switch
@@ -76,7 +76,6 @@
 					iconId="trash"
 					on:click={() => handleDeleteGroupClick()}
 				/>
-				<Spacer size="2xl" />
 			</Stack>
 		</Stack>
 	{/if}
