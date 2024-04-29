@@ -8,7 +8,7 @@
 </script>
 
 <div class="vault-explorer-group-tag-list">
-	<Stack>
+	<Stack spacing="sm">
 		{#each groups as group, index (group.id)}
 			<GroupTag
 				id={group.id}

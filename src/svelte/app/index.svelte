@@ -31,6 +31,7 @@
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
+	import GroupTagList from "../properties-filter-app/components/group-tag-list.svelte";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -63,6 +64,7 @@
 	let onlyFavorites: boolean = false;
 	let currentView: CurrentView = "grid";
 	let propertyFilterGroups: PropertyFilterGroup[] = [];
+	let selectedPropertyFilterGroupId: string = "";
 
 	let frontmatterCache: Record<string, FrontMatterCache | undefined> = {};
 
@@ -323,6 +325,8 @@
 		timestampFilter,
 		onlyFavorites,
 		currentView,
+		selectedPropertyFilterGroupId,
+		propertyFilterGroups,
 		saveSettings();
 
 	async function saveSettings() {
@@ -332,7 +336,19 @@
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
 		plugin.settings.currentView = currentView;
+		plugin.settings.filters.properties.groups = propertyFilterGroups;
+		plugin.settings.filters.properties.selectedGroupId =
+			selectedPropertyFilterGroupId;
 		await plugin.saveSettings();
+	}
+
+	function handleGroupClick(e: CustomEvent) {
+		const { id } = e.detail;
+		if (selectedPropertyFilterGroupId === id) {
+			selectedPropertyFilterGroupId = "";
+			return;
+		}
+		selectedPropertyFilterGroupId = id;
 	}
 
 	function openPropertiesFilterModal() {
@@ -543,12 +559,15 @@
 				</Flex>
 			</Stack>
 		</Flex>
-		<Stack spacing="sm">
-			<TabList initialSelectedIndex={currentView === "grid" ? 0 : 1}>
-				<Tab on:click={() => (currentView = "grid")}>Grid</Tab>
-				<Tab on:click={() => (currentView = "list")}>List</Tab>
-			</TabList>
-		</Stack>
+		<GroupTagList
+			groups={propertyFilterGroups}
+			selectedGroupId={selectedPropertyFilterGroupId}
+			on:groupClick={handleGroupClick}
+		/>
+		<TabList initialSelectedIndex={currentView === "grid" ? 0 : 1}>
+			<Tab on:click={() => (currentView = "grid")}>Grid</Tab>
+			<Tab on:click={() => (currentView = "list")}>List</Tab>
+		</TabList>
 		{#if currentView === "grid"}
 			<GridView data={renderData} {startIndex} {pageLength} />
 		{:else}
