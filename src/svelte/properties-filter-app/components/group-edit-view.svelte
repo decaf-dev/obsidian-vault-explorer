@@ -52,15 +52,17 @@
 		/>
 	</Stack>
 	<Divider />
-	<PropertyFilterList
-		filters={selectedGroup.filters}
-		on:groupClick
-		on:filterConditionChange
-		on:filterNameChange
-		on:filterValueChange
-		on:filterToggle
-		on:filterDeleteClick
-	/>
+	{#if selectedGroup.filters.length > 0}
+		<PropertyFilterList
+			filters={selectedGroup.filters}
+			on:groupClick
+			on:filterConditionChange
+			on:filterNameChange
+			on:filterValueChange
+			on:filterToggle
+			on:filterDeleteClick
+		/>
+	{/if}
 	<IconButton
 		ariaLabel="Add filter"
 		iconId="plus"

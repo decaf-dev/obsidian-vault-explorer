@@ -13,7 +13,6 @@ export interface VaultExplorerPluginSettings {
 		sort: SortFilter;
 		timestamp: TimestampFilter;
 		properties: {
-			selectedGroupId: string;
 			groups: PropertyFilterGroup[];
 		}
 	},

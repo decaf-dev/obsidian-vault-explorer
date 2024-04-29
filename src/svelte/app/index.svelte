@@ -337,8 +337,6 @@
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.properties.groups = propertyFilterGroups;
-		plugin.settings.filters.properties.selectedGroupId =
-			selectedPropertyFilterGroupId;
 		await plugin.saveSettings();
 	}
 
@@ -558,7 +556,6 @@
 			<Stack align="center" spacing="sm">
 				<GroupTagList
 					groups={propertyFilterGroups}
-					selectedGroupId={selectedPropertyFilterGroupId}
 					on:groupClick={handleGroupClick}
 				/>
 				<IconButton

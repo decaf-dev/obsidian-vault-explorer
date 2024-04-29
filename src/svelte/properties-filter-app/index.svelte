@@ -15,10 +15,9 @@
 
 	$: selectedGroup = groups.find((group) => group.id === selectedGroupId);
 
-	$: selectedGroupId, groups, saveSettings();
+	$: groups, saveSettings();
 
 	async function saveSettings() {
-		plugin.settings.filters.properties.selectedGroupId = selectedGroupId;
 		plugin.settings.filters.properties.groups = groups;
 		await plugin.saveSettings();
 	}
@@ -26,8 +25,8 @@
 	store.plugin.subscribe((p) => {
 		plugin = p;
 
-		selectedGroupId = plugin.settings.filters.properties.selectedGroupId;
 		groups = plugin.settings.filters.properties.groups;
+		selectedGroupId = groups.length > 0 ? groups[0].id : "";
 	});
 
 	onMount(() => {
@@ -210,6 +209,14 @@
 			on:addGroupClick={handleAddGroupClick}
 			on:deleteGroupClick={handleDeleteGroupClick}
 			on:groupToggle={handleGroupToggle}
+			on:groupNameChange={handleGroupNameChange}
+			on:filterAddClick={handleFilterAddClick}
+			on:groupClick={handleGroupClick}
+			on:filterConditionChange={handleFilterConditionChange}
+			on:filterDeleteClick={handleFilterDeleteClick}
+			on:filterNameChange={handleFilterNameChange}
+			on:filterToggle={handleFilterToggle}
+			on:filterValueChange={handleFilterValueChange}
 		/>
 	{/if}
 	{#if editMenu === true && selectedGroup !== undefined}

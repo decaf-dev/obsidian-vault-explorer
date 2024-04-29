@@ -4,7 +4,6 @@
 	import Stack from "src/svelte/shared/components/stack.svelte";
 
 	export let groups: PropertyFilterGroup[] = [];
-	export let selectedGroupId: string | undefined;
 </script>
 
 <div class="vault-explorer-group-tag-list">
@@ -13,9 +12,7 @@
 			<GroupTag
 				id={group.id}
 				name={group.name}
-				isSelected={selectedGroupId === undefined
-					? index === 0
-					: group.id === selectedGroupId}
+				isSelected={false}
 				on:groupClick
 			/>
 		{/each}
