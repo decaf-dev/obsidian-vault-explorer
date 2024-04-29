@@ -101,7 +101,7 @@
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
 				? { ...group, isEnabled: !group.isEnabled }
-				: group,
+				: { ...group, isEnabled: false },
 		);
 
 		groups = newGroups;
