@@ -64,6 +64,7 @@
 	let onlyFavorites: boolean = false;
 	let currentView: CurrentView = "grid";
 	let propertyFilterGroups: PropertyFilterGroup[] = [];
+	let selectedPropertyFilterGroupId: string = "";
 
 	let frontmatterCache: Record<string, FrontMatterCache | undefined> = {};
 
@@ -105,11 +106,15 @@
 		onlyFavorites = plugin.settings.filters.onlyFavorites;
 		currentView = plugin.settings.currentView;
 		propertyFilterGroups = plugin.settings.filters.properties.groups;
+		selectedPropertyFilterGroupId =
+			plugin.settings.filters.properties.selectedGroupId;
 	});
 
 	onMount(() => {
 		function handlePropertiesFilterUpdate() {
 			propertyFilterGroups = plugin.settings.filters.properties.groups;
+			selectedPropertyFilterGroupId =
+				plugin.settings.filters.properties.selectedGroupId;
 		}
 
 		EventManager.getInstance().on(
@@ -325,6 +330,7 @@
 		onlyFavorites,
 		currentView,
 		propertyFilterGroups,
+		selectedPropertyFilterGroupId,
 		saveSettings();
 
 	async function saveSettings() {
@@ -335,6 +341,8 @@
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.properties.groups = propertyFilterGroups;
+		plugin.settings.filters.properties.selectedGroupId =
+			selectedPropertyFilterGroupId;
 		await plugin.saveSettings();
 	}
 
@@ -346,7 +354,7 @@
 				? { ...group, isEnabled: !group.isEnabled }
 				: { ...group, isEnabled: false },
 		);
-
+		selectedPropertyFilterGroupId = id;
 		propertyFilterGroups = newGroups;
 	}
 
