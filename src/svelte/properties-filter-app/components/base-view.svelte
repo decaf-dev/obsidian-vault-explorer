@@ -52,18 +52,25 @@
 			<Spacer size="md" />
 		</Stack>
 	</Stack>
+	{#if selectedGroup == undefined}
+		<IconButton
+			ariaLabel="Add property filter group"
+			iconId="plus"
+			on:click={() => handleAddGroupClick()}
+		/>
+	{/if}
 	{#if selectedGroup !== undefined}
 		<Spacer size="sm" direction="vertical" />
-		<Stack align="center">
-			<IconButton
-				ariaLabel="Edit property filter group"
-				iconId="pencil"
-				on:click={() => handleEditClick()}
-			/>
+		<Stack align="center" spacing="sm">
 			<IconButton
 				ariaLabel="Add property filter group"
 				iconId="plus"
 				on:click={() => handleAddGroupClick()}
+			/>
+			<IconButton
+				ariaLabel="Edit property filter group"
+				iconId="pencil"
+				on:click={() => handleEditClick()}
 			/>
 			<Stack justify="flex-end" width="100%" align="center" spacing="sm">
 				<Switch
