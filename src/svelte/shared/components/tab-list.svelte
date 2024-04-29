@@ -6,15 +6,25 @@
 	export let initialSelectedIndex: number = 0;
 	export let variant: "rounded" | "line" = "rounded";
 
-	let numTabs = 0;
-	const selectedTab = writable(initialSelectedIndex); // A store to keep track of the selected tab
+	let registeredTabs: string[] = [];
 
-	function registerTab() {
-		return numTabs++;
+	const selectedTab = writable<string>(); // A store to keep track of the selected tab
+
+	$: initialSelectedIndex,
+		registeredTabs.length,
+		selectedTab.set(registeredTabs[initialSelectedIndex]);
+
+	function registerTab(id: string) {
+		registeredTabs = [...registeredTabs, id];
+	}
+
+	function unregisterTab(id: string) {
+		registeredTabs = registeredTabs.filter((tabId) => tabId !== id);
 	}
 
 	setContext("selectedTab", selectedTab);
 	setContext("registerTab", registerTab);
+	setContext("unregisterTab", unregisterTab);
 	setContext("variant", variant);
 
 	$: className =

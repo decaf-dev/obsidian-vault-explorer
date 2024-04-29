@@ -15,10 +15,11 @@
 
 	$: selectedGroup = groups.find((group) => group.id === selectedGroupId);
 
-	$: groups, saveSettings();
+	$: groups, selectedGroupId, saveSettings();
 
 	async function saveSettings() {
 		plugin.settings.filters.properties.groups = groups;
+		plugin.settings.filters.properties.selectedGroupId = selectedGroupId;
 		await plugin.saveSettings();
 	}
 
@@ -26,7 +27,7 @@
 		plugin = p;
 
 		groups = plugin.settings.filters.properties.groups;
-		selectedGroupId = groups.length > 0 ? groups[0].id : "";
+		selectedGroupId = plugin.settings.filters.properties.selectedGroupId;
 	});
 
 	onMount(() => {
@@ -107,8 +108,6 @@
 
 	function handleFilterConditionChange(e: CustomEvent) {
 		const { id, condition } = e.detail;
-
-		console.log(id, condition);
 
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId

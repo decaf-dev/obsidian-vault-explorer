@@ -19,6 +19,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		timestamp: "all",
 		sort: "file-name-asc",
 		properties: {
+			selectedGroupId: uuid,
 			groups:
 				[
 					{

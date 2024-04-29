@@ -2,25 +2,32 @@
 	import { createEventDispatcher, getContext } from "svelte";
 	const dispatch = createEventDispatcher();
 
-	let index: number;
-
-	const selectedTab = getContext("selectedTab") as Writable<number>;
-	const registerTab = getContext("registerTab") as () => number;
+	const id = generateUUID();
+	const selectedTab = getContext("selectedTab") as Writable<string>;
+	const registerTab = getContext("registerTab") as (id: string) => void;
+	const unregisterTab = getContext("unregisterTab") as (id: string) => void;
+	// const registeredTabs = getContext("registeredTabs") as string[];
 	const variant = getContext("variant") as string;
 
 	// We use onMount to ensure the index is set after the component is mounted
 	import { onMount } from "svelte";
 	import { Writable } from "svelte/store";
+	import { generateUUID } from "../services/uuid";
+
 	onMount(() => {
-		index = registerTab();
+		registerTab(id);
+
+		return () => {
+			unregisterTab(id);
+		};
 	});
 
 	function handleClick(event: Event) {
-		selectedTab.set(index);
+		selectedTab.set(id);
 		dispatch("click", { nativeEvent: event });
 	}
 
-	$: isSelected = $selectedTab === index;
+	$: isSelected = $selectedTab === id;
 	$: className = findClassName(variant, isSelected);
 
 	function findClassName(variant: string, isSelected: boolean) {
