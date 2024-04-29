@@ -518,41 +518,6 @@
 						/>
 					</Flex>
 				</Stack>
-				<Stack justify="flex-end" align="center">
-					<Stack spacing="xs">
-						<Stack spacing="xs">
-							<span>{startIndex + 1}</span>
-							<span>-</span>
-							<span>{endIndex}</span>
-						</Stack>
-						<span>of</span>
-						<span>{renderData.length}</span>
-					</Stack>
-					<Flex>
-						<IconButton
-							iconId="chevrons-left"
-							ariaLabel="First page"
-							on:click={() => changePage(1)}
-						/>
-						<IconButton
-							iconId="chevron-left"
-							ariaLabel="Previous page"
-							disabled={currentPage === 1}
-							on:click={() => changePage(currentPage - 1)}
-						/>
-						<IconButton
-							iconId="chevron-right"
-							ariaLabel="Next page"
-							disabled={currentPage === totalPages}
-							on:click={() => changePage(currentPage + 1)}
-						/>
-						<IconButton
-							iconId="chevrons-right"
-							ariaLabel="Last page"
-							on:click={() => changePage(totalPages)}
-						/>
-					</Flex>
-				</Stack>
 			</Flex>
 			<Stack align="center" spacing="sm">
 				<GroupTagList
@@ -566,10 +531,47 @@
 				/>
 			</Stack>
 		</Stack>
-		<TabList initialSelectedIndex={currentView === "grid" ? 0 : 1}>
-			<Tab on:click={() => (currentView = "grid")}>Grid</Tab>
-			<Tab on:click={() => (currentView = "list")}>List</Tab>
-		</TabList>
+		<Flex>
+			<TabList initialSelectedIndex={currentView === "grid" ? 0 : 1}>
+				<Tab on:click={() => (currentView = "grid")}>Grid</Tab>
+				<Tab on:click={() => (currentView = "list")}>List</Tab>
+			</TabList>
+			<Stack justify="flex-end" align="center">
+				<Stack spacing="xs">
+					<Stack spacing="xs">
+						<span>{startIndex + 1}</span>
+						<span>-</span>
+						<span>{endIndex}</span>
+					</Stack>
+					<span>of</span>
+					<span>{renderData.length}</span>
+				</Stack>
+				<Flex>
+					<IconButton
+						iconId="chevrons-left"
+						ariaLabel="First page"
+						on:click={() => changePage(1)}
+					/>
+					<IconButton
+						iconId="chevron-left"
+						ariaLabel="Previous page"
+						disabled={currentPage === 1}
+						on:click={() => changePage(currentPage - 1)}
+					/>
+					<IconButton
+						iconId="chevron-right"
+						ariaLabel="Next page"
+						disabled={currentPage === totalPages}
+						on:click={() => changePage(currentPage + 1)}
+					/>
+					<IconButton
+						iconId="chevrons-right"
+						ariaLabel="Last page"
+						on:click={() => changePage(totalPages)}
+					/>
+				</Flex>
+			</Stack>
+		</Flex>
 		{#if currentView === "grid"}
 			<GridView data={renderData} {startIndex} {pageLength} />
 		{:else}
