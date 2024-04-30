@@ -22,33 +22,7 @@ export interface VaultExplorerPluginSettings {
 	pluginVersion: string | null;
 }
 
-export interface CustomProperty {
-	name: string;
-}
-
-export interface TextPropertyFilter extends BasePropertyFilter {
-	condition: TextFilterCondition;
-	value: string;
-}
-
-export type PropertyFilter = TextPropertyFilter;
-
-export interface PropertyFilterGroup {
-	id: string;
-	name: string;
-	filters: PropertyFilter[];
-	position: number;
-	isEnabled: boolean;
-}
-
-interface BasePropertyFilter {
-	id: string;
-	propertyName: string;
-	operator: FilterOperator;
-	isEnabled: boolean;
-}
-
-export type FilterCondition = TextFilterCondition;
+export type FilterOperator = "and" | "or";
 
 export enum TextFilterCondition {
 	IS = "is",
@@ -57,11 +31,108 @@ export enum TextFilterCondition {
 	DOES_NOT_CONTAIN = "does-not-contain",
 	STARTS_WITH = "starts-with",
 	ENDS_WITH = "ends-with",
-	IS_EMPTY = "is-empty",
-	IS_NOT_EMPTY = "is-not-empty",
+	// IS_EMPTY = "is-empty",
+	// IS_NOT_EMPTY = "is-not-empty",
+	EXISTS = "exists",
+	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export type FilterOperator = "and" | "or";
+export enum ListFilterCondition {
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	// IS_EMPTY = "is-empty",
+	// IS_NOT_EMPTY = "is-not-empty",
+	EXISTS = "exists",
+	DOES_NOT_EXIST = "does-not-exist",
+}
+
+export enum NumberFilterCondition {
+	IS_EQUAL = "is-equal",
+	IS_NOT_EQUAL = "is-not-equal",
+	IS_GREATER = "is-greater",
+	IS_LESS = "is-less",
+	IS_GREATER_OR_EQUAL = "is-greater-or-equal",
+	IS_LESS_OR_EQUAL = "is-less-or-equal",
+	// IS_EMPTY = "is-empty",
+	// IS_NOT_EMPTY = "is-not-empty",
+	EXISTS = "exists",
+	DOES_NOT_EXIST = "does-not-exist",
+}
+
+export enum CheckboxFilterCondition {
+	IS = "is",
+	IS_NOT = "is-not",
+	// IS_EMPTY = "is-empty",
+	// IS_NOT_EMPTY = "is-not-empty",
+	EXISTS = "exists",
+	DOES_NOT_EXIST = "does-not-exist",
+}
+
+//TODO: add more types
+export enum DateFilterCondition {
+	IS = "is",
+	IS_BEFORE = "is-before",
+	IS_AFTER = "is-after",
+	// IS_EMPTY = "is-empty",
+	// IS_NOT_EMPTY = "is-not-empty",
+	EXISTS = "exists",
+	DOES_NOT_EXIST = "does-not-exist",
+}
+
+export type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition;
+
+interface BasePropertyFilter {
+	id: string;
+	propertyName: string;
+	operator: FilterOperator;
+	type: PropertyFilterType;
+	isEnabled: boolean;
+	value: string;
+}
+
+export enum PropertyFilterType {
+	TEXT = "text",
+	NUMBER = "number",
+	LIST = "list",
+	CHECKBOX = "checkbox",
+	DATE = "date",
+	DATETIME = "datetime",
+}
+
+export interface TextPropertyFilter extends BasePropertyFilter {
+	type: PropertyFilterType.TEXT;
+	condition: TextFilterCondition;
+}
+
+export interface NumberPropertyFilter extends BasePropertyFilter {
+	type: PropertyFilterType.NUMBER;
+	condition: NumberFilterCondition;
+}
+
+export interface ListPropertyFilter extends BasePropertyFilter {
+	type: PropertyFilterType.LIST
+	condition: ListFilterCondition;
+}
+
+export interface CheckboxPropertyFilter extends BasePropertyFilter {
+	type: PropertyFilterType.CHECKBOX
+	condition: CheckboxFilterCondition;
+}
+
+export interface DatePropertyFilter extends BasePropertyFilter {
+	type: PropertyFilterType.DATE | PropertyFilterType.DATETIME;
+	condition: DateFilterCondition;
+}
+
+export type PropertyFilter = TextPropertyFilter | NumberPropertyFilter | ListPropertyFilter | CheckboxPropertyFilter | DatePropertyFilter;
+
+export interface PropertyFilterGroup {
+	id: string;
+	name: string;
+	filters: PropertyFilter[];
+	position: number;
+	isEnabled: boolean;
+}
 
 export type CurrentView = "grid" | "list";
 

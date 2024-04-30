@@ -3,7 +3,15 @@
 	import { onMount } from "svelte";
 	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
-	import { PropertyFilterGroup } from "src/types";
+	import {
+		CheckboxFilterCondition,
+		DateFilterCondition,
+		FilterCondition,
+		ListFilterCondition,
+		NumberFilterCondition,
+		PropertyFilterGroup,
+		TextFilterCondition,
+	} from "src/types";
 	import { generateUUID } from "../shared/services/uuid";
 	import BaseView from "./components/base-view.svelte";
 	import GroupEditView from "./components/group-edit-view.svelte";
@@ -181,6 +189,46 @@
 		groups = newGroups;
 	}
 
+	function handleFilterTypeChange(e: CustomEvent) {
+		const { id, type } = e.detail;
+
+		let condition: FilterCondition;
+		if (type === "text") {
+			condition = TextFilterCondition.IS;
+		} else if (type === "number") {
+			condition = NumberFilterCondition.IS_EQUAL;
+		} else if (type === "checkbox") {
+			condition = CheckboxFilterCondition.IS;
+		} else if (type === "list") {
+			condition = ListFilterCondition.CONTAINS;
+		} else if (type === "date" || type === "datetime") {
+			condition = DateFilterCondition.IS;
+		} else {
+			throw new Error(`Unhandled filter type: ${type}`);
+		}
+
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.map((filter) =>
+							filter.id === id
+								? {
+										...filter,
+										type,
+										propertyName: "",
+										condition,
+										value: "",
+									}
+								: filter,
+						),
+					}
+				: group,
+		);
+
+		groups = newGroups;
+	}
+
 	function handleFilterValueChange(e: CustomEvent) {
 		const { id, value } = e.detail;
 
@@ -226,6 +274,7 @@
 			on:groupNameChange={handleGroupNameChange}
 			on:filterAddClick={handleFilterAddClick}
 			on:groupClick={handleGroupClick}
+			on:filterTypeChange={handleFilterTypeChange}
 			on:filterConditionChange={handleFilterConditionChange}
 			on:filterDeleteClick={handleFilterDeleteClick}
 			on:filterNameChange={handleFilterNameChange}

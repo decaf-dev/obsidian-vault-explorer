@@ -19,3 +19,24 @@ export const getMidnightLastWeek = () => {
 
 	return midnightLastWeek;
 };
+
+export const getMidnightMillis = (date: string) => {
+	const midnight = moment(date).startOf("day").valueOf();
+	return midnight;
+}
+
+export const getMillis = (date: string) => {
+	const time = moment(date).valueOf();
+	return time;
+}
+
+export const getBeforeMidnightMillis = (date: string) => {
+	const day = moment(date);
+	day.set({
+		hour: 23,
+		minute: 59,
+		second: 59,
+		millisecond: 999
+	});
+	return day.valueOf();
+}
