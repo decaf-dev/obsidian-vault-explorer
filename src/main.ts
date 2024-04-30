@@ -119,8 +119,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			}
 		}
 
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
-
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, this.settings);
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
 	}
