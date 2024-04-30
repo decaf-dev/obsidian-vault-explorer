@@ -56,7 +56,7 @@
 			name: `Group ${groups.length + 1}`,
 			filters: [createPropertyFilter()],
 			position: groups.length,
-			isEnabled: false,
+			isEnabled: groups.length === 0,
 		};
 
 		selectedGroupId = newGroup.id;
