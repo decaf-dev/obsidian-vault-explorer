@@ -18,6 +18,10 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 			return "Is empty";
 		case TextFilterCondition.IS_NOT_EMPTY:
 			return "Is not empty";
+		case TextFilterCondition.EXISTS:
+			return "Exists";
+		case TextFilterCondition.DOES_NOT_EXIST:
+			return "Does not exist";
 		default:
 			return "";
 	}

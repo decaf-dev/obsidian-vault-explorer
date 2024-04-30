@@ -25,17 +25,17 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 			const { propertyName, condition, value } = filter;
 			if (propertyName === "") return;
 
-			let propertyValue = frontmatter?.[propertyName] ?? "";
+			let propertyValue: (string | string[] | boolean | number | null) = frontmatter?.[propertyName] ?? null;
 
 			//TODO handle array
 			//TODO handle date
 			//TODO handle number
 			//TODO handle boolean
 			if (typeof propertyValue === "boolean") {
-				propertyValue = (propertyValue as boolean).toString();
+				propertyValue = propertyValue.toString();
 			} else if (typeof propertyValue === "number") {
-				propertyValue = (propertyValue as number).toString();
-			} else if (typeof propertyValue !== "string") {
+				propertyValue = propertyValue.toString();
+			} else if (Array.isArray(propertyValue)) {
 				isValid = false;
 				return;
 			}
@@ -44,7 +44,6 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 				condition,
 				propertyValue,
 				value,
-				true
 			);
 
 			if (!doesMatch) {
@@ -57,36 +56,44 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 
 const matchesPropertyFilter = (
 	condition: FilterCondition,
-	propertyValue: string,
+	propertyValue: string | null,
 	compare: string,
-	shouldMatchIfNull: boolean
 ): boolean => {
-	propertyValue = propertyValue.toLowerCase().trim();
+	if (propertyValue) {
+		propertyValue = propertyValue.toLowerCase().trim();
+	}
+
 	compare = compare.toLowerCase().trim();
 
 	switch (condition) {
 		case TextFilterCondition.IS:
-			if (compare === "") return shouldMatchIfNull;
+			if (propertyValue === null) return false;
 			return propertyValue === compare;
 		case TextFilterCondition.IS_NOT:
-			if (compare === "") return shouldMatchIfNull;
+			if (propertyValue === null) return false;
 			return propertyValue !== compare;
 		case TextFilterCondition.CONTAINS:
-			if (compare === "") return shouldMatchIfNull;
+			if (propertyValue === null) return false;
 			return propertyValue.includes(compare);
 		case TextFilterCondition.DOES_NOT_CONTAIN:
-			if (compare === "") return shouldMatchIfNull;
+			if (propertyValue === null) return false;
 			return !propertyValue.includes(compare);
 		case TextFilterCondition.STARTS_WITH:
-			if (compare === "") return shouldMatchIfNull;
+			if (propertyValue === null) return false;
 			return propertyValue.startsWith(compare);
 		case TextFilterCondition.ENDS_WITH:
-			if (compare === "") return shouldMatchIfNull;
+			if (propertyValue === null) return false;
 			return propertyValue.endsWith(compare);
 		case TextFilterCondition.IS_EMPTY:
+			if (propertyValue === null) return false;
 			return propertyValue === "";
 		case TextFilterCondition.IS_NOT_EMPTY:
+			if (propertyValue === null) return false;
 			return propertyValue !== "";
+		case TextFilterCondition.EXISTS:
+			return propertyValue !== null;
+		case TextFilterCondition.DOES_NOT_EXIST:
+			return propertyValue === null;
 		default:
 			throw new Error("Filter condition not yet supported");
 	}

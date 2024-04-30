@@ -59,6 +59,8 @@ export enum TextFilterCondition {
 	ENDS_WITH = "ends-with",
 	IS_EMPTY = "is-empty",
 	IS_NOT_EMPTY = "is-not-empty",
+	EXISTS = "exists",
+	DOES_NOT_EXIST = "does-not-exist",
 }
 
 export type FilterOperator = "and" | "or";

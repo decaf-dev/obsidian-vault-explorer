@@ -67,7 +67,7 @@
 					</option>
 				{/each}
 			</select>
-			{#if condition !== TextFilterCondition.IS_EMPTY && condition !== TextFilterCondition.IS_NOT_EMPTY}
+			{#if condition !== TextFilterCondition.IS_EMPTY && condition !== TextFilterCondition.IS_NOT_EMPTY && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 				<input type="text" {value} on:change={handleValueChange} />
 			{/if}
 		</Stack>
