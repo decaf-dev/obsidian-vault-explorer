@@ -51,6 +51,7 @@
 			filters={selectedGroup.filters}
 			on:groupClick
 			on:filterConditionChange
+			on:filterTypeChange
 			on:filterNameChange
 			on:filterValueChange
 			on:filterToggle

@@ -30,31 +30,31 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 
 			if (type === "text") {
 				//If the value is not a string, skip the filter
-				if (typeof propertyValue !== "string") {
-					console.log(`Property value is not a string: ${propertyValue}`);
+				if (propertyValue !== null && typeof propertyValue !== "string") {
+					console.error(`Property value is not a string: ${propertyValue}`);
 					return;
 				}
 				const doesMatch = doesTextMatchFilter(condition, propertyValue, value);
 				isValid = doesMatch;
 			} else if (type === "list") {
-				if (!Array.isArray(propertyValue)) {
-					console.log(`Property value is not an array: ${propertyValue}`);
+				if (propertyValue !== null && !Array.isArray(propertyValue)) {
+					console.error(`Property value is not an array: ${propertyValue}`);
 					return;
 				}
 				const compare = value.split(",").map((v) => v.trim());
 				const doesMatch = doesListMatchFilter(condition, propertyValue, compare);
 				isValid = doesMatch;
 			} else if (type === "number") {
-				if (typeof propertyValue !== "number") {
-					console.log(`Property value is not a number: ${propertyValue}`);
+				if (propertyValue !== null && typeof propertyValue !== "number") {
+					console.error(`Property value is not a number: ${propertyValue}`);
 					return;
 				}
 				const compare = parseFloat(value);
 				const doesMatch = doesNumberMatchFilter(condition, propertyValue, compare);
 				isValid = doesMatch;
 			} else if (type === "checkbox") {
-				if (typeof propertyValue !== "boolean") {
-					console.log(`Property value is not a boolean: ${propertyValue}`);
+				if (propertyValue !== null && typeof propertyValue !== "boolean") {
+					console.error(`Property value is not a boolean: ${propertyValue}`);
 					return;
 				}
 
@@ -63,8 +63,8 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 				isValid = doesMatch;
 
 			} else if (type === "date" || type === "datetime") {
-				if (typeof propertyValue !== "string") {
-					console.log(`Property value is not a string: ${propertyValue}`);
+				if (propertyValue !== null && typeof propertyValue !== "string") {
+					console.error(`Property value is not a string: ${propertyValue}`);
 					return;
 				}
 
@@ -122,11 +122,16 @@ const doesTextMatchFilter = (
 };
 
 const doesListMatchFilter = (condition: ListFilterCondition, propertyValue: string[] | null, compare: string[]) => {
+	console.log({
+		propertyValue,
+		compare,
+		condition
+	})
 	switch (condition) {
 		case ListFilterCondition.CONTAINS:
 			if (propertyValue === null) return false;
 
-			return propertyValue.every((value) => //Union
+			return propertyValue.some((value) => //Union
 				compare.some((c) => c === value)
 			);
 		case ListFilterCondition.DOES_NOT_CONTAIN:
@@ -141,6 +146,10 @@ const doesListMatchFilter = (condition: ListFilterCondition, propertyValue: stri
 		case ListFilterCondition.IS_NOT_EMPTY:
 			if (propertyValue === null) return false;
 			return propertyValue.length !== 0;
+		case ListFilterCondition.EXISTS:
+			return propertyValue !== null;
+		case ListFilterCondition.DOES_NOT_EXIST:
+			return propertyValue === null;
 		default:
 			throw new Error(`List filter condition not supported: ${condition}`);
 	}

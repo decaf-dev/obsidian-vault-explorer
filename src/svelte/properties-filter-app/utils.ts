@@ -1,10 +1,10 @@
-import { TextFilterCondition, TextPropertyFilter } from "src/types";
+import { PropertyFilterType, TextFilterCondition, TextPropertyFilter } from "src/types";
 import { generateUUID } from "../shared/services/uuid";
 
 export const createPropertyFilter = (): TextPropertyFilter => {
 	return {
 		id: generateUUID(),
-		type: "text",
+		type: PropertyFilterType.TEXT,
 		propertyName: "",
 		operator: "and",
 		isEnabled: true,

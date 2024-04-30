@@ -55,6 +55,8 @@ export enum NumberFilterCondition {
 	IS_LESS_OR_EQUAL = "is-less-or-equal",
 	IS_EMPTY = "is-empty",
 	IS_NOT_EMPTY = "is-not-empty",
+	EXISTS = "exists",
+	DOES_NOT_EXIST = "does-not-exist",
 }
 
 export enum CheckboxFilterCondition {
@@ -83,33 +85,42 @@ interface BasePropertyFilter {
 	id: string;
 	propertyName: string;
 	operator: FilterOperator;
-	type: "text" | "list" | "number" | "checkbox" | "date" | "datetime";
+	type: PropertyFilterType;
 	isEnabled: boolean;
 	value: string;
 }
 
+export enum PropertyFilterType {
+	TEXT = "text",
+	NUMBER = "number",
+	LIST = "list",
+	CHECKBOX = "checkbox",
+	DATE = "date",
+	DATETIME = "datetime",
+}
+
 export interface TextPropertyFilter extends BasePropertyFilter {
-	type: "text";
+	type: PropertyFilterType.TEXT;
 	condition: TextFilterCondition;
 }
 
 export interface NumberPropertyFilter extends BasePropertyFilter {
-	type: "number";
+	type: PropertyFilterType.NUMBER;
 	condition: NumberFilterCondition;
 }
 
 export interface ListPropertyFilter extends BasePropertyFilter {
-	type: "list";
+	type: PropertyFilterType.LIST
 	condition: ListFilterCondition;
 }
 
 export interface CheckboxPropertyFilter extends BasePropertyFilter {
-	type: "checkbox";
+	type: PropertyFilterType.CHECKBOX
 	condition: CheckboxFilterCondition;
 }
 
 export interface DatePropertyFilter extends BasePropertyFilter {
-	type: "date" | "datetime";
+	type: PropertyFilterType.DATE | PropertyFilterType.DATETIME;
 	condition: DateFilterCondition;
 }
 
