@@ -61,14 +61,14 @@
 		<Spacer size="sm" direction="vertical" />
 		<Stack align="center" spacing="sm">
 			<IconButton
-				ariaLabel="Add property filter group"
-				iconId="plus"
-				on:click={() => handleAddGroupClick()}
-			/>
-			<IconButton
 				ariaLabel="Edit property filter group"
 				iconId="pencil"
 				on:click={() => handleEditClick()}
+			/>
+			<IconButton
+				ariaLabel="Add property filter group"
+				iconId="plus"
+				on:click={() => handleAddGroupClick()}
 			/>
 			<Stack justify="flex-end" width="100%" align="center" spacing="sm">
 				<Switch
