@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Flex from "src/svelte/shared/components/flex.svelte";
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Switch from "src/svelte/shared/components/switch.svelte";
@@ -95,36 +94,33 @@
 </script>
 
 <div class="vault-explorer-property-filter">
-	<Flex justify="space-between">
-		<Stack spacing="md">
-			<select value={type} on:change={handlePropertyTypeChange}>
-				<!-- <option value="">Select a property type</option> -->
-				{#each Object.values(PropertyFilterType) as type}
-					<option value={type}>{type}</option>
-				{/each}
-			</select>
-			<select value={name} on:change={handlePropertyNameChange}>
-				<option value="">Select a property</option>
-				{#each filteredObsidianProperties as prop (prop.name)}
-					<option value={prop.name}>{prop.name}</option>
-				{/each}
-			</select>
-			<select value={condition} on:change={handleConditionChange}>
-				{#each filterConditions as condition}
-					<option value={condition}>
-						{getDisplayNameForFilterCondition(condition)}
-					</option>
-				{/each}
-			</select>
-			{#if condition !== TextFilterCondition.IS_EMPTY && condition !== TextFilterCondition.IS_NOT_EMPTY && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
-				<input type="text" {value} on:change={handleValueChange} />
-			{/if}
-		</Stack>
+	<Stack spacing="md">
+		<select value={type} on:change={handlePropertyTypeChange}>
+			{#each Object.values(PropertyFilterType) as type}
+				<option value={type}>{type}</option>
+			{/each}
+		</select>
+		<select value={name} on:change={handlePropertyNameChange}>
+			<option value="">Select a property</option>
+			{#each filteredObsidianProperties as prop (prop.name)}
+				<option value={prop.name}>{prop.name}</option>
+			{/each}
+		</select>
+		<select value={condition} on:change={handleConditionChange}>
+			{#each filterConditions as condition}
+				<option value={condition}>
+					{getDisplayNameForFilterCondition(condition)}
+				</option>
+			{/each}
+		</select>
+		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+			<input type="text" {value} on:change={handleValueChange} />
+		{/if}
 		<Stack spacing="sm" align="center">
 			<Switch value={isEnabled} on:change={() => handleToggle()} />
 			<IconButton iconId="trash" on:click={() => handleDeleteClick()} />
 		</Stack>
-	</Flex>
+	</Stack>
 </div>
 
 <style>

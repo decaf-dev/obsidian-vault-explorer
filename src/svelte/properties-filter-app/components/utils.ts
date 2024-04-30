@@ -19,16 +19,16 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 			return "Starts with";
 		case TextFilterCondition.ENDS_WITH:
 			return "Ends with";
-		case TextFilterCondition.IS_EMPTY:
-		case NumberFilterCondition.IS_EMPTY:
-		case ListFilterCondition.IS_EMPTY:
-		case DateFilterCondition.IS_EMPTY:
-			return "Is empty";
-		case TextFilterCondition.IS_NOT_EMPTY:
-		case NumberFilterCondition.IS_NOT_EMPTY:
-		case ListFilterCondition.IS_NOT_EMPTY:
-		case DateFilterCondition.IS_NOT_EMPTY:
-			return "Is not empty";
+		// case TextFilterCondition.IS_EMPTY:
+		// case NumberFilterCondition.IS_EMPTY:
+		// case ListFilterCondition.IS_EMPTY:
+		// case DateFilterCondition.IS_EMPTY:
+		// 	return "Is empty";
+		// case TextFilterCondition.IS_NOT_EMPTY:
+		// case NumberFilterCondition.IS_NOT_EMPTY:
+		// case ListFilterCondition.IS_NOT_EMPTY:
+		// case DateFilterCondition.IS_NOT_EMPTY:
+		// 	return "Is not empty";
 		case TextFilterCondition.EXISTS:
 		case NumberFilterCondition.EXISTS:
 		case CheckboxFilterCondition.EXISTS:
