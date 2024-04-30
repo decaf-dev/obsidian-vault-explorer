@@ -1,4 +1,4 @@
-import { Plugin, TAbstractFile, TFile, TFolder, } from 'obsidian';
+import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
@@ -7,6 +7,8 @@ import { VaultExplorerPluginSettings } from './types';
 import { DEFAULT_SETTINGS, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
+import { isVersionLessThan } from './utils';
+import { VaultExplorerPluginSettings_0_3_3 } from './types-0.3.0';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -94,15 +96,33 @@ export default class VaultExplorerPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		const data = await this.loadData();
+		const data: Record<string, unknown> | null = await this.loadData();
+
+		if (data !== null) {
+			//This will be null if the settings are from a version before 0.3.0
+			const settingsVersion = (data["pluginVersion"] as string) ?? null;
+			if (settingsVersion !== null) {
+				if (isVersionLessThan(settingsVersion, "0.4.0")) {
+					const typedData = (data as unknown) as VaultExplorerPluginSettings_0_3_3;
+					const newSettings: VaultExplorerPluginSettings = {
+						...typedData,
+						filters: {
+							...typedData.filters,
+							properties: {
+								...typedData.filters.properties,
+								groups: []
+							}
+						}
+					}
+					this.settings = newSettings;
+				}
+			}
+		}
 
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
 
-		//TODO handle migrations
-		// if (this.settings.pluginVersion === null) {
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
-		// }
 	}
 
 	async saveSettings() {
