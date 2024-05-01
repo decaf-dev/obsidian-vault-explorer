@@ -31,8 +31,6 @@ export enum TextFilterCondition {
 	DOES_NOT_CONTAIN = "does-not-contain",
 	STARTS_WITH = "starts-with",
 	ENDS_WITH = "ends-with",
-	// IS_EMPTY = "is-empty",
-	// IS_NOT_EMPTY = "is-not-empty",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
@@ -40,8 +38,6 @@ export enum TextFilterCondition {
 export enum ListFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
-	// IS_EMPTY = "is-empty",
-	// IS_NOT_EMPTY = "is-not-empty",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
@@ -53,8 +49,6 @@ export enum NumberFilterCondition {
 	IS_LESS = "is-less",
 	IS_GREATER_OR_EQUAL = "is-greater-or-equal",
 	IS_LESS_OR_EQUAL = "is-less-or-equal",
-	// IS_EMPTY = "is-empty",
-	// IS_NOT_EMPTY = "is-not-empty",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
@@ -62,8 +56,6 @@ export enum NumberFilterCondition {
 export enum CheckboxFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
-	// IS_EMPTY = "is-empty",
-	// IS_NOT_EMPTY = "is-not-empty",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
@@ -73,8 +65,6 @@ export enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
 	IS_AFTER = "is-after",
-	// IS_EMPTY = "is-empty",
-	// IS_NOT_EMPTY = "is-not-empty",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }

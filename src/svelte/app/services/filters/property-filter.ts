@@ -106,12 +106,6 @@ const doesTextMatchFilter = (
 		case TextFilterCondition.ENDS_WITH:
 			if (propertyValue === null) return false;
 			return propertyValue.endsWith(compare);
-		// case TextFilterCondition.IS_EMPTY:
-		// 	if (propertyValue === null) return false;
-		// 	return propertyValue === "";
-		// case TextFilterCondition.IS_NOT_EMPTY:
-		// 	if (propertyValue === null) return false;
-		// 	return propertyValue !== "";
 		case TextFilterCondition.EXISTS:
 			return propertyValue !== null;
 		case TextFilterCondition.DOES_NOT_EXIST:
@@ -140,12 +134,6 @@ const doesListMatchFilter = (condition: ListFilterCondition, propertyValue: stri
 			return propertyValue.every((value) => //Complement
 				compare.every((c) => c !== value)
 			);
-		// case ListFilterCondition.IS_EMPTY:
-		// 	if (propertyValue === null) return false;
-		// 	return propertyValue.length === 0;
-		// case ListFilterCondition.IS_NOT_EMPTY:
-		// 	if (propertyValue === null) return false;
-		// return propertyValue.length !== 0;
 		case ListFilterCondition.EXISTS:
 			return propertyValue !== null;
 		case ListFilterCondition.DOES_NOT_EXIST:
@@ -189,10 +177,6 @@ const doesDateMatchFilter = (condition: DateFilterCondition,
 			const dayStartTime = getMidnightMillis(compare);
 			return propertyValueTime < dayStartTime;
 		}
-		// case DateFilterCondition.IS_EMPTY:
-		// 	return propertyValue === null;
-		// case DateFilterCondition.IS_NOT_EMPTY:
-		// 	return propertyValue !== null;
 		case DateFilterCondition.EXISTS:
 			return propertyValue !== null;
 		case DateFilterCondition.DOES_NOT_EXIST:
@@ -226,10 +210,6 @@ export const doesNumberMatchFilter = (
 		case NumberFilterCondition.IS_NOT_EQUAL:
 			if (propertyValue === null) return false;
 			return propertyValue !== compare;
-		// case NumberFilterCondition.IS_EMPTY:
-		// 	return propertyValue === null;
-		// case NumberFilterCondition.IS_NOT_EMPTY:
-		// 	return propertyValue !== null;
 		case NumberFilterCondition.EXISTS:
 			return propertyValue !== null;
 		case NumberFilterCondition.DOES_NOT_EXIST:
@@ -251,10 +231,6 @@ export const doesCheckboxMatchFilter = (
 		case CheckboxFilterCondition.IS_NOT:
 			if (propertyValue === null) return false;
 			return propertyValue !== compare;
-		// case CheckboxFilterCondition.IS_EMPTY:
-		// 	return propertyValue === null;
-		// case CheckboxFilterCondition.IS_NOT_EMPTY:
-		// 	return propertyValue !== null;
 		case CheckboxFilterCondition.EXISTS:
 			return propertyValue !== null;
 		case CheckboxFilterCondition.DOES_NOT_EXIST:
