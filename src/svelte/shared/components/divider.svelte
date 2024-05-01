@@ -1,8 +1,23 @@
-<hr class="vault-explorer-divider" />
+<script lang="ts">
+	export let direction: "horizontal" | "vertical" = "horizontal";
+
+	$: className = `vault-explorer-divider vault-explorer-divider--${direction}`;
+</script>
+
+<div class={className} />
 
 <style>
-	.vault-explorer-divider {
+	.vault-explorer-divider--horizontal {
 		width: 100%;
-		margin: 0.5rem 0;
+		height: 0;
+		border-top: var(--hr-thickness) solid var(--hr-color);
+		border-left: 0;
+	}
+
+	.vault-explorer-divider--vertical {
+		width: 0px;
+		/* height: 100%; */
+		border-top: 0;
+		border-left: var(--hr-thickness) solid var(--hr-color);
 	}
 </style>

@@ -13,11 +13,12 @@
 		TextFilterCondition,
 	} from "src/types";
 	import { generateUUID } from "../shared/services/uuid";
-	import BaseView from "./components/base-view.svelte";
 	import GroupEditView from "./components/group-edit-view.svelte";
 	import { createPropertyFilter } from "./utils";
+	import GroupList from "./components/group-list.svelte";
+	import Flex from "../shared/components/flex.svelte";
+	import Divider from "../shared/components/divider.svelte";
 
-	let editMenu: boolean = false;
 	let selectedGroupId: string = "";
 	let groups: PropertyFilterGroup[] = [];
 	let plugin: VaultExplorerPlugin;
@@ -247,39 +248,35 @@
 	}
 </script>
 
-<div>
-	{#if editMenu === false}
-		<BaseView
+<div class="vault-explorer-property-filter-app">
+	<Flex align="stretch" height="100%">
+		<GroupList
 			{groups}
 			{selectedGroup}
-			on:editClick={() => (editMenu = true)}
 			on:groupClick={handleGroupClick}
 			on:addGroupClick={handleAddGroupClick}
 			on:deleteGroupClick={handleDeleteGroupClick}
-			on:groupToggle={handleGroupToggle}
-			on:groupNameChange={handleGroupNameChange}
-			on:filterAddClick={handleFilterAddClick}
-			on:groupClick={handleGroupClick}
-			on:filterConditionChange={handleFilterConditionChange}
-			on:filterDeleteClick={handleFilterDeleteClick}
-			on:filterNameChange={handleFilterNameChange}
-			on:filterToggle={handleFilterToggle}
-			on:filterValueChange={handleFilterValueChange}
 		/>
-	{/if}
-	{#if editMenu === true && selectedGroup !== undefined}
-		<GroupEditView
-			{selectedGroup}
-			on:backClick={() => (editMenu = false)}
-			on:groupNameChange={handleGroupNameChange}
-			on:filterAddClick={handleFilterAddClick}
-			on:groupClick={handleGroupClick}
-			on:filterTypeChange={handleFilterTypeChange}
-			on:filterConditionChange={handleFilterConditionChange}
-			on:filterDeleteClick={handleFilterDeleteClick}
-			on:filterNameChange={handleFilterNameChange}
-			on:filterToggle={handleFilterToggle}
-			on:filterValueChange={handleFilterValueChange}
-		/>
-	{/if}
+		<Divider direction="vertical" />
+		{#if selectedGroup !== undefined}
+			<GroupEditView
+				{selectedGroup}
+				on:groupNameChange={handleGroupNameChange}
+				on:filterAddClick={handleFilterAddClick}
+				on:groupClick={handleGroupClick}
+				on:filterTypeChange={handleFilterTypeChange}
+				on:filterConditionChange={handleFilterConditionChange}
+				on:filterDeleteClick={handleFilterDeleteClick}
+				on:filterNameChange={handleFilterNameChange}
+				on:filterToggle={handleFilterToggle}
+				on:filterValueChange={handleFilterValueChange}
+			/>
+		{/if}
+	</Flex>
 </div>
+
+<style>
+	.vault-explorer-property-filter-app {
+		height: 255px;
+	}
+</style>
