@@ -130,7 +130,7 @@
 
 <style>
 	.vault-explorer-property-filter input {
-		max-width: 100px;
+		max-width: 125px;
 	}
 
 	.vault-explorer-property-filter select {
