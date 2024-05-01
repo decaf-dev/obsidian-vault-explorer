@@ -96,15 +96,16 @@ export default class VaultExplorerPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		const data: Record<string, unknown> | null = await this.loadData();
+		let data: Record<string, unknown> | null = await this.loadData();
 
 		if (data !== null) {
 			//This will be null if the settings are from a version before 0.3.0
 			const settingsVersion = (data["pluginVersion"] as string) ?? null;
 			if (settingsVersion !== null) {
 				if (isVersionLessThan(settingsVersion, "0.4.0")) {
+					console.log("Upgrading settings from version 0.3.3 to 0.4.0");
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_0_3_3;
-					const newSettings: VaultExplorerPluginSettings = {
+					const newData: VaultExplorerPluginSettings = {
 						...typedData,
 						filters: {
 							...typedData.filters,
@@ -114,17 +115,20 @@ export default class VaultExplorerPlugin extends Plugin {
 							}
 						}
 					}
-					this.settings = newSettings;
+					data = newData as unknown as Record<string, unknown>;
 				}
 			}
 		}
 
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, this.settings);
+		//Apply default settings. This will make it so we don't need to do migrations for just adding new settings
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
+		//Update the plugin version to the current version
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		// console.log("Settings saved");
 	}
 }
