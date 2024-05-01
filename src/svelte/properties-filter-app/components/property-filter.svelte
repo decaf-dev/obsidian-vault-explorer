@@ -33,6 +33,7 @@
 	import store from "src/svelte/shared/services/store";
 	import VaultExplorerPlugin from "src/main";
 	import { ObsidianProperty } from "src/obsidian/types";
+	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	const dispatch = createEventDispatcher();
 
 	function handleDeleteClick() {
@@ -94,7 +95,7 @@
 </script>
 
 <div class="vault-explorer-property-filter">
-	<Stack spacing="md">
+	<Wrap spacingX="sm" spacingY="sm">
 		<select value={type} on:change={handlePropertyTypeChange}>
 			{#each Object.values(PropertyFilterType) as type}
 				<option value={type}>{type}</option>
@@ -118,9 +119,13 @@
 		{/if}
 		<Stack spacing="sm" align="center">
 			<Switch value={isEnabled} on:change={() => handleToggle()} />
-			<IconButton iconId="trash" on:click={() => handleDeleteClick()} />
+			<IconButton
+				ariaLabel="Delete property filter"
+				iconId="trash"
+				on:click={() => handleDeleteClick()}
+			/>
 		</Stack>
-	</Stack>
+	</Wrap>
 </div>
 
 <style>

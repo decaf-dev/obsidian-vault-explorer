@@ -2,13 +2,8 @@
 	import Divider from "src/svelte/shared/components/divider.svelte";
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { generateUUID } from "src/svelte/shared/services/uuid";
 
-	import {
-		PropertyFilterGroup,
-		TextFilterCondition,
-		TextPropertyFilter,
-	} from "src/types";
+	import { PropertyFilterGroup } from "src/types";
 	import PropertyFilterList from "./property-filter-list.svelte";
 
 	import { createEventDispatcher } from "svelte";
@@ -27,27 +22,18 @@
 		const name = (e.target as HTMLInputElement).value;
 		dispatch("groupNameChange", { name });
 	}
-
-	function handleBackClick() {
-		dispatch("backClick");
-	}
 </script>
 
-<Stack direction="column" align="flex-start" spacing="sm">
-	<Stack spacing="sm">
-		<IconButton
-			ariaLabel="Back"
-			iconId="arrow-left"
-			on:click={handleBackClick}
-		/>
+<Stack width="100%" direction="column" align="flex-start" spacing="sm">
+	<div class="vault-explorer-group-edit-view__header">
 		<input
 			type="text"
 			value={selectedGroup.name}
 			on:change={handleGroupNameChange}
 		/>
-	</Stack>
+	</div>
 	<Divider />
-	<div class="vault-explorer-property-filter-content">
+	<div class="vault-explorer-group-edit-view__body">
 		{#if selectedGroup.filters.length > 0}
 			<PropertyFilterList
 				filters={selectedGroup.filters}
@@ -59,10 +45,10 @@
 				on:filterToggle
 				on:filterDeleteClick
 			/>
-			<Spacer direction="vertical" size="md" />
+			<Spacer direction="vertical" size="sm" />
 		{/if}
 		<IconButton
-			ariaLabel="Add filter"
+			ariaLabel="Add property filter"
 			iconId="plus"
 			on:click={handleAddFilterClick}
 		/>
@@ -70,10 +56,13 @@
 </Stack>
 
 <style>
-	.vault-explorer-property-filter-content {
-		width: 100%;
-		overflow: auto;
-		padding: 5px;
-		/* padding-top: 5px; */
+	.vault-explorer-group-edit-view__header {
+		padding: 5px 10px;
+	}
+
+	.vault-explorer-group-edit-view__body {
+		padding: 5px 10px;
+		overflow-y: auto;
+		max-height: 200px;
 	}
 </style>
