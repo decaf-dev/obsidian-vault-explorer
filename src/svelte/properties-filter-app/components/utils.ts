@@ -5,20 +5,20 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 		case TextFilterCondition.IS:
 		case CheckboxFilterCondition.IS:
 		case DateFilterCondition.IS:
-			return "Is";
+			return "is";
 		case TextFilterCondition.IS_NOT:
 		case CheckboxFilterCondition.IS_NOT:
-			return "Is not";
+			return "is not";
 		case TextFilterCondition.CONTAINS:
 		case ListFilterCondition.CONTAINS:
-			return "Contains";
+			return "contains";
 		case TextFilterCondition.DOES_NOT_CONTAIN:
 		case ListFilterCondition.DOES_NOT_CONTAIN:
-			return "Does not contain";
+			return "does not contain";
 		case TextFilterCondition.STARTS_WITH:
-			return "Starts with";
+			return "starts with";
 		case TextFilterCondition.ENDS_WITH:
-			return "Ends with";
+			return "ends with";
 		// case TextFilterCondition.IS_EMPTY:
 		// case NumberFilterCondition.IS_EMPTY:
 		// case ListFilterCondition.IS_EMPTY:
@@ -34,13 +34,13 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 		case CheckboxFilterCondition.EXISTS:
 		case ListFilterCondition.EXISTS:
 		case DateFilterCondition.EXISTS:
-			return "Exists";
+			return "exists";
 		case TextFilterCondition.DOES_NOT_EXIST:
 		case NumberFilterCondition.DOES_NOT_EXIST:
 		case CheckboxFilterCondition.DOES_NOT_EXIST:
 		case ListFilterCondition.DOES_NOT_EXIST:
 		case DateFilterCondition.DOES_NOT_EXIST:
-			return "Does not exist";
+			return "does not exist";
 		case NumberFilterCondition.IS_EQUAL:
 			return "=";
 		case NumberFilterCondition.IS_NOT_EQUAL:
@@ -54,9 +54,9 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 		case NumberFilterCondition.IS_LESS_OR_EQUAL:
 			return "<=";
 		case DateFilterCondition.IS_AFTER:
-			return "Is after";
+			return "is after";
 		case DateFilterCondition.IS_BEFORE:
-			return "Is before";
+			return "is before";
 		default:
 			return "";
 	}
