@@ -116,11 +116,6 @@ const doesTextMatchFilter = (
 };
 
 const doesListMatchFilter = (condition: ListFilterCondition, propertyValue: string[] | null, compare: string[]) => {
-	console.log({
-		propertyValue,
-		compare,
-		condition
-	})
 	switch (condition) {
 		case ListFilterCondition.CONTAINS:
 			if (propertyValue === null) return false;
