@@ -1,10 +1,11 @@
 <script lang="ts">
 	export let direction: "horizontal" | "vertical" = "horizontal";
+	export let borderWidth: string = "var(--hr-thickness)";
 
 	$: className = `vault-explorer-divider vault-explorer-divider--${direction}`;
 </script>
 
-<div class={className} />
+<div class={className} style="border-width: {borderWidth}" />
 
 <style>
 	.vault-explorer-divider--horizontal {

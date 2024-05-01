@@ -32,7 +32,7 @@
 			on:change={handleGroupNameChange}
 		/>
 	</div>
-	<Divider />
+	<Divider borderWidth="1px" />
 	<div class="vault-explorer-group-edit-view__body">
 		{#if selectedGroup.filters.length > 0}
 			<PropertyFilterList
