@@ -16,15 +16,14 @@ import { getBeforeMidnightMillis, getMidnightMillis, getMillis } from "../time-u
 //Property value is a date
 //Property value is a number
 export const filterByProperty = (frontmatter: FrontMatterCache | undefined, groups: PropertyFilterGroup[]) => {
-	let isValid = true;
-	groups.forEach((group) => {
-		if (!group.isEnabled) return;
+	return groups.every((group) => {
+		if (!group.isEnabled) return true;
 
-		group.filters.forEach((filter) => {
-			if (!filter.isEnabled) return;
+		return group.filters.every((filter) => {
+			if (!filter.isEnabled) return true;
 
 			const { propertyName, condition, value, type } = filter;
-			if (propertyName === "") return;
+			if (propertyName === "") return true;
 
 			let propertyValue: (string | string[] | boolean | number | null) = frontmatter?.[propertyName] ?? null;
 
@@ -32,49 +31,50 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 				//If the value is not a string, skip the filter
 				if (propertyValue !== null && typeof propertyValue !== "string") {
 					console.error(`Property value is not a string: ${propertyValue}`);
-					return;
+					return true;
 				}
 				const doesMatch = doesTextMatchFilter(condition, propertyValue, value);
-				isValid = doesMatch;
+				return doesMatch;
 			} else if (type === "list") {
 				if (propertyValue !== null && !Array.isArray(propertyValue)) {
 					console.error(`Property value is not an array: ${propertyValue}`);
-					return;
+					return true;
 				}
 				const compare = value.split(",").map((v) => v.trim());
 				const doesMatch = doesListMatchFilter(condition, propertyValue, compare);
-				isValid = doesMatch;
+				return doesMatch;
 			} else if (type === "number") {
 				if (propertyValue !== null && typeof propertyValue !== "number") {
 					console.error(`Property value is not a number: ${propertyValue}`);
-					return;
+					return true;
 				}
 				const compare = parseFloat(value);
 				const doesMatch = doesNumberMatchFilter(condition, propertyValue, compare);
-				isValid = doesMatch;
+				return doesMatch;
 			} else if (type === "checkbox") {
 				if (propertyValue !== null && typeof propertyValue !== "boolean") {
 					console.error(`Property value is not a boolean: ${propertyValue}`);
-					return;
+					return true;
 				}
 
 				const compare = value === "true";
 				const doesMatch = doesCheckboxMatchFilter(condition, propertyValue, compare);
-				isValid = doesMatch;
+				return doesMatch;
 
 			} else if (type === "date" || type === "datetime") {
 				if (propertyValue !== null && typeof propertyValue !== "string") {
 					console.error(`Property value is not a string: ${propertyValue}`);
-					return;
+					return true;
 				}
 
 				const doesMatch = doesDateMatchFilter(condition, propertyValue, value);
-				isValid = doesMatch;
+				return doesMatch;
 
+			} else {
+				throw new Error(`Property filter type not supported: ${type}`);
 			}
 		});
 	});
-	return isValid;
 }
 
 const doesTextMatchFilter = (
