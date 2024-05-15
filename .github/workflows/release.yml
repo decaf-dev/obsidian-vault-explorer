@@ -25,8 +25,9 @@ jobs:
 
             - name: Fix tsconfig.json
               run: |
-                   sed -i '/"verbatimModuleSyntax"/d' node_modules/@tsconfig/svelte/tsconfig.json
-                   sed -i '/"moduleResolution"/c\    "moduleResolution": "node",' node_modules/@tsconfig/svelte/tsconfig.json
+                  sed -i '/"esModuleInterop"/d' node_modules/@tsconfig/svelte/tsconfig.json
+                  sed -i '/"verbatimModuleSyntax"/d' node_modules/@tsconfig/svelte/tsconfig.json
+                  sed -i '/"moduleResolution"/c\    "moduleResolution": "node",' node_modules/@tsconfig/svelte/tsconfig.json
 
             - name: Build
               id: build
