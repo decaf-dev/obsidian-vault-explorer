@@ -1,5 +1,7 @@
 # Obsidian Vault Explorer
 
+![](/readme/cover.png)
+
 Vault Explorer is an [Obsidian.md](https://obsidian.md) plugin for desktop only. It allows you to explore your vault in visual format.
 
 This plugin is a replacement for some of the functionality found in [Obsidian DataLoom](https://github.com/trey-wallis/obsidian-dataloom).
