@@ -27,15 +27,15 @@ This plugin is a replacement to some of the functionality found in [Obsidian Dat
 
 ### Folder filter
 
-![](/readme/feature-folder-filter.png)
+<img src="readme/feature-folder-filter.png" width="300">
 
 ### Time filter
 
-![](/readme/feature-time-filter.png)
+<img src="readme/feature-time-filter.png" width="300">
 
 ### Sort filter
 
-![](/readme/feature-sort-filter.png)
+<img src="readme/feature-sort-filter.png" width="300">
 
 ### Property filter
 
