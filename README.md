@@ -10,9 +10,35 @@ This plugin is a replacement to some of the functionality found in [Obsidian Dat
 
 ## About
 
+-   [Screenshots](#screenshots)
 -   [Installation](#installation)
 -   [Usage](#usage)
 -   [Settings](#settings)
+
+## Screenshots
+
+**List view**
+![](/readme/feature-list.png)
+
+**Grid view**
+![](/readme/feature-grid.png)
+
+**Folder filter**
+![](/readme/feature-folder-filter.png)
+
+**Time filter**
+![](/readme/feature-time-filter.png)
+
+**Sort filter**
+![](/readme/feature-sort-filter.png)
+
+**Property filter**
+![](/readme/feat-property-filter.png)
+
+![](/readme/feature-property-filter2.png)
+
+**Settings**
+![](/readme/feature-settings.png)
 
 ## Installation
 
