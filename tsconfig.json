@@ -3,12 +3,10 @@
   "compilerOptions": {
 	"types": ["svelte", "node"],
     "baseUrl": ".",
-    "inlineSourceMap": false,
     "inlineSources": false,
     "module": "ESNext",
     "target": "ES6",
     "allowJs": true,
-	"jsx": "react-jsx",
 	"allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
