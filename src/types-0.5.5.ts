@@ -1,4 +1,4 @@
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_0_5_5 {
 	properties: {
 		favorite: string;
 		url: string;

@@ -9,6 +9,7 @@ import _ from 'lodash';
 import EventManager from './event/event-manager';
 import { isVersionLessThan } from './utils';
 import { VaultExplorerPluginSettings_0_3_3 } from './types-0.3.0';
+import { VaultExplorerPluginSettings_0_5_5 } from './types-0.5.5';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -112,6 +113,30 @@ export default class VaultExplorerPlugin extends Plugin {
 							properties: {
 								...typedData.filters.properties,
 								groups: []
+							}
+						}
+					}
+					data = newData as unknown as Record<string, unknown>;
+				}
+
+				if (isVersionLessThan(settingsVersion, "1.0.0")) {
+					console.log("Upgrading settings from version 0.5.5 to 1.0.0");
+					const typedData = (data as unknown) as VaultExplorerPluginSettings_0_5_5;
+					const newData: VaultExplorerPluginSettings = {
+						...typedData,
+						filters: {
+							...typedData.filters,
+							properties: {
+								...typedData.filters.properties,
+								groups: typedData.filters.properties.groups.map(group => {
+									const { id, name, filters, isEnabled } = group;
+									return {
+										id,
+										name,
+										filters,
+										isEnabled
+									}
+								})
 							}
 						}
 					}
