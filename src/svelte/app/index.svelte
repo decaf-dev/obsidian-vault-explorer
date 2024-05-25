@@ -411,7 +411,7 @@
 		);
 
 		nativeEvent.target.addEventListener("dragend", () => {
-			document.body.removeChild(dragImage);
+			dragImage.remove();
 		});
 	}
 
