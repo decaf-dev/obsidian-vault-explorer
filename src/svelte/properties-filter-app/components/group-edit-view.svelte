@@ -37,7 +37,6 @@
 		{#if selectedGroup.filters.length > 0}
 			<PropertyFilterList
 				filters={selectedGroup.filters}
-				on:groupClick
 				on:filterConditionChange
 				on:filterTypeChange
 				on:filterNameChange

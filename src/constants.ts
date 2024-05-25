@@ -1,10 +1,13 @@
+import { LOG_LEVEL_WARN } from "./logger/constants";
 import { generateUUID } from "./svelte/shared/services/uuid";
 import { VaultExplorerPluginSettings } from "./types";
 
 export const VAULT_EXPLORER_VIEW = "vault-explorer";
 
-const uuid = generateUUID();
+const groupUUID = generateUUID();
+
 export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
+	logLevel: LOG_LEVEL_WARN,
 	properties: {
 		favorite: "",
 		url: "",
@@ -19,14 +22,13 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		timestamp: "all",
 		sort: "file-name-asc",
 		properties: {
-			selectedGroupId: uuid,
+			selectedGroupId: groupUUID,
 			groups:
 				[
 					{
-						id: uuid,
+						id: groupUUID,
 						name: "Group 1",
 						filters: [],
-						position: 0,
 						isEnabled: true
 					}
 				]

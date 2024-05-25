@@ -1,4 +1,5 @@
 export interface VaultExplorerPluginSettings {
+	logLevel: string;
 	properties: {
 		favorite: string;
 		url: string;
@@ -120,7 +121,6 @@ export interface PropertyFilterGroup {
 	id: string;
 	name: string;
 	filters: PropertyFilter[];
-	position: number;
 	isEnabled: boolean;
 }
 
