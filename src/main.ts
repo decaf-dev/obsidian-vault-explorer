@@ -171,7 +171,8 @@ export default class VaultExplorerPlugin extends Plugin {
 	}
 
 	async saveSettings() {
+		Logger.trace({ fileName: "main.ts", functionName: "saveSettings", message: "called" });
+		Logger.debug({ fileName: "main.ts", functionName: "saveSettings", message: "Saving settings" }, this.settings);
 		await this.saveData(this.settings);
-		// console.log("Settings saved");
 	}
 }

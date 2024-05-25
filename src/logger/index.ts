@@ -1,6 +1,6 @@
 import Logger, { ILogLevel } from "js-logger";
 import { LOG_LEVEL_OFF, LOG_LEVEL_ERROR, LOG_LEVEL_WARN, LOG_LEVEL_INFO, LOG_LEVEL_DEBUG, LOG_LEVEL_TRACE } from "./constants";
-import { FormattedLogMessage } from "./types";
+import { FormattedLogMessage, LogMessageHeader } from "./types";
 
 
 export const logLevelToString = (level: ILogLevel) => {
@@ -41,22 +41,14 @@ export const stringToLogLevel = (value: string) => {
 	}
 }
 
-export const formatMessageForLogger = (...args: string[]): FormattedLogMessage => {
-	return { message: args[0], data: args[1] as unknown as Record<string, unknown> };
-	// if (args.length < 3) {
-	// 	return { message: args[0], data: null };
-	// }
-
-	// const fileName = args[0];
-	// const functionName = args[1];
-	// const message = args[2];
-
-	// if (args.length === 4) {
-	// 	const data = args[3];
-	// 	if (Object.keys(data).length !== 0) {
-	// 		return { message: `[${fileName}:${functionName}] ${message}`, data: data as unknown as Record<string, unknown> };
-	// 	}
-	// }
-
-	// return { message: `[${fileName}:${functionName}] ${message}`, data: null };
+export const formatMessageForLogger = (...args: unknown[]): FormattedLogMessage => {
+	const head: unknown = args[0];
+	const body = args[1] as unknown as Record<string, unknown>;
+	if (typeof args[0] == "object") {
+		const headers = head as LogMessageHeader;
+		const { fileName, functionName, message } = headers;
+		return { message: `[${fileName}:${functionName}] ${message}`, data: body };
+	} else {
+		return { message: String(head), data: body };
+	}
 }
