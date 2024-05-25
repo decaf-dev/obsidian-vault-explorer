@@ -2,6 +2,7 @@ import { FrontMatterCache } from "obsidian";
 import { CheckboxFilterCondition, DateFilterCondition, ListFilterCondition, NumberFilterCondition, PropertyFilterGroup } from "src/types";
 import { FilterCondition, TextFilterCondition } from "src/types";
 import { getBeforeMidnightMillis, getMidnightMillis, getMillis } from "../time-utils";
+import Logger from "js-logger";
 
 //Tests
 //Group is enabled/disabled
@@ -30,14 +31,14 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 			if (type === "text") {
 				//If the value is not a string, skip the filter
 				if (propertyValue !== null && typeof propertyValue !== "string") {
-					console.error(`Property value is not a string: ${propertyValue}`);
+					Logger.warn(`Property value is not a string: ${propertyValue}`);
 					return true;
 				}
 				const doesMatch = doesTextMatchFilter(condition, propertyValue, value);
 				return doesMatch;
 			} else if (type === "list") {
 				if (propertyValue !== null && !Array.isArray(propertyValue)) {
-					console.error(`Property value is not an array: ${propertyValue}`);
+					Logger.warn(`Property value is not an array: ${propertyValue}`);
 					return true;
 				}
 				const compare = value.split(",").map((v) => v.trim());
@@ -45,7 +46,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 				return doesMatch;
 			} else if (type === "number") {
 				if (propertyValue !== null && typeof propertyValue !== "number") {
-					console.error(`Property value is not a number: ${propertyValue}`);
+					Logger.warn(`Property value is not a number: ${propertyValue}`);
 					return true;
 				}
 				const compare = parseFloat(value);
@@ -53,7 +54,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 				return doesMatch;
 			} else if (type === "checkbox") {
 				if (propertyValue !== null && typeof propertyValue !== "boolean") {
-					console.error(`Property value is not a boolean: ${propertyValue}`);
+					Logger.warn(`Property value is not a boolean: ${propertyValue}`);
 					return true;
 				}
 
@@ -63,7 +64,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 
 			} else if (type === "date" || type === "datetime") {
 				if (propertyValue !== null && typeof propertyValue !== "string") {
-					console.error(`Property value is not a string: ${propertyValue}`);
+					Logger.warn(`Property value is not a string: ${propertyValue}`);
 					return true;
 				}
 
