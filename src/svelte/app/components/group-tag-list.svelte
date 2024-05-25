@@ -14,6 +14,9 @@
 				name={group.name}
 				isSelected={group.isEnabled}
 				on:groupClick
+				on:groupDrop
+				on:groupDragOver
+				on:groupDragStart
 			/>
 		{/each}
 	</Stack>

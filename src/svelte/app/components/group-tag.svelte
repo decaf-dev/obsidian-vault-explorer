@@ -13,15 +13,36 @@
 	function handleClick() {
 		dispatch("groupClick", { id });
 	}
+
+	function handleDragStart(event: Event) {
+		dispatch("groupDragStart", { nativeEvent: event, id });
+	}
+
+	function handleDragOver(event: Event) {
+		dispatch("groupDragOver", { nativeEvent: event, id });
+	}
+
+	function handleDrop(event: Event) {
+		dispatch("groupDrop", { nativeEvent: event, id });
+	}
 </script>
 
-<button class={className} on:click={handleClick}>
+<div
+	tabindex="0"
+	role="button"
+	draggable="true"
+	class={className}
+	on:dragstart={handleDragStart}
+	on:dragover={handleDragOver}
+	on:drop={handleDrop}
+	on:click={handleClick}
+	on:keydown={(e) => (e.key === "Enter" || e.key === " ") && handleClick()}
+>
 	{name}
-</button>
+</div>
 
 <style>
 	.vault-explorer-group-tag {
-		all: unset;
 		white-space: nowrap;
 		font-size: var(--tag-size);
 		font-weight: var(--tag-weight);

@@ -34,6 +34,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import { ObsidianProperty } from "src/obsidian/types";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
+
 	const dispatch = createEventDispatcher();
 
 	function handleDeleteClick() {

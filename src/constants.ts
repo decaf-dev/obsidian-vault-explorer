@@ -26,7 +26,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 						id: uuid,
 						name: "Group 1",
 						filters: [],
-						position: 0,
 						isEnabled: true
 					}
 				]
