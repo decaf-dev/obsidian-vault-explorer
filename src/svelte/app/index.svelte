@@ -373,14 +373,17 @@
 		const droppedIndex = propertyFilterGroups.findIndex(
 			(group) => group.id === id,
 		);
-		const dropped = propertyFilterGroups.find((group) => group.id === id);
 
-		if (!dragged || !dropped || draggedIndex === -1 || droppedIndex === -1)
-			return;
+		if (!dragged || draggedIndex === -1 || droppedIndex === -1) return;
 
 		let newGroups = [...propertyFilterGroups];
-		newGroups[draggedIndex] = dropped;
-		newGroups[droppedIndex] = dragged;
+
+		// Remove the dragged item
+		newGroups.splice(draggedIndex, 1);
+
+		// Insert the dragged item at the drop index
+		newGroups.splice(droppedIndex, 0, dragged);
+
 		propertyFilterGroups = newGroups;
 	}
 

@@ -89,7 +89,7 @@
 		background-color: var(--background-modifier-hover);
 	}
 
-	.vault-explorer-group-button--active {
+	.vault-explorer-group-item--active {
 		background-color: var(--background-modifier-hover);
 	}
 </style>
