@@ -42,8 +42,7 @@ export const stringToLogLevel = (value: string) => {
 }
 
 export const formatMessageForLogger = (...args: string[]): FormattedLogMessage => {
-	const data = args[1];
-	return { message: args[0], data: data as unknown as Record<string, unknown> };
+	return { message: args[0], data: args[1] as unknown as Record<string, unknown> };
 	// if (args.length < 3) {
 	// 	return { message: args[0], data: null };
 	// }
