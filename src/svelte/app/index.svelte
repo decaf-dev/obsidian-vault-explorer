@@ -358,6 +358,63 @@
 		propertyFilterGroups = newGroups;
 	}
 
+	function handleGroupDrop(e: CustomEvent) {
+		const { id, nativeEvent } = e.detail;
+		const dragId = nativeEvent.dataTransfer.getData("text");
+		nativeEvent.dataTransfer.dropEffect = "move";
+
+		const draggedIndex = propertyFilterGroups.findIndex(
+			(group) => group.id === dragId,
+		);
+		const dragged = propertyFilterGroups.find(
+			(group) => group.id === dragId,
+		);
+
+		const droppedIndex = propertyFilterGroups.findIndex(
+			(group) => group.id === id,
+		);
+		const dropped = propertyFilterGroups.find((group) => group.id === id);
+
+		if (!dragged || !dropped || draggedIndex === -1 || droppedIndex === -1)
+			return;
+
+		let newGroups = [...propertyFilterGroups];
+		newGroups[draggedIndex] = dropped;
+		newGroups[droppedIndex] = dragged;
+		propertyFilterGroups = newGroups;
+	}
+
+	function handleGroupDragOver(e: CustomEvent) {
+		const { nativeEvent } = e.detail;
+		nativeEvent.preventDefault();
+	}
+
+	function handleGroupDragStart(e: CustomEvent) {
+		const { id, nativeEvent } = e.detail;
+		nativeEvent.dataTransfer.setData("text", id);
+		nativeEvent.dataTransfer.effectAllowed = "move";
+
+		//Set drag image
+		//The drag image by default will be square
+		//We can create a custom drag image by cloning the target element
+		const dragImage = nativeEvent.target.cloneNode(true);
+		const rect = nativeEvent.target.getBoundingClientRect();
+		dragImage.style.position = "absolute";
+		dragImage.style.top = "-9999px"; // Hide the element
+		dragImage.style.left = "-9999px"; // Hide the element
+		document.body.appendChild(dragImage);
+
+		nativeEvent.dataTransfer.setDragImage(
+			dragImage,
+			rect.width / 2,
+			rect.height / 2,
+		);
+
+		nativeEvent.target.addEventListener("dragend", () => {
+			document.body.removeChild(dragImage);
+		});
+	}
+
 	function openPropertiesFilterModal() {
 		new PropertiesFilterModal(plugin).open();
 	}
@@ -532,6 +589,9 @@
 					<GroupTagList
 						groups={propertyFilterGroups}
 						on:groupClick={handleGroupClick}
+						on:groupDrop={handleGroupDrop}
+						on:groupDragOver={handleGroupDragOver}
+						on:groupDragStart={handleGroupDragStart}
 					/>
 				{/if}
 				{#if propertyFilterGroups.length === 0}
