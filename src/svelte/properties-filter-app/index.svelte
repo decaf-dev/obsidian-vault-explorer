@@ -134,6 +134,44 @@
 		groups = newGroups;
 	}
 
+	function handleGroupDragStart(e: CustomEvent) {
+		const { nativeEvent, id } = e.detail;
+
+		nativeEvent.dataTransfer.setData("text", id);
+		nativeEvent.dataTransfer.effectAllowed = "move";
+	}
+
+	function handleGroupDragOver(e: CustomEvent) {
+		const { nativeEvent } = e.detail;
+
+		nativeEvent.preventDefault();
+	}
+
+	function handleGroupDragEnd(e: CustomEvent) {
+		const { nativeEvent } = e.detail;
+		nativeEvent.target.draggable = false;
+	}
+
+	function handleGroupDrop(e: CustomEvent) {
+		const { id, nativeEvent } = e.detail;
+		const dragId = nativeEvent.dataTransfer.getData("text");
+		nativeEvent.dataTransfer.dropEffect = "move";
+
+		const draggedIndex = groups.findIndex((group) => group.id === dragId);
+		const dragged = groups.find((group) => group.id === dragId);
+
+		const droppedIndex = groups.findIndex((group) => group.id === id);
+		const dropped = groups.find((group) => group.id === id);
+
+		if (!dragged || !dropped || draggedIndex === -1 || droppedIndex === -1)
+			return;
+
+		let newGroups = [...groups];
+		newGroups[draggedIndex] = dropped;
+		newGroups[droppedIndex] = dragged;
+		groups = newGroups;
+	}
+
 	function handleFilterDeleteClick(e: CustomEvent) {
 		const { id } = e.detail;
 
@@ -252,7 +290,11 @@
 		<GroupList
 			{groups}
 			{selectedGroup}
-			on:groupClick={handleGroupClick}
+			on:itemClick={handleGroupClick}
+			on:itemDragStart={handleGroupDragStart}
+			on:itemDragOver={handleGroupDragOver}
+			on:itemDrop={handleGroupDrop}
+			on:itemDragEnd={handleGroupDragEnd}
 			on:addGroupClick={handleAddGroupClick}
 			on:deleteGroupClick={handleDeleteGroupClick}
 		/>
@@ -262,7 +304,6 @@
 				{selectedGroup}
 				on:groupNameChange={handleGroupNameChange}
 				on:filterAddClick={handleFilterAddClick}
-				on:groupClick={handleGroupClick}
 				on:filterTypeChange={handleFilterTypeChange}
 				on:filterConditionChange={handleFilterConditionChange}
 				on:filterDeleteClick={handleFilterDeleteClick}

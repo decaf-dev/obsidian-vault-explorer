@@ -7,8 +7,9 @@
 	export let selectedGroup: PropertyFilterGroup | undefined;
 
 	import { createEventDispatcher } from "svelte";
-	import GroupButton from "./group-button.svelte";
 	import Flex from "src/svelte/shared/components/flex.svelte";
+	import GroupListItem from "./group-list-item.svelte";
+
 	const dispatch = createEventDispatcher();
 
 	function handleAddGroupClick() {
@@ -17,10 +18,6 @@
 
 	function handleDeleteGroupClick() {
 		dispatch("deleteGroupClick");
-	}
-
-	function handleGroupClick(id: string) {
-		dispatch("groupClick", { id });
 	}
 </script>
 
@@ -41,10 +38,15 @@
 		<div class="vault-explorer-group-list">
 			<Flex direction="column" width="100px">
 				{#each groups as group (group.id)}
-					<GroupButton
+					<GroupListItem
+						id={group.id}
 						name={group.name}
 						isSelected={selectedGroup?.id === group.id}
-						on:click={() => handleGroupClick(group.id)}
+						on:itemClick
+						on:itemDragStart
+						on:itemDragOver
+						on:itemDrop
+						on:itemDragEnd
 					/>
 				{/each}
 			</Flex>
