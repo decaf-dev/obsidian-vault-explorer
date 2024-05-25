@@ -161,14 +161,17 @@
 		const dragged = groups.find((group) => group.id === dragId);
 
 		const droppedIndex = groups.findIndex((group) => group.id === id);
-		const dropped = groups.find((group) => group.id === id);
 
-		if (!dragged || !dropped || draggedIndex === -1 || droppedIndex === -1)
-			return;
+		if (!dragged || draggedIndex === -1 || droppedIndex === -1) return;
 
 		let newGroups = [...groups];
-		newGroups[draggedIndex] = dropped;
-		newGroups[droppedIndex] = dragged;
+
+		// Remove the dragged item
+		newGroups.splice(draggedIndex, 1);
+
+		// Insert the dragged item at the drop index
+		newGroups.splice(droppedIndex, 0, dragged);
+
 		groups = newGroups;
 	}
 
