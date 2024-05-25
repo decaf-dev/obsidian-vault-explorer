@@ -10,12 +10,29 @@ import EventManager from './event/event-manager';
 import { isVersionLessThan } from './utils';
 import { VaultExplorerPluginSettings_0_3_3 } from './types-0.3.0';
 import { VaultExplorerPluginSettings_0_5_5 } from './types-0.5.5';
+import Logger from 'js-logger';
+import { formatMessageForLogger, stringToLogLevel } from './logger';
+import { LOG_LEVEL_WARN } from './logger/constants';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
 
 	async onload() {
 		await this.loadSettings();
+
+		//Setup logger
+		Logger.useDefaults();
+		Logger.setHandler(function (messages) {
+			const { message, data } = formatMessageForLogger(...messages);
+			console.log(message);
+			if (data) {
+				console.log(data);
+			}
+		});
+
+		const logLevel = stringToLogLevel(this.settings.logLevel);
+		Logger.setLevel(logLevel);
+
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
@@ -106,7 +123,7 @@ export default class VaultExplorerPlugin extends Plugin {
 				if (isVersionLessThan(settingsVersion, "0.4.0")) {
 					console.log("Upgrading settings from version 0.3.3 to 0.4.0");
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_0_3_3;
-					const newData: VaultExplorerPluginSettings = {
+					const newData: VaultExplorerPluginSettings_0_5_5 = {
 						...typedData,
 						filters: {
 							...typedData.filters,
@@ -124,6 +141,7 @@ export default class VaultExplorerPlugin extends Plugin {
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_0_5_5;
 					const newData: VaultExplorerPluginSettings = {
 						...typedData,
+						logLevel: LOG_LEVEL_WARN,
 						filters: {
 							...typedData.filters,
 							properties: {
