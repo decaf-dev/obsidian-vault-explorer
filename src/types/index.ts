@@ -1,4 +1,5 @@
 export interface VaultExplorerPluginSettings {
+	logLevel: string;
 	properties: {
 		favorite: string;
 		url: string;

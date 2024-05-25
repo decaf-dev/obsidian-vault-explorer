@@ -1,6 +1,9 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import VaultExplorerPlugin from "src/main";
-import { getAllObsidianProperties, getDropdownOptionsForProperties, getObsidianPropertiesByType } from "./utils";
+import { getDropdownOptionsForProperties, getObsidianPropertiesByType } from "./utils";
+import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN } from "src/logger/constants";
+import Logger from "js-logger";
+import { stringToLogLevel } from "src/logger";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -88,6 +91,30 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.plugin.settings.properties.custom3 = value;
 					await this.plugin.saveSettings();
 				}));
+
+		new Setting(containerEl).setName("Debugging").setHeading();
+		new Setting(containerEl)
+			.setName("Log level")
+			.setDesc(
+				"Sets the log level. Please use trace to see all log messages."
+			)
+			.addDropdown((cb) => {
+				cb.addOptions({
+					[LOG_LEVEL_OFF]: "Off",
+					[LOG_LEVEL_ERROR]: "Error",
+					[LOG_LEVEL_WARN]: "Warn",
+					[LOG_LEVEL_INFO]: "Info",
+					[LOG_LEVEL_DEBUG]: "Debug",
+					[LOG_LEVEL_TRACE]: "Trace"
+				})
+				cb.setValue(this.plugin.settings.logLevel).onChange(
+					async (value) => {
+						this.plugin.settings.logLevel = value;
+						await this.plugin.saveSettings();
+						Logger.setLevel(stringToLogLevel(value));
+					}
+				);
+			});
 
 	}
 }
