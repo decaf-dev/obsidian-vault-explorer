@@ -56,7 +56,6 @@
 			id: generateUUID(),
 			name: `Group ${groups.length + 1}`,
 			filters: [createPropertyFilter()],
-			position: groups.length,
 			isEnabled: groups.length === 0,
 		};
 

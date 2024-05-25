@@ -120,6 +120,7 @@ export interface PropertyFilterGroup {
 	id: string;
 	name: string;
 	filters: PropertyFilter[];
+	position: number;
 	isEnabled: boolean;
 }
 
