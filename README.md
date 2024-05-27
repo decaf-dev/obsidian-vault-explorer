@@ -49,12 +49,12 @@ This plugin is a replacement to some of the functionality found in [Obsidian Dat
 
 ## Installation
 
-1. Install the [Obsidian BRAT](https://obsidian.md/plugins?id=brat) plugin from Obsidian community plugin store
-2. Enable the plugin
-3. Open the plugin settings
-4. Click **Add beta plugin**
-5. Enter the repository url: **https://github.com/trey-wallis/obsidian-vault-explorer**
-6. Click **Add plugin**
+1. In Obsidian, open **Settings**
+2. Go to **Community plugins**
+3. Select **Browse**
+4. Search for **Vault Explorer** by DecafDev
+5. Select **Install**
+6. Then select **Enable**
 
 ## Usage
 
