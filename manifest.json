@@ -4,8 +4,8 @@
 	"version": "1.0.1",
 	"minAppVersion": "1.4.13",
 	"description": "Explore your vault in visual format",
-	"author": "Trey Wallis",
-	"authorUrl": "https://github.com/trey-wallis",
-	"fundingUrl": "https://buymeacoffee.com/treywallis",
+	"author": "DecafDev",
+	"authorUrl": "https://github.com/decaf-dev",
+	"fundingUrl": "https://buymeacoffee.com/decaf_dev",
 	"isDesktopOnly": true
 }

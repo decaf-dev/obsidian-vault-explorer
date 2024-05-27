@@ -9,7 +9,7 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
-	"author": "Trey Wallis",
+	"author": "DecafDev",
 	"license": "MIT",
 	"devDependencies": {
 		"@tsconfig/svelte": "^5.0.4",
