@@ -48,6 +48,10 @@
 		padding: 4px 6px;
 	}
 
+	.vault-explorer-group-item:focus-visible {
+		box-shadow: inset 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
 	.vault-explorer-group-item:hover {
 		background-color: var(--background-modifier-hover);
 	}
