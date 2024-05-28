@@ -8,10 +8,10 @@
 	import { FrontMatterCache, Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
-		CurrentView,
 		PropertyFilterGroup,
 		SortFilter,
 		TimestampFilter,
+		ViewType,
 	} from "src/types";
 	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
@@ -62,7 +62,7 @@
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
 	let onlyFavorites: boolean = false;
-	let currentView: CurrentView = "grid";
+	let currentView: ViewType = ViewType.GRID;
 	let propertyFilterGroups: PropertyFilterGroup[] = [];
 	let selectedPropertyFilterGroupId: string = "";
 
@@ -104,7 +104,7 @@
 		sortFilter = plugin.settings.filters.sort;
 		timestampFilter = plugin.settings.filters.timestamp;
 		onlyFavorites = plugin.settings.filters.onlyFavorites;
-		currentView = plugin.settings.currentView;
+		currentView = plugin.settings.view.currentView;
 		propertyFilterGroups = plugin.settings.filters.properties.groups;
 		selectedPropertyFilterGroupId =
 			plugin.settings.filters.properties.selectedGroupId;
@@ -339,7 +339,7 @@
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
-		plugin.settings.currentView = currentView;
+		plugin.settings.view.currentView = currentView;
 		plugin.settings.filters.properties.groups = propertyFilterGroups;
 		plugin.settings.filters.properties.selectedGroupId =
 			selectedPropertyFilterGroupId;
@@ -605,9 +605,11 @@
 			</Stack>
 		</Stack>
 		<Flex>
-			<TabList initialSelectedIndex={currentView === "grid" ? 0 : 1}>
-				<Tab on:click={() => (currentView = "grid")}>Grid</Tab>
-				<Tab on:click={() => (currentView = "list")}>List</Tab>
+			<TabList
+				initialSelectedIndex={currentView === ViewType.GRID ? 0 : 1}
+			>
+				<Tab on:click={() => (currentView = ViewType.GRID)}>Grid</Tab>
+				<Tab on:click={() => (currentView = ViewType.LIST)}>List</Tab>
 			</TabList>
 			<Stack justify="flex-end" align="center">
 				<Stack spacing="xs">

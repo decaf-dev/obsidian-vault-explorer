@@ -1,4 +1,4 @@
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_0_1 {
 	logLevel: string;
 	properties: {
 		favorite: string;
@@ -18,18 +18,9 @@ export interface VaultExplorerPluginSettings {
 			groups: PropertyFilterGroup[];
 		}
 	},
-	view: {
-		currentView: ViewType;
-		order: ViewType[];
-	}
+	currentView: CurrentView;
 	pageSize: number;
 	pluginVersion: string | null;
-}
-
-
-export enum ViewType {
-	GRID = "grid",
-	LIST = "list",
 }
 
 export type FilterOperator = "and" | "or";
@@ -132,6 +123,8 @@ export interface PropertyFilterGroup {
 	filters: PropertyFilter[];
 	isEnabled: boolean;
 }
+
+export type CurrentView = "grid" | "list";
 
 export type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
 
