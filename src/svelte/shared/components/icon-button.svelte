@@ -6,6 +6,7 @@
 	export let iconId = "";
 	export let disabled = false;
 	export let noPadding = false;
+	export let isTabbable = true;
 
 	$: svgData = getSvgData(iconId);
 
@@ -36,6 +37,7 @@
 
 <button
 	class={className}
+	tabindex={isTabbable ? 0 : -1}
 	{disabled}
 	aria-label={ariaLabel}
 	bind:this={ref}

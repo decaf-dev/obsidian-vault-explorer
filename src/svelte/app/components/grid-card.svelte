@@ -131,6 +131,7 @@
 						class="vault-explorer-scroll-button vault-explorer-scroll-button--left"
 					>
 						<IconButton
+							isTabbable={false}
 							ariaLabel="Scroll left"
 							noPadding
 							iconId="chevron-left"
@@ -151,6 +152,7 @@
 						class="vault-explorer-scroll-button vault-explorer-scroll-button--right"
 					>
 						<IconButton
+							isTabbable={false}
 							ariaLabel="Scroll right"
 							noPadding
 							iconId="chevron-right"
