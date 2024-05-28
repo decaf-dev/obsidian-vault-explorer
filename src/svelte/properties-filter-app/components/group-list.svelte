@@ -46,7 +46,6 @@
 						on:itemDragStart
 						on:itemDragOver
 						on:itemDrop
-						on:itemDragEnd
 					/>
 				{/each}
 			</Flex>
