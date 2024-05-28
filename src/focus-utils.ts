@@ -1,7 +1,7 @@
 export const moveFocus = (direction: "previous" | "next") => {
 	const focusedEl = document.activeElement;
 	if (focusedEl instanceof HTMLElement) {
-		const rootEl = focusedEl.closest('.vault-explorer');
+		const rootEl = focusedEl.closest('.vault-explorer, .vault-explorer-property-filter-app');
 		if (!rootEl) return;
 
 		const inputEls = rootEl.querySelectorAll('a, button, input, select, textarea, [role="button"], [role="link"]')
