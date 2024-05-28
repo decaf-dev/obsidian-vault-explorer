@@ -1,16 +1,20 @@
 export const moveFocus = (direction: "previous" | "next") => {
-	const focused = document.activeElement;
-	if (focused instanceof HTMLElement) {
-		const root = focused.closest('.vault-explorer');
-		if (!root) return;
+	const focusedEl = document.activeElement;
+	if (focusedEl instanceof HTMLElement) {
+		const rootEl = focusedEl.closest('.vault-explorer');
+		if (!rootEl) return;
 
-		const inputElements = root.querySelectorAll('a, button, input, select, textarea, [role="button"], [role="link"]')
-		const focusableElements = Array.from(inputElements).filter(isElementTabble);
-		const currentIndex = focusableElements.indexOf(focused);
+		const inputEls = rootEl.querySelectorAll('a, button, input, select, textarea, [role="button"], [role="link"]')
+		const focusableEls = Array.from(inputEls).filter(isElementTabble);
+		const currentIndex = focusableEls.indexOf(focusedEl);
 
 		const newIndex = direction === "previous" ? currentIndex - 1 : currentIndex + 1;
-		if (newIndex >= 0 && newIndex < focusableElements.length) {
-			(focusableElements[newIndex] as HTMLElement).focus();
+		if (newIndex >= 0 && newIndex < focusableEls.length) {
+			(focusableEls[newIndex] as HTMLElement).focus();
+		} else if (newIndex > focusableEls.length - 1) {
+			(focusableEls[0] as HTMLElement).focus();
+		} else if (newIndex < 0) {
+			(focusableEls[focusableEls.length - 1] as HTMLElement).focus();
 		}
 	}
 
