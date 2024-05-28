@@ -369,14 +369,12 @@
 	}
 
 	function handleViewDragStart(e: CustomEvent, id: string) {
-		console.log("drag start", id);
 		const { nativeEvent } = e.detail;
 		nativeEvent.dataTransfer.setData("text", id);
 		nativeEvent.dataTransfer.effectAllowed = "move";
 	}
 
 	function handleViewDrop(e: CustomEvent, id: string) {
-		console.log("drop");
 		const { nativeEvent } = e.detail;
 		const dragId = nativeEvent.dataTransfer.getData("text");
 		nativeEvent.dataTransfer.dropEffect = "move";
