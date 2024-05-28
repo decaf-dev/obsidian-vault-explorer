@@ -8,10 +8,10 @@
 	import { FrontMatterCache, Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
-		CurrentView,
 		PropertyFilterGroup,
 		SortFilter,
 		TimestampFilter,
+		ViewType,
 	} from "src/types";
 	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
@@ -32,6 +32,7 @@
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 	import GroupTagList from "./components/group-tag-list.svelte";
+	import { getDisplayNameForViewType } from "./services/display-name";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -62,7 +63,8 @@
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
 	let onlyFavorites: boolean = false;
-	let currentView: CurrentView = "grid";
+	let viewOrder: ViewType[] = [];
+	let currentView: ViewType = ViewType.GRID;
 	let propertyFilterGroups: PropertyFilterGroup[] = [];
 	let selectedPropertyFilterGroupId: string = "";
 
@@ -104,7 +106,8 @@
 		sortFilter = plugin.settings.filters.sort;
 		timestampFilter = plugin.settings.filters.timestamp;
 		onlyFavorites = plugin.settings.filters.onlyFavorites;
-		currentView = plugin.settings.currentView;
+		currentView = plugin.settings.views.currentView;
+		viewOrder = plugin.settings.views.order;
 		propertyFilterGroups = plugin.settings.filters.properties.groups;
 		selectedPropertyFilterGroupId =
 			plugin.settings.filters.properties.selectedGroupId;
@@ -329,6 +332,7 @@
 		timestampFilter,
 		onlyFavorites,
 		currentView,
+		viewOrder,
 		propertyFilterGroups,
 		selectedPropertyFilterGroupId,
 		saveSettings();
@@ -339,7 +343,8 @@
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
-		plugin.settings.currentView = currentView;
+		plugin.settings.views.order = viewOrder;
+		plugin.settings.views.currentView = currentView;
 		plugin.settings.filters.properties.groups = propertyFilterGroups;
 		plugin.settings.filters.properties.selectedGroupId =
 			selectedPropertyFilterGroupId;
@@ -356,6 +361,37 @@
 		);
 		selectedPropertyFilterGroupId = id;
 		propertyFilterGroups = newGroups;
+	}
+
+	function handleViewDragOver(e: CustomEvent) {
+		const { nativeEvent } = e.detail;
+		nativeEvent.preventDefault();
+	}
+
+	function handleViewDragStart(e: CustomEvent, id: string) {
+		const { nativeEvent } = e.detail;
+		nativeEvent.dataTransfer.setData("text", id);
+		nativeEvent.dataTransfer.effectAllowed = "move";
+	}
+
+	function handleViewDrop(e: CustomEvent, id: string) {
+		const { nativeEvent } = e.detail;
+		const dragId = nativeEvent.dataTransfer.getData("text");
+		nativeEvent.dataTransfer.dropEffect = "move";
+
+		const draggedIndex = viewOrder.findIndex((view) => view === dragId);
+		const dragged = viewOrder.find((view) => view === dragId);
+
+		const droppedIndex = viewOrder.findIndex((view) => view === id);
+		const dropped = viewOrder.find((view) => view === id);
+
+		if (!dragged || !dropped || draggedIndex === -1 || droppedIndex === -1)
+			return;
+
+		let newViewOrder = [...viewOrder];
+		newViewOrder[draggedIndex] = dropped;
+		newViewOrder[droppedIndex] = dragged;
+		viewOrder = newViewOrder;
 	}
 
 	function handleGroupDrop(e: CustomEvent) {
@@ -605,9 +641,21 @@
 			</Stack>
 		</Stack>
 		<Flex>
-			<TabList initialSelectedIndex={currentView === "grid" ? 0 : 1}>
-				<Tab on:click={() => (currentView = "grid")}>Grid</Tab>
-				<Tab on:click={() => (currentView = "list")}>List</Tab>
+			<TabList
+				initialSelectedIndex={viewOrder.findIndex(
+					(view) => view === currentView,
+				)}
+			>
+				{#each viewOrder as view}
+					<Tab
+						draggable={true}
+						on:click={() => (currentView = view)}
+						on:dragstart={(e) => handleViewDragStart(e, view)}
+						on:dragover={handleViewDragOver}
+						on:drop={(e) => handleViewDrop(e, view)}
+						>{getDisplayNameForViewType(view)}</Tab
+					>
+				{/each}
 			</TabList>
 			<Stack justify="flex-end" align="center">
 				<Stack spacing="xs">
