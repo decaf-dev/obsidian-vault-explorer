@@ -56,6 +56,10 @@
 		background-color: var(--background-primary);
 	}
 
+	.vault-explorer-group-tag:focus-visible {
+		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
+	}
+
 	.vault-explorer-group-tag--active {
 		background-color: var(--tag-background);
 		border: 1px solid var(--tag-border-color);
