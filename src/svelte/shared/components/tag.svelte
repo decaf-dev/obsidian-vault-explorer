@@ -33,4 +33,8 @@
 	.vault-explorer-tag {
 		white-space: nowrap;
 	}
+
+	.vault-explorer-tag:focus-visible {
+		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
+	}
 </style>
