@@ -110,7 +110,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			EventManager.getInstance().emit("metadata-change", file);
 		}));
 
-		this.registerDomEvent(document, "keyup", (event) => {
+		this.registerDomEvent(document, "keydown", (event) => {
 			if (event.key === "ArrowLeft") {
 				moveFocus("previous");
 			} else if (event.key === "ArrowRight") {
