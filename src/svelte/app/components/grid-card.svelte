@@ -108,13 +108,16 @@
 
 <div class="vault-explorer-grid-card">
 	<div class="vault-explorer-grid-card__header">
-		<a
-			href="empty"
+		<div
+			tabindex="0"
+			role="link"
 			class="vault-explorer-grid-card__title"
 			on:click={handleTitleClick}
+			on:keydown={(e) =>
+				(e.key === "Enter" || e.key === " ") && handleTitleClick()}
 		>
 			{name}
-		</a>
+		</div>
 		{#if url !== null}
 			<IconButton iconId="external-link" on:click={handleUrlClick} />
 		{/if}
@@ -199,7 +202,6 @@
 	}
 
 	.vault-explorer-grid-card__title {
-		all: unset;
 		cursor: pointer;
 		color: var(--text-accent);
 	}
