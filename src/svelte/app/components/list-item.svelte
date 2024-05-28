@@ -26,13 +26,16 @@
 </script>
 
 <div class="vault-explorer-list-item">
-	<a
-		href="empty"
+	<div
+		tabindex="0"
+		role="link"
 		class="vault-explorer-list-item__title"
 		on:click={handleTitleClick}
+		on:keydown={(e) =>
+			(e.key === "Enter" || e.key === " ") && handleTitleClick()}
 	>
 		{name}
-	</a>
+	</div>
 </div>
 
 <style>
@@ -43,8 +46,11 @@
 		margin-bottom: 10px;
 	}
 
+	.vault-explorer-list-item__title:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
 	.vault-explorer-list-item__title {
-		all: unset;
 		cursor: pointer;
 		color: var(--text-accent);
 	}

@@ -14,6 +14,7 @@ import Logger from 'js-logger';
 import { formatMessageForLogger, stringToLogLevel } from './logger';
 import { LOG_LEVEL_WARN } from './logger/constants';
 import { VaultExplorerPluginSettings_1_0_1 } from './types/types-1.0.1';
+import { moveFocus } from './focus-utils';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -108,6 +109,15 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (file.extension !== "md") return;
 			EventManager.getInstance().emit("metadata-change", file);
 		}));
+
+		this.registerDomEvent(document, "keydown", (event) => {
+			if (event.key === "ArrowLeft") {
+				moveFocus("previous");
+			} else if (event.key === "ArrowRight") {
+				moveFocus("next");
+			}
+		});
+
 	}
 
 	onunload() {

@@ -5,6 +5,8 @@
 	export let ariaLabel = "";
 	export let iconId = "";
 	export let disabled = false;
+	export let noPadding = false;
+	export let isTabbable = true;
 
 	$: svgData = getSvgData(iconId);
 
@@ -27,12 +29,23 @@
 	function handleClick(event: Event) {
 		dispatch("click", { nativeEvent: event });
 	}
+
+	$: className =
+		"clickable-icon" +
+		(noPadding == true ? " vault-explorer-icon--no-padding" : "");
 </script>
 
 <button
-	class="clickable-icon"
+	class={className}
+	tabindex={isTabbable ? 0 : -1}
 	{disabled}
 	aria-label={ariaLabel}
 	bind:this={ref}
 	on:click={handleClick}>{@html svgData}</button
 >
+
+<style>
+	.vault-explorer-icon--no-padding {
+		padding: 0;
+	}
+</style>
