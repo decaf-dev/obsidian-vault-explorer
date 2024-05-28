@@ -81,6 +81,10 @@
 		white-space: nowrap;
 	}
 
+	.vault-explorer-tab:focus-visible {
+		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
+	}
+
 	.vault-explorer-tab__line {
 		color: var(--text-faint);
 	}

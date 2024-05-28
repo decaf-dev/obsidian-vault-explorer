@@ -46,6 +46,10 @@
 		margin-bottom: 10px;
 	}
 
+	.vault-explorer-list-item__title:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
 	.vault-explorer-list-item__title {
 		cursor: pointer;
 		color: var(--text-accent);

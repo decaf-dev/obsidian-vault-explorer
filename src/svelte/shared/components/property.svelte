@@ -53,4 +53,8 @@
 	.vault-explorer-property:hover {
 		background-color: var(--color-base-30) !important;
 	}
+
+	.vault-explorer-property:focus-visible {
+		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
+	}
 </style>

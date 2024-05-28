@@ -206,6 +206,10 @@
 		color: var(--text-accent);
 	}
 
+	.vault-explorer-grid-card__title:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
 	.vault-explorer-grid-card__tags {
 		display: flex;
 		column-gap: 0.25rem;
