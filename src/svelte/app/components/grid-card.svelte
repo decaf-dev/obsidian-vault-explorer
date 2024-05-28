@@ -108,13 +108,16 @@
 
 <div class="vault-explorer-grid-card">
 	<div class="vault-explorer-grid-card__header">
-		<a
-			href="empty"
+		<div
+			tabindex="0"
+			role="link"
 			class="vault-explorer-grid-card__title"
 			on:click={handleTitleClick}
+			on:keydown={(e) =>
+				(e.key === "Enter" || e.key === " ") && handleTitleClick()}
 		>
 			{name}
-		</a>
+		</div>
 		{#if url !== null}
 			<IconButton iconId="external-link" on:click={handleUrlClick} />
 		{/if}
@@ -128,6 +131,7 @@
 						class="vault-explorer-scroll-button vault-explorer-scroll-button--left"
 					>
 						<IconButton
+							isTabbable={false}
 							ariaLabel="Scroll left"
 							noPadding
 							iconId="chevron-left"
@@ -148,6 +152,7 @@
 						class="vault-explorer-scroll-button vault-explorer-scroll-button--right"
 					>
 						<IconButton
+							isTabbable={false}
 							ariaLabel="Scroll right"
 							noPadding
 							iconId="chevron-right"
@@ -157,6 +162,9 @@
 				{/if}
 			</Stack>
 		{/if}
+		<!-- {#if custom1 !== null || custom2 !== null || custom3 !== null}
+			<Spacer size="sm" direction="vertical" />
+		{/if} -->
 		<Wrap spacingX="xs" spacingY="xs"
 			>{#if custom1 !== null}<Property
 					name={plugin.settings.properties.custom1}
@@ -196,9 +204,12 @@
 	}
 
 	.vault-explorer-grid-card__title {
-		all: unset;
 		cursor: pointer;
 		color: var(--text-accent);
+	}
+
+	.vault-explorer-grid-card__title:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
 	}
 
 	.vault-explorer-grid-card__tags {
@@ -212,15 +223,13 @@
 		display: none;
 	}
 
-	/* .vault-explorer-grid-card__labels {
-		display: flex;
-	}
-
+	/**
 	.vault-explorer-property-label {
 		margin-left: 8px;
 		font-size: var(--font-smallest);
 		color: var(--text-muted);
 	} */
+
 	.vault-explorer-scroll-button {
 		position: absolute;
 		background-color: var(--background-primary);
