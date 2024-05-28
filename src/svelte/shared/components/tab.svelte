@@ -2,6 +2,8 @@
 	import { createEventDispatcher, getContext } from "svelte";
 	const dispatch = createEventDispatcher();
 
+	export let draggable = false;
+
 	const id = generateUUID();
 	const selectedTab = getContext("selectedTab") as Writable<string>;
 	const registerTab = getContext("registerTab") as (id: string) => void;
@@ -21,6 +23,18 @@
 			unregisterTab(id);
 		};
 	});
+
+	function handleDragStart(event: Event) {
+		dispatch("dragstart", { nativeEvent: event });
+	}
+
+	function handleDragOver(event: Event) {
+		dispatch("dragover", { nativeEvent: event });
+	}
+
+	function handleDrop(event: Event) {
+		dispatch("drop", { nativeEvent: event });
+	}
 
 	function handleClick(event: Event) {
 		selectedTab.set(id);
@@ -47,11 +61,22 @@
 	}
 </script>
 
-<button class={className} on:click={handleClick}><slot /></button>
+<div
+	tabindex="0"
+	role="button"
+	class={className}
+	{draggable}
+	on:click={handleClick}
+	on:dragstart={handleDragStart}
+	on:dragover={handleDragOver}
+	on:drop={handleDrop}
+	on:keydown={(e) => (e.key === "Enter" || e.key === " ") && handleClick(e)}
+>
+	<slot />
+</div>
 
 <style>
 	.vault-explorer-tab {
-		all: unset;
 		padding: 4px 6px;
 		white-space: nowrap;
 	}

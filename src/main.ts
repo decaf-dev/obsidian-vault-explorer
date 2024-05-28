@@ -167,7 +167,7 @@ export default class VaultExplorerPlugin extends Plugin {
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_0_1;
 					const newData: VaultExplorerPluginSettings = {
 						...typedData,
-						view: {
+						views: {
 							currentView: typedData.currentView as unknown as ViewType,
 							order: [ViewType.GRID, ViewType.LIST]
 						}

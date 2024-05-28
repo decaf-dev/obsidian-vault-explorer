@@ -18,7 +18,7 @@ export interface VaultExplorerPluginSettings {
 			groups: PropertyFilterGroup[];
 		}
 	},
-	view: {
+	views: {
 		currentView: ViewType;
 		order: ViewType[];
 	}

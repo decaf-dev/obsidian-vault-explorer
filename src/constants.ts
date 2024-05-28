@@ -34,7 +34,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 				]
 		}
 	},
-	view: {
+	views: {
 		currentView: ViewType.GRID,
 		order: [ViewType.GRID, ViewType.LIST]
 	},
