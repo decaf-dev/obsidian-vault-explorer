@@ -157,6 +157,9 @@
 				{/if}
 			</Stack>
 		{/if}
+		<!-- {#if custom1 !== null || custom2 !== null || custom3 !== null}
+			<Spacer size="sm" direction="vertical" />
+		{/if} -->
 		<Wrap spacingX="xs" spacingY="xs"
 			>{#if custom1 !== null}<Property
 					name={plugin.settings.properties.custom1}
@@ -212,15 +215,13 @@
 		display: none;
 	}
 
-	/* .vault-explorer-grid-card__labels {
-		display: flex;
-	}
-
+	/**
 	.vault-explorer-property-label {
 		margin-left: 8px;
 		font-size: var(--font-smallest);
 		color: var(--text-muted);
 	} */
+
 	.vault-explorer-scroll-button {
 		position: absolute;
 		background-color: var(--background-primary);
