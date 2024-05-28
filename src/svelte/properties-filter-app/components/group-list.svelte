@@ -6,7 +6,25 @@
 	export let groups: PropertyFilterGroup[];
 	export let selectedGroup: PropertyFilterGroup | undefined;
 
-	import { createEventDispatcher } from "svelte";
+	let listContainerRef: HTMLDivElement | null;
+	let previousLength = 0;
+
+	// Reactive statement that runs when `items` changes
+	$: if (groups.length > previousLength) {
+		previousLength = groups.length;
+		if (listContainerRef) {
+			scrollToBottom();
+		}
+	}
+
+	async function scrollToBottom() {
+		await tick(); // Wait for the DOM to update
+		if (listContainerRef) {
+			listContainerRef.scrollTop = listContainerRef.scrollHeight;
+		}
+	}
+
+	import { createEventDispatcher, tick } from "svelte";
 	import Flex from "src/svelte/shared/components/flex.svelte";
 	import GroupListItem from "./group-list-item.svelte";
 
@@ -35,7 +53,7 @@
 				on:click={() => handleDeleteGroupClick()}
 			/>
 		</Stack>
-		<div class="vault-explorer-group-list">
+		<div class="vault-explorer-group-list" bind:this={listContainerRef}>
 			<Flex direction="column" width="100px">
 				{#each groups as group (group.id)}
 					<GroupListItem
@@ -46,7 +64,6 @@
 						on:itemDragStart
 						on:itemDragOver
 						on:itemDrop
-						on:itemDragEnd
 					/>
 				{/each}
 			</Flex>

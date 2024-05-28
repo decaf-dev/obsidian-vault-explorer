@@ -3,7 +3,7 @@ import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { VaultExplorerPluginSettings } from './types';
+import { VaultExplorerPluginSettings, ViewType } from './types';
 import { DEFAULT_SETTINGS, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
@@ -13,6 +13,7 @@ import { VaultExplorerPluginSettings_0_5_5 } from './types/types-0.5.5';
 import Logger from 'js-logger';
 import { formatMessageForLogger, stringToLogLevel } from './logger';
 import { LOG_LEVEL_WARN } from './logger/constants';
+import { VaultExplorerPluginSettings_1_0_1 } from './types/types-1.0.1';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -139,7 +140,7 @@ export default class VaultExplorerPlugin extends Plugin {
 				if (isVersionLessThan(settingsVersion, "1.0.0")) {
 					console.log("Upgrading settings from version 0.5.5 to 1.0.0");
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_0_5_5;
-					const newData: VaultExplorerPluginSettings = {
+					const newData: VaultExplorerPluginSettings_1_0_1 = {
 						...typedData,
 						logLevel: LOG_LEVEL_WARN,
 						filters: {
@@ -156,6 +157,19 @@ export default class VaultExplorerPlugin extends Plugin {
 									}
 								})
 							}
+						}
+					}
+					data = newData as unknown as Record<string, unknown>;
+				}
+
+				if (isVersionLessThan(settingsVersion, "1.1.0")) {
+					console.log("Upgrading settings from version 1.0.1 to 1.1.0");
+					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_0_1;
+					const newData: VaultExplorerPluginSettings = {
+						...typedData,
+						views: {
+							currentView: typedData.currentView as unknown as ViewType,
+							order: [ViewType.GRID, ViewType.LIST]
 						}
 					}
 					data = newData as unknown as Record<string, unknown>;

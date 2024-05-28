@@ -1,6 +1,6 @@
 import { LOG_LEVEL_WARN } from "./logger/constants";
 import { generateUUID } from "./svelte/shared/services/uuid";
-import { VaultExplorerPluginSettings } from "./types";
+import { VaultExplorerPluginSettings, ViewType } from "./types";
 
 export const VAULT_EXPLORER_VIEW = "vault-explorer";
 
@@ -34,7 +34,10 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 				]
 		}
 	},
-	currentView: "grid",
+	views: {
+		currentView: ViewType.GRID,
+		order: [ViewType.GRID, ViewType.LIST]
+	},
 	pageSize: 50,
 	pluginVersion: null
 }

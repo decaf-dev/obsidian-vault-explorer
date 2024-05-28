@@ -147,11 +147,6 @@
 		nativeEvent.preventDefault();
 	}
 
-	function handleGroupDragEnd(e: CustomEvent) {
-		const { nativeEvent } = e.detail;
-		nativeEvent.target.draggable = false;
-	}
-
 	function handleGroupDrop(e: CustomEvent) {
 		const { id, nativeEvent } = e.detail;
 		const dragId = nativeEvent.dataTransfer.getData("text");
@@ -297,7 +292,6 @@
 			on:itemDragStart={handleGroupDragStart}
 			on:itemDragOver={handleGroupDragOver}
 			on:itemDrop={handleGroupDrop}
-			on:itemDragEnd={handleGroupDragEnd}
 			on:addGroupClick={handleAddGroupClick}
 			on:deleteGroupClick={handleDeleteGroupClick}
 		/>
