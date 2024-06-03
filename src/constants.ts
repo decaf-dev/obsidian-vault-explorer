@@ -36,7 +36,8 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	},
 	views: {
 		currentView: ViewType.GRID,
-		order: [ViewType.GRID, ViewType.LIST]
+		order: [ViewType.GRID, ViewType.LIST],
+		titleWrapping: "normal"
 	},
 	pageSize: 50,
 	pluginVersion: null
