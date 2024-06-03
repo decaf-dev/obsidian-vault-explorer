@@ -3,7 +3,7 @@ import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { PropertyFilter, PropertyFilterGroup, VaultExplorerPluginSettings, ViewType } from './types';
+import { PropertyFilter, PropertyFilterGroup, PropertyType, VaultExplorerPluginSettings, ViewType } from './types';
 import { DEFAULT_SETTINGS, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
@@ -209,6 +209,7 @@ export default class VaultExplorerPlugin extends Plugin {
 						const updatedFilters: PropertyFilter[] = group.filters.map(filter => {
 							return {
 								...filter,
+								type: filter.type as any,
 								matchWhenPropertyDNE: false
 							}
 						});

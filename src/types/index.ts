@@ -87,13 +87,14 @@ interface BasePropertyFilter {
 	id: string;
 	propertyName: string;
 	operator: FilterOperator;
-	type: PropertyFilterType;
+	type: PropertyType;
 	isEnabled: boolean;
 	value: string;
 	matchWhenPropertyDNE: boolean;
 }
 
-export enum PropertyFilterType {
+//Matches Obsidian property types
+export enum PropertyType {
 	TEXT = "text",
 	NUMBER = "number",
 	LIST = "list",
@@ -103,27 +104,27 @@ export enum PropertyFilterType {
 }
 
 export interface TextPropertyFilter extends BasePropertyFilter {
-	type: PropertyFilterType.TEXT;
+	type: PropertyType.TEXT;
 	condition: TextFilterCondition;
 }
 
 export interface NumberPropertyFilter extends BasePropertyFilter {
-	type: PropertyFilterType.NUMBER;
+	type: PropertyType.NUMBER;
 	condition: NumberFilterCondition;
 }
 
 export interface ListPropertyFilter extends BasePropertyFilter {
-	type: PropertyFilterType.LIST
+	type: PropertyType.LIST
 	condition: ListFilterCondition;
 }
 
 export interface CheckboxPropertyFilter extends BasePropertyFilter {
-	type: PropertyFilterType.CHECKBOX
+	type: PropertyType.CHECKBOX
 	condition: CheckboxFilterCondition;
 }
 
 export interface DatePropertyFilter extends BasePropertyFilter {
-	type: PropertyFilterType.DATE | PropertyFilterType.DATETIME;
+	type: PropertyType.DATE | PropertyType.DATETIME;
 	condition: DateFilterCondition;
 }
 
