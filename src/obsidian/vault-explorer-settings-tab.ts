@@ -4,6 +4,7 @@ import { getDropdownOptionsForProperties, getObsidianPropertiesByType } from "./
 import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
+import { WordBreak } from "src/types";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -37,6 +38,23 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				this.plugin.settings.pageSize = parseInt(value);
 				await this.plugin.saveSettings();
 			}));
+		new Setting(containerEl)
+			.setName("Title wrapping")
+			.setDesc(
+				"Sets the wrapping style for the title."
+			)
+			.addDropdown((cb) => {
+				cb.addOptions({
+					"normal": "Normal",
+					"break-word": "Break Word",
+				})
+				cb.setValue(this.plugin.settings.views.titleWrapping).onChange(
+					async (value) => {
+						this.plugin.settings.views.titleWrapping = value as WordBreak;
+						await this.plugin.saveSettings();
+					}
+				);
+			});
 
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 

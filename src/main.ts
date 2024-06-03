@@ -15,6 +15,7 @@ import { formatMessageForLogger, stringToLogLevel } from './logger';
 import { LOG_LEVEL_WARN } from './logger/constants';
 import { VaultExplorerPluginSettings_1_0_1 } from './types/types-1.0.1';
 import { moveFocus } from './focus-utils';
+import { VaultExplorerPluginSettings_1_2_0 } from './types/types-1.2.0';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -175,11 +176,24 @@ export default class VaultExplorerPlugin extends Plugin {
 				if (isVersionLessThan(settingsVersion, "1.1.0")) {
 					console.log("Upgrading settings from version 1.0.1 to 1.1.0");
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_0_1;
-					const newData: VaultExplorerPluginSettings = {
+					const newData: VaultExplorerPluginSettings_1_2_0 = {
 						...typedData,
 						views: {
 							currentView: typedData.currentView as unknown as ViewType,
 							order: [ViewType.GRID, ViewType.LIST]
+						}
+					}
+					data = newData as unknown as Record<string, unknown>;
+				}
+
+				if (isVersionLessThan(settingsVersion, "1.2.1")) {
+					console.log("Upgrading settings from version 1.2.0 to 1.2.1");
+					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_2_0;
+					const newData: VaultExplorerPluginSettings = {
+						...typedData,
+						views: {
+							...typedData.views,
+							titleWrapping: "normal"
 						}
 					}
 					data = newData as unknown as Record<string, unknown>;

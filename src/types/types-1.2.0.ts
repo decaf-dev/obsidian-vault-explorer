@@ -1,4 +1,4 @@
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_2_0 {
 	logLevel: string;
 	properties: {
 		favorite: string;
@@ -21,22 +21,20 @@ export interface VaultExplorerPluginSettings {
 	views: {
 		currentView: ViewType;
 		order: ViewType[];
-		titleWrapping: WordBreak;
 	}
 	pageSize: number;
 	pluginVersion: string | null;
 }
 
-export type WordBreak = "normal" | "break-word";
 
-export enum ViewType {
+enum ViewType {
 	GRID = "grid",
 	LIST = "list",
 }
 
-export type FilterOperator = "and" | "or";
+type FilterOperator = "and" | "or";
 
-export enum TextFilterCondition {
+enum TextFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	CONTAINS = "contains",
@@ -47,14 +45,14 @@ export enum TextFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export enum ListFilterCondition {
+enum ListFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export enum NumberFilterCondition {
+enum NumberFilterCondition {
 	IS_EQUAL = "is-equal",
 	IS_NOT_EQUAL = "is-not-equal",
 	IS_GREATER = "is-greater",
@@ -65,7 +63,7 @@ export enum NumberFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export enum CheckboxFilterCondition {
+enum CheckboxFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	EXISTS = "exists",
@@ -73,7 +71,7 @@ export enum CheckboxFilterCondition {
 }
 
 //TODO: add more types
-export enum DateFilterCondition {
+enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
 	IS_AFTER = "is-after",
@@ -81,7 +79,7 @@ export enum DateFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition;
+type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition;
 
 interface BasePropertyFilter {
 	id: string;
@@ -92,7 +90,7 @@ interface BasePropertyFilter {
 	value: string;
 }
 
-export enum PropertyFilterType {
+enum PropertyFilterType {
 	TEXT = "text",
 	NUMBER = "number",
 	LIST = "list",
@@ -101,40 +99,40 @@ export enum PropertyFilterType {
 	DATETIME = "datetime",
 }
 
-export interface TextPropertyFilter extends BasePropertyFilter {
+interface TextPropertyFilter extends BasePropertyFilter {
 	type: PropertyFilterType.TEXT;
 	condition: TextFilterCondition;
 }
 
-export interface NumberPropertyFilter extends BasePropertyFilter {
+interface NumberPropertyFilter extends BasePropertyFilter {
 	type: PropertyFilterType.NUMBER;
 	condition: NumberFilterCondition;
 }
 
-export interface ListPropertyFilter extends BasePropertyFilter {
+interface ListPropertyFilter extends BasePropertyFilter {
 	type: PropertyFilterType.LIST
 	condition: ListFilterCondition;
 }
 
-export interface CheckboxPropertyFilter extends BasePropertyFilter {
+interface CheckboxPropertyFilter extends BasePropertyFilter {
 	type: PropertyFilterType.CHECKBOX
 	condition: CheckboxFilterCondition;
 }
 
-export interface DatePropertyFilter extends BasePropertyFilter {
+interface DatePropertyFilter extends BasePropertyFilter {
 	type: PropertyFilterType.DATE | PropertyFilterType.DATETIME;
 	condition: DateFilterCondition;
 }
 
-export type PropertyFilter = TextPropertyFilter | NumberPropertyFilter | ListPropertyFilter | CheckboxPropertyFilter | DatePropertyFilter;
+type PropertyFilter = TextPropertyFilter | NumberPropertyFilter | ListPropertyFilter | CheckboxPropertyFilter | DatePropertyFilter;
 
-export interface PropertyFilterGroup {
+interface PropertyFilterGroup {
 	id: string;
 	name: string;
 	filters: PropertyFilter[];
 	isEnabled: boolean;
 }
 
-export type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
+type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
 
-export type TimestampFilter = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
+type TimestampFilter = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";

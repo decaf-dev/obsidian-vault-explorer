@@ -10,6 +10,7 @@
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { onMount } from "svelte";
 	import { getScrollAmount } from "../services/scroll-utils";
+	import { WordBreak } from "src/types";
 
 	export let name: string;
 	export let path: string;
@@ -20,10 +21,12 @@
 	export let custom3: string | null;
 
 	let tagContainerRef: HTMLDivElement | null;
+	let wordBreak: WordBreak = "normal";
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
 		plugin = p;
+		wordBreak = plugin.settings.views.titleWrapping;
 	});
 
 	function handleTitleClick() {
@@ -112,6 +115,7 @@
 			tabindex="0"
 			role="link"
 			class="vault-explorer-grid-card__title"
+			style={`word-break: ${wordBreak};`}
 			on:click={handleTitleClick}
 			on:keydown={(e) =>
 				(e.key === "Enter" || e.key === " ") && handleTitleClick()}
@@ -206,6 +210,8 @@
 	.vault-explorer-grid-card__title {
 		cursor: pointer;
 		color: var(--text-accent);
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.vault-explorer-grid-card__title:focus-visible {
