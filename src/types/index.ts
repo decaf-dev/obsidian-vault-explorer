@@ -21,12 +21,13 @@ export interface VaultExplorerPluginSettings {
 	views: {
 		currentView: ViewType;
 		order: ViewType[];
-		titleWrapping: "normal" | "break-word";
+		titleWrapping: WordBreak;
 	}
 	pageSize: number;
 	pluginVersion: string | null;
 }
 
+export type WordBreak = "normal" | "break-word";
 
 export enum ViewType {
 	GRID = "grid",
