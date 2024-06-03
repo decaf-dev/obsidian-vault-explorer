@@ -206,6 +206,8 @@
 	.vault-explorer-grid-card__title {
 		cursor: pointer;
 		color: var(--text-accent);
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.vault-explorer-grid-card__title:focus-visible {
