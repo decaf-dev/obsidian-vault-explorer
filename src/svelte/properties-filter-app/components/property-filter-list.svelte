@@ -12,6 +12,7 @@
 			id={filter.id}
 			value={filter.value}
 			condition={filter.condition}
+			matchWithoutProperty={filter.matchNotesWithoutProperty}
 			type={filter.type}
 			name={filter.propertyName}
 			isEnabled={filter.isEnabled}
@@ -22,6 +23,7 @@
 			on:filterValueChange
 			on:filterToggle
 			on:filterDeleteClick
+			on:filterMatchWithoutPropertyChange
 		/>
 	{/each}
 </Stack>

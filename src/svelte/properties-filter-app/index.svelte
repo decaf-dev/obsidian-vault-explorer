@@ -18,6 +18,7 @@
 	import GroupList from "./components/group-list.svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import Divider from "../shared/components/divider.svelte";
+	import { match } from "assert";
 
 	let selectedGroupId: string = "";
 	let groups: PropertyFilterGroup[] = [];
@@ -281,6 +282,29 @@
 
 		groups = newGroups;
 	}
+
+	function handleFilterMatchWithoutPropertyChange(e: CustomEvent) {
+		const { id, matchWithoutProperty } = e.detail;
+
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.map((filter) =>
+							filter.id === id
+								? {
+										...filter,
+										matchNotesWithoutProperty:
+											matchWithoutProperty,
+									}
+								: filter,
+						),
+					}
+				: group,
+		);
+
+		groups = newGroups;
+	}
 </script>
 
 <div class="vault-explorer-property-filter-app">
@@ -307,6 +331,7 @@
 				on:filterNameChange={handleFilterNameChange}
 				on:filterToggle={handleFilterToggle}
 				on:filterValueChange={handleFilterValueChange}
+				on:filterMatchWithoutPropertyChange={handleFilterMatchWithoutPropertyChange}
 			/>
 		{/if}
 	</Flex>

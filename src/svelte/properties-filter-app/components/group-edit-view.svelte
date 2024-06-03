@@ -43,6 +43,7 @@
 				on:filterValueChange
 				on:filterToggle
 				on:filterDeleteClick
+				on:filterMatchWithoutPropertyChange
 			/>
 			<Spacer direction="vertical" size="sm" />
 		{/if}

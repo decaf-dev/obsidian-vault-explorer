@@ -20,6 +20,7 @@
 	export let value: string;
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
+	export let matchWithoutProperty: boolean;
 
 	let plugin: VaultExplorerPlugin;
 	let obsidianProperties: ObsidianProperty[] = [];
@@ -59,6 +60,14 @@
 	function handleValueChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
 		dispatch("filterValueChange", { id, value });
+	}
+
+	function handleMatchWithoutPropertyChange(e: Event) {
+		const value = (e.target as HTMLInputElement).checked;
+		dispatch("filterMatchWithoutPropertyChange", {
+			id,
+			matchWithoutProperty: value,
+		});
 	}
 
 	function handleToggle() {
@@ -117,6 +126,14 @@
 		</select>
 		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input type="text" {value} on:change={handleValueChange} />
+		{/if}
+		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+			<input
+				aria-label="Match notes without property"
+				type="checkbox"
+				checked={matchWithoutProperty}
+				on:change={handleMatchWithoutPropertyChange}
+			/>
 		{/if}
 		<Stack spacing="sm" align="center">
 			<Switch value={isEnabled} on:change={() => handleToggle()} />
