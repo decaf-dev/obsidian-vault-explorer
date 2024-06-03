@@ -209,7 +209,7 @@ export default class VaultExplorerPlugin extends Plugin {
 						const updatedFilters: PropertyFilter[] = group.filters.map(filter => {
 							return {
 								...filter,
-								matchNotesWithoutProperty: false
+								matchWhenPropertyDNE: false
 							}
 						});
 						return {

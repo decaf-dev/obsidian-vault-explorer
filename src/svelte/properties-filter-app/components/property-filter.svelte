@@ -15,12 +15,12 @@
 	import { getAllObsidianProperties } from "src/obsidian/utils";
 
 	export let id: string;
-	export let name: string;
+	export let propertyName: string;
 	export let type: PropertyFilterType;
 	export let value: string;
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
-	export let matchWithoutProperty: boolean;
+	export let matchWhenPropertyDNE: boolean;
 
 	let plugin: VaultExplorerPlugin;
 	let obsidianProperties: ObsidianProperty[] = [];
@@ -44,10 +44,10 @@
 
 	function handlePropertyNameChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
-		dispatch("filterNameChange", { id, name: value });
+		dispatch("filterPropertyNameChange", { id, name: value });
 	}
 
-	function handlePropertyTypeChange(e: Event) {
+	function handleTypeChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
 		dispatch("filterTypeChange", { id, type: value });
 	}
@@ -62,11 +62,11 @@
 		dispatch("filterValueChange", { id, value });
 	}
 
-	function handleMatchWithoutPropertyChange(e: Event) {
+	function handleMatchWhenDNEChange(e: Event) {
 		const value = (e.target as HTMLInputElement).checked;
-		dispatch("filterMatchWithoutPropertyChange", {
+		dispatch("filterMatchWhenPropertyDNEChange", {
 			id,
-			matchWithoutProperty: value,
+			matchWhenDNE: value,
 		});
 	}
 
@@ -105,13 +105,13 @@
 </script>
 
 <div class="vault-explorer-property-filter">
-	<Wrap spacingX="sm" spacingY="sm">
-		<select value={type} on:change={handlePropertyTypeChange}>
+	<Wrap spacingX="sm" spacingY="sm" align="center">
+		<select value={type} on:change={handleTypeChange}>
 			{#each Object.values(PropertyFilterType) as type}
 				<option value={type}>{type}</option>
 			{/each}
 		</select>
-		<select value={name} on:change={handlePropertyNameChange}>
+		<select value={propertyName} on:change={handlePropertyNameChange}>
 			<option value="">Select a property</option>
 			{#each filteredObsidianProperties as prop (prop.name)}
 				<option value={prop.name}>{prop.name}</option>
@@ -129,10 +129,10 @@
 		{/if}
 		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input
-				aria-label="Match notes without property"
+				aria-label="Match when property doesn't exist"
 				type="checkbox"
-				checked={matchWithoutProperty}
-				on:change={handleMatchWithoutPropertyChange}
+				checked={matchWhenPropertyDNE}
+				on:change={handleMatchWhenDNEChange}
 			/>
 		{/if}
 		<Stack spacing="sm" align="center">

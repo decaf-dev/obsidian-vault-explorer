@@ -90,7 +90,7 @@ interface BasePropertyFilter {
 	type: PropertyFilterType;
 	isEnabled: boolean;
 	value: string;
-	matchNotesWithoutProperty: boolean;
+	matchWhenPropertyDNE: boolean;
 }
 
 export enum PropertyFilterType {

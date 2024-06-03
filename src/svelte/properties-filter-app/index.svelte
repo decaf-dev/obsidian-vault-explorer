@@ -188,7 +188,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterNameChange(e: CustomEvent) {
+	function handleFilterPropertyNameChange(e: CustomEvent) {
 		const { id, name } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -244,7 +244,7 @@
 			throw new Error(`Unhandled filter type: ${type}`);
 		}
 
-		const newGroups = groups.map((group) =>
+		const newGroups: PropertyFilterGroup[] = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
@@ -253,7 +253,7 @@
 								? {
 										...filter,
 										type,
-										propertyName: "",
+										name: "",
 										condition,
 										value: "",
 									}
@@ -283,8 +283,8 @@
 		groups = newGroups;
 	}
 
-	function handleFilterMatchWithoutPropertyChange(e: CustomEvent) {
-		const { id, matchWithoutProperty } = e.detail;
+	function handleFilterMatchWhenPropertyDNEChange(e: CustomEvent) {
+		const { id, matchWhenDNE } = e.detail;
 
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
@@ -294,8 +294,7 @@
 							filter.id === id
 								? {
 										...filter,
-										matchNotesWithoutProperty:
-											matchWithoutProperty,
+										matchWhenPropertyDNE: matchWhenDNE,
 									}
 								: filter,
 						),
@@ -328,10 +327,10 @@
 				on:filterTypeChange={handleFilterTypeChange}
 				on:filterConditionChange={handleFilterConditionChange}
 				on:filterDeleteClick={handleFilterDeleteClick}
-				on:filterNameChange={handleFilterNameChange}
+				on:filterPropertyNameChange={handleFilterPropertyNameChange}
 				on:filterToggle={handleFilterToggle}
 				on:filterValueChange={handleFilterValueChange}
-				on:filterMatchWithoutPropertyChange={handleFilterMatchWithoutPropertyChange}
+				on:filterMatchWhenPropertyDNEChange={handleFilterMatchWhenPropertyDNEChange}
 			/>
 		{/if}
 	</Flex>

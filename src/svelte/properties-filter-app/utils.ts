@@ -10,6 +10,6 @@ export const createPropertyFilter = (): TextPropertyFilter => {
 		isEnabled: true,
 		condition: TextFilterCondition.IS,
 		value: "",
-		matchNotesWithoutProperty: false,
+		matchWhenPropertyDNE: false,
 	};
 }

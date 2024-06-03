@@ -12,18 +12,18 @@
 			id={filter.id}
 			value={filter.value}
 			condition={filter.condition}
-			matchWithoutProperty={filter.matchNotesWithoutProperty}
+			matchWhenPropertyDNE={filter.matchWhenPropertyDNE}
 			type={filter.type}
-			name={filter.propertyName}
+			propertyName={filter.propertyName}
 			isEnabled={filter.isEnabled}
 			on:groupChange
 			on:filterConditionChange
 			on:filterTypeChange
-			on:filterNameChange
+			on:filterPropertyNameChange
 			on:filterValueChange
 			on:filterToggle
 			on:filterDeleteClick
-			on:filterMatchWithoutPropertyChange
+			on:filterMatchWhenPropertyDNEChange
 		/>
 	{/each}
 </Stack>
