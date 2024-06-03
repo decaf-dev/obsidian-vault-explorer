@@ -23,7 +23,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 		return group.filters.every((filter) => {
 			if (!filter.isEnabled) return true;
 
-			const { propertyName, condition, value, type } = filter;
+			const { propertyName, condition, value, type, matchWhenPropertyDNE } = filter;
 			if (propertyName === "") return true;
 
 			let propertyValue: (string | string[] | boolean | number | null) = frontmatter?.[propertyName] ?? null;
@@ -34,7 +34,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 					Logger.warn(`Property value is not a string: ${propertyValue}`);
 					return true;
 				}
-				const doesMatch = doesTextMatchFilter(condition, propertyValue, value);
+				const doesMatch = doesTextMatchFilter(condition, propertyValue, value, matchWhenPropertyDNE);
 				return doesMatch;
 			} else if (type === "list") {
 				if (propertyValue !== null && !Array.isArray(propertyValue)) {
@@ -42,7 +42,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 					return true;
 				}
 				const compare = value.split(",").map((v) => v.trim());
-				const doesMatch = doesListMatchFilter(condition, propertyValue, compare);
+				const doesMatch = doesListMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
 				return doesMatch;
 			} else if (type === "number") {
 				if (propertyValue !== null && typeof propertyValue !== "number") {
@@ -50,7 +50,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 					return true;
 				}
 				const compare = parseFloat(value);
-				const doesMatch = doesNumberMatchFilter(condition, propertyValue, compare);
+				const doesMatch = doesNumberMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
 				return doesMatch;
 			} else if (type === "checkbox") {
 				if (propertyValue !== null && typeof propertyValue !== "boolean") {
@@ -59,7 +59,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 				}
 
 				const compare = value === "true";
-				const doesMatch = doesCheckboxMatchFilter(condition, propertyValue, compare);
+				const doesMatch = doesCheckboxMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
 				return doesMatch;
 
 			} else if (type === "date" || type === "datetime") {
@@ -68,7 +68,7 @@ export const filterByProperty = (frontmatter: FrontMatterCache | undefined, grou
 					return true;
 				}
 
-				const doesMatch = doesDateMatchFilter(condition, propertyValue, value);
+				const doesMatch = doesDateMatchFilter(condition, propertyValue, value, matchWhenPropertyDNE);
 				return doesMatch;
 
 			} else {
@@ -82,6 +82,7 @@ const doesTextMatchFilter = (
 	condition: FilterCondition,
 	propertyValue: string | null,
 	compare: string,
+	matchIfNull: boolean
 ): boolean => {
 	if (propertyValue)
 		propertyValue = propertyValue.toLowerCase().trim();
@@ -90,22 +91,22 @@ const doesTextMatchFilter = (
 
 	switch (condition) {
 		case TextFilterCondition.IS:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue === compare;
 		case TextFilterCondition.IS_NOT:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue !== compare;
 		case TextFilterCondition.CONTAINS:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue.includes(compare);
 		case TextFilterCondition.DOES_NOT_CONTAIN:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return !propertyValue.includes(compare);
 		case TextFilterCondition.STARTS_WITH:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue.startsWith(compare);
 		case TextFilterCondition.ENDS_WITH:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue.endsWith(compare);
 		case TextFilterCondition.EXISTS:
 			return propertyValue !== null;
@@ -116,16 +117,16 @@ const doesTextMatchFilter = (
 	}
 };
 
-const doesListMatchFilter = (condition: ListFilterCondition, propertyValue: string[] | null, compare: string[]) => {
+const doesListMatchFilter = (condition: ListFilterCondition, propertyValue: string[] | null, compare: string[], matchIfNull: boolean) => {
 	switch (condition) {
 		case ListFilterCondition.CONTAINS:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 
 			return propertyValue.some((value) => //Union
 				compare.some((c) => c === value)
 			);
 		case ListFilterCondition.DOES_NOT_CONTAIN:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 
 			return propertyValue.every((value) => //Complement
 				compare.every((c) => c !== value)
@@ -141,11 +142,11 @@ const doesListMatchFilter = (condition: ListFilterCondition, propertyValue: stri
 
 const doesDateMatchFilter = (condition: DateFilterCondition,
 	propertyValue: string | null,
-	compare: string | null) => {
+	compare: string | null, matchIfNull: boolean) => {
 
 	switch (condition) {
 		case DateFilterCondition.IS: {
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			if (compare === null) return false;
 
 			const propertyValueTime = getMillis(propertyValue);
@@ -158,7 +159,7 @@ const doesDateMatchFilter = (condition: DateFilterCondition,
 			);
 		}
 		case DateFilterCondition.IS_AFTER: {
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			if (compare === null) return false;
 
 			const propertyValueTime = getMillis(propertyValue);
@@ -166,7 +167,7 @@ const doesDateMatchFilter = (condition: DateFilterCondition,
 			return propertyValueTime > dayEndTime;
 		}
 		case DateFilterCondition.IS_BEFORE: {
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			if (compare === null) return false;
 
 			const propertyValueTime = getMillis(propertyValue);
@@ -186,25 +187,26 @@ export const doesNumberMatchFilter = (
 	condition: NumberFilterCondition,
 	propertyValue: number | null,
 	compare: number,
+	matchIfNull: boolean
 ) => {
 	switch (condition) {
 		case NumberFilterCondition.IS_EQUAL:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue === compare;
 		case NumberFilterCondition.IS_GREATER:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue > compare;
 		case NumberFilterCondition.IS_GREATER_OR_EQUAL:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue >= compare;
 		case NumberFilterCondition.IS_LESS:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue < compare;
 		case NumberFilterCondition.IS_LESS_OR_EQUAL:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue <= compare;
 		case NumberFilterCondition.IS_NOT_EQUAL:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue !== compare;
 		case NumberFilterCondition.EXISTS:
 			return propertyValue !== null;
@@ -219,13 +221,14 @@ export const doesCheckboxMatchFilter = (
 	condition: CheckboxFilterCondition,
 	propertyValue: boolean | null,
 	compare: boolean,
+	matchIfNull: boolean
 ) => {
 	switch (condition) {
 		case CheckboxFilterCondition.IS:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue === compare;
 		case CheckboxFilterCondition.IS_NOT:
-			if (propertyValue === null) return false;
+			if (propertyValue === null) return matchIfNull;
 			return propertyValue !== compare;
 		case CheckboxFilterCondition.EXISTS:
 			return propertyValue !== null;

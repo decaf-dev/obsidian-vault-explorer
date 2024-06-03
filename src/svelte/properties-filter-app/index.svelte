@@ -18,6 +18,7 @@
 	import GroupList from "./components/group-list.svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import Divider from "../shared/components/divider.svelte";
+	import { match } from "assert";
 
 	let selectedGroupId: string = "";
 	let groups: PropertyFilterGroup[] = [];
@@ -187,7 +188,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterNameChange(e: CustomEvent) {
+	function handleFilterPropertyNameChange(e: CustomEvent) {
 		const { id, name } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -243,7 +244,7 @@
 			throw new Error(`Unhandled filter type: ${type}`);
 		}
 
-		const newGroups = groups.map((group) =>
+		const newGroups: PropertyFilterGroup[] = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
@@ -252,7 +253,7 @@
 								? {
 										...filter,
 										type,
-										propertyName: "",
+										name: "",
 										condition,
 										value: "",
 									}
@@ -274,6 +275,28 @@
 						...group,
 						filters: group.filters.map((filter) =>
 							filter.id === id ? { ...filter, value } : filter,
+						),
+					}
+				: group,
+		);
+
+		groups = newGroups;
+	}
+
+	function handleFilterMatchWhenPropertyDNEChange(e: CustomEvent) {
+		const { id, matchWhenDNE } = e.detail;
+
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.map((filter) =>
+							filter.id === id
+								? {
+										...filter,
+										matchWhenPropertyDNE: matchWhenDNE,
+									}
+								: filter,
 						),
 					}
 				: group,
@@ -304,9 +327,10 @@
 				on:filterTypeChange={handleFilterTypeChange}
 				on:filterConditionChange={handleFilterConditionChange}
 				on:filterDeleteClick={handleFilterDeleteClick}
-				on:filterNameChange={handleFilterNameChange}
+				on:filterPropertyNameChange={handleFilterPropertyNameChange}
 				on:filterToggle={handleFilterToggle}
 				on:filterValueChange={handleFilterValueChange}
+				on:filterMatchWhenPropertyDNEChange={handleFilterMatchWhenPropertyDNEChange}
 			/>
 		{/if}
 	</Flex>

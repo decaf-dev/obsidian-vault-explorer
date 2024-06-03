@@ -39,10 +39,11 @@
 				filters={selectedGroup.filters}
 				on:filterConditionChange
 				on:filterTypeChange
-				on:filterNameChange
+				on:filterPropertyNameChange
 				on:filterValueChange
 				on:filterToggle
 				on:filterDeleteClick
+				on:filterMatchWhenPropertyDNEChange
 			/>
 			<Spacer direction="vertical" size="sm" />
 		{/if}

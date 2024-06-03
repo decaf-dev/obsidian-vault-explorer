@@ -8,18 +8,19 @@
 		FilterCondition,
 		ListFilterCondition,
 		NumberFilterCondition,
-		PropertyFilterType,
+		PropertyType,
 		TextFilterCondition,
 	} from "src/types";
 	import { getDisplayNameForFilterCondition } from "./utils";
 	import { getAllObsidianProperties } from "src/obsidian/utils";
 
 	export let id: string;
-	export let name: string;
-	export let type: PropertyFilterType;
+	export let propertyName: string;
+	export let type: PropertyType;
 	export let value: string;
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
+	export let matchWhenPropertyDNE: boolean;
 
 	let plugin: VaultExplorerPlugin;
 	let obsidianProperties: ObsidianProperty[] = [];
@@ -43,10 +44,10 @@
 
 	function handlePropertyNameChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
-		dispatch("filterNameChange", { id, name: value });
+		dispatch("filterPropertyNameChange", { id, name: value });
 	}
 
-	function handlePropertyTypeChange(e: Event) {
+	function handleTypeChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
 		dispatch("filterTypeChange", { id, type: value });
 	}
@@ -59,6 +60,14 @@
 	function handleValueChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
 		dispatch("filterValueChange", { id, value });
+	}
+
+	function handleMatchWhenDNEChange(e: Event) {
+		const value = (e.target as HTMLInputElement).checked;
+		dispatch("filterMatchWhenPropertyDNEChange", {
+			id,
+			matchWhenDNE: value,
+		});
 	}
 
 	function handleToggle() {
@@ -78,7 +87,7 @@
 		return prop.type === type;
 	});
 
-	function findFilterConditions(type: PropertyFilterType): FilterCondition[] {
+	function findFilterConditions(type: PropertyType): FilterCondition[] {
 		if (type === "text") {
 			return Object.values(TextFilterCondition);
 		} else if (type === "number") {
@@ -96,13 +105,13 @@
 </script>
 
 <div class="vault-explorer-property-filter">
-	<Wrap spacingX="sm" spacingY="sm">
-		<select value={type} on:change={handlePropertyTypeChange}>
-			{#each Object.values(PropertyFilterType) as type}
+	<Wrap spacingX="sm" spacingY="sm" align="center">
+		<select value={type} on:change={handleTypeChange}>
+			{#each Object.values(PropertyType) as type}
 				<option value={type}>{type}</option>
 			{/each}
 		</select>
-		<select value={name} on:change={handlePropertyNameChange}>
+		<select value={propertyName} on:change={handlePropertyNameChange}>
 			<option value="">Select a property</option>
 			{#each filteredObsidianProperties as prop (prop.name)}
 				<option value={prop.name}>{prop.name}</option>
@@ -117,6 +126,14 @@
 		</select>
 		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input type="text" {value} on:change={handleValueChange} />
+		{/if}
+		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+			<input
+				aria-label="Match when property doesn't exist"
+				type="checkbox"
+				checked={matchWhenPropertyDNE}
+				on:change={handleMatchWhenDNEChange}
+			/>
 		{/if}
 		<Stack spacing="sm" align="center">
 			<Switch value={isEnabled} on:change={() => handleToggle()} />
