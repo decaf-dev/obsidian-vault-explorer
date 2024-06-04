@@ -7,9 +7,11 @@
 </script>
 
 <Stack direction="column" spacing="md" width="100%">
-	{#each filters as filter (filter.id)}
+	{#each filters as filter, index (filter.id)}
 		<PropertyFilter
+			{index}
 			id={filter.id}
+			operator={filter.operator}
 			value={filter.value}
 			condition={filter.condition}
 			matchWhenPropertyDNE={filter.matchWhenPropertyDNE}
@@ -19,6 +21,7 @@
 			on:groupChange
 			on:filterConditionChange
 			on:filterTypeChange
+			on:filterOperatorChange
 			on:filterPropertyNameChange
 			on:filterValueChange
 			on:filterToggle

@@ -40,6 +40,7 @@
 				on:filterConditionChange
 				on:filterTypeChange
 				on:filterPropertyNameChange
+				on:filterOperatorChange
 				on:filterValueChange
 				on:filterToggle
 				on:filterDeleteClick

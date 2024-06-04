@@ -6,6 +6,7 @@
 		CheckboxFilterCondition,
 		DateFilterCondition,
 		FilterCondition,
+		FilterOperator,
 		ListFilterCondition,
 		NumberFilterCondition,
 		PropertyType,
@@ -14,9 +15,11 @@
 	import { getDisplayNameForFilterCondition } from "./utils";
 	import { getAllObsidianProperties } from "src/obsidian/utils";
 
+	export let index: number;
 	export let id: string;
 	export let propertyName: string;
 	export let type: PropertyType;
+	export let operator: FilterOperator;
 	export let value: string;
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
@@ -60,6 +63,11 @@
 	function handleValueChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
 		dispatch("filterValueChange", { id, value });
+	}
+
+	function handleOperatorChange(e: Event) {
+		const value = (e.target as HTMLSelectElement).value;
+		dispatch("filterOperatorChange", { id, operator: value });
 	}
 
 	function handleMatchWhenDNEChange(e: Event) {
@@ -106,6 +114,16 @@
 
 <div class="vault-explorer-property-filter">
 	<Wrap spacingX="sm" spacingY="sm" align="center">
+		{#if index > 0}
+			<select
+				class="vault-explorer-property-filter__operator"
+				value={operator}
+				on:change={handleOperatorChange}
+			>
+				<option value="and">and</option>
+				<option value="or">or</option>
+			</select>
+		{/if}
 		<select value={type} on:change={handleTypeChange}>
 			{#each Object.values(PropertyType) as type}
 				<option value={type}>{type}</option>
@@ -147,6 +165,10 @@
 </div>
 
 <style>
+	.vault-explorer-property-filter__operator {
+		width: 58px;
+	}
+
 	.vault-explorer-property-filter input {
 		max-width: 125px;
 	}
