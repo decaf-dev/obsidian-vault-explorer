@@ -3,8 +3,8 @@ import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { PropertyFilter, PropertyFilterGroup, PropertyType, VaultExplorerPluginSettings, ViewType } from './types';
-import { DEFAULT_SETTINGS, VAULT_EXPLORER_VIEW } from './constants';
+import { PropertyFilter, PropertyFilterGroup, VaultExplorerPluginSettings, ViewType } from './types';
+import { DEFAULT_SETTINGS, HOVER_LINK_SOURCE_ID, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
 import { isVersionLessThan } from './utils';
@@ -57,7 +57,7 @@ export default class VaultExplorerPlugin extends Plugin {
 		});
 
 		this.registerEvents();
-
+		this.registerHoverLinkSource(HOVER_LINK_SOURCE_ID, { display: this.manifest.name, defaultMod: true });
 		this.addSettingTab(new VaultExplorerSettingsTab(this.app, this));
 	}
 
