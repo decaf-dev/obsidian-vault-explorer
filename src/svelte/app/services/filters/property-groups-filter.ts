@@ -1,5 +1,5 @@
 import { FrontMatterCache } from "obsidian";
-import { CheckboxFilterCondition, DateFilterCondition, ListFilterCondition, NumberFilterCondition, PropertyFilterGroup } from "src/types";
+import { CheckboxFilterCondition, DateFilterCondition, FilterOperator, ListFilterCondition, NumberFilterCondition, PropertyFilter, PropertyFilterGroup } from "src/types";
 import { FilterCondition, TextFilterCondition } from "src/types";
 import { getBeforeMidnightMillis, getMidnightMillis, getMillis } from "../time-utils";
 import Logger from "js-logger";
@@ -16,66 +16,86 @@ import Logger from "js-logger";
 //Property value is an array
 //Property value is a date
 //Property value is a number
-export const filterByProperty = (frontmatter: FrontMatterCache | undefined, groups: PropertyFilterGroup[]) => {
+export const filterByPropertyGroups = (frontmatter: FrontMatterCache | undefined, groups: PropertyFilterGroup[]) => {
 	return groups.every((group) => {
 		if (!group.isEnabled) return true;
-
-		return group.filters.every((filter) => {
-			if (!filter.isEnabled) return true;
-
-			const { propertyName, condition, value, type, matchWhenPropertyDNE } = filter;
-			if (propertyName === "") return true;
-
-			let propertyValue: (string | string[] | boolean | number | null) = frontmatter?.[propertyName] ?? null;
-
-			if (type === "text") {
-				//If the value is not a string, skip the filter
-				if (propertyValue !== null && typeof propertyValue !== "string") {
-					Logger.warn(`Property value is not a string: ${propertyValue}`);
-					return true;
-				}
-				const doesMatch = doesTextMatchFilter(condition, propertyValue, value, matchWhenPropertyDNE);
-				return doesMatch;
-			} else if (type === "list") {
-				if (propertyValue !== null && !Array.isArray(propertyValue)) {
-					Logger.warn(`Property value is not an array: ${propertyValue}`);
-					return true;
-				}
-				const compare = value.split(",").map((v) => v.trim());
-				const doesMatch = doesListMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
-				return doesMatch;
-			} else if (type === "number") {
-				if (propertyValue !== null && typeof propertyValue !== "number") {
-					Logger.warn(`Property value is not a number: ${propertyValue}`);
-					return true;
-				}
-				const compare = parseFloat(value);
-				const doesMatch = doesNumberMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
-				return doesMatch;
-			} else if (type === "checkbox") {
-				if (propertyValue !== null && typeof propertyValue !== "boolean") {
-					Logger.warn(`Property value is not a boolean: ${propertyValue}`);
-					return true;
-				}
-
-				const compare = value === "true";
-				const doesMatch = doesCheckboxMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
-				return doesMatch;
-
-			} else if (type === "date" || type === "datetime") {
-				if (propertyValue !== null && typeof propertyValue !== "string") {
-					Logger.warn(`Property value is not a string: ${propertyValue}`);
-					return true;
-				}
-
-				const doesMatch = doesDateMatchFilter(condition, propertyValue, value, matchWhenPropertyDNE);
-				return doesMatch;
-
-			} else {
-				throw new Error(`Property filter type not supported: ${type}`);
-			}
-		});
+		return filterByPropertyGroup(frontmatter, group);
 	});
+}
+
+const filterByPropertyGroup = (frontmatter: FrontMatterCache | undefined, group: PropertyFilterGroup) => {
+	let result: boolean | null = null;
+
+	group.filters.forEach((filter, i) => {
+		if (!filter.isEnabled) return;
+
+		const value = filterByProperty(frontmatter, filter);
+		if (result === null) {
+			result = value;
+		} else {
+			if (filter.operator === "and") {
+				result = result && value;
+			} else {
+				result = result || value;
+			}
+		}
+	});
+
+	return result ?? true;
+}
+
+const filterByProperty = (frontmatter: FrontMatterCache | undefined, filter: PropertyFilter) => {
+	const { propertyName, condition, value, type, matchWhenPropertyDNE } = filter;
+	if (propertyName === "") return true;
+
+	let propertyValue: (string | string[] | boolean | number | null) = frontmatter?.[propertyName] ?? null;
+
+	if (type === "text") {
+		//If the value is not a string, skip the filter
+		if (propertyValue !== null && typeof propertyValue !== "string") {
+			Logger.warn(`Property value is not a string: ${propertyValue}`);
+			return true;
+		}
+		const doesMatch = doesTextMatchFilter(condition, propertyValue, value, matchWhenPropertyDNE);
+		return doesMatch;
+	} else if (type === "list") {
+		if (propertyValue !== null && !Array.isArray(propertyValue)) {
+			Logger.warn(`Property value is not an array: ${propertyValue}`);
+			return true;
+		}
+		const compare = value.split(",").map((v) => v.trim());
+		const doesMatch = doesListMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
+		return doesMatch;
+	} else if (type === "number") {
+		if (propertyValue !== null && typeof propertyValue !== "number") {
+			Logger.warn(`Property value is not a number: ${propertyValue}`);
+			return true;
+		}
+		const compare = parseFloat(value);
+		const doesMatch = doesNumberMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
+		return doesMatch;
+	} else if (type === "checkbox") {
+		if (propertyValue !== null && typeof propertyValue !== "boolean") {
+			Logger.warn(`Property value is not a boolean: ${propertyValue}`);
+			return true;
+		}
+
+		const compare = value === "true";
+		const doesMatch = doesCheckboxMatchFilter(condition, propertyValue, compare, matchWhenPropertyDNE);
+		return doesMatch;
+
+	} else if (type === "date" || type === "datetime") {
+		if (propertyValue !== null && typeof propertyValue !== "string") {
+			Logger.warn(`Property value is not a string: ${propertyValue}`);
+			return true;
+		}
+
+		const doesMatch = doesDateMatchFilter(condition, propertyValue, value, matchWhenPropertyDNE);
+		return doesMatch;
+
+	} else {
+		throw new Error(`Property filter type not supported: ${type}`);
+	}
 }
 
 const doesTextMatchFilter = (
@@ -183,7 +203,7 @@ const doesDateMatchFilter = (condition: DateFilterCondition,
 	}
 }
 
-export const doesNumberMatchFilter = (
+const doesNumberMatchFilter = (
 	condition: NumberFilterCondition,
 	propertyValue: number | null,
 	compare: number,
@@ -217,7 +237,7 @@ export const doesNumberMatchFilter = (
 	}
 };
 
-export const doesCheckboxMatchFilter = (
+const doesCheckboxMatchFilter = (
 	condition: CheckboxFilterCondition,
 	propertyValue: boolean | null,
 	compare: boolean,

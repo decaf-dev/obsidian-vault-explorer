@@ -21,7 +21,7 @@
 	import { filterByFolder } from "./services/filters/folder-filter";
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
-	import { filterByProperty } from "./services/filters/property-filter";
+	import { filterByPropertyGroups } from "./services/filters/property-groups-filter";
 	import { formatFileDataForRender } from "./services/render-utils";
 	import {
 		getMidnightToday,
@@ -306,7 +306,7 @@
 
 	$: filteredProperty = filteredTimestamp.filter((file) => {
 		const frontmatter = frontmatterCache[file.path];
-		return filterByProperty(frontmatter, propertyFilterGroups);
+		return filterByPropertyGroups(frontmatter, propertyFilterGroups);
 	});
 
 	$: filteredFolder = filteredProperty.filter((file) =>

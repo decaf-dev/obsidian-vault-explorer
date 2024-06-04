@@ -18,7 +18,6 @@
 	import GroupList from "./components/group-list.svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import Divider from "../shared/components/divider.svelte";
-	import { match } from "assert";
 
 	let selectedGroupId: string = "";
 	let groups: PropertyFilterGroup[] = [];
@@ -101,16 +100,6 @@
 
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId ? { ...group, name } : group,
-		);
-
-		groups = newGroups;
-	}
-
-	function handleGroupToggle() {
-		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId
-				? { ...group, isEnabled: !group.isEnabled }
-				: { ...group, isEnabled: false },
 		);
 
 		groups = newGroups;
