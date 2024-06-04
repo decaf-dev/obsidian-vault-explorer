@@ -63,7 +63,7 @@ const filterByProperty = (frontmatter: FrontMatterCache | undefined, filter: Pro
 			Logger.warn(`Property value is not an array: ${propertyValue}`);
 			return true;
 		}
-		const compare = value.split(",").map((v) => v.trim());
+		const compare = value.split(",").map((v) => v.trim()).filter((v) => v !== "");
 		const doesMatch = doesListMatchFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
 	} else if (type === "number") {
@@ -146,15 +146,17 @@ const doesListMatchFilter = (
 	switch (condition) {
 		case ListFilterCondition.CONTAINS:
 			if (propertyValue === null) return matchIfNull;
+			if (compare.length === 0) return true;
 
-			return propertyValue.some((value) => //Union
-				compare.some((c) => c === value)
+			return compare.every((c) =>
+				propertyValue.some((value) => value.contains(c))
 			);
 		case ListFilterCondition.DOES_NOT_CONTAIN:
 			if (propertyValue === null) return matchIfNull;
+			if (compare.length === 0) return true;
 
-			return propertyValue.every((value) => //Complement
-				compare.every((c) => c !== value)
+			return compare.every((c) =>
+				propertyValue.every((value) => !value.contains(c))
 			);
 		case ListFilterCondition.EXISTS:
 			return propertyValue !== null;
