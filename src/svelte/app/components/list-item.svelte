@@ -2,6 +2,7 @@
 	import { MarkdownView } from "obsidian";
 	import VaultExplorerPlugin from "src/main";
 	import store from "../../shared/services/store";
+	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 
 	export let name: string;
 	export let path: string;
@@ -30,9 +31,19 @@
 		tabindex="0"
 		role="link"
 		class="vault-explorer-list-item__title"
+		on:focus={() => {}}
 		on:click={handleTitleClick}
 		on:keydown={(e) =>
 			(e.key === "Enter" || e.key === " ") && handleTitleClick()}
+		on:mouseover={(event) => {
+			plugin.app.workspace.trigger("hover-link", {
+				event,
+				linktext: path,
+				source: HOVER_LINK_SOURCE_ID,
+				targetEl: event.currentTarget,
+				hoverParent: event.currentTarget.parentElement,
+			});
+		}}
 	>
 		{name}
 	</div>
