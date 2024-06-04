@@ -226,6 +226,23 @@
 		groups = newGroups;
 	}
 
+	function handleFilterOperatorChange(e: CustomEvent) {
+		const { id, operator } = e.detail;
+
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						filters: group.filters.map((filter) =>
+							filter.id === id ? { ...filter, operator } : filter,
+						),
+					}
+				: group,
+		);
+
+		groups = newGroups;
+	}
+
 	function handleFilterTypeChange(e: CustomEvent) {
 		const { id, type } = e.detail;
 
@@ -329,6 +346,7 @@
 				on:filterDeleteClick={handleFilterDeleteClick}
 				on:filterPropertyNameChange={handleFilterPropertyNameChange}
 				on:filterToggle={handleFilterToggle}
+				on:filterOperatorChange={handleFilterOperatorChange}
 				on:filterValueChange={handleFilterValueChange}
 				on:filterMatchWhenPropertyDNEChange={handleFilterMatchWhenPropertyDNEChange}
 			/>
