@@ -4,6 +4,8 @@ import { VaultExplorerPluginSettings, ViewType } from "./types";
 
 export const VAULT_EXPLORER_VIEW = "vault-explorer";
 
+export const HOVER_LINK_SOURCE_ID = "vault-explorer-preview";
+
 const groupUUID = generateUUID();
 
 export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
