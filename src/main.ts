@@ -17,6 +17,7 @@ import { VaultExplorerPluginSettings_1_0_1 } from './types/types-1.0.1';
 import { moveFocus } from './focus-utils';
 import { VaultExplorerPluginSettings_1_2_0 } from './types/types-1.2.0';
 import { VaultExplorerPluginSettings_1_2_1 } from './types/types-1.2.1';
+import { VaultExplorerPluginSettings_1_5_0 } from './types/types-1.5.0';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -219,7 +220,7 @@ export default class VaultExplorerPlugin extends Plugin {
 						}
 					});
 
-					const newData: VaultExplorerPluginSettings = {
+					const newData: VaultExplorerPluginSettings_1_5_0 = {
 						...typedData,
 						filters: {
 							...typedData.filters,
@@ -227,6 +228,20 @@ export default class VaultExplorerPlugin extends Plugin {
 								...typedData.filters.properties,
 								groups: updatedGroups,
 							}
+						}
+					}
+					data = newData as unknown as Record<string, unknown>;
+				}
+
+				if (isVersionLessThan(settingsVersion, "1.6.0")) {
+					console.log("Upgrading settings from version 1.5.0 to 1.6.0");
+					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_5_0;
+					const newData: VaultExplorerPluginSettings = {
+						...typedData,
+						properties: {
+							...typedData.properties,
+							creationDate: "",
+							modifiedDate: ""
 						}
 					}
 					data = newData as unknown as Record<string, unknown>;
@@ -243,7 +258,7 @@ export default class VaultExplorerPlugin extends Plugin {
 
 	async saveSettings() {
 		Logger.trace({ fileName: "main.ts", functionName: "saveSettings", message: "called" });
-		Logger.debug({ fileName: "main.ts", functionName: "saveSettings", message: "Saving settings" }, this.settings);
+		Logger.debug({ fileName: "main.ts", functionName: "saveSettings", message: "saving settings" }, this.settings);
 		await this.saveData(this.settings);
 	}
 }

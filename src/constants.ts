@@ -13,9 +13,11 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	properties: {
 		favorite: "",
 		url: "",
+		creationDate: "",
+		modifiedDate: "",
 		custom1: "",
 		custom2: "",
-		custom3: ""
+		custom3: "",
 	},
 	filters: {
 		folder: "/",

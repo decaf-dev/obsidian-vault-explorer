@@ -5,6 +5,7 @@ import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LE
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
 import { WordBreak } from "src/types";
+import EventManager from "src/event/event-manager";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -20,6 +21,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		containerEl.empty();
 
 		const textProperties = getObsidianPropertiesByType(this.app, "text");
+		const dateProperties = getObsidianPropertiesByType(this.app, "date");
+		const dateTimeProperties = getObsidianPropertiesByType(this.app, "datetime");
 		const checkboxProperties = getObsidianPropertiesByType(this.app, "checkbox");
 
 		new Setting(containerEl).setName("Views").setHeading();
@@ -37,6 +40,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.onChange(async (value) => {
 				this.plugin.settings.pageSize = parseInt(value);
 				await this.plugin.saveSettings();
+				EventManager.getInstance().emit("page-size-setting-change");
 			}));
 		new Setting(containerEl)
 			.setName("Title wrapping")
@@ -52,6 +56,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					async (value) => {
 						this.plugin.settings.views.titleWrapping = value as WordBreak;
 						await this.plugin.saveSettings();
+						EventManager.getInstance().emit("title-wrapping-setting-change");
 					}
 				);
 			});
@@ -66,6 +71,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.properties.favorite = value;
 					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("property-setting-change");
 				}));
 
 		new Setting(containerEl)
@@ -76,6 +82,29 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.properties.url = value;
 					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("property-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Creation date property")
+			.setDesc("The property containing the creation date. This must be a date or datetime property. If set to 'Select a property', the system creation date will be used.")
+			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
+				.setValue(this.plugin.settings.properties.creationDate)
+				.onChange(async (value) => {
+					this.plugin.settings.properties.creationDate = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("property-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName('Modified date property')
+			.setDesc("The property containing the modified date. This must be a date or datetime property. If set to 'Select a property', the system modified date will be used.")
+			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
+				.setValue(this.plugin.settings.properties.modifiedDate)
+				.onChange(async (value) => {
+					this.plugin.settings.properties.modifiedDate = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("property-setting-change");
 				}));
 
 		new Setting(containerEl).setName("Custom properties").setHeading();
@@ -88,6 +117,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.properties.custom1 = value;
 					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("property-setting-change");
 				}));
 
 		new Setting(containerEl)
@@ -98,6 +128,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.properties.custom2 = value;
 					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("property-setting-change");
 				}));
 
 		new Setting(containerEl)
@@ -108,6 +139,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.properties.custom3 = value;
 					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("property-setting-change");
 				}));
 
 		new Setting(containerEl).setName("Debugging").setHeading();

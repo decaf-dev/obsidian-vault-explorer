@@ -23,27 +23,27 @@
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByPropertyGroups } from "./services/filters/property-groups-filter";
 	import { formatFileDataForRender } from "./services/render-utils";
-	import {
-		getMidnightToday,
-		getMidnightThisWeek,
-		getMidnightLastWeek,
-	} from "./services/time-utils";
-	import _ from "lodash";
+	import _, { update } from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 	import GroupTagList from "./components/group-tag-list.svelte";
 	import { getDisplayNameForViewType } from "./services/display-name";
+	import {
+		getStartOfLastWeekMillis,
+		getStartOfTodayMillis,
+		getStartOfThisWeekMillis,
+	} from "./services/time-utils";
 
 	let plugin: VaultExplorerPlugin;
 
-	let midnightToday: number;
-	let midnightThisWeek: number;
-	let midnightLastWeek: number;
+	let startOfTodayMillis: number;
+	let startOfThisWeekMillis: number;
+	let startOfLastWeekMillis: number;
 
 	function updateTimeValues() {
-		midnightToday = getMidnightToday();
-		midnightThisWeek = getMidnightThisWeek();
-		midnightLastWeek = getMidnightLastWeek();
+		startOfTodayMillis = getStartOfTodayMillis();
+		startOfThisWeekMillis = getStartOfThisWeekMillis();
+		startOfLastWeekMillis = getStartOfLastWeekMillis();
 	}
 
 	onMount(() => {
@@ -80,17 +80,7 @@
 		onlyFavorites = value;
 	}, 300);
 
-	store.plugin.subscribe((p) => {
-		plugin = p;
-
-		const allFiles = plugin.app.vault.getAllLoadedFiles();
-		folders = allFiles
-			.filter((file) => file instanceof TFolder)
-			.map((folder) => folder.path);
-
-		markdownFiles = plugin.app.vault.getMarkdownFiles();
-		pageSize = plugin.settings.pageSize;
-
+	function updateFrontmatterCache() {
 		let localCache: Record<string, FrontMatterCache | undefined> = {};
 		markdownFiles.forEach((file) => {
 			const frontmatter =
@@ -100,6 +90,20 @@
 		});
 
 		frontmatterCache = localCache;
+	}
+
+	store.plugin.subscribe((p) => {
+		plugin = p;
+
+		const allFiles = plugin.app.vault.getAllLoadedFiles();
+		folders = allFiles
+			.filter((file) => file instanceof TFolder)
+			.map((folder) => folder.path);
+
+		markdownFiles = plugin.app.vault.getMarkdownFiles();
+		updateFrontmatterCache();
+
+		pageSize = plugin.settings.pageSize;
 
 		searchFilter = plugin.settings.filters.search;
 		folderFilter = plugin.settings.filters.folder;
@@ -283,28 +287,41 @@
 		};
 	});
 
-	$: sorted = [...markdownFiles].sort((a, b) => {
-		if (sortFilter === "file-name-asc") {
-			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-		} else if (sortFilter === "file-name-desc") {
-			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-		} else if (sortFilter === "modified-asc") {
-			return a.stat.mtime - b.stat.mtime;
-		} else if (sortFilter === "modified-desc") {
-			return b.stat.mtime - a.stat.mtime;
+	onMount(() => {
+		function handlePageSizeChange() {
+			pageSize = plugin.settings.pageSize;
 		}
-		return 0;
+
+		EventManager.getInstance().on(
+			"page-size-setting-change",
+			handlePageSizeChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"page-size-setting-change",
+				handlePageSizeChange,
+			);
+		};
 	});
 
-	$: filteredTimestamp = sorted.filter((file) =>
-		filterByTimestamp(file, timestampFilter, {
-			midnightToday,
-			midnightThisWeek,
-			midnightLastWeek,
-		}),
-	);
+	onMount(() => {
+		function handlePropertyChange() {
+			updateFrontmatterCache();
+		}
 
-	$: filteredProperty = filteredTimestamp.filter((file) => {
+		EventManager.getInstance().on(
+			"property-setting-change",
+			handlePropertyChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"property-setting-change",
+				handlePropertyChange,
+			);
+		};
+	});
+
+	$: filteredProperty = [...markdownFiles].filter((file) => {
 		const frontmatter = frontmatterCache[file.path];
 		return filterByPropertyGroups(frontmatter, propertyFilterGroups);
 	});
@@ -318,13 +335,38 @@
 		return formatFileDataForRender(plugin.settings, file, frontmatter);
 	});
 
-	$: filterSearch = formatted.filter((file) =>
+	$: filteredSearch = formatted.filter((file) =>
 		filterBySearch(file, searchFilter),
 	);
 
-	$: renderData = filterSearch.filter((file) =>
+	$: filteredFavorites = filteredSearch.filter((file) =>
 		filterByFavorites(file, onlyFavorites),
 	);
+
+	$: filteredTimestamp = filteredFavorites.filter((file) => {
+		const { modifiedMillis, creationMillis } = file;
+		return filterByTimestamp({
+			creationMillis,
+			modifiedMillis,
+			timestampFilter,
+			startOfTodayMillis,
+			startOfThisWeekMillis,
+			startOfLastWeekMillis,
+		});
+	});
+
+	$: renderData = [...filteredTimestamp].sort((a, b) => {
+		if (sortFilter === "file-name-asc") {
+			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+		} else if (sortFilter === "file-name-desc") {
+			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+		} else if (sortFilter === "modified-asc") {
+			return a.modifiedMillis - b.modifiedMillis;
+		} else if (sortFilter === "modified-desc") {
+			return b.modifiedMillis - a.modifiedMillis;
+		}
+		return 0;
+	});
 
 	$: searchFilter,
 		folderFilter,

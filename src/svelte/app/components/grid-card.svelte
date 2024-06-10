@@ -12,6 +12,7 @@
 	import { getScrollAmount } from "../services/scroll-utils";
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
+	import EventManager from "src/event/event-manager";
 
 	export let name: string;
 	export let path: string;
@@ -28,6 +29,23 @@
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		wordBreak = plugin.settings.views.titleWrapping;
+	});
+
+	onMount(() => {
+		function handleTitleWrappingSettingChange() {
+			wordBreak = plugin.settings.views.titleWrapping;
+		}
+
+		EventManager.getInstance().on(
+			"title-wrapping-setting-change",
+			handleTitleWrappingSettingChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"title-wrapping-setting-change",
+				handleTitleWrappingSettingChange,
+			);
+		};
 	});
 
 	function handleTitleClick() {

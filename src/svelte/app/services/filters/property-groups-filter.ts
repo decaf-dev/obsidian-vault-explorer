@@ -1,8 +1,8 @@
 import { FrontMatterCache } from "obsidian";
-import { CheckboxFilterCondition, DateFilterCondition, FilterOperator, ListFilterCondition, NumberFilterCondition, PropertyFilter, PropertyFilterGroup } from "src/types";
+import { CheckboxFilterCondition, DateFilterCondition, ListFilterCondition, NumberFilterCondition, PropertyFilter, PropertyFilterGroup } from "src/types";
 import { FilterCondition, TextFilterCondition } from "src/types";
-import { getBeforeMidnightMillis, getMidnightMillis, getMillis } from "../time-utils";
 import Logger from "js-logger";
+import { getEndOfDayMillis, getStartOfDayMillis, getTimeMillis } from "../time-utils";
 
 //Tests
 //Group is enabled/disabled
@@ -177,9 +177,9 @@ const doesDateMatchFilter = (condition: DateFilterCondition,
 			if (propertyValue === null) return matchIfNull;
 			if (compare === null) return false;
 
-			const propertyValueTime = getMillis(propertyValue);
-			const dayStartTime = getMidnightMillis(compare);
-			const dayEndTime = getBeforeMidnightMillis(compare);
+			const propertyValueTime = getTimeMillis(propertyValue);
+			const dayStartTime = getStartOfDayMillis(compare);
+			const dayEndTime = getEndOfDayMillis(compare);
 
 			return (
 				propertyValueTime >= dayStartTime &&
@@ -190,16 +190,16 @@ const doesDateMatchFilter = (condition: DateFilterCondition,
 			if (propertyValue === null) return matchIfNull;
 			if (compare === null) return false;
 
-			const propertyValueTime = getMillis(propertyValue);
-			const dayEndTime = getBeforeMidnightMillis(compare);
+			const propertyValueTime = getTimeMillis(propertyValue);
+			const dayEndTime = getEndOfDayMillis(compare);
 			return propertyValueTime > dayEndTime;
 		}
 		case DateFilterCondition.IS_BEFORE: {
 			if (propertyValue === null) return matchIfNull;
 			if (compare === null) return false;
 
-			const propertyValueTime = getMillis(propertyValue);
-			const dayStartTime = getMidnightMillis(compare);
+			const propertyValueTime = getTimeMillis(propertyValue);
+			const dayStartTime = getStartOfDayMillis(compare);
 			return propertyValueTime < dayStartTime;
 		}
 		case DateFilterCondition.EXISTS:
