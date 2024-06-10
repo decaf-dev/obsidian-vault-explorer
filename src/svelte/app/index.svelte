@@ -344,9 +344,9 @@
 	);
 
 	$: filteredTimestamp = filteredFavorites.filter((file) => {
-		const { modifiedMillis, creationMillis } = file;
+		const { modifiedMillis, createdMillis } = file;
 		return filterByTimestamp({
-			creationMillis,
+			createdMillis,
 			modifiedMillis,
 			timestampFilter,
 			startOfTodayMillis,

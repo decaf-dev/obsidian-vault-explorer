@@ -2,7 +2,7 @@ import { TimestampFilter } from "src/types";
 
 interface FilterByTimestampParams {
 	timestampFilter: TimestampFilter;
-	creationMillis: number;
+	createdMillis: number;
 	modifiedMillis: number;
 	startOfTodayMillis: number;
 	startOfThisWeekMillis: number;
@@ -11,7 +11,7 @@ interface FilterByTimestampParams {
 
 export const filterByTimestamp = ({
 	timestampFilter,
-	creationMillis,
+	createdMillis,
 	modifiedMillis,
 	startOfTodayMillis,
 	startOfThisWeekMillis,
@@ -20,15 +20,15 @@ export const filterByTimestamp = ({
 	if (timestampFilter === "modified-this-week") {
 		return modifiedMillis > startOfThisWeekMillis;
 	} else if (timestampFilter === "created-this-week") {
-		return creationMillis > startOfThisWeekMillis;
+		return createdMillis > startOfThisWeekMillis;
 	} else if (timestampFilter === "modified-2-weeks") {
 		return modifiedMillis > startOfLastWeekMillis;
 	} else if (timestampFilter === "created-2-weeks") {
-		return creationMillis > startOfLastWeekMillis;
+		return createdMillis > startOfLastWeekMillis;
 	} else if (timestampFilter === "modified-today") {
 		return modifiedMillis > startOfTodayMillis;
 	} else if (timestampFilter === "created-today") {
-		return creationMillis > startOfTodayMillis;
+		return createdMillis > startOfTodayMillis;
 	}
 	return true;
 }

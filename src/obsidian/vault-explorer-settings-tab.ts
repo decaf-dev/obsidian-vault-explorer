@@ -85,20 +85,37 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					EventManager.getInstance().emit("property-setting-change");
 				}));
 
+		const createdDateDesc = new DocumentFragment();
+		createdDateDesc.createDiv({
+			text: "The property containing the creation date. This must be a date or datetime property.",
+		});
+		createdDateDesc.createDiv({
+			text: "If set to 'Select a property', the file's created at date will be used.",
+		});
+
+
 		new Setting(containerEl)
-			.setName("Creation date property")
-			.setDesc("The property containing the creation date. This must be a date or datetime property. If set to 'Select a property', the system creation date will be used.")
+			.setName("Created date property")
+			.setDesc(createdDateDesc)
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
-				.setValue(this.plugin.settings.properties.creationDate)
+				.setValue(this.plugin.settings.properties.createdDate)
 				.onChange(async (value) => {
-					this.plugin.settings.properties.creationDate = value;
+					this.plugin.settings.properties.createdDate = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("property-setting-change");
 				}));
 
+		const modifiedDateDesc = new DocumentFragment();
+		modifiedDateDesc.createDiv({
+			text: "The property containing the modification date. This must be a date or datetime property.",
+		});
+		modifiedDateDesc.createDiv({
+			text: "If set to 'Select a property', the file's modified at date will be used.",
+		});
+
 		new Setting(containerEl)
 			.setName('Modified date property')
-			.setDesc("The property containing the modified date. This must be a date or datetime property. If set to 'Select a property', the system modified date will be used.")
+			.setDesc(modifiedDateDesc)
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
 				.setValue(this.plugin.settings.properties.modifiedDate)
 				.onChange(async (value) => {
