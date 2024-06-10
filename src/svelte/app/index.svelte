@@ -23,7 +23,7 @@
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByPropertyGroups } from "./services/filters/property-groups-filter";
 	import { formatFileDataForRender } from "./services/render-utils";
-	import _ from "lodash";
+	import _, { update } from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 	import GroupTagList from "./components/group-tag-list.svelte";
@@ -62,8 +62,6 @@
 	let folderFilter: string = "/";
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
-	let creationDateProperty: string = "";
-	let modifiedDateProperty: string = "";
 	let onlyFavorites: boolean = false;
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
@@ -82,17 +80,7 @@
 		onlyFavorites = value;
 	}, 300);
 
-	store.plugin.subscribe((p) => {
-		plugin = p;
-
-		const allFiles = plugin.app.vault.getAllLoadedFiles();
-		folders = allFiles
-			.filter((file) => file instanceof TFolder)
-			.map((folder) => folder.path);
-
-		markdownFiles = plugin.app.vault.getMarkdownFiles();
-		pageSize = plugin.settings.pageSize;
-
+	function updateFrontmatterCache() {
 		let localCache: Record<string, FrontMatterCache | undefined> = {};
 		markdownFiles.forEach((file) => {
 			const frontmatter =
@@ -102,6 +90,20 @@
 		});
 
 		frontmatterCache = localCache;
+	}
+
+	store.plugin.subscribe((p) => {
+		plugin = p;
+
+		const allFiles = plugin.app.vault.getAllLoadedFiles();
+		folders = allFiles
+			.filter((file) => file instanceof TFolder)
+			.map((folder) => folder.path);
+
+		markdownFiles = plugin.app.vault.getMarkdownFiles();
+		updateFrontmatterCache();
+
+		pageSize = plugin.settings.pageSize;
 
 		searchFilter = plugin.settings.filters.search;
 		folderFilter = plugin.settings.filters.folder;
@@ -113,8 +115,6 @@
 		propertyFilterGroups = plugin.settings.filters.properties.groups;
 		selectedPropertyFilterGroupId =
 			plugin.settings.filters.properties.selectedGroupId;
-		creationDateProperty = plugin.settings.properties.creationDate;
-		modifiedDateProperty = plugin.settings.properties.modifiedDate;
 	});
 
 	onMount(() => {
@@ -283,6 +283,40 @@
 			EventManager.getInstance().off(
 				"metadata-change",
 				handleMetadataChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function handlePageSizeChange() {
+			pageSize = plugin.settings.pageSize;
+		}
+
+		EventManager.getInstance().on(
+			"page-size-setting-change",
+			handlePageSizeChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"page-size-setting-change",
+				handlePageSizeChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function handlePropertyChange() {
+			updateFrontmatterCache();
+		}
+
+		EventManager.getInstance().on(
+			"property-setting-change",
+			handlePropertyChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"property-setting-change",
+				handlePropertyChange,
 			);
 		};
 	});
