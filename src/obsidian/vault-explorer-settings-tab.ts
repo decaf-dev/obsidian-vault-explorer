@@ -20,6 +20,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		containerEl.empty();
 
 		const textProperties = getObsidianPropertiesByType(this.app, "text");
+		const dateProperties = getObsidianPropertiesByType(this.app, "date");
+		const dateTimeProperties = getObsidianPropertiesByType(this.app, "datetime");
 		const checkboxProperties = getObsidianPropertiesByType(this.app, "checkbox");
 
 		new Setting(containerEl).setName("Views").setHeading();
@@ -75,6 +77,26 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.properties.url)
 				.onChange(async (value) => {
 					this.plugin.settings.properties.url = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Creation date property')
+			.setDesc('The property used for creation date calculations. This must be a date or datetime property. If unselected, the file creation date will be used.')
+			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
+				.setValue(this.plugin.settings.properties.creationDate)
+				.onChange(async (value) => {
+					this.plugin.settings.properties.creationDate = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Modified date property')
+			.setDesc('The property used for modified date calculations. This must be a date or datetime property. If unselected, the file creation date will be used.')
+			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
+				.setValue(this.plugin.settings.properties.modifiedDate)
+				.onChange(async (value) => {
+					this.plugin.settings.properties.modifiedDate = value;
 					await this.plugin.saveSettings();
 				}));
 

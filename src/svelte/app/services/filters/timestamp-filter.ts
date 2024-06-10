@@ -1,28 +1,34 @@
-import { TFile } from "obsidian";
 import { TimestampFilter } from "src/types";
 
-export const filterByTimestamp = (file: TFile, timestampFilter: TimestampFilter, {
-	midnightToday,
-	midnightThisWeek,
-	midnightLastWeek,
-}: {
-	midnightToday: number;
-	midnightThisWeek: number;
-	midnightLastWeek: number;
-}) => {
-	const { mtime, ctime } = file.stat;
+interface FilterByTimestampParams {
+	timestampFilter: TimestampFilter;
+	creationMillis: number;
+	modifiedMillis: number;
+	startOfTodayMillis: number;
+	startOfThisWeekMillis: number;
+	startOfLastWeekMillis: number;
+}
+
+export const filterByTimestamp = ({
+	timestampFilter,
+	creationMillis,
+	modifiedMillis,
+	startOfTodayMillis,
+	startOfThisWeekMillis,
+	startOfLastWeekMillis,
+}: FilterByTimestampParams) => {
 	if (timestampFilter === "modified-this-week") {
-		return mtime > midnightThisWeek;
+		return modifiedMillis > startOfThisWeekMillis;
 	} else if (timestampFilter === "created-this-week") {
-		return ctime > midnightThisWeek;
+		return creationMillis > startOfThisWeekMillis;
 	} else if (timestampFilter === "modified-2-weeks") {
-		return mtime > midnightLastWeek;
+		return modifiedMillis > startOfLastWeekMillis;
 	} else if (timestampFilter === "created-2-weeks") {
-		return ctime > midnightLastWeek;
+		return creationMillis > startOfLastWeekMillis;
 	} else if (timestampFilter === "modified-today") {
-		return mtime > midnightToday;
+		return modifiedMillis > startOfTodayMillis;
 	} else if (timestampFilter === "created-today") {
-		return ctime > midnightToday;
+		return creationMillis > startOfTodayMillis;
 	}
 	return true;
 }

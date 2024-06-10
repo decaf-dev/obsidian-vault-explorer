@@ -23,27 +23,27 @@
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByPropertyGroups } from "./services/filters/property-groups-filter";
 	import { formatFileDataForRender } from "./services/render-utils";
-	import {
-		getMidnightToday,
-		getMidnightThisWeek,
-		getMidnightLastWeek,
-	} from "./services/time-utils";
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 	import GroupTagList from "./components/group-tag-list.svelte";
 	import { getDisplayNameForViewType } from "./services/display-name";
+	import {
+		getStartOfLastWeekMillis,
+		getStartOfTodayMillis,
+		getStartOfThisWeekMillis,
+	} from "./services/time-utils";
 
 	let plugin: VaultExplorerPlugin;
 
-	let midnightToday: number;
-	let midnightThisWeek: number;
-	let midnightLastWeek: number;
+	let startOfTodayMillis: number;
+	let startOfThisWeekMillis: number;
+	let startOfLastWeekMillis: number;
 
 	function updateTimeValues() {
-		midnightToday = getMidnightToday();
-		midnightThisWeek = getMidnightThisWeek();
-		midnightLastWeek = getMidnightLastWeek();
+		startOfTodayMillis = getStartOfTodayMillis();
+		startOfThisWeekMillis = getStartOfThisWeekMillis();
+		startOfLastWeekMillis = getStartOfLastWeekMillis();
 	}
 
 	onMount(() => {
@@ -62,6 +62,8 @@
 	let folderFilter: string = "/";
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
+	let creationDateProperty: string = "";
+	let modifiedDateProperty: string = "";
 	let onlyFavorites: boolean = false;
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
@@ -111,6 +113,8 @@
 		propertyFilterGroups = plugin.settings.filters.properties.groups;
 		selectedPropertyFilterGroupId =
 			plugin.settings.filters.properties.selectedGroupId;
+		creationDateProperty = plugin.settings.properties.creationDate;
+		modifiedDateProperty = plugin.settings.properties.modifiedDate;
 	});
 
 	onMount(() => {
@@ -283,28 +287,7 @@
 		};
 	});
 
-	$: sorted = [...markdownFiles].sort((a, b) => {
-		if (sortFilter === "file-name-asc") {
-			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-		} else if (sortFilter === "file-name-desc") {
-			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-		} else if (sortFilter === "modified-asc") {
-			return a.stat.mtime - b.stat.mtime;
-		} else if (sortFilter === "modified-desc") {
-			return b.stat.mtime - a.stat.mtime;
-		}
-		return 0;
-	});
-
-	$: filteredTimestamp = sorted.filter((file) =>
-		filterByTimestamp(file, timestampFilter, {
-			midnightToday,
-			midnightThisWeek,
-			midnightLastWeek,
-		}),
-	);
-
-	$: filteredProperty = filteredTimestamp.filter((file) => {
+	$: filteredProperty = [...markdownFiles].filter((file) => {
 		const frontmatter = frontmatterCache[file.path];
 		return filterByPropertyGroups(frontmatter, propertyFilterGroups);
 	});
@@ -318,13 +301,38 @@
 		return formatFileDataForRender(plugin.settings, file, frontmatter);
 	});
 
-	$: filterSearch = formatted.filter((file) =>
+	$: filteredSearch = formatted.filter((file) =>
 		filterBySearch(file, searchFilter),
 	);
 
-	$: renderData = filterSearch.filter((file) =>
+	$: filteredFavorites = filteredSearch.filter((file) =>
 		filterByFavorites(file, onlyFavorites),
 	);
+
+	$: filteredTimestamp = filteredFavorites.filter((file) => {
+		const { modifiedMillis, creationMillis } = file;
+		return filterByTimestamp({
+			creationMillis,
+			modifiedMillis,
+			timestampFilter,
+			startOfTodayMillis,
+			startOfThisWeekMillis,
+			startOfLastWeekMillis,
+		});
+	});
+
+	$: renderData = [...filteredTimestamp].sort((a, b) => {
+		if (sortFilter === "file-name-asc") {
+			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+		} else if (sortFilter === "file-name-desc") {
+			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+		} else if (sortFilter === "modified-asc") {
+			return a.modifiedMillis - b.modifiedMillis;
+		} else if (sortFilter === "modified-desc") {
+			return b.modifiedMillis - a.modifiedMillis;
+		}
+		return 0;
+	});
 
 	$: searchFilter,
 		folderFilter,
