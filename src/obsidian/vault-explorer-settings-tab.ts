@@ -81,8 +81,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Creation date property')
-			.setDesc('The property used for creation date calculations. This must be a date or datetime property. If unselected, the file creation date will be used.')
+			.setName("Creation date property")
+			.setDesc("The property containing the creation date. This must be a date or datetime property. If set to 'Select a property', the system creation date will be used.")
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
 				.setValue(this.plugin.settings.properties.creationDate)
 				.onChange(async (value) => {
@@ -92,7 +92,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Modified date property')
-			.setDesc('The property used for modified date calculations. This must be a date or datetime property. If unselected, the file creation date will be used.')
+			.setDesc("The property containing the modified date. This must be a date or datetime property. If set to 'Select a property', the system modified date will be used.")
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
 				.setValue(this.plugin.settings.properties.modifiedDate)
 				.onChange(async (value) => {
