@@ -18,6 +18,7 @@ import { moveFocus } from './focus-utils';
 import { VaultExplorerPluginSettings_1_2_0 } from './types/types-1.2.0';
 import { VaultExplorerPluginSettings_1_2_1 } from './types/types-1.2.1';
 import { VaultExplorerPluginSettings_1_5_0 } from './types/types-1.5.0';
+import { VaultExplorerPluginSettings_1_6_0 } from './types/types-1.6.0';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -236,11 +237,25 @@ export default class VaultExplorerPlugin extends Plugin {
 				if (isVersionLessThan(settingsVersion, "1.6.0")) {
 					console.log("Upgrading settings from version 1.5.0 to 1.6.0");
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_5_0;
-					const newData: VaultExplorerPluginSettings = {
+					const newData: VaultExplorerPluginSettings_1_6_0 = {
 						...typedData,
 						properties: {
 							...typedData.properties,
 							creationDate: "",
+							modifiedDate: ""
+						}
+					}
+					data = newData as unknown as Record<string, unknown>;
+				}
+
+				if (isVersionLessThan(settingsVersion, "1.6.1")) {
+					console.log("Upgrading settings from version 1.6.0 to 1.6.1");
+					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_6_0;
+					const newData: VaultExplorerPluginSettings = {
+						...typedData,
+						properties: {
+							...typedData.properties,
+							createdDate: "",
 							modifiedDate: ""
 						}
 					}

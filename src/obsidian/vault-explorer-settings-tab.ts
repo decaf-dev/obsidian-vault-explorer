@@ -89,9 +89,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.setName("Created date property")
 			.setDesc("The property containing the creation date. This must be a date or datetime property. If set to 'Select a property', the file's created at date will be used.")
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
-				.setValue(this.plugin.settings.properties.creationDate)
+				.setValue(this.plugin.settings.properties.createdDate)
 				.onChange(async (value) => {
-					this.plugin.settings.properties.creationDate = value;
+					this.plugin.settings.properties.createdDate = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("property-setting-change");
 				}));

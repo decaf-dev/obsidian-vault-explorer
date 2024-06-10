@@ -7,7 +7,7 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 	const tags: string[] | null = loadPropertyValue(frontmatter, "tags", true);
 
 	const {
-		creationDate: creationDateProp,
+		createdDate: createdDateProp,
 		modifiedDate: modifiedDateProp,
 		url: urlProp,
 		favorite: favoriteProp,
@@ -18,7 +18,7 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 
 	const url: string | null = loadPropertyValue(frontmatter, urlProp);
 	const favorite: string | null = loadPropertyValue(frontmatter, favoriteProp);
-	const creationDate: string | null = loadPropertyValue(frontmatter, creationDateProp);
+	const creationDate: string | null = loadPropertyValue(frontmatter, createdDateProp);
 	const modifiedDate: string | null = loadPropertyValue(frontmatter, modifiedDateProp);
 
 	const custom1: string | null = loadPropertyValue(frontmatter, custom1Prop);
