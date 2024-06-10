@@ -46,16 +46,15 @@ export default class VaultExplorerPlugin extends Plugin {
 		);
 
 		this.addRibbonIcon("compass", "Open vault explorer", async () => {
-			const leaves = this.app.workspace.getLeavesOfType(VAULT_EXPLORER_VIEW);
-			if (leaves.length !== 0) {
-				const leaf = leaves[0];
-				this.app.workspace.revealLeaf(leaf);
-			} else {
-				this.app.workspace.getLeaf().setViewState({
-					type: VAULT_EXPLORER_VIEW,
-					active: true,
-				});
-			}
+			this.openVaultExplorerView();
+		});
+
+		this.addCommand({
+			id: "open",
+			name: "Open vault explorer view",
+			callback: async () => {
+				this.openVaultExplorerView();
+			},
 		});
 
 		this.registerEvents();
@@ -275,5 +274,18 @@ export default class VaultExplorerPlugin extends Plugin {
 		Logger.trace({ fileName: "main.ts", functionName: "saveSettings", message: "called" });
 		Logger.debug({ fileName: "main.ts", functionName: "saveSettings", message: "saving settings" }, this.settings);
 		await this.saveData(this.settings);
+	}
+
+	private openVaultExplorerView() {
+		const leaves = this.app.workspace.getLeavesOfType(VAULT_EXPLORER_VIEW);
+		if (leaves.length !== 0) {
+			const leaf = leaves[0];
+			this.app.workspace.revealLeaf(leaf);
+		} else {
+			this.app.workspace.getLeaf().setViewState({
+				type: VAULT_EXPLORER_VIEW,
+				active: true,
+			});
+		}
 	}
 }
