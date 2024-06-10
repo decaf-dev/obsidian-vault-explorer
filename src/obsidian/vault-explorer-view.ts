@@ -27,6 +27,12 @@ export default class VaultExplorerView extends ItemView {
 	}
 
 	async onOpen() {
+		this.addAction("settings", "Settings", () => {
+			const app = this.plugin.app;
+			(app as any).setting.open();
+			(app as any).setting.openTabById(this.plugin.manifest.id);
+		});
+
 		const containerEl = this.containerEl.children[1];
 
 		store.plugin.set(this.plugin);
