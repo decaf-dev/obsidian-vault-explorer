@@ -4,7 +4,7 @@ export interface MarkdownFileRenderData {
 	tags: string[] | null;
 	favorite: string | null;
 	url: string | null;
-	creationMillis: number;
+	createdMillis: number;
 	modifiedMillis: number;
 	custom1: string | null;
 	custom2: string | null;

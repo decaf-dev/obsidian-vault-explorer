@@ -25,7 +25,7 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 	const custom2: string | null = loadPropertyValue(frontmatter, custom2Prop);
 	const custom3: string | null = loadPropertyValue(frontmatter, custom3Prop);
 
-	const creationMillis = creationDate != null ? getTimeMillis(creationDate) : file.stat.ctime;
+	const createdMillis = creationDate != null ? getTimeMillis(creationDate) : file.stat.ctime;
 	const modifiedMillis = modifiedDate != null ? getTimeMillis(modifiedDate) : file.stat.mtime;
 
 	return {
@@ -34,7 +34,7 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 		tags,
 		favorite,
 		url,
-		creationMillis,
+		createdMillis,
 		modifiedMillis,
 		custom1,
 		custom2,
