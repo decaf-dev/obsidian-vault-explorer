@@ -10,25 +10,28 @@ If you find a bug, please open an issue for it. If there's functionality that is
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-To get started with development, follow the guide below:
+If you're completely new to contributing to open source projects, please reference this guide
+https://www.freecodecamp.org/news/how-to-contribute-to-open-source-projects-beginners-guide/
 
 ### Installation
 
-Clone the repository
-
-```shell
-git clone https://github.com/decaf-dev/obsidian-dataloom.git
-```
+Fork the Vault Explorer repository from GitHub
 
 Install [Bun.sh](https://bun.sh/) for your operating system
 
-Change directories to the clone repository
+Clone the forked repository
+
+```shell
+git clone https://github.com/<your-username>/obsidian-vault-explorer.git
+```
+
+Change directories to the repository on your machine
 
 ```shell
 cd obsidian-vault-explorer
 ```
 
-Install project dependencies
+Install dependencies
 
 ```shell
 bun install
@@ -62,7 +65,7 @@ Go to **Community plugins**
 Find **Vault Explorer** and then enable the plugin by switching the toggle.
 
 > [!NOTE]  
-> You may need to click the **Reload plugins** button
+> You may need to click the **Reload plugins** button for the plugin to appear
 
 ### Development
 
@@ -91,18 +94,33 @@ bun run dev
 
 Make some code changes
 
-Restart Obsidian to see your code changes
+Restart Obsidian to test your code changes
 
 ### Pull requests
+
+Now add and commit your code changes
+
+```shell
+git add *
+```
+
+``git shell
+git commit -m "<message here>"
+
+````
 
 Once you have made your changes, push your code to GitHub.
 
 ```shell
 git push origin <your-branch>
-```
+````
 
-Using the GitHub website, open a pull request. You can do that by clicking on the `Pull requests` tab and clicking `New pull request`
+Using GitHub, open a pull request.
 
-Please choose `dev` as the branch you want to merge into.
+Click on the **Pull requests** tab
+
+Then click **New pull request**
+
+Please choose your branch and `dev` as the branch you want to merge into.
 
 Your pull request will be reviewed. Once it is approved, it will be merged into `dev`.
