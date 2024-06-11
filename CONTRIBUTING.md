@@ -1,6 +1,18 @@
 # Contribute to Vault Explorer
 
-## Installation
+Thank you for considering contributing to Vault Explorer!
+
+## Testing
+
+If you find a bug, please open an issue for it. If there's functionality that is annoying or you think that the UI can be improved, please open an issue for that as well. All feedback goes into making the plugin better.
+
+## Features
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+To get started with development, follow the guide below:
+
+### Installation
 
 Clone the repository
 
@@ -52,7 +64,7 @@ Find **Vault Explorer** and then enable the plugin by switching the toggle.
 > [!NOTE]  
 > You may need to click the **Reload plugins** button
 
-## Development
+### Development
 
 Checkout the `dev` branch and make a child branch off of it.
 

@@ -103,9 +103,7 @@ ln -s <folder-path>/obsidian-vault-explorer/dist <vault-path>/.obsidian/plugins/
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-For detailed information on contributing see our [CONTRIBUTING.md](CONTRIBUTING.md)
+For information on how to contribute to Vault Explorer, check out [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Support
 
