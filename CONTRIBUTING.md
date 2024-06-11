@@ -95,8 +95,14 @@ Restart Obsidian to see your code changes
 
 ### Pull requests
 
-Once you have made your changes, push your code to GitHub and make a pull request.
+Once you have made your changes, push your code to GitHub.
+
+```shell
+git push origin <your-branch>
+```
+
+Using the GitHub website, open a pull request. You can do that by clicking on the `Pull requests` tab and clicking `New pull request`
 
 Please choose `dev` as the branch you want to merge into.
 
-The pull request will be reviewed. Once it is approved, it will be merged.
+Your pull request will be reviewed. Once it is approved, it will be merged into `dev`.
