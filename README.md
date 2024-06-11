@@ -83,27 +83,9 @@ The favorite property will allow you to filter by favorites using the `Favorites
 
 This property should be of checkbox type.
 
-## Development
-
-1. Clone the GitHub repository
-
-```shell
-git clone https://github.com/decaf-dev/obsidian-vault-explorer.git
-```
-
-2. Install [Bun](https://bun.sh)
-3. Build the project `bun run build`
-4. Add a symbolic link from the `dist` folder to your vault's plugin folder
-
-```shell
-ln -s <folder-path>/obsidian-vault-explorer/dist <vault-path>/.obsidian/plugins/vault-explorer
-```
-
-5. Enable the plugin
-
 ## Contributing
 
-For information on how to contribute to Vault Explorer, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+For information on how to contribute to Vault Explorer, please read the [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Support
 
