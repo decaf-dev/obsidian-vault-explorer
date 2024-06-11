@@ -1,5 +1,7 @@
 import { moment } from "obsidian";
 
+const DATE_FORMATS = ["YYYY-MM-DDTHH:mm:ss", "YYYY-MM-DDTHH:mm", "YYYY-MM-DD"];
+
 /**
  * Gets 12:00 AM of the current day in milliseconds
  * @returns - The current time in milliseconds
@@ -38,18 +40,27 @@ export const getStartOfLastWeekMillis = () => {
 };
 
 /**
- * Gets the current time in milliseconds
- * @param date - The date to get the current time for. Can be in the format "YYYY-MM-DDTHH:mm:ss" or "YYYY-MM-DD"
+ * Gets the time in milliseconds
+ * @param date - The date to get the time for.
  * @returns - The date in milliseconds
  */
 export const getTimeMillis = (date: string) => {
-	const formats = ["YYYY-MM-DDTHH:mm:ss", "YYYY-MM-DDTHH:mm", "YYYY-MM-DD"];
-	const momentDate = moment(date, formats, true);
+	const momentDate = moment(date, DATE_FORMATS, true);
 
 	if (!momentDate.isValid()) {
 		throw new Error(`Date format not handled: ${date}`);
 	}
 	return momentDate.valueOf();
+}
+
+/**
+ * Checks if the date is supported
+ * @param date - The date to check if it is supported
+ * @returns - True if the date is supported, false otherwise
+ */
+export const isDateSupported = (date: string) => {
+	const momentDate = moment(date, DATE_FORMATS, true);
+	return momentDate.isValid();
 }
 
 /**

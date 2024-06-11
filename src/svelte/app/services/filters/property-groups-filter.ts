@@ -2,7 +2,7 @@ import { FrontMatterCache } from "obsidian";
 import { CheckboxFilterCondition, DateFilterCondition, ListFilterCondition, NumberFilterCondition, PropertyFilter, PropertyFilterGroup } from "src/types";
 import { FilterCondition, TextFilterCondition } from "src/types";
 import Logger from "js-logger";
-import { getEndOfDayMillis, getStartOfDayMillis, getTimeMillis } from "../time-utils";
+import { getEndOfDayMillis, getStartOfDayMillis, getTimeMillis, isDateSupported } from "../time-utils";
 
 //Tests
 //Group is enabled/disabled
@@ -87,6 +87,11 @@ const filterByProperty = (frontmatter: FrontMatterCache | undefined, filter: Pro
 	} else if (type === "date" || type === "datetime") {
 		if (propertyValue !== null && typeof propertyValue !== "string") {
 			Logger.warn(`Property value is not a string: ${propertyValue}`);
+			return true;
+			//In older versions of Obsidian, the date could be stored in the frontmatter
+			//in an unsupported date format
+		} else if (propertyValue !== null && !isDateSupported(propertyValue)) {
+			Logger.warn(`Property value has unsupported date format: ${propertyValue}`);
 			return true;
 		}
 
