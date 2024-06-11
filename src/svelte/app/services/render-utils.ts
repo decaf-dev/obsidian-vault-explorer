@@ -1,7 +1,8 @@
 import { FrontMatterCache, TFile } from "obsidian";
 import { VaultExplorerPluginSettings } from "src/types";
 import { MarkdownFileRenderData } from "../types";
-import { getTimeMillis } from "./time-utils";
+import { getTimeMillis, isDateSupported } from "./time-utils";
+import Logger from "js-logger";
 
 export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined,): MarkdownFileRenderData => {
 	const tags: string[] | null = loadPropertyValue(frontmatter, "tags", true);
@@ -25,8 +26,27 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 	const custom2: string | null = loadPropertyValue(frontmatter, custom2Prop);
 	const custom3: string | null = loadPropertyValue(frontmatter, custom3Prop);
 
-	const createdMillis = creationDate != null ? getTimeMillis(creationDate) : file.stat.ctime;
-	const modifiedMillis = modifiedDate != null ? getTimeMillis(modifiedDate) : file.stat.mtime;
+	let createdMillis = file.stat.ctime;
+	if (creationDate != null) {
+		//In older versions of Obsidian, the creation date could stored in the frontmatter
+		//not in a supported date format
+		if (isDateSupported(creationDate)) {
+			createdMillis = getTimeMillis(creationDate);
+		} else {
+			Logger.warn(`Property value has unsupported date format: ${creationDate}`);
+		}
+	}
+
+	let modifiedMillis = file.stat.mtime;
+	if (modifiedDate != null) {
+		//In older versions of Obsidian, the modified date could stored in the frontmatter
+		//in an unsupported date format
+		if (isDateSupported(modifiedDate)) {
+			modifiedMillis = getTimeMillis(modifiedDate);
+		} else {
+			Logger.warn(`Property value has unsupported date format: ${creationDate}`);
+		}
+	}
 
 	return {
 		name: file.basename,
@@ -67,5 +87,4 @@ const loadPropertyValue = (frontmatter: FrontMatterCache | undefined, propertyNa
 	}
 
 	return propertyValue ?? null;
-
 }
