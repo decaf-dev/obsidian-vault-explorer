@@ -10,7 +10,8 @@ If you find a bug, please open an issue for it. If there's functionality that is
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-If you're completely new to contributing to open source projects, please reference this guide
+If you're completely new to contributing to open source projects, please reference this guide:
+
 https://www.freecodecamp.org/news/how-to-contribute-to-open-source-projects-beginners-guide/
 
 ### Installation
@@ -104,16 +105,15 @@ Now add and commit your code changes
 git add *
 ```
 
-``git shell
+```git shell
 git commit -m "<message here>"
-
-````
+```
 
 Once you have made your changes, push your code to GitHub.
 
 ```shell
 git push origin <your-branch>
-````
+```
 
 Using GitHub, open a pull request.
 
