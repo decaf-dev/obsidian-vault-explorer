@@ -28,11 +28,23 @@ export default class VaultExplorerPlugin extends Plugin {
 
 		//Setup logger
 		Logger.useDefaults();
-		Logger.setHandler(function (messages) {
+		Logger.setHandler(function (messages, context) {
 			const { message, data } = formatMessageForLogger(...messages);
-			console.log(message);
-			if (data) {
-				console.log(data);
+			if (context.level === Logger.WARN) {
+				console.warn(message);
+				if (data) {
+					console.warn(data);
+				}
+			} else if (context.level === Logger.ERROR) {
+				console.error(message);
+				if (data) {
+					console.error(data);
+				}
+			} else {
+				console.log(message);
+				if (data) {
+					console.log(data);
+				}
 			}
 		});
 
