@@ -43,11 +43,11 @@ export const getStartOfLastWeekMillis = () => {
  * @returns - The date in milliseconds
  */
 export const getTimeMillis = (date: string) => {
-	const formats = ["YYYY-MM-DDTHH:mm:ss", "YYYY-MM-DD"];
+	const formats = ["YYYY-MM-DDTHH:mm:ss", "YYYY-MM-DDTHH:mm", "YYYY-MM-DD"];
 	const momentDate = moment(date, formats, true);
 
 	if (!momentDate.isValid()) {
-		throw new Error("Invalid date format");
+		throw new Error(`Date format not handled: ${date}`);
 	}
 	return momentDate.valueOf();
 }
