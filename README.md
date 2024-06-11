@@ -8,12 +8,15 @@ Vault Explorer is an [Obsidian.md](https://obsidian.md) plugin for desktop only.
 
 This plugin is a replacement to some of the functionality found in [Obsidian DataLoom](https://github.com/decaf-dev/obsidian-dataloom).
 
-## About
+## Table of contents
 
 -   [Screenshots](#screenshots)
 -   [Installation](#installation)
 -   [Usage](#usage)
 -   [Settings](#settings)
+-   [Contributing](#contributing)
+-   [Support](#support)
+-   [License](#license)
 
 ## Screenshots
 
@@ -97,3 +100,17 @@ ln -s <folder-path>/obsidian-vault-explorer/dist <vault-path>/.obsidian/plugins/
 ```
 
 5. Enable the plugin
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+For detailed information on contributing see our [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Support
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/P5P5YNX0Y)
+
+## License
+
+Vault Explorer is distributed under [MIT License](https://github.com/decaf-dev/obsidian-vault-explorer/blob/master/LICENSE).
