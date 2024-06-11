@@ -6,7 +6,7 @@
 
 Vault Explorer is an [Obsidian.md](https://obsidian.md) plugin for desktop only. It allows you to explore your vault in visual format.
 
-This plugin is a replacement to some of the functionality found in [Obsidian DataLoom](https://github.com/decaf-dev/obsidian-dataloom).
+This plugin is a replacement for some of the functionality found in [Obsidian DataLoom](https://github.com/decaf-dev/obsidian-dataloom). It has been written in Svelte for faster speed, smaller build size, and easier contributions.
 
 ## Table of contents
 
@@ -83,29 +83,9 @@ The favorite property will allow you to filter by favorites using the `Favorites
 
 This property should be of checkbox type.
 
-## Development
-
-1. Clone the GitHub repository
-
-```shell
-git clone https://github.com/decaf-dev/obsidian-vault-explorer.git
-```
-
-2. Install [Bun](https://bun.sh)
-3. Build the project `bun run build`
-4. Add a symbolic link from the `dist` folder to your vault's plugin folder
-
-```shell
-ln -s <folder-path>/obsidian-vault-explorer/dist <vault-path>/.obsidian/plugins/vault-explorer
-```
-
-5. Enable the plugin
-
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-For detailed information on contributing see our [CONTRIBUTING.md](CONTRIBUTING.md)
+For information on how to contribute to Vault Explorer, please read the [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Support
 
