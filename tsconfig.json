@@ -21,6 +21,6 @@
     ]
   },
   "include": [
-    "**/*.ts", "src/svelte/shared/services/load-property-value",
+    "**/*.ts",
 	]
 }
