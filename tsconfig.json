@@ -1,7 +1,7 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-	"types": ["svelte", "node"],
+	"types": ["svelte", "node", "jest"],
     "baseUrl": ".",
     "inlineSources": false,
     "module": "ESNext",
@@ -21,6 +21,6 @@
     ]
   },
   "include": [
-    "**/*.ts",
+    "**/*.ts", "src/svelte/shared/services/load-property-value",
 	]
 }
