@@ -1,11 +1,12 @@
 import { FrontMatterCache, TFile } from "obsidian";
-import { VaultExplorerPluginSettings } from "src/types";
+import { PropertyType, VaultExplorerPluginSettings } from "src/types";
 import { MarkdownFileRenderData } from "../types";
-import { getTimeMillis, isDateSupported } from "./time-utils";
+import { getTimeMillis, isDateSupported } from "../../shared/services/time-utils";
 import Logger from "js-logger";
+import { loadPropertyValue } from "src/svelte/shared/services/property-utils";
 
 export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined,): MarkdownFileRenderData => {
-	const tags: string[] | null = loadPropertyValue(frontmatter, "tags", true);
+	const tags: string[] | null = loadPropertyValue<string[]>(frontmatter, "tags", PropertyType.LIST);
 
 	const {
 		createdDate: createdDateProp,
@@ -17,14 +18,14 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 		custom3: custom3Prop,
 	} = settings.properties;
 
-	const url: string | null = loadPropertyValue(frontmatter, urlProp);
-	const favorite: string | null = loadPropertyValue(frontmatter, favoriteProp);
-	const creationDate: string | null = loadPropertyValue(frontmatter, createdDateProp);
-	const modifiedDate: string | null = loadPropertyValue(frontmatter, modifiedDateProp);
+	const url: string | null = loadPropertyValue<string>(frontmatter, urlProp, PropertyType.TEXT);
+	const favorite: boolean | null = loadPropertyValue<boolean>(frontmatter, favoriteProp, PropertyType.CHECKBOX);
+	const creationDate: string | null = loadPropertyValue<string>(frontmatter, createdDateProp, PropertyType.DATE || PropertyType.DATETIME);
+	const modifiedDate: string | null = loadPropertyValue<string>(frontmatter, modifiedDateProp, PropertyType.DATE || PropertyType.DATETIME);
 
-	const custom1: string | null = loadPropertyValue(frontmatter, custom1Prop);
-	const custom2: string | null = loadPropertyValue(frontmatter, custom2Prop);
-	const custom3: string | null = loadPropertyValue(frontmatter, custom3Prop);
+	const custom1: string | null = loadPropertyValue<string>(frontmatter, custom1Prop, PropertyType.TEXT);
+	const custom2: string | null = loadPropertyValue<string>(frontmatter, custom2Prop, PropertyType.TEXT);
+	const custom3: string | null = loadPropertyValue<string>(frontmatter, custom3Prop, PropertyType.TEXT);
 
 	let createdMillis = file.stat.ctime;
 	if (creationDate != null) {
@@ -61,30 +62,4 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 		custom3,
 
 	};
-}
-
-const loadPropertyValue = (frontmatter: FrontMatterCache | undefined, propertyName: string, isArray = false) => {
-	if (propertyName === "") {
-		return null;
-	}
-
-	if (!frontmatter) {
-		return null;
-	}
-
-	const propertyValue = frontmatter?.[propertyName];
-
-	if (isArray) {
-		if (propertyValue === undefined || propertyValue === null) {
-			return null;
-		} else if (Array.isArray(propertyValue)) {
-			return propertyValue;
-		} else {
-			//If the property is not an array, return it as an array
-			//This is a bug in Obsidian?
-			return [propertyValue];
-		}
-	}
-
-	return propertyValue ?? null;
 }

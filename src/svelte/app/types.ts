@@ -2,7 +2,7 @@ export interface MarkdownFileRenderData {
 	name: string;
 	path: string;
 	tags: string[] | null;
-	favorite: string | null;
+	favorite: boolean | null;
 	url: string | null;
 	createdMillis: number;
 	modifiedMillis: number;

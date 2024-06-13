@@ -32,7 +32,7 @@
 		getStartOfLastWeekMillis,
 		getStartOfTodayMillis,
 		getStartOfThisWeekMillis,
-	} from "./services/time-utils";
+	} from "../shared/services/time-utils";
 
 	let plugin: VaultExplorerPlugin;
 

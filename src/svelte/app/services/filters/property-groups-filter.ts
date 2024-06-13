@@ -1,8 +1,9 @@
 import { FrontMatterCache } from "obsidian";
 import { CheckboxFilterCondition, DateFilterCondition, ListFilterCondition, NumberFilterCondition, PropertyFilter, PropertyFilterGroup } from "src/types";
 import { FilterCondition, TextFilterCondition } from "src/types";
-import Logger from "js-logger";
-import { getEndOfDayMillis, getStartOfDayMillis, getTimeMillis, isDateSupported } from "../time-utils";
+
+import { getEndOfDayMillis, getStartOfDayMillis, getTimeMillis } from "../../../shared/services/time-utils";
+import { loadPropertyValue } from "src/svelte/shared/services/property-utils";
 
 //Tests
 //Group is enabled/disabled
@@ -48,56 +49,29 @@ const filterByProperty = (frontmatter: FrontMatterCache | undefined, filter: Pro
 	const { propertyName, condition, value, type, matchWhenPropertyDNE } = filter;
 	if (propertyName === "") return true;
 
-	let propertyValue: (string | string[] | boolean | number | null) = frontmatter?.[propertyName] ?? null;
-
 	if (type === "text") {
-		//If the value is not a string, skip the filter
-		if (propertyValue !== null && typeof propertyValue !== "string") {
-			Logger.warn(`Property value is not a string: ${propertyValue}`);
-			return true;
-		}
+		const propertyValue = loadPropertyValue<string>(frontmatter, propertyName, type);
 		const doesMatch = doesTextMatchFilter(propertyValue, value, condition, matchWhenPropertyDNE);
 		return doesMatch;
-	} else if (type === "list") {
-		if (propertyValue !== null && !Array.isArray(propertyValue)) {
-			Logger.warn(`Property value is not an array: ${propertyValue}`);
-			return true;
-		}
-		const compare = value.split(",").map((v) => v.trim()).filter((v) => v !== "");
-		const doesMatch = doesListMatchFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
-		return doesMatch;
 	} else if (type === "number") {
-		if (propertyValue !== null && typeof propertyValue !== "number") {
-			Logger.warn(`Property value is not a number: ${propertyValue}`);
-			return true;
-		}
+		const propertyValue = loadPropertyValue<number>(frontmatter, propertyName, type);
 		const compare = parseFloat(value);
 		const doesMatch = doesNumberMatchFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
 	} else if (type === "checkbox") {
-		if (propertyValue !== null && typeof propertyValue !== "boolean") {
-			Logger.warn(`Property value is not a boolean: ${propertyValue}`);
-			return true;
-		}
-
+		const propertyValue = loadPropertyValue<boolean>(frontmatter, propertyName, type);
 		const compare = value === "true";
 		const doesMatch = doesCheckboxMatchFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
-
 	} else if (type === "date" || type === "datetime") {
-		if (propertyValue !== null && typeof propertyValue !== "string") {
-			Logger.warn(`Property value is not a string: ${propertyValue}`);
-			return true;
-			//In older versions of Obsidian, the date could be stored in the frontmatter
-			//in an unsupported date format
-		} else if (propertyValue !== null && !isDateSupported(propertyValue)) {
-			Logger.warn(`Property value has unsupported date format: ${propertyValue}`);
-			return true;
-		}
-
+		const propertyValue = loadPropertyValue<string>(frontmatter, propertyName, type);
 		const doesMatch = doesDateMatchFilter(condition, propertyValue, value, matchWhenPropertyDNE);
 		return doesMatch;
-
+	} else if (type === "list") {
+		const propertyValue = loadPropertyValue<string[]>(frontmatter, propertyName, type);
+		const compare = value.split(",").map((v) => v.trim()).filter((v) => v !== "");
+		const doesMatch = doesListMatchFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
+		return doesMatch;
 	} else {
 		throw new Error(`Property filter type not supported: ${type}`);
 	}

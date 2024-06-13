@@ -36,3 +36,11 @@ Features are what the software should do.
 | Set a favorite property                                                      | #settings                |
 | Set text properties                                                          | #settings                |
 | Set the log level                                                            | #settings                |
+| When is a file deleted, refresh the view                                     |                          |
+| When is the metadata of a file changes, refresh the view                     |                          |
+| When a file is renamed, refresh the view                                     |                          |
+| When a file is created, refresh the view                                     |                          |
+| When a file is modified, refresh the view                                    |                          |
+| Refresh time variables every minute                                          |                          |
+| When a setting changes, update the view                                      |                          |
+| Move focus with left and right arrows                                        |                          |
