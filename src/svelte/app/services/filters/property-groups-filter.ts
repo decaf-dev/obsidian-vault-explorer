@@ -154,14 +154,14 @@ const doesListMatchFilter = (
 			if (compare.length === 0) return true;
 
 			return compare.every((c) =>
-				propertyValue.some((value) => value.includes(c))
+				propertyValue.some((value) => value?value.includes(c):false)
 			);
 		case ListFilterCondition.DOES_NOT_CONTAIN:
 			if (propertyValue === null) return matchIfNull;
 			if (compare.length === 0) return true;
 
 			return compare.every((c) =>
-				propertyValue.every((value) => !value.includes(c))
+				propertyValue.every((value) => value?!value.includes(c):false)
 			);
 		case ListFilterCondition.EXISTS:
 			return propertyValue !== null;
