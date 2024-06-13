@@ -55,7 +55,7 @@ This plugin is a replacement for some of the functionality found in [Obsidian Da
 1. In Obsidian, open **Settings**
 2. Go to **Community plugins**
 3. Select **Browse**
-4. Search for **Vault Explorer** by DecafDev
+4. Search for **Vault Explorer** by **DecafDev**
 5. Select **Install**
 6. Then select **Enable**
 
