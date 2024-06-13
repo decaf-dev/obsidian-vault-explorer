@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"test": "jest"
+		"test": "jest --config jest.config.js"
 	},
 	"keywords": [],
 	"author": "DecafDev",
