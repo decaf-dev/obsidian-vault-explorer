@@ -44,10 +44,10 @@ Build the project. This will create a `dist` folder
 bun run build
 ```
 
-Create a symbolic link from the `dist` folder to your Obsidan vault.
-
 > [!TIP]  
 > I recommend creating a new Obsidian vault just for development. This way, you won't accidentally modify any of your files.
+
+Create a symbolic link from the `dist` folder to your Obsidan vault.
 
 ```shell
 ln -s <repository-path>/dist <development-vault-path>/.obsidian/plugins/vault-explorer-dev
@@ -66,7 +66,7 @@ Go to **Community plugins**
 Find **Vault Explorer** and then enable the plugin by switching the toggle.
 
 > [!NOTE]  
-> You may need to click the **Reload plugins** button for the plugin to appear
+> You may need to click the **Reload plugins** button for the plugin to appear in the list
 
 ### Development
 
@@ -95,32 +95,12 @@ bun run dev
 
 Make some code changes
 
-Restart Obsidian to test your code changes
+Restart your Obsidian application to see your code changes in action
 
 ### Pull requests
 
-Now add and commit your code changes
-
-```shell
-git add *
-```
-
-```git shell
-git commit -m "<message here>"
-```
-
-Once you have made your changes, push your code to GitHub.
-
-```shell
-git push origin <your-branch>
-```
-
-Using GitHub, open a pull request.
-
-Click on the **Pull requests** tab
-
-Then click **New pull request**
+Once you have commited your changes, push your code to GitHub and open a pull request.
 
 Please choose your branch and `dev` as the branch you want to merge into.
 
-Your pull request will be reviewed. Once it is approved, it will be merged into `dev`.
+Your pull request will be reviewed. Once it is approved, it will be merged.
