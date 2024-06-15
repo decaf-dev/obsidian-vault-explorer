@@ -47,10 +47,6 @@ Find detailed documentation at [vaultexplorer.com](https://vaultexplorer.com)
 
 ![](/readme/feature-property-filter2.png)
 
-### Settings
-
-![](/readme/feature-settings.png)
-
 ## Installation
 
 1. In Obsidian, open **Settings**
