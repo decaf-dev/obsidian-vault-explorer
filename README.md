@@ -6,7 +6,7 @@
 
 Vault Explorer is an [Obsidian.md](https://obsidian.md) plugin for desktop only. It allows you to explore your vault in visual format.
 
-This plugin is a replacement for some of the functionality found in [Obsidian DataLoom](https://github.com/decaf-dev/obsidian-dataloom). It has been written in Svelte for faster speed, smaller build size, and easier contributions.
+This plugin is a replacement for most of the functionality found in [DataLoom](https://github.com/decaf-dev/obsidian-dataloom). It has been written in Svelte for fast speed, small build size, and easier contributions.
 
 Find detailed documentation at [vaultexplorer.com](https://vaultexplorer.com)
 
@@ -55,14 +55,14 @@ Find detailed documentation at [vaultexplorer.com](https://vaultexplorer.com)
 
 1. In Obsidian, open **Settings**
 2. Go to **Community plugins**
-3. Select **Browse**
+3. Click **Browse**
 4. Search for **Vault Explorer** by **DecafDev**
-5. Select **Install**
-6. Then select **Enable**
+5. Click **Install**
+6. Finally, click **Enable**
 
 ## Usage
 
-Start by opening the vault explorer view by clicking on the compass icon on the left-hand sidebar.
+Click the compass button on the left-hand sidebar to open the vault explorer view.
 
 ## Contributing
 
