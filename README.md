@@ -8,12 +8,13 @@ Vault Explorer is an [Obsidian.md](https://obsidian.md) plugin for desktop only.
 
 This plugin is a replacement for some of the functionality found in [Obsidian DataLoom](https://github.com/decaf-dev/obsidian-dataloom). It has been written in Svelte for faster speed, smaller build size, and easier contributions.
 
+Find detailed documentation at [vaultexplorer.com](https://vaultexplorer.com)
+
 ## Table of contents
 
 -   [Screenshots](#screenshots)
 -   [Installation](#installation)
 -   [Usage](#usage)
--   [Settings](#settings)
 -   [Contributing](#contributing)
 -   [Support](#support)
 -   [License](#license)
@@ -62,26 +63,6 @@ This plugin is a replacement for some of the functionality found in [Obsidian Da
 ## Usage
 
 Start by opening the vault explorer view by clicking on the compass icon on the left-hand sidebar.
-
-The explorer vault is a read-only view for your vault. You may filter based on folders and property values.
-
-There are also additional views by which you can view your vault files.
-
-## Settings
-
-The vault explorer has several built-in properties.
-
-### URL
-
-The url property will render a button in the grid view that will allow you to navigate to URL pages.
-
-A url should be a valid url e.g. `https://google.com`
-
-### Favorite
-
-The favorite property will allow you to filter by favorites using the `Favorites` checkbox.
-
-This property should be of checkbox type.
 
 ## Contributing
 
