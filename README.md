@@ -6,14 +6,15 @@
 
 Vault Explorer is an [Obsidian.md](https://obsidian.md) plugin for desktop only. It allows you to explore your vault in visual format.
 
-This plugin is a replacement for some of the functionality found in [Obsidian DataLoom](https://github.com/decaf-dev/obsidian-dataloom). It has been written in Svelte for faster speed, smaller build size, and easier contributions.
+This plugin is a replacement for most of the functionality found in [DataLoom](https://github.com/decaf-dev/obsidian-dataloom). It has been written in Svelte for faster speed, smaller build size, and easier contributions.
+
+Find detailed documentation at [vaultexplorer.com](https://vaultexplorer.com)
 
 ## Table of contents
 
 -   [Screenshots](#screenshots)
 -   [Installation](#installation)
 -   [Usage](#usage)
--   [Settings](#settings)
 -   [Contributing](#contributing)
 -   [Support](#support)
 -   [License](#license)
@@ -54,34 +55,14 @@ This plugin is a replacement for some of the functionality found in [Obsidian Da
 
 1. In Obsidian, open **Settings**
 2. Go to **Community plugins**
-3. Select **Browse**
-4. Search for **Vault Explorer** by DecafDev
-5. Select **Install**
-6. Then select **Enable**
+3. Click **Browse**
+4. Search for **Vault Explorer** by **DecafDev**
+5. Click **Install**
+6. Finally, click **Enable**
 
 ## Usage
 
-Start by opening the vault explorer view by clicking on the compass icon on the left-hand sidebar.
-
-The explorer vault is a read-only view for your vault. You may filter based on folders and property values.
-
-There are also additional views by which you can view your vault files.
-
-## Settings
-
-The vault explorer has several built-in properties.
-
-### URL
-
-The url property will render a button in the grid view that will allow you to navigate to URL pages.
-
-A url should be a valid url e.g. `https://google.com`
-
-### Favorite
-
-The favorite property will allow you to filter by favorites using the `Favorites` checkbox.
-
-This property should be of checkbox type.
+Click the compass button on the left-hand sidebar to open the vault explorer view.
 
 ## Contributing
 
