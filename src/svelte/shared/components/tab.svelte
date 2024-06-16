@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { createEventDispatcher, getContext } from "svelte";
+	import { onMount } from "svelte";
+	import { Writable } from "svelte/store";
+	import { generateRandomId } from "../services/random";
+
 	const dispatch = createEventDispatcher();
 
 	export let draggable = false;
 
-	const id = generateUUID();
+	const id = generateRandomId();
 	const selectedTab = getContext("selectedTab") as Writable<string>;
 	const registerTab = getContext("registerTab") as (id: string) => void;
 	const unregisterTab = getContext("unregisterTab") as (id: string) => void;
-	// const registeredTabs = getContext("registeredTabs") as string[];
 	const variant = getContext("variant") as string;
-
-	// We use onMount to ensure the index is set after the component is mounted
-	import { onMount } from "svelte";
-	import { Writable } from "svelte/store";
-	import { generateUUID } from "../services/uuid";
 
 	onMount(() => {
 		registerTab(id);
