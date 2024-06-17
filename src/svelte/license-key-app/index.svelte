@@ -8,18 +8,18 @@
 		text: string;
 	}
 
-	let isRegistered = false;
+	let isDeviceRegistered = false;
 	let message: Message | null = null;
 
 	onMount(() => {
-		const registered = License.getInstance().getIsRegistered();
+		const registered = License.getInstance().getIsDeviceRegistered();
 		if (registered) {
 			message = {
 				type: "success",
 				text: "This device is registered with a license key.",
 			};
 		}
-		isRegistered = registered;
+		isDeviceRegistered = registered;
 	});
 
 	async function handleInputChange(e: Event) {
@@ -31,11 +31,11 @@
 				text: "Registering device...",
 			};
 
-			const result = await License.getInstance().registerLicense(value);
+			const result = await License.getInstance().registerDevice(value);
 
 			const responseMessage = License.getInstance().getResponseMessage();
 			if (result) {
-				isRegistered = true;
+				isDeviceRegistered = true;
 				message = {
 					type: "success",
 					text: responseMessage,
@@ -56,9 +56,9 @@
 	}
 
 	async function handleButtonClick() {
-		const result = await License.getInstance().unregisterLicense();
+		const result = await License.getInstance().unregisterDevice();
 		if (result) {
-			isRegistered = false;
+			isDeviceRegistered = false;
 			message = null;
 			EventManager.getInstance().emit(
 				"license-registration-change",
@@ -100,10 +100,10 @@
 		</div>
 	</div>
 	<div class="setting-item-control">
-		{#if isRegistered === false}
+		{#if isDeviceRegistered === false}
 			<input type="text" maxlength="8" on:input={handleInputChange} />
 		{/if}
-		{#if isRegistered === true}
+		{#if isDeviceRegistered === true}
 			<button class="mod-destructive" on:click={handleButtonClick}
 				>Unregister device</button
 			>

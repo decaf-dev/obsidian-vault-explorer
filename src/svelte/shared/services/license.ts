@@ -7,37 +7,37 @@ export const LICENSE_KEY_LENGTH = 8;
 const LOCAL_STORAGE_LICENSE_KEY = "vault-explorer-license-key";
 
 export default class License {
-	private isRegistered: boolean;
+	private isDeviceRegistered: boolean;
 	private licenseKey: string;
 	private responseMessage: string;
 
 	private static instance: License;
 
 	constructor() {
-		this.isRegistered = false;
+		this.isDeviceRegistered = false;
 		this.responseMessage = "";
 		this.licenseKey = localStorage.getItem(LOCAL_STORAGE_LICENSE_KEY) ?? "";
 	}
 
-	async registerLicense(licenseKey: string) {
-		Logger.trace({ fileName: "license.ts", functionName: "registerLicense", message: "called" });
+	async registerDevice(licenseKey: string) {
+		Logger.trace({ fileName: "license.ts", functionName: "registerDevice", message: "called" });
 
 		const deviceId = readDeviceId();
-		const result = await this.postRegisterLicense(licenseKey, deviceId);
+		const result = await this.postRegisterDevice(licenseKey, deviceId);
 		if (result) {
-			this.isRegistered = true;
+			this.isDeviceRegistered = true;
 			this.setLicenseKey(licenseKey);
 		}
 		return result;
 	}
 
-	async unregisterLicense() {
-		Logger.trace({ fileName: "license.ts", functionName: "unregister", message: "called" });
+	async unregisterDevice() {
+		Logger.trace({ fileName: "license.ts", functionName: "unregisterDevice", message: "called" });
 
 		const deviceId = readDeviceId();
-		const result = await this.postUnregisterLicense(this.licenseKey, deviceId);
+		const result = await this.postUnregisterDevice(this.licenseKey, deviceId);
 		if (result) {
-			this.isRegistered = false;
+			this.isDeviceRegistered = false;
 			this.setLicenseKey("");
 		}
 		return result;
@@ -56,14 +56,14 @@ export default class License {
 
 		const deviceId = readDeviceId();
 
-		const result = await this.postVerifyLicense(this.licenseKey, deviceId);
+		const result = await this.postVerifyDevice(this.licenseKey, deviceId);
 		if (result) {
-			this.isRegistered = true;
+			this.isDeviceRegistered = true;
 		}
 	}
 
-	private async postVerifyLicense(licenseKey: string, deviceId: string) {
-		Logger.trace({ fileName: "license.ts", functionName: "postVerifyLicense", message: "called" });
+	private async postVerifyDevice(licenseKey: string, deviceId: string) {
+		Logger.trace({ fileName: "license.ts", functionName: "postVerifyDevice", message: "called" });
 		try {
 			const response = await requestUrl({
 				url: "https://api.vaultexplorer.com/licenses/verify",
@@ -77,17 +77,17 @@ export default class License {
 				}),
 			});
 			const body = response.json;
-			Logger.debug({ fileName: "license.ts", functionName: "postVerifyLicense", message: "response" }, body);
+			Logger.debug({ fileName: "license.ts", functionName: "postVerifyDevice", message: "response" }, body);
 			return true;
 		} catch (err: unknown) {
 			const error = err as Error;
-			Logger.error({ fileName: "license.ts", functionName: "postVerifyLicense", message: "error verifying license" }, error.message);
+			Logger.error({ fileName: "license.ts", functionName: "postVerifyDevice", message: "error verifying device" }, error.message);
 			return false;
 		}
 	};
 
-	private async postRegisterLicense(licenseKey: string, deviceId: string) {
-		Logger.trace({ fileName: "license.ts", functionName: "postRegisterLicense", message: "called" });
+	private async postRegisterDevice(licenseKey: string, deviceId: string) {
+		Logger.trace({ fileName: "license.ts", functionName: "postRegisterDevice", message: "called" });
 		try {
 			const response = await requestUrl({
 				url: "https://api.vaultexplorer.com/licenses/register",
@@ -101,8 +101,8 @@ export default class License {
 				})
 			});
 			const body = response.json;
-			Logger.debug({ fileName: "license.ts", functionName: "postRegisterLicense", message: "response" }, body);
-			this.responseMessage = "License successfully registered."
+			Logger.debug({ fileName: "license.ts", functionName: "postRegisterDevice", message: "response" }, body);
+			this.responseMessage = "Device successfully registered."
 			return true;
 
 		} catch (err: unknown) {
@@ -115,7 +115,7 @@ export default class License {
 			} else if (error.message.contains("404")) {
 				message = "Invalid license key"
 			} else if (error.message.contains("400")) {
-				message = "License key already registered to this device"
+				message = "Device already registered to this license"
 			} else if (error.message.contains("402")) {
 				message = "Maximum number of devices reached for this license key"
 			} else if (error.message.contains("502")) {
@@ -125,13 +125,13 @@ export default class License {
 			}
 			this.responseMessage = message;
 
-			Logger.error({ fileName: "license.ts", functionName: "postRegisterLicense", message: "error registering license" }, error.message);
+			Logger.error({ fileName: "license.ts", functionName: "postRegisterDevice", message: "error registering device" }, error.message);
 			return false;
 		}
 	}
 
-	private async postUnregisterLicense(licenseKey: string, deviceId: string) {
-		Logger.trace({ fileName: "license.ts", functionName: "postUnregisterLicense", message: "called" });
+	private async postUnregisterDevice(licenseKey: string, deviceId: string) {
+		Logger.trace({ fileName: "license.ts", functionName: "postUnregisterDevice", message: "called" });
 		try {
 			const response = await requestUrl({
 				url: "https://api.vaultexplorer.com/licenses/unregister",
@@ -145,7 +145,7 @@ export default class License {
 				})
 			});
 			const body = response.json;
-			Logger.debug({ fileName: "license.ts", functionName: "postUnregisterLicense", message: "response" }, body);
+			Logger.debug({ fileName: "license.ts", functionName: "postUnregisterDevice", message: "response" }, body);
 			this.responseMessage = "";
 			return true;
 
@@ -158,7 +158,7 @@ export default class License {
 			} else if (error.message.contains("429")) {
 				message = "Too many requests. Try again later"
 			} else if (error.message.contains("400")) {
-				message = "License key is not connected to device";
+				message = "Device is not connected to a license key";
 			} else if (error.message.contains("502")) {
 				message = "Server is offline. Please try again later"
 			} else {
@@ -166,7 +166,7 @@ export default class License {
 			}
 			this.responseMessage = message;
 
-			Logger.error({ fileName: "license.ts", functionName: "postUnregisterLicense", message: "error registering license" }, error.message);
+			Logger.error({ fileName: "license.ts", functionName: "postUnregisterDevice", message: "error unregistering device" }, error.message);
 			return false;
 		}
 	}
@@ -176,8 +176,8 @@ export default class License {
 		this.licenseKey = value;
 	}
 
-	getIsRegistered() {
-		return this.isRegistered;
+	getIsDeviceRegistered() {
+		return this.isDeviceRegistered;
 	}
 
 	getLicenseKey() {
