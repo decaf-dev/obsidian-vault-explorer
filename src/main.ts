@@ -19,38 +19,18 @@ import { VaultExplorerPluginSettings_1_2_0 } from './types/types-1.2.0';
 import { VaultExplorerPluginSettings_1_2_1 } from './types/types-1.2.1';
 import { VaultExplorerPluginSettings_1_5_0 } from './types/types-1.5.0';
 import { VaultExplorerPluginSettings_1_6_0 } from './types/types-1.6.0';
+import { loadDeviceId } from './svelte/shared/services/device-id-utils';
+import License from './svelte/shared/services/license';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
 
 	async onload() {
 		await this.loadSettings();
+		this.setupLogger();
 
-		//Setup logger
-		Logger.useDefaults();
-		Logger.setHandler(function (messages, context) {
-			const { message, data } = formatMessageForLogger(...messages);
-			if (context.level === Logger.WARN) {
-				console.warn(message);
-				if (data) {
-					console.warn(data);
-				}
-			} else if (context.level === Logger.ERROR) {
-				console.error(message);
-				if (data) {
-					console.error(data);
-				}
-			} else {
-				console.log(message);
-				if (data) {
-					console.log(data);
-				}
-			}
-		});
-
-		const logLevel = stringToLogLevel(this.settings.logLevel);
-		Logger.setLevel(logLevel);
-
+		await loadDeviceId();
+		await License.getInstance().verifyLicense();
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
@@ -72,6 +52,7 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.registerEvents();
 		this.registerHoverLinkSource(HOVER_LINK_SOURCE_ID, { display: this.manifest.name, defaultMod: true });
 		this.addSettingTab(new VaultExplorerSettingsTab(this.app, this));
+
 	}
 
 	private registerEvents() {
@@ -299,5 +280,31 @@ export default class VaultExplorerPlugin extends Plugin {
 				active: true,
 			});
 		}
+	}
+
+	private setupLogger() {
+		Logger.useDefaults();
+		Logger.setHandler(function (messages, context) {
+			const { message, data } = formatMessageForLogger(...messages);
+			if (context.level === Logger.WARN) {
+				console.warn(message);
+				if (data) {
+					console.warn(data);
+				}
+			} else if (context.level === Logger.ERROR) {
+				console.error(message);
+				if (data) {
+					console.error(data);
+				}
+			} else {
+				console.log(message);
+				if (data) {
+					console.log(data);
+				}
+			}
+		});
+
+		const logLevel = stringToLogLevel(this.settings.logLevel);
+		Logger.setLevel(logLevel);
 	}
 }

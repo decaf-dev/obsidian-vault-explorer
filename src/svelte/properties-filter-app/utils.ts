@@ -1,9 +1,9 @@
 import { PropertyType, TextFilterCondition, TextPropertyFilter } from "src/types";
-import { generateUUID } from "../shared/services/uuid";
+import { generateRandomId } from "../shared/services/random";
 
 export const createPropertyFilter = (): TextPropertyFilter => {
 	return {
-		id: generateUUID(),
+		id: generateRandomId(),
 		type: PropertyType.TEXT,
 		propertyName: "",
 		operator: "and",

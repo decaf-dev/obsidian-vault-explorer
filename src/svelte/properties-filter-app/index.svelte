@@ -12,7 +12,7 @@
 		PropertyFilterGroup,
 		TextFilterCondition,
 	} from "src/types";
-	import { generateUUID } from "../shared/services/uuid";
+	import { generateRandomId } from "../shared/services/random";
 	import GroupEditView from "./components/group-edit-view.svelte";
 	import { createPropertyFilter } from "./utils";
 	import GroupList from "./components/group-list.svelte";
@@ -53,7 +53,7 @@
 
 	function handleAddGroupClick() {
 		const newGroup: PropertyFilterGroup = {
-			id: generateUUID(),
+			id: generateRandomId(),
 			name: `Group ${groups.length + 1}`,
 			filters: [createPropertyFilter()],
 			isEnabled: groups.length === 0,
