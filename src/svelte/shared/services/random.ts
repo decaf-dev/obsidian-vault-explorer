@@ -5,7 +5,6 @@ import { customAlphabet } from "nanoid";
 const nanoid = customAlphabet(
 	"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz");
 
-
 /**
  * Generates a random id
  * base58: 58 characters
@@ -22,6 +21,6 @@ export const generateRandomId = () => {
  * 12 characters: 58^12 = 1.4e+21
  * @returns A random string of length 12
  */
-export const generateRandomVaultId = () => {
+export const generateRandomDeviceId = () => {
 	return nanoid(12);
 }
