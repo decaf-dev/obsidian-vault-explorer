@@ -6,13 +6,16 @@ import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
 import { WordBreak } from "src/types";
 import EventManager from "src/event/event-manager";
+import Component from "../svelte/license-key-app/index.svelte";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
+	component: Component | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+		this.component = null;
 	}
 
 	display(): void {
@@ -159,6 +162,12 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					EventManager.getInstance().emit("property-setting-change");
 				}));
 
+		new Setting(containerEl).setName("Premium").setHeading();
+
+		this.component = new Component({
+			target: containerEl,
+		});
+
 		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
 			.setName("Log level")
@@ -182,6 +191,19 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+	}
 
+	private getSettingMessageClassName(type: "success" | "failure" | "default" = "default") {
+		let className = "vault-explorer-setting-message";
+		if (type === "success") {
+			className += " vault-explorer-setting-message--success";
+		} else if (type === "failure") {
+			className += " vault-explorer-setting-message--failure";
+		}
+		return className;
+	}
+
+	onClose() {
+		this.component?.$destroy();
 	}
 }
