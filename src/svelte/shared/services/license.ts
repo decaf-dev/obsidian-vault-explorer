@@ -118,6 +118,8 @@ export default class License {
 				message = "License key already registered to this device"
 			} else if (error.message.contains("402")) {
 				message = "Maximum number of devices reached for this license key"
+			} else if (error.message.contains("502")) {
+				message = "Server is offline. Please try again later"
 			} else {
 				message = "Server error. Please open an issue on GitHub"
 			}
@@ -157,6 +159,8 @@ export default class License {
 				message = "Too many requests. Try again later"
 			} else if (error.message.contains("400")) {
 				message = "License key is not connected to device";
+			} else if (error.message.contains("502")) {
+				message = "Server is offline. Please try again later"
 			} else {
 				message = "Server error. Please open an issue on GitHub"
 			}
