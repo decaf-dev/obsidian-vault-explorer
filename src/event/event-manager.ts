@@ -43,6 +43,7 @@ export default class EventManager {
 		Logger.trace({ fileName: "event-manager.ts", functionName: "emit", message: "called" });
 
 		if (!this.eventListeners[eventName]) {
+			Logger.debug({ fileName: "event-manager.ts", functionName: "emit", message: "no event listeners found for event. returning..." }, eventName);
 			return;
 		}
 

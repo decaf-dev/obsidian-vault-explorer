@@ -41,7 +41,7 @@
 					text: responseMessage,
 				};
 				EventManager.getInstance().emit(
-					"license-registration-change",
+					"device-registration-change",
 					true,
 				);
 			} else {
@@ -61,7 +61,7 @@
 			isDeviceRegistered = false;
 			message = null;
 			EventManager.getInstance().emit(
-				"license-registration-change",
+				"device-registration-change",
 				false,
 			);
 		} else {
@@ -95,9 +95,19 @@
 		<div class="setting-item-description">
 			Register your device to unlock premium features.
 		</div>
-		<div class={messageClassName}>
-			{message?.text ?? ""}
-		</div>
+		{#if message == null}
+			<a
+				class="vault-explorer-premium-link"
+				href="https://vaultexplorer.com/docs/premium"
+				target="_blank"
+				rel="noopener">Learn more</a
+			>
+		{/if}
+		{#if message != null}
+			<div class={messageClassName}>
+				{message?.text ?? ""}
+			</div>
+		{/if}
 	</div>
 	<div class="setting-item-control">
 		{#if isDeviceRegistered === false}
@@ -112,12 +122,15 @@
 </div>
 
 <style>
+	.vault-explorer-premium-link {
+		font-size: var(--font-smallest);
+	}
+
 	.vault-explorer-setting-message {
 		color: var(--text-muted);
 		font-size: var(--font-smallest);
 		padding-top: var(--size-4-1);
 		line-height: var(--line-height-tight);
-		height: 16px;
 	}
 
 	.vault-explorer-setting-message--success {
