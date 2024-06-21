@@ -3,7 +3,7 @@ import { PropertyType, VaultExplorerPluginSettings } from "src/types";
 import { MarkdownFileRenderData } from "../types";
 import { getTimeMillis, isDateSupported } from "../../shared/services/time-utils";
 import Logger from "js-logger";
-import { loadPropertyValue } from "src/svelte/shared/services/property-utils";
+import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 
 export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined,): MarkdownFileRenderData => {
 	const tags: string[] | null = loadPropertyValue<string[]>(frontmatter, "tags", PropertyType.LIST);

@@ -21,9 +21,9 @@
 	import { filterByFolder } from "./services/filters/folder-filter";
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
-	import { filterByPropertyGroups } from "./services/filters/property-groups-filter";
+	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
 	import { formatFileDataForRender } from "./services/render-utils";
-	import _, { update } from "lodash";
+	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 	import GroupTagList from "./components/group-tag-list.svelte";
@@ -323,7 +323,7 @@
 
 	$: filteredProperty = [...markdownFiles].filter((file) => {
 		const frontmatter = frontmatterCache[file.path];
-		return filterByPropertyGroups(frontmatter, propertyFilterGroups);
+		return filterByGroups(frontmatter, propertyFilterGroups);
 	});
 
 	$: filteredFolder = filteredProperty.filter((file) =>
