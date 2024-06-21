@@ -235,17 +235,19 @@
 	function handleFilterTypeChange(e: CustomEvent) {
 		const { id, type } = e.detail;
 
-		let condition: FilterCondition;
+		let newCondition: FilterCondition;
+		let newValue = "";
 		if (type === "text") {
-			condition = TextFilterCondition.IS;
+			newCondition = TextFilterCondition.IS;
 		} else if (type === "number") {
-			condition = NumberFilterCondition.IS_EQUAL;
+			newCondition = NumberFilterCondition.IS_EQUAL;
 		} else if (type === "checkbox") {
-			condition = CheckboxFilterCondition.IS;
+			newCondition = CheckboxFilterCondition.IS;
+			newValue = "true";
 		} else if (type === "list") {
-			condition = ListFilterCondition.CONTAINS;
+			newCondition = ListFilterCondition.CONTAINS;
 		} else if (type === "date" || type === "datetime") {
-			condition = DateFilterCondition.IS;
+			newCondition = DateFilterCondition.IS;
 		} else {
 			throw new Error(`Unhandled filter type: ${type}`);
 		}
@@ -260,8 +262,8 @@
 										...filter,
 										type,
 										name: "",
-										condition,
-										value: "",
+										condition: newCondition,
+										value: newValue,
 									}
 								: filter,
 						),
