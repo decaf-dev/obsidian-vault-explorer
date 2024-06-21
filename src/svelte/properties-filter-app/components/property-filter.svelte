@@ -142,7 +142,13 @@
 				</option>
 			{/each}
 		</select>
-		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+		{#if type == PropertyType.CHECKBOX && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+			<select {value} on:change={handleValueChange}>
+				<option value="true">true</option>
+				<option value="false">false</option>
+			</select>
+		{/if}
+		{#if type !== PropertyType.CHECKBOX && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input type="text" {value} on:change={handleValueChange} />
 		{/if}
 		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
