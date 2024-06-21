@@ -9,7 +9,7 @@
 		FilterOperator,
 		ListFilterCondition,
 		NumberFilterCondition,
-		PropertyType,
+		FilterRuleType,
 		TextFilterCondition,
 	} from "src/types";
 	import { getDisplayNameForFilterCondition } from "./utils";
@@ -18,7 +18,7 @@
 	export let index: number;
 	export let id: string;
 	export let propertyName: string;
-	export let type: PropertyType;
+	export let type: FilterRuleType;
 	export let operator: FilterOperator;
 	export let value: string;
 	export let condition: FilterCondition;
@@ -95,7 +95,7 @@
 		return prop.type === type;
 	});
 
-	function findFilterConditions(type: PropertyType): FilterCondition[] {
+	function findFilterConditions(type: FilterRuleType): FilterCondition[] {
 		if (type === "text") {
 			return Object.values(TextFilterCondition);
 		} else if (type === "number") {
@@ -125,7 +125,7 @@
 			</select>
 		{/if}
 		<select value={type} on:change={handleTypeChange}>
-			{#each Object.values(PropertyType) as type}
+			{#each Object.values(FilterRuleType) as type}
 				<option value={type}>{type}</option>
 			{/each}
 		</select>
@@ -142,13 +142,16 @@
 				</option>
 			{/each}
 		</select>
-		{#if type == PropertyType.CHECKBOX && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+		{#if type === FilterRuleType.CHECKBOX && condition !== CheckboxFilterCondition.EXISTS && condition !== CheckboxFilterCondition.DOES_NOT_EXIST}
 			<select {value} on:change={handleValueChange}>
 				<option value="true">true</option>
 				<option value="false">false</option>
 			</select>
 		{/if}
-		{#if type !== PropertyType.CHECKBOX && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+		{#if (type === FilterRuleType.DATE || type === FilterRuleType.DATETIME) && value == "custom" && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+			<input type="date" {value} on:change={handleValueChange} />
+		{/if}
+		{#if type !== FilterRuleType.CHECKBOX && type !== FilterRuleType.DATE && type !== FilterRuleType.DATETIME && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input type="text" {value} on:change={handleValueChange} />
 		{/if}
 		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}

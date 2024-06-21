@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import PropertyFilter from "./property-filter.svelte";
-	import { PropertyFilter as PropertyFilterType } from "src/types";
+	import { FilterRule } from "src/types";
 
-	export let filters: PropertyFilterType[] = [];
+	export let filters: FilterRule[] = [];
 </script>
 
 <Stack direction="column" spacing="md" width="100%">

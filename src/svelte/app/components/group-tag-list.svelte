@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { PropertyFilterGroup } from "src/types";
+	import { FilterGroup } from "src/types";
 	import GroupTag from "./group-tag.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 
-	export let groups: PropertyFilterGroup[] = [];
+	export let groups: FilterGroup[] = [];
 </script>
 
 <div class="vault-explorer-group-tag-list">

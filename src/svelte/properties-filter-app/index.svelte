@@ -9,7 +9,7 @@
 		FilterCondition,
 		ListFilterCondition,
 		NumberFilterCondition,
-		PropertyFilterGroup,
+		FilterGroup,
 		TextFilterCondition,
 	} from "src/types";
 	import { generateRandomId } from "../shared/services/random";
@@ -20,7 +20,7 @@
 	import Divider from "../shared/components/divider.svelte";
 
 	let selectedGroupId: string = "";
-	let groups: PropertyFilterGroup[] = [];
+	let groups: FilterGroup[] = [];
 	let plugin: VaultExplorerPlugin;
 
 	$: selectedGroup = groups.find((group) => group.id === selectedGroupId);
@@ -28,16 +28,16 @@
 	$: groups, selectedGroupId, saveSettings();
 
 	async function saveSettings() {
-		plugin.settings.filters.properties.groups = groups;
-		plugin.settings.filters.properties.selectedGroupId = selectedGroupId;
+		plugin.settings.filters.custom.groups = groups;
+		plugin.settings.filters.custom.selectedGroupId = selectedGroupId;
 		await plugin.saveSettings();
 	}
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
 
-		groups = plugin.settings.filters.properties.groups;
-		selectedGroupId = plugin.settings.filters.properties.selectedGroupId;
+		groups = plugin.settings.filters.custom.groups;
+		selectedGroupId = plugin.settings.filters.custom.selectedGroupId;
 	});
 
 	onMount(() => {
@@ -52,10 +52,10 @@
 	}
 
 	function handleAddGroupClick() {
-		const newGroup: PropertyFilterGroup = {
+		const newGroup: FilterGroup = {
 			id: generateRandomId(),
 			name: `Group ${groups.length + 1}`,
-			filters: [createPropertyFilter()],
+			rules: [createPropertyFilter()],
 			isEnabled: groups.length === 0,
 		};
 
@@ -88,7 +88,7 @@
 
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
-				? { ...group, filters: [...group.filters, filter] }
+				? { ...group, filters: [...group.rules, filter] }
 				: group,
 		);
 
@@ -112,7 +112,7 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
+						filters: group.rules.map((filter) =>
 							filter.id === id
 								? { ...filter, condition }
 								: filter,
@@ -167,9 +167,7 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.filter(
-							(filter) => filter.id !== id,
-						),
+						rules: group.rules.filter((filter) => filter.id !== id),
 					}
 				: group,
 		);
@@ -184,7 +182,7 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
+						filters: group.rules.map((filter) =>
 							filter.id === id
 								? { ...filter, propertyName: name }
 								: filter,
@@ -203,7 +201,7 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
+						rules: group.rules.map((filter) =>
 							filter.id === id
 								? { ...filter, isEnabled: !filter.isEnabled }
 								: filter,
@@ -222,7 +220,7 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
+						filters: group.rules.map((filter) =>
 							filter.id === id ? { ...filter, operator } : filter,
 						),
 					}
@@ -252,11 +250,11 @@
 			throw new Error(`Unhandled filter type: ${type}`);
 		}
 
-		const newGroups: PropertyFilterGroup[] = groups.map((group) =>
+		const newGroups: FilterGroup[] = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
+						filters: group.rules.map((filter) =>
 							filter.id === id
 								? {
 										...filter,
@@ -281,7 +279,7 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
+						filters: group.rules.map((filter) =>
 							filter.id === id ? { ...filter, value } : filter,
 						),
 					}
@@ -298,7 +296,7 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
+						filters: group.rules.map((filter) =>
 							filter.id === id
 								? {
 										...filter,
