@@ -3,7 +3,7 @@ import { CheckboxFilterCondition, DateFilterCondition, ListFilterCondition, Numb
 import { FilterCondition, TextFilterCondition } from "src/types";
 
 import { getEndOfDayMillis, getStartOfDayMillis, getTimeMillis } from "../../../shared/services/time-utils";
-import { loadPropertyValue } from "src/svelte/shared/services/property-utils";
+import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 
 //Tests
 //Group is enabled/disabled
