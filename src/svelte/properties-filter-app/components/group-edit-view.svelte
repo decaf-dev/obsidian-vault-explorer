@@ -42,6 +42,7 @@
 				on:filterPropertyNameChange
 				on:filterOperatorChange
 				on:filterValueChange
+				on:filterValueDataChange
 				on:filterToggle
 				on:filterDeleteClick
 				on:filterMatchWhenPropertyDNEChange
