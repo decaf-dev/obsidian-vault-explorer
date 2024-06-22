@@ -17,10 +17,11 @@
 
 	export let index: number;
 	export let id: string;
-	export let propertyName: string;
+	export let propertyName: string | null;
 	export let type: FilterRuleType;
 	export let operator: FilterOperator;
 	export let value: string;
+	export let valueData: string | null;
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
 	export let matchWhenPropertyDNE: boolean;
@@ -63,6 +64,11 @@
 	function handleValueChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
 		dispatch("filterValueChange", { id, value });
+	}
+
+	function handleValueDataChange(e: Event) {
+		const value = (e.target as HTMLInputElement).value;
+		dispatch("filterValueDataChange", { id, value });
 	}
 
 	function handleOperatorChange(e: Event) {
@@ -129,12 +135,14 @@
 				<option value={type}>{type}</option>
 			{/each}
 		</select>
-		<select value={propertyName} on:change={handlePropertyNameChange}>
-			<option value="">Select a property</option>
-			{#each filteredObsidianProperties as prop (prop.name)}
-				<option value={prop.name}>{prop.name}</option>
-			{/each}
-		</select>
+		{#if propertyName != null}
+			<select value={propertyName} on:change={handlePropertyNameChange}>
+				<option value="">Select a property</option>
+				{#each filteredObsidianProperties as prop (prop.name)}
+					<option value={prop.name}>{prop.name}</option>
+				{/each}
+			</select>
+		{/if}
 		<select value={condition} on:change={handleConditionChange}>
 			{#each filterConditions as condition}
 				<option value={condition}>
@@ -163,7 +171,11 @@
 			<input type="date" {value} on:change={handleValueChange} />
 		{/if}
 		{#if type !== FilterRuleType.CHECKBOX && type !== FilterRuleType.DATE && type !== FilterRuleType.DATETIME && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
-			<input type="text" {value} on:change={handleValueChange} />
+			<input
+				type="text"
+				value={valueData}
+				on:change={handleValueDataChange}
+			/>
 		{/if}
 		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import PropertyFilter from "./property-filter.svelte";
-	import { FilterRule } from "src/types";
+	import { FilterRule, FilterRuleType } from "src/types";
 
 	export let filters: FilterRule[] = [];
 </script>
@@ -11,12 +11,22 @@
 		<PropertyFilter
 			{index}
 			id={filter.id}
+			{...filter.type === FilterRuleType.TEXT ||
+			filter.type === FilterRuleType.NUMBER ||
+			filter.type === FilterRuleType.LIST ||
+			filter.type === FilterRuleType.CHECKBOX ||
+			filter.type === FilterRuleType.DATE ||
+			filter.type === FilterRuleType.DATETIME
+				? { propertyName: filter.propertyName }
+				: { propertyName: null }}
 			operator={filter.operator}
 			value={filter.value}
+			{...filter.type === FilterRuleType.DATE
+				? { valueData: filter.valueData }
+				: { valueData: null }}
 			condition={filter.condition}
 			matchWhenPropertyDNE={filter.matchWhenPropertyDNE}
 			type={filter.type}
-			propertyName={filter.propertyName}
 			isEnabled={filter.isEnabled}
 			on:groupChange
 			on:filterConditionChange
