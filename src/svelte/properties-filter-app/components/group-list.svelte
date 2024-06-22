@@ -43,12 +43,12 @@
 	<Stack direction="column" spacing="sm">
 		<Stack spacing="sm">
 			<IconButton
-				ariaLabel="Add property filter group"
+				ariaLabel="Add filter group"
 				iconId="plus"
 				on:click={() => handleAddGroupClick()}
 			/>
 			<IconButton
-				ariaLabel="Delete property filter group"
+				ariaLabel="Delete filter group"
 				iconId="trash"
 				on:click={() => handleDeleteGroupClick()}
 			/>

@@ -679,7 +679,7 @@
 					<span class="vault-explorer-empty-label">No groups</span>
 				{/if}
 				<IconButton
-					ariaLabel="Change properties filter"
+					ariaLabel="Change custom filter"
 					iconId="ellipsis-vertical"
 					on:click={openPropertiesFilterModal}
 				/>

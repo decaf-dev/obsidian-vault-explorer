@@ -197,7 +197,7 @@
 		<Stack spacing="sm" align="center">
 			<Switch value={isEnabled} on:change={() => handleToggle()} />
 			<IconButton
-				ariaLabel="Delete property filter"
+				ariaLabel="Delete filter rule"
 				iconId="trash"
 				on:click={() => handleDeleteClick()}
 			/>

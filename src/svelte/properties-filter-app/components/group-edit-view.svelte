@@ -50,7 +50,7 @@
 			<Spacer direction="vertical" size="sm" />
 		{/if}
 		<IconButton
-			ariaLabel="Add property filter"
+			ariaLabel="Add filter rule"
 			iconId="plus"
 			on:click={handleAddFilterClick}
 		/>
