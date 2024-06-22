@@ -1,4 +1,4 @@
-import { getEndOfDayMillis, getStartOfDayMillis, getTimeMillis, isDateSupported } from "src/svelte/shared/services/time-utils";
+import { getMomentDate, isDateSupported } from "src/svelte/shared/services/time-utils";
 import { DateFilterCondition } from "src/types";
 
 export const matchDateFilter = (
@@ -16,31 +16,25 @@ export const matchDateFilter = (
 		case DateFilterCondition.IS: {
 			if (propertyValue === null) return matchIfNull;
 
-			const propertyValueTime = getTimeMillis(propertyValue);
-			const dayStartTime = getStartOfDayMillis(compare);
-			const dayEndTime = getEndOfDayMillis(compare);
-
-			return (
-				propertyValueTime >= dayStartTime &&
-				propertyValueTime <= dayEndTime
-			);
+			const propertyValueDate = getMomentDate(propertyValue);
+			const compareDate = getMomentDate(compare);
+			return propertyValueDate.isSame(compareDate, "day");
 		}
 
 		case DateFilterCondition.IS_AFTER: {
 			if (propertyValue === null) return matchIfNull;
-			if (!isDateSupported(compare)) return true;
 
-			const propertyValueTime = getTimeMillis(propertyValue);
-			const dayEndTime = getEndOfDayMillis(compare);
-			return propertyValueTime > dayEndTime;
+			const propertyValueDate = getMomentDate(propertyValue);
+			const compareDate = getMomentDate(compare);
+			return propertyValueDate.isAfter(compareDate, "day");
 		}
 
 		case DateFilterCondition.IS_BEFORE: {
 			if (propertyValue === null) return matchIfNull;
 
-			const propertyValueTime = getTimeMillis(propertyValue);
-			const dayStartTime = getStartOfDayMillis(compare);
-			return propertyValueTime < dayStartTime;
+			const propertyValueDate = getMomentDate(propertyValue);
+			const compareDate = getMomentDate(compare);
+			return propertyValueDate.isBefore(compareDate, "day");
 		}
 
 		case DateFilterCondition.EXISTS:

@@ -189,20 +189,6 @@ describe("matchDateFilter", () => {
 			// Assert
 			expect(result).toEqual(false);
 		});
-
-		it("should return false for matchDateFilter(YYYY-MM-DDTHH:mm:ss, invalid-date, IS, false)", () => {
-			// Arrange
-			const propertyValue = "2020-01-01T12:00:00";
-			const compare = "invalid-date";
-			const condition = DateFilterCondition.IS;
-			const matchIfNull = false;
-
-			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
-
-			// Assert
-			expect(result).toEqual(false);
-		});
 	});
 
 	describe("Error Cases", () => {

@@ -1,11 +1,12 @@
 import { FrontMatterCache } from "obsidian";
-import { FilterRule, FilterGroup } from "src/types";
+import { FilterRule, FilterGroup, DatePropertyFilterValue } from "src/types";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 import { matchTextFilter } from "./match-text-filter";
 import { matchCheckboxFilter } from "./match-checkbox-filter";
 import { matchListFilter } from "./match-list-filter";
 import { matchDateFilter } from "./match-date-filter";
 import { matchNumberFilter } from "./match-number-filter";
+import { getDateDaysAgo, getDateDaysAhead } from "src/svelte/shared/services/time-utils";
 
 export const filterByGroups = (frontmatter: FrontMatterCache | undefined, groups: FilterGroup[]) => {
 	return groups.every((group) => {
@@ -69,10 +70,27 @@ const filterByRule = (frontmatter: FrontMatterCache | undefined, filter: FilterR
 		const doesMatch = matchCheckboxFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
 	} else if (type === "date" || type === "datetime") {
-		const { propertyName } = filter;
+		const { propertyName, valueData } = filter;
 		const propertyValue = loadPropertyValue<string>(frontmatter, propertyName, type);
 
-		const doesMatch = matchDateFilter(propertyValue, value, condition, matchWhenPropertyDNE);
+		let compare = valueData;
+		if (value === DatePropertyFilterValue.TODAY) {
+			compare = getDateDaysAgo(0);
+		} else if (value === DatePropertyFilterValue.YESTERDAY) {
+			compare = getDateDaysAgo(1);
+		} else if (value === DatePropertyFilterValue.TOMORROW) {
+			compare = getDateDaysAhead(1);
+		} else if (value === DatePropertyFilterValue.ONE_WEEK_AGO) {
+			compare = getDateDaysAgo(7);
+		} else if (value === DatePropertyFilterValue.ONE_WEEK_FROM_NOW) {
+			compare = getDateDaysAhead(7);
+		} else if (value === DatePropertyFilterValue.ONE_MONTH_AGO) {
+			compare = getDateDaysAgo(30);
+		} else if (value === DatePropertyFilterValue.ONE_MONTH_FROM_NOW) {
+			compare = getDateDaysAhead(30);
+		}
+
+		const doesMatch = matchDateFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
 	} else if (type === "list") {
 		const { propertyName } = filter;

@@ -16,7 +16,7 @@
 	import {
 		getDisplayNameForDatePropertyFilterValue,
 		getDisplayNameForFilterCondition,
-	} from "./utils";
+	} from "./display-name-utils";
 	import { getAllObsidianProperties } from "src/obsidian/utils";
 
 	export let index: number;
