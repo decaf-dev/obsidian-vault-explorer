@@ -280,6 +280,10 @@ export default class VaultExplorerPlugin extends Plugin {
 							}
 						}
 					}
+					delete (newData.filters as any).properties;
+					for (const group of newData.filters.custom.groups as any) {
+						delete group.filters;
+					}
 					data = newData as unknown as Record<string, unknown>;
 				}
 			}
