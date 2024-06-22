@@ -27,7 +27,32 @@ export const moment = jest.fn((date: string, _formats: string[], _strict?: boole
 			parsedDate.setUTCHours(hour, minute, second);
 			return mockMoment;
 		}),
-		valueOf: jest.fn(() => parsedDate.getTime())
+		valueOf: jest.fn(() => parsedDate.getTime()),
+		isSame: jest.fn((other, unit) => {
+			if (unit === 'day') {
+				const otherDate = new Date(other);
+				return (
+					parsedDate.getUTCFullYear() === otherDate.getUTCFullYear() &&
+					parsedDate.getUTCMonth() === otherDate.getUTCMonth() &&
+					parsedDate.getUTCDate() === otherDate.getUTCDate()
+				);
+			}
+			return parsedDate.getTime() === new Date(other).getTime();
+		}),
+		isBefore: jest.fn((other, unit) => {
+			if (unit === 'day') {
+				const otherDate = new Date(other);
+				return parsedDate < otherDate && parsedDate.getUTCDate() !== otherDate.getUTCDate();
+			}
+			return parsedDate.getTime() < new Date(other).getTime();
+		}),
+		isAfter: jest.fn((other, unit) => {
+			if (unit === 'day') {
+				const otherDate = new Date(other);
+				return parsedDate > otherDate && parsedDate.getUTCDate() !== otherDate.getUTCDate();
+			}
+			return parsedDate.getTime() > new Date(other).getTime();
+		}),
 	};
 	return mockMoment;
 });

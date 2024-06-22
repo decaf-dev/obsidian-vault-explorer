@@ -1,10 +1,10 @@
 <script lang="ts">
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { PropertyFilterGroup } from "src/types";
+	import { FilterGroup } from "src/types";
 
-	export let groups: PropertyFilterGroup[];
-	export let selectedGroup: PropertyFilterGroup | undefined;
+	export let groups: FilterGroup[];
+	export let selectedGroup: FilterGroup | undefined;
 
 	let listContainerRef: HTMLDivElement | null;
 	let previousLength = 0;

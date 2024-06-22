@@ -1,12 +1,12 @@
 import { FrontMatterCache, TFile } from "obsidian";
-import { PropertyType, VaultExplorerPluginSettings } from "src/types";
+import { FilterRuleType, VaultExplorerPluginSettings } from "src/types";
 import { MarkdownFileRenderData } from "../types";
 import { getTimeMillis, isDateSupported } from "../../shared/services/time-utils";
 import Logger from "js-logger";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 
 export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined,): MarkdownFileRenderData => {
-	const tags: string[] | null = loadPropertyValue<string[]>(frontmatter, "tags", PropertyType.LIST);
+	const tags: string[] | null = loadPropertyValue<string[]>(frontmatter, "tags", FilterRuleType.LIST);
 
 	const {
 		createdDate: createdDateProp,
@@ -18,14 +18,14 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 		custom3: custom3Prop,
 	} = settings.properties;
 
-	const url: string | null = loadPropertyValue<string>(frontmatter, urlProp, PropertyType.TEXT);
-	const favorite: boolean | null = loadPropertyValue<boolean>(frontmatter, favoriteProp, PropertyType.CHECKBOX);
-	const creationDate: string | null = loadPropertyValue<string>(frontmatter, createdDateProp, PropertyType.DATE || PropertyType.DATETIME);
-	const modifiedDate: string | null = loadPropertyValue<string>(frontmatter, modifiedDateProp, PropertyType.DATE || PropertyType.DATETIME);
+	const url: string | null = loadPropertyValue<string>(frontmatter, urlProp, FilterRuleType.TEXT);
+	const favorite: boolean | null = loadPropertyValue<boolean>(frontmatter, favoriteProp, FilterRuleType.CHECKBOX);
+	const creationDate: string | null = loadPropertyValue<string>(frontmatter, createdDateProp, FilterRuleType.DATE || FilterRuleType.DATETIME);
+	const modifiedDate: string | null = loadPropertyValue<string>(frontmatter, modifiedDateProp, FilterRuleType.DATE || FilterRuleType.DATETIME);
 
-	const custom1: string | null = loadPropertyValue<string>(frontmatter, custom1Prop, PropertyType.TEXT);
-	const custom2: string | null = loadPropertyValue<string>(frontmatter, custom2Prop, PropertyType.TEXT);
-	const custom3: string | null = loadPropertyValue<string>(frontmatter, custom3Prop, PropertyType.TEXT);
+	const custom1: string | null = loadPropertyValue<string>(frontmatter, custom1Prop, FilterRuleType.TEXT);
+	const custom2: string | null = loadPropertyValue<string>(frontmatter, custom2Prop, FilterRuleType.TEXT);
+	const custom3: string | null = loadPropertyValue<string>(frontmatter, custom3Prop, FilterRuleType.TEXT);
 
 	let createdMillis = file.stat.ctime;
 	if (creationDate != null) {

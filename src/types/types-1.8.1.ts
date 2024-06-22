@@ -1,8 +1,10 @@
-export interface VaultExplorerPluginSettings_1_5_0 {
+export interface VaultExplorerPluginSettings_1_8_1 {
 	logLevel: string;
 	properties: {
 		favorite: string;
 		url: string;
+		createdDate: string;
+		modifiedDate: string;
 		custom1: string;
 		custom2: string;
 		custom3: string;
@@ -26,10 +28,6 @@ export interface VaultExplorerPluginSettings_1_5_0 {
 	pageSize: number;
 	pluginVersion: string | null;
 }
-
-export type PropertyFilterGroup_1_5_0 = PropertyFilterGroup;
-
-export type PropertyFilter_1_5_0 = PropertyFilter;
 
 type WordBreak = "normal" | "break-word";
 
@@ -76,6 +74,7 @@ enum CheckboxFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
+//TODO: add more types
 enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
@@ -96,6 +95,7 @@ interface BasePropertyFilter {
 	matchWhenPropertyDNE: boolean;
 }
 
+//Matches Obsidian property types
 enum PropertyType {
 	TEXT = "text",
 	NUMBER = "number",

@@ -6,11 +6,12 @@
 	import {
 		CheckboxFilterCondition,
 		DateFilterCondition,
-		FilterCondition,
 		ListFilterCondition,
 		NumberFilterCondition,
-		PropertyFilterGroup,
+		FilterGroup,
 		TextFilterCondition,
+		FilterRuleType,
+		DatePropertyFilterValue,
 	} from "src/types";
 	import { generateRandomId } from "../shared/services/random";
 	import GroupEditView from "./components/group-edit-view.svelte";
@@ -20,7 +21,7 @@
 	import Divider from "../shared/components/divider.svelte";
 
 	let selectedGroupId: string = "";
-	let groups: PropertyFilterGroup[] = [];
+	let groups: FilterGroup[] = [];
 	let plugin: VaultExplorerPlugin;
 
 	$: selectedGroup = groups.find((group) => group.id === selectedGroupId);
@@ -28,16 +29,16 @@
 	$: groups, selectedGroupId, saveSettings();
 
 	async function saveSettings() {
-		plugin.settings.filters.properties.groups = groups;
-		plugin.settings.filters.properties.selectedGroupId = selectedGroupId;
+		plugin.settings.filters.custom.groups = groups;
+		plugin.settings.filters.custom.selectedGroupId = selectedGroupId;
 		await plugin.saveSettings();
 	}
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
 
-		groups = plugin.settings.filters.properties.groups;
-		selectedGroupId = plugin.settings.filters.properties.selectedGroupId;
+		groups = plugin.settings.filters.custom.groups;
+		selectedGroupId = plugin.settings.filters.custom.selectedGroupId;
 	});
 
 	onMount(() => {
@@ -52,10 +53,10 @@
 	}
 
 	function handleAddGroupClick() {
-		const newGroup: PropertyFilterGroup = {
+		const newGroup: FilterGroup = {
 			id: generateRandomId(),
 			name: `Group ${groups.length + 1}`,
-			filters: [createPropertyFilter()],
+			rules: [createPropertyFilter()],
 			isEnabled: groups.length === 0,
 		};
 
@@ -88,7 +89,7 @@
 
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
-				? { ...group, filters: [...group.filters, filter] }
+				? { ...group, rules: [...group.rules, filter] }
 				: group,
 		);
 
@@ -112,10 +113,8 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id
-								? { ...filter, condition }
-								: filter,
+						rules: group.rules.map((rule) =>
+							rule.id === id ? { ...rule, condition } : rule,
 						),
 					}
 				: group,
@@ -167,9 +166,7 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.filter(
-							(filter) => filter.id !== id,
-						),
+						rules: group.rules.filter((rule) => rule.id !== id),
 					}
 				: group,
 		);
@@ -184,10 +181,10 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id
-								? { ...filter, propertyName: name }
-								: filter,
+						rules: group.rules.map((rule) =>
+							rule.id === id
+								? { ...rule, propertyName: name }
+								: rule,
 						),
 					}
 				: group,
@@ -203,10 +200,10 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id
-								? { ...filter, isEnabled: !filter.isEnabled }
-								: filter,
+						rules: group.rules.map((rule) =>
+							rule.id === id
+								? { ...rule, isEnabled: !rule.isEnabled }
+								: rule,
 						),
 					}
 				: group,
@@ -222,8 +219,8 @@
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id ? { ...filter, operator } : filter,
+						rules: group.rules.map((rule) =>
+							rule.id === id ? { ...rule, operator } : rule,
 						),
 					}
 				: group,
@@ -235,35 +232,49 @@
 	function handleFilterTypeChange(e: CustomEvent) {
 		const { id, type } = e.detail;
 
-		let condition: FilterCondition;
+		let newCondition: any;
+		let newValue = "";
 		if (type === "text") {
-			condition = TextFilterCondition.IS;
+			newCondition = TextFilterCondition.IS;
 		} else if (type === "number") {
-			condition = NumberFilterCondition.IS_EQUAL;
+			newCondition = NumberFilterCondition.IS_EQUAL;
 		} else if (type === "checkbox") {
-			condition = CheckboxFilterCondition.IS;
+			newCondition = CheckboxFilterCondition.IS;
+			newValue = "true";
 		} else if (type === "list") {
-			condition = ListFilterCondition.CONTAINS;
+			newCondition = ListFilterCondition.CONTAINS;
 		} else if (type === "date" || type === "datetime") {
-			condition = DateFilterCondition.IS;
+			newValue = DatePropertyFilterValue.TODAY;
+			newCondition = DateFilterCondition.IS;
 		} else {
 			throw new Error(`Unhandled filter type: ${type}`);
 		}
 
-		const newGroups: PropertyFilterGroup[] = groups.map((group) =>
+		const newGroups: FilterGroup[] = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id
+						rules: group.rules.map((rule) =>
+							rule.id === id
 								? {
-										...filter,
+										...rule,
 										type,
-										name: "",
-										condition,
-										value: "",
+										...(type === FilterRuleType.TEXT ||
+										type === FilterRuleType.NUMBER ||
+										type === FilterRuleType.LIST ||
+										type === FilterRuleType.CHECKBOX ||
+										type === FilterRuleType.DATE ||
+										type === FilterRuleType.DATETIME
+											? { propertyName: "" }
+											: {}),
+										condition: newCondition,
+										value: newValue,
+										...(type === FilterRuleType.DATE ||
+										type === FilterRuleType.DATETIME
+											? { valueData: "" }
+											: {}),
 									}
-								: filter,
+								: rule,
 						),
 					}
 				: group,
@@ -275,12 +286,44 @@
 	function handleFilterValueChange(e: CustomEvent) {
 		const { id, value } = e.detail;
 
+		const newGroups: FilterGroup[] = groups.map((group) => {
+			const { rules } = group;
+			if (group.id === selectedGroupId) {
+				const newRules = rules.map((rule) => {
+					if (rule.id === id) {
+						return {
+							...rule,
+							value,
+							...(rule.type === FilterRuleType.DATE ||
+							rule.type === FilterRuleType.DATETIME
+								? { valueData: "" }
+								: {}),
+						};
+					}
+					return rule;
+				});
+				return {
+					...group,
+					rules: newRules,
+				};
+			}
+			return group;
+		});
+
+		groups = newGroups;
+	}
+
+	function handleFilterValueDataChange(e: CustomEvent) {
+		const { id, value } = e.detail;
+
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id ? { ...filter, value } : filter,
+						rules: group.rules.map((rule) =>
+							rule.id === id
+								? { ...rule, valueData: value }
+								: rule,
 						),
 					}
 				: group,
@@ -292,17 +335,17 @@
 	function handleFilterMatchWhenPropertyDNEChange(e: CustomEvent) {
 		const { id, matchWhenDNE } = e.detail;
 
-		const newGroups = groups.map((group) =>
+		const newGroups: FilterGroup[] = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
-						filters: group.filters.map((filter) =>
-							filter.id === id
+						rules: group.rules.map((rule) =>
+							rule.id === id
 								? {
-										...filter,
+										...rule,
 										matchWhenPropertyDNE: matchWhenDNE,
 									}
-								: filter,
+								: rule,
 						),
 					}
 				: group,
@@ -337,6 +380,7 @@
 				on:filterToggle={handleFilterToggle}
 				on:filterOperatorChange={handleFilterOperatorChange}
 				on:filterValueChange={handleFilterValueChange}
+				on:filterValueDataChange={handleFilterValueDataChange}
 				on:filterMatchWhenPropertyDNEChange={handleFilterMatchWhenPropertyDNEChange}
 			/>
 		{/if}

@@ -27,6 +27,18 @@ export const getStartOfThisWeekMillis = () => {
 	return moment().startOf("week").valueOf();
 };
 
+export const getMomentDate = (date: string) => {
+	return moment(date, DATE_FORMATS, true);
+}
+
+export const getDateDaysAgo = (daysAgo: number) => {
+	return moment().subtract(daysAgo, "days").format("YYYY-MM-DD");
+}
+
+export const getDateDaysAhead = (daysAgo: number) => {
+	return moment().add(daysAgo, "days").format("YYYY-MM-DD");
+}
+
 /**
  * Gets 12:00 AM of the previous week in milliseconds. The week starts on Sunday.
  * @returns - The start of the previous week in milliseconds

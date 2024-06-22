@@ -1,4 +1,28 @@
-import { CheckboxFilterCondition, DateFilterCondition, FilterCondition, ListFilterCondition, NumberFilterCondition, TextFilterCondition } from "src/types";
+import { CheckboxFilterCondition, DateFilterCondition, DatePropertyFilterValue, FilterCondition, ListFilterCondition, NumberFilterCondition, TextFilterCondition } from "src/types";
+
+export const getDisplayNameForDatePropertyFilterValue = (value: DatePropertyFilterValue) => {
+	switch (value) {
+		case DatePropertyFilterValue.TODAY:
+			return "today";
+		case DatePropertyFilterValue.TOMORROW:
+			return "tomorrow";
+		case DatePropertyFilterValue.YESTERDAY:
+			return "yesterday";
+		case DatePropertyFilterValue.ONE_WEEK_AGO:
+			return "one week ago";
+		case DatePropertyFilterValue.ONE_WEEK_FROM_NOW:
+			return "one week from now";
+		case DatePropertyFilterValue.ONE_MONTH_AGO:
+			return "one month ago";
+		case DatePropertyFilterValue.ONE_MONTH_FROM_NOW:
+			return "one month from now";
+		case DatePropertyFilterValue.CUSTOM:
+			return "custom";
+		default:
+			return "";
+	}
+
+}
 
 export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 	switch (type) {
@@ -47,6 +71,10 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 			return "is after";
 		case DateFilterCondition.IS_BEFORE:
 			return "is before";
+		case DateFilterCondition.IS_ON_OR_AFTER:
+			return "is on or after";
+		case DateFilterCondition.IS_ON_OR_BEFORE:
+			return "is on or before";
 		default:
 			return "";
 	}

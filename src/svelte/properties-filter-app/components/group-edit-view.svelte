@@ -3,7 +3,7 @@
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 
-	import { PropertyFilterGroup } from "src/types";
+	import { FilterGroup } from "src/types";
 	import PropertyFilterList from "./property-filter-list.svelte";
 
 	import { createEventDispatcher } from "svelte";
@@ -11,7 +11,7 @@
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	const dispatch = createEventDispatcher();
 
-	export let selectedGroup: PropertyFilterGroup;
+	export let selectedGroup: FilterGroup;
 
 	function handleAddFilterClick() {
 		const newFilter = createPropertyFilter();
@@ -34,14 +34,15 @@
 	</div>
 	<Divider borderWidth="1px" />
 	<div class="vault-explorer-group-edit-view__body">
-		{#if selectedGroup.filters.length > 0}
+		{#if selectedGroup.rules.length > 0}
 			<PropertyFilterList
-				filters={selectedGroup.filters}
+				filters={selectedGroup.rules}
 				on:filterConditionChange
 				on:filterTypeChange
 				on:filterPropertyNameChange
 				on:filterOperatorChange
 				on:filterValueChange
+				on:filterValueDataChange
 				on:filterToggle
 				on:filterDeleteClick
 				on:filterMatchWhenPropertyDNEChange
