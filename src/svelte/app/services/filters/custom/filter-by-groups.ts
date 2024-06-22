@@ -1,4 +1,4 @@
-import { FrontMatterCache, TFile } from "obsidian";
+import { FrontMatterCache } from "obsidian";
 import { FilterRule, FilterGroup, DatePropertyFilterValue, PropertyFilterRule, FilterRuleType, FileNameFilterRule, FolderFilterRule, ContentFilterRule } from "src/types";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 import { matchTextPropertyFilter } from "./match-text-property-filter";
@@ -7,24 +7,24 @@ import { matchListPropertyFilter } from "./match-list-property-filter";
 import { matchDatePropertyFilter } from "./match-date-property-filter";
 import { matchNumberPropertyFilter } from "./match-number-property-filter";
 import { getDateDaysAgo, getDateDaysAhead } from "src/svelte/shared/services/time-utils";
-import { matchFileNameFilter } from "./match-filename-filter";
+import { matchFileNameFilter } from "./match-file-name-filter";
 import { matchContentFilter } from "./match-content-filter";
 import { matchFolderFilter } from "./match-folder-filter";
 
-export const filterByGroups = (file: TFile, frontmatter: FrontMatterCache | undefined, groups: FilterGroup[]) => {
+export const filterByGroups = (fileName: string, filePath: string, fileFrontmatter: FrontMatterCache | undefined, fileContent: string, groups: FilterGroup[]) => {
 	return groups.every((group) => {
 		if (!group.isEnabled) return true;
-		return filterByGroup(file, frontmatter, group);
+		return filterByGroup(fileName, filePath, fileFrontmatter, fileContent, group);
 	});
 }
 
-const filterByGroup = (file: TFile, frontmatter: FrontMatterCache | undefined, group: FilterGroup) => {
+const filterByGroup = (fileName: string, filePath: string, fileFrontmatter: FrontMatterCache | undefined, fileContent: string, group: FilterGroup) => {
 	let result: boolean | null = null;
 
 	group.rules.forEach((filter, i) => {
 		if (!filter.isEnabled) return;
 
-		const doesMatch = filterByRule(file, frontmatter, filter);
+		const doesMatch = filterByRule(fileName, filePath, fileFrontmatter, fileContent, filter);
 		if (result === null) {
 			result = doesMatch;
 		} else {
@@ -39,17 +39,17 @@ const filterByGroup = (file: TFile, frontmatter: FrontMatterCache | undefined, g
 	return result ?? true;
 }
 
-const filterByRule = (file: TFile, frontmatter: FrontMatterCache | undefined, filter: FilterRule) => {
+const filterByRule = (fileName: string, filePath: string, frontmatter: FrontMatterCache | undefined, fileContent: string, filter: FilterRule) => {
 	const { type } = filter;
 
 	if (type === FilterRuleType.PROPERTY) {
 		return filterByPropertyType(frontmatter, filter);
 	} else if (type === FilterRuleType.FILE_NAME) {
-		return filterByFileName(file, filter);
+		return filterByFileName(fileName, filter);
 	} else if (type === FilterRuleType.FOLDER) {
-		return filterByFolder(file, filter);
+		return filterByFolder(filePath, filter);
 	} else if (type === FilterRuleType.CONTENT) {
-		return filterByContent(file, filter);
+		return filterByContent(fileContent, filter);
 	} else {
 		throw new Error(`FilterRuleType not supported: ${type}`);
 	}
@@ -135,18 +135,18 @@ const filterByPropertyType = (frontmatter: FrontMatterCache | undefined, filter:
 	}
 }
 
-const filterByFileName = (file: TFile, filter: FileNameFilterRule): boolean => {
-	const value = file.name.toLowerCase();
+const filterByFileName = (fileName: string, filter: FileNameFilterRule): boolean => {
+	const value = fileName.toLowerCase();
 	const compare = filter.value.toLowerCase().trim();
 
 	const doesMatch = matchFileNameFilter(value, compare, filter.condition);
 	return doesMatch;
 }
 
-const filterByFolder = (file: TFile, filter: FolderFilterRule): boolean => {
+const filterByFolder = (filePath: string, filter: FolderFilterRule): boolean => {
 	const { condition, includeSubfolders } = filter;
 
-	let value = file.path.toLowerCase();
+	let value = filePath.toLowerCase();
 
 	const parts = value.split("/");
 	if (parts.length === 1) {
@@ -161,11 +161,8 @@ const filterByFolder = (file: TFile, filter: FolderFilterRule): boolean => {
 	return doesMatch;
 }
 
-const filterByContent = (file: TFile, filter: ContentFilterRule): boolean => {
-	// const value = file.name.toLowerCase();
-	// const compare = filter.value.toLowerCase().trim();
-
-	const value = file.name;
+const filterByContent = (fileContent: string, filter: ContentFilterRule): boolean => {
+	const value = fileContent.toLowerCase();
 	const compare = filter.value;
 
 	const doesMatch = matchContentFilter(value, compare, filter.condition);
