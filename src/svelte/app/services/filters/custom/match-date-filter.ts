@@ -8,13 +8,13 @@ export const matchDateFilter = (
 	matchIfNull: boolean
 ) => {
 	if (propertyValue) {
-		console.assert(isDateSupported(propertyValue), `Date filter propertyValue ${propertyValue} must be supported date format`);
+		console.assert(isDateSupported(propertyValue), `DateFilter propertyValue "${propertyValue}" must be supported date format`);
 	}
+	console.assert(isDateSupported(compare), `DateFilter compare "${compare}" must be supported date format`);
 
 	switch (condition) {
 		case DateFilterCondition.IS: {
 			if (propertyValue === null) return matchIfNull;
-			if (!isDateSupported(propertyValue)) return true;
 
 			const propertyValueTime = getTimeMillis(propertyValue);
 			const dayStartTime = getStartOfDayMillis(compare);
@@ -28,7 +28,7 @@ export const matchDateFilter = (
 
 		case DateFilterCondition.IS_AFTER: {
 			if (propertyValue === null) return matchIfNull;
-			if (!isDateSupported(propertyValue)) return true;
+			if (!isDateSupported(compare)) return true;
 
 			const propertyValueTime = getTimeMillis(propertyValue);
 			const dayEndTime = getEndOfDayMillis(compare);
@@ -37,7 +37,6 @@ export const matchDateFilter = (
 
 		case DateFilterCondition.IS_BEFORE: {
 			if (propertyValue === null) return matchIfNull;
-			if (!isDateSupported(propertyValue)) return true;
 
 			const propertyValueTime = getTimeMillis(propertyValue);
 			const dayStartTime = getStartOfDayMillis(compare);
