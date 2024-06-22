@@ -208,6 +208,6 @@
 	}
 
 	.vault-explorer-property-filter select {
-		max-width: 150px;
+		max-width: 160px;
 	}
 </style>
