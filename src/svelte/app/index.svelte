@@ -5,7 +5,7 @@
 	import Checkbox from "../shared/components/checkbox.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { FrontMatterCache, Menu, TFile, TFolder } from "obsidian";
+	import { Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
 		FilterGroup,
@@ -32,6 +32,7 @@
 		getStartOfTodayMillis,
 		getStartOfThisWeekMillis,
 	} from "../shared/services/time-utils";
+	import { MarkdownFileRenderData } from "./types";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -65,8 +66,8 @@
 	let currentView: ViewType = ViewType.GRID;
 	let propertyFilterGroups: FilterGroup[] = [];
 	let selectedPropertyFilterGroupId: string = "";
-
-	let frontmatterCache: Record<string, FrontMatterCache | undefined> = {};
+	let frontmatterCacheTime: number = Date.now();
+	let propertySettingTime: number = Date.now();
 
 	let markdownFiles: TFile[] = [];
 
@@ -78,16 +79,12 @@
 		onlyFavorites = value;
 	}, 300);
 
-	function updateFrontmatterCache() {
-		let localCache: Record<string, FrontMatterCache | undefined> = {};
-		markdownFiles.forEach((file) => {
-			const frontmatter =
-				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+	function updateFrontmatterCacheTime() {
+		frontmatterCacheTime = Date.now();
+	}
 
-			localCache[file.path] = frontmatter;
-		});
-
-		frontmatterCache = localCache;
+	function updatePropertySettingTime() {
+		propertySettingTime = Date.now();
 	}
 
 	store.plugin.subscribe((p) => {
@@ -99,7 +96,6 @@
 			.map((folder) => folder.path);
 
 		markdownFiles = plugin.app.vault.getMarkdownFiles();
-		updateFrontmatterCache();
 
 		pageSize = plugin.settings.pageSize;
 
@@ -178,13 +174,6 @@
 					}
 					return file;
 				});
-
-				if (frontmatterCache[oldPath]) {
-					frontmatterCache = {
-						...frontmatterCache,
-						[updatedFile.path]: frontmatterCache[oldPath],
-					};
-				}
 			}
 		};
 
@@ -201,17 +190,8 @@
 
 	onMount(() => {
 		const handleMetadataChange = (...data: unknown[]) => {
-			// console.log("metadata-change event triggered");
 			if (data.length > 0 && data[0] instanceof TFile) {
-				const file = data[0] as TFile;
-
-				const frontmatter =
-					plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-
-				frontmatterCache = {
-					...frontmatterCache,
-					[file.path]: frontmatter,
-				};
+				updateFrontmatterCacheTime();
 			}
 		};
 
@@ -243,7 +223,7 @@
 
 	onMount(() => {
 		function handlePropertyChange() {
-			updateFrontmatterCache();
+			updateFrontmatterCacheTime();
 		}
 
 		EventManager.getInstance().on(
@@ -258,15 +238,31 @@
 		};
 	});
 
-	$: filteredCustom = [...markdownFiles].filter((file) => {
-		const frontmatter = frontmatterCache[file.path];
-		return filterByGroups(file, frontmatter, propertyFilterGroups);
-	});
+	let filteredCustom: TFile[] = [];
 
-	$: formatted = filteredCustom.map((file) => {
-		const frontmatter = frontmatterCache[file.path];
-		return formatFileDataForRender(plugin.settings, file, frontmatter);
-	});
+	$: if (frontmatterCacheTime) {
+		filteredCustom = [...markdownFiles].filter((file) => {
+			const frontmatter =
+				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+			const { name, path } = file;
+			return filterByGroups(
+				name,
+				path,
+				frontmatter,
+				"",
+				propertyFilterGroups,
+			);
+		});
+	}
+
+	let formatted: MarkdownFileRenderData[] = [];
+	$: if (propertySettingTime) {
+		formatted = filteredCustom.map((file) => {
+			const frontmatter =
+				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+			return formatFileDataForRender(plugin.settings, file, frontmatter);
+		});
+	}
 
 	$: filteredSearch = formatted.filter((file) =>
 		filterBySearch(file, searchFilter),
