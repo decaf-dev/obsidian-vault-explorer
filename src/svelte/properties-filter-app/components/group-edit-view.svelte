@@ -48,6 +48,7 @@
 				on:propertyNameChange
 				on:propertyMatchWhenPropertyDNEChange
 				on:propertyValueDataChange
+				on:folderSubfoldersToggle
 			/>
 			<Spacer direction="vertical" size="sm" />
 		{/if}

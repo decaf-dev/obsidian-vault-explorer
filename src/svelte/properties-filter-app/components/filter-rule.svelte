@@ -16,7 +16,10 @@
 		FileNameFilterCondition,
 		ContentFilterCondition,
 	} from "src/types";
-	import { getDisplayNameForFilterCondition } from "./display-name-utils";
+	import {
+		getDisplayNameForFilterCondition,
+		getDisplayNameForFilterRuleType,
+	} from "./display-name-utils";
 	import { createEventDispatcher } from "svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 
@@ -101,7 +104,9 @@
 		{/if}
 		<select value={type} on:change={handleTypeChange}>
 			{#each Object.values(FilterRuleType) as type}
-				<option value={type}>{type}</option>
+				<option value={type}
+					>{getDisplayNameForFilterRuleType(type)}</option
+				>
 			{/each}
 		</select>
 		<slot name="before-condition"></slot>

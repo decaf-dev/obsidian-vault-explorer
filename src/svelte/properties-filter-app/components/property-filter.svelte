@@ -128,7 +128,7 @@
 				type={propertyType === PropertyType.NUMBER ? "number" : "text"}
 				placeholder={propertyType === PropertyType.LIST
 					? "item1,item2,item3"
-					: "Enter a value"}
+					: "value"}
 				{value}
 				on:change={handleValueChange}
 			/>

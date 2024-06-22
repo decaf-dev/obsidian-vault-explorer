@@ -371,6 +371,29 @@
 		groups = newGroups;
 	}
 
+	function handleFolderSubfoldersToggle(e: CustomEvent) {
+		const { id, includeSubfolders } = e.detail;
+
+		const newGroups: FilterGroup[] = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						rules: group.rules.map((rule) =>
+							rule.id === id &&
+							rule.type === FilterRuleType.FOLDER
+								? {
+										...rule,
+										includeSubfolders,
+									}
+								: rule,
+						),
+					}
+				: group,
+		);
+
+		groups = newGroups;
+	}
+
 	function handlePropertyMatchWhenPropertyDNEChange(e: CustomEvent) {
 		const { id, matchWhenDNE } = e.detail;
 
@@ -422,6 +445,7 @@
 				on:propertyNameChange={handlePropertyNameChange}
 				on:propertyValueDataChange={handlePropertyValueDataChange}
 				on:propertyMatchWhenPropertyDNEChange={handlePropertyMatchWhenPropertyDNEChange}
+				on:folderSubfoldersToggle={handleFolderSubfoldersToggle}
 			/>
 		{/if}
 	</Flex>

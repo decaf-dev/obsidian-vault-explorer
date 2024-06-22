@@ -10,7 +10,6 @@ export interface VaultExplorerPluginSettings {
 		custom3: string;
 	},
 	filters: {
-		folder: string;
 		search: string;
 		onlyFavorites: boolean;
 		sort: SortFilter;
@@ -184,6 +183,7 @@ export interface DatePropertyFilterRule extends BaseFilterRule {
 export interface FolderFilterRule extends BaseFilterRule {
 	type: FilterRuleType.FOLDER;
 	condition: FolderFilterCondition;
+	includeSubfolders: boolean;
 }
 
 export interface FileNameFilterRule extends BaseFilterRule {

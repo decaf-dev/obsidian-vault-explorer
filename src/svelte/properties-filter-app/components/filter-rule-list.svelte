@@ -63,6 +63,7 @@
 				id={rule.id}
 				type={rule.type}
 				operator={rule.operator}
+				includeSubfolders={rule.includeSubfolders}
 				value={rule.value}
 				condition={rule.condition}
 				isEnabled={rule.isEnabled}
@@ -72,6 +73,7 @@
 				on:ruleValueChange
 				on:ruleToggle
 				on:ruleDeleteClick
+				on:folderSubfoldersToggle
 			/>
 		{/if}
 

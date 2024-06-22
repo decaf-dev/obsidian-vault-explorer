@@ -6,6 +6,7 @@
 	export let id: string;
 	export let type: FilterRuleType;
 	export let value: string;
+	export let includeSubfolders: boolean;
 	export let operator: FilterOperator;
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
@@ -91,6 +92,11 @@
 		const value = (e.target as HTMLInputElement).value;
 		dispatch("ruleValueChange", { id, value });
 	}
+
+	function handleSubFoldersToggle(e: Event) {
+		const value = (e.target as HTMLInputElement).checked;
+		dispatch("folderSubfoldersToggle", { id, includeSubfolders: value });
+	}
 </script>
 
 <FilterRule
@@ -107,10 +113,18 @@
 	on:ruleOperatorChange
 	on:ruleToggle
 >
-	<select slot="after-condition" {value} on:change={handleValueChange}>
-		<option value="">select a folder</option>
-		{#each folders as folder}
-			<option value={folder}>{folder}</option>
-		{/each}
-	</select>
+	<svelte:fragment slot="after-condition">
+		<select {value} on:change={handleValueChange}>
+			<option value="">select a folder</option>
+			{#each folders as folder}
+				<option value={folder}>{folder}</option>
+			{/each}
+		</select>
+		<input
+			aria-label="Include subfolders"
+			type="checkbox"
+			checked={includeSubfolders}
+			on:change={handleSubFoldersToggle}
+		/>
+	</svelte:fragment>
 </FilterRule>

@@ -36,6 +36,7 @@
 	<input
 		slot="after-condition"
 		type="text"
+		placeholder="value"
 		{value}
 		on:input={handleValueChange}
 	/>

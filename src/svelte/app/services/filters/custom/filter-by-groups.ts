@@ -144,10 +144,20 @@ const filterByFileName = (file: TFile, filter: FileNameFilterRule): boolean => {
 }
 
 const filterByFolder = (file: TFile, filter: FolderFilterRule): boolean => {
-	const value = file.path.toLowerCase();
+	const { condition, includeSubfolders } = filter;
+
+	let value = file.path.toLowerCase();
+
+	const parts = value.split("/");
+	if (parts.length === 1) {
+		value = "/";
+	} else {
+		value = parts.slice(0, parts.length - 1).join("/");
+	}
+
 	const compare = filter.value.toLowerCase().trim();
 
-	const doesMatch = matchFolderFilter(value, compare, filter.condition);
+	const doesMatch = matchFolderFilter(value, compare, condition, { includeSubfolders });
 	return doesMatch;
 }
 

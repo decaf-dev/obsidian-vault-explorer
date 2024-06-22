@@ -1,4 +1,19 @@
-import { CheckboxFilterCondition, ContentFilterCondition, DateFilterCondition, DatePropertyFilterValue, FileNameFilterCondition, FilterCondition, FolderFilterCondition, ListFilterCondition, NumberFilterCondition, TextFilterCondition } from "src/types";
+import { CheckboxFilterCondition, ContentFilterCondition, DateFilterCondition, DatePropertyFilterValue, FileNameFilterCondition, FilterCondition, FilterRuleType, FolderFilterCondition, ListFilterCondition, NumberFilterCondition, TextFilterCondition } from "src/types";
+
+export const getDisplayNameForFilterRuleType = (type: FilterRuleType) => {
+	switch (type) {
+		case FilterRuleType.CONTENT:
+			return "content";
+		case FilterRuleType.FILE_NAME:
+			return "file name";
+		case FilterRuleType.FOLDER:
+			return "folder";
+		case FilterRuleType.PROPERTY:
+			return "property";
+		default:
+			return "";
+	}
+}
 
 export const getDisplayNameForDatePropertyFilterValue = (value: DatePropertyFilterValue) => {
 	switch (value) {
