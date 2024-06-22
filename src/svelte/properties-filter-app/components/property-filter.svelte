@@ -169,15 +169,15 @@
 				{/each}
 			</select>
 		{/if}
-		{#if (type === FilterRuleType.DATE || type === FilterRuleType.DATETIME) && value == "custom" && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
-			<input type="date" {value} on:change={handleValueChange} />
-		{/if}
 		{#if type !== FilterRuleType.CHECKBOX && type !== FilterRuleType.DATE && type !== FilterRuleType.DATETIME && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input
 				type="text"
 				value={valueData}
 				on:change={handleValueDataChange}
 			/>
+		{/if}
+		{#if (type === FilterRuleType.DATE || type === FilterRuleType.DATETIME) && value == DatePropertyFilterValue.CUSTOM && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+			<input type="date" {value} on:change={handleValueDataChange} />
 		{/if}
 		{#if condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input

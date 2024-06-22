@@ -79,8 +79,8 @@ export enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
 	IS_AFTER = "is-after",
-	IS_ON_OR_BEFORE = "is-on-or-before",
-	IS_ON_OR_AFTER = "is-on-or-after",
+	// IS_ON_OR_BEFORE = "is-on-or-before",
+	// IS_ON_OR_AFTER = "is-on-or-after",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
@@ -104,6 +104,7 @@ export enum DatePropertyFilterValue {
 	ONE_WEEK_FROM_NOW = "one-week-from-now",
 	ONE_MONTH_AGO = "one-month-ago",
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
+	CUSTOM = "custom"
 }
 
 interface BaseFilterRule {

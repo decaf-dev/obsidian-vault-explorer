@@ -16,6 +16,8 @@ export const getDisplayNameForDatePropertyFilterValue = (value: DatePropertyFilt
 			return "one month ago";
 		case DatePropertyFilterValue.ONE_MONTH_FROM_NOW:
 			return "one month from now";
+		case DatePropertyFilterValue.CUSTOM:
+			return "custom";
 		default:
 			return "";
 	}
@@ -69,6 +71,10 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 			return "is after";
 		case DateFilterCondition.IS_BEFORE:
 			return "is before";
+		// case DateFilterCondition.IS_ON_OR_AFTER:
+		// 	return "is on or after";
+		// case DateFilterCondition.IS_ON_OR_BEFORE:
+		// 	return "is on or before";
 		default:
 			return "";
 	}
