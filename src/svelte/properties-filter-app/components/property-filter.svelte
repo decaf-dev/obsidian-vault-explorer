@@ -141,7 +141,7 @@
 		</select>
 		{#if propertyName != null}
 			<select value={propertyName} on:change={handlePropertyNameChange}>
-				<option value="">Select a property</option>
+				<option value="">select a property</option>
 				{#each filteredObsidianProperties as prop (prop.name)}
 					<option value={prop.name}>{prop.name}</option>
 				{/each}
