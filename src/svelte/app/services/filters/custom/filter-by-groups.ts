@@ -41,6 +41,10 @@ const filterByRule = (frontmatter: FrontMatterCache | undefined, filter: FilterR
 
 	if (type === "text") {
 		const { propertyName } = filter;
+		if (propertyName === "") {
+			return true;
+		}
+
 		let propertyValue = loadPropertyValue<string>(frontmatter, propertyName, type);
 		if (propertyValue) {
 			propertyValue = propertyValue.toLowerCase().trim();
@@ -49,15 +53,25 @@ const filterByRule = (frontmatter: FrontMatterCache | undefined, filter: FilterR
 
 		const doesMatch = matchTextFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
+
 	} else if (type === "number") {
 		const { propertyName } = filter;
+		if (propertyName === "") {
+			return true;
+		}
+
 		const propertyValue = loadPropertyValue<number>(frontmatter, propertyName, type);
 		const compare = parseFloat(value.trim());
 
 		const doesMatch = matchNumberFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
+
 	} else if (type === "checkbox") {
 		const { propertyName } = filter;
+		if (propertyName === "") {
+			return true;
+		}
+
 		const propertyValue = loadPropertyValue<boolean>(frontmatter, propertyName, type);
 
 		let compare = null;
@@ -69,8 +83,13 @@ const filterByRule = (frontmatter: FrontMatterCache | undefined, filter: FilterR
 
 		const doesMatch = matchCheckboxFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
+
 	} else if (type === "date" || type === "datetime") {
 		const { propertyName, valueData } = filter;
+		if (propertyName === "") {
+			return true;
+		}
+
 		const propertyValue = loadPropertyValue<string>(frontmatter, propertyName, type);
 
 		let compare = valueData;
@@ -92,8 +111,13 @@ const filterByRule = (frontmatter: FrontMatterCache | undefined, filter: FilterR
 
 		const doesMatch = matchDateFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
+
 	} else if (type === "list") {
 		const { propertyName } = filter;
+		if (propertyName === "") {
+			return true;
+		}
+
 		let propertyValue = loadPropertyValue<string[]>(frontmatter, propertyName, type);
 		if (propertyValue) {
 			propertyValue = propertyValue.map((v) => v.toLowerCase().trim());
@@ -102,6 +126,7 @@ const filterByRule = (frontmatter: FrontMatterCache | undefined, filter: FilterR
 
 		const doesMatch = matchListFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
 		return doesMatch;
+
 	} else {
 		throw new Error(`Property filter type not supported: ${type}`);
 	}
