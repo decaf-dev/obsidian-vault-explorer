@@ -6,7 +6,6 @@
 	import {
 		CheckboxFilterCondition,
 		DateFilterCondition,
-		FilterCondition,
 		ListFilterCondition,
 		NumberFilterCondition,
 		FilterGroup,
@@ -287,16 +286,29 @@
 	function handleFilterValueChange(e: CustomEvent) {
 		const { id, value } = e.detail;
 
-		const newGroups: FilterGroup[] = groups.map((group) =>
-			group.id === selectedGroupId
-				? {
-						...group,
-						rules: group.rules.map((rule) =>
-							rule.id === id ? { ...rule, value } : rule,
-						),
+		const newGroups: FilterGroup[] = groups.map((group) => {
+			const { rules } = group;
+			if (group.id === selectedGroupId) {
+				const newRules = rules.map((rule) => {
+					if (rule.id === id) {
+						return {
+							...rule,
+							value,
+							...(rule.type === FilterRuleType.DATE ||
+							rule.type === FilterRuleType.DATETIME
+								? { valueData: "" }
+								: {}),
+						};
 					}
-				: group,
-		);
+					return rule;
+				});
+				return {
+					...group,
+					rules: newRules,
+				};
+			}
+			return group;
+		});
 
 		groups = newGroups;
 	}
