@@ -8,7 +8,7 @@
 	import { FrontMatterCache, Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
-		PropertyFilterGroup,
+		FilterGroup,
 		SortFilter,
 		TimestampFilter,
 		ViewType,
@@ -65,7 +65,7 @@
 	let onlyFavorites: boolean = false;
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
-	let propertyFilterGroups: PropertyFilterGroup[] = [];
+	let propertyFilterGroups: FilterGroup[] = [];
 	let selectedPropertyFilterGroupId: string = "";
 
 	let frontmatterCache: Record<string, FrontMatterCache | undefined> = {};
@@ -112,16 +112,16 @@
 		onlyFavorites = plugin.settings.filters.onlyFavorites;
 		currentView = plugin.settings.views.currentView;
 		viewOrder = plugin.settings.views.order;
-		propertyFilterGroups = plugin.settings.filters.properties.groups;
+		propertyFilterGroups = plugin.settings.filters.custom.groups;
 		selectedPropertyFilterGroupId =
-			plugin.settings.filters.properties.selectedGroupId;
+			plugin.settings.filters.custom.selectedGroupId;
 	});
 
 	onMount(() => {
 		function handlePropertiesFilterUpdate() {
-			propertyFilterGroups = plugin.settings.filters.properties.groups;
+			propertyFilterGroups = plugin.settings.filters.custom.groups;
 			selectedPropertyFilterGroupId =
-				plugin.settings.filters.properties.selectedGroupId;
+				plugin.settings.filters.custom.selectedGroupId;
 		}
 
 		EventManager.getInstance().on(
@@ -387,8 +387,8 @@
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
 		plugin.settings.views.order = viewOrder;
 		plugin.settings.views.currentView = currentView;
-		plugin.settings.filters.properties.groups = propertyFilterGroups;
-		plugin.settings.filters.properties.selectedGroupId =
+		plugin.settings.filters.custom.groups = propertyFilterGroups;
+		plugin.settings.filters.custom.selectedGroupId =
 			selectedPropertyFilterGroupId;
 		await plugin.saveSettings();
 	}

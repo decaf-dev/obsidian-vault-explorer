@@ -15,9 +15,9 @@ export interface VaultExplorerPluginSettings {
 		onlyFavorites: boolean;
 		sort: SortFilter;
 		timestamp: TimestampFilter;
-		properties: {
+		custom: {
 			selectedGroupId: string;
-			groups: PropertyFilterGroup[];
+			groups: FilterGroup[];
 		}
 	},
 	views: {
@@ -74,29 +74,20 @@ export enum CheckboxFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-//TODO: add more types
+//TODO: add is between
 export enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
 	IS_AFTER = "is-after",
+	IS_ON_OR_BEFORE = "is-on-or-before",
+	IS_ON_OR_AFTER = "is-on-or-after",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
 export type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition;
 
-interface BasePropertyFilter {
-	id: string;
-	propertyName: string;
-	operator: FilterOperator;
-	type: PropertyType;
-	isEnabled: boolean;
-	value: string;
-	matchWhenPropertyDNE: boolean;
-}
-
-//Matches Obsidian property types
-export enum PropertyType {
+export enum FilterRuleType {
 	TEXT = "text",
 	NUMBER = "number",
 	LIST = "list",
@@ -105,37 +96,63 @@ export enum PropertyType {
 	DATETIME = "datetime",
 }
 
-export interface TextPropertyFilter extends BasePropertyFilter {
-	type: PropertyType.TEXT;
+export enum DatePropertyFilterValue {
+	TODAY = "today",
+	TOMORROW = "tomorrow",
+	YESTERDAY = "yesterday",
+	ONE_WEEK_FROM_NOW = "one-week-from-now",
+	ONE_WEEK_AGO = "one-week-ago",
+	ONE_MONTH_FROM_NOW = "one-month-from-now",
+	ONE_MONTH_AGO = "one-month-ago",
+	CUSTOM = "custom"
+}
+
+interface BaseFilterRule {
+	id: string;
+	operator: FilterOperator;
+	type: FilterRuleType;
+	isEnabled: boolean;
+	value: string;
+	matchWhenPropertyDNE: boolean;
+}
+
+export interface TextPropertyFilter extends BaseFilterRule {
+	type: FilterRuleType.TEXT;
+	propertyName: string;
 	condition: TextFilterCondition;
 }
 
-export interface NumberPropertyFilter extends BasePropertyFilter {
-	type: PropertyType.NUMBER;
+export interface NumberPropertyFilter extends BaseFilterRule {
+	type: FilterRuleType.NUMBER;
+	propertyName: string;
 	condition: NumberFilterCondition;
 }
 
-export interface ListPropertyFilter extends BasePropertyFilter {
-	type: PropertyType.LIST
+export interface ListPropertyFilter extends BaseFilterRule {
+	type: FilterRuleType.LIST
+	propertyName: string;
 	condition: ListFilterCondition;
 }
 
-export interface CheckboxPropertyFilter extends BasePropertyFilter {
-	type: PropertyType.CHECKBOX
+export interface CheckboxPropertyFilter extends BaseFilterRule {
+	type: FilterRuleType.CHECKBOX;
+	propertyName: string;
 	condition: CheckboxFilterCondition;
 }
 
-export interface DatePropertyFilter extends BasePropertyFilter {
-	type: PropertyType.DATE | PropertyType.DATETIME;
+export interface DatePropertyFilter extends BaseFilterRule {
+	type: FilterRuleType.DATE | FilterRuleType.DATETIME;
+	propertyName: string;
 	condition: DateFilterCondition;
+	valueData: string;
 }
 
-export type PropertyFilter = TextPropertyFilter | NumberPropertyFilter | ListPropertyFilter | CheckboxPropertyFilter | DatePropertyFilter;
+export type FilterRule = TextPropertyFilter | NumberPropertyFilter | ListPropertyFilter | CheckboxPropertyFilter | DatePropertyFilter;
 
-export interface PropertyFilterGroup {
+export interface FilterGroup {
 	id: string;
 	name: string;
-	filters: PropertyFilter[];
+	rules: FilterRule[];
 	isEnabled: boolean;
 }
 

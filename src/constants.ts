@@ -25,14 +25,14 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		onlyFavorites: false,
 		timestamp: "all",
 		sort: "file-name-asc",
-		properties: {
+		custom: {
 			selectedGroupId: randomGroupId,
 			groups:
 				[
 					{
 						id: randomGroupId,
 						name: "Group 1",
-						filters: [],
+						rules: [],
 						isEnabled: true
 					}
 				]

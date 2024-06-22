@@ -3,7 +3,7 @@ import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { PropertyFilter, PropertyFilterGroup, VaultExplorerPluginSettings, ViewType } from './types';
+import { VaultExplorerPluginSettings, ViewType } from './types';
 import { DEFAULT_SETTINGS, HOVER_LINK_SOURCE_ID, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
@@ -17,10 +17,11 @@ import { VaultExplorerPluginSettings_1_0_1 } from './types/types-1.0.1';
 import { moveFocus } from './focus-utils';
 import { VaultExplorerPluginSettings_1_2_0 } from './types/types-1.2.0';
 import { VaultExplorerPluginSettings_1_2_1 } from './types/types-1.2.1';
-import { VaultExplorerPluginSettings_1_5_0 } from './types/types-1.5.0';
+import { PropertyFilterGroup_1_5_0, PropertyFilter_1_5_0, VaultExplorerPluginSettings_1_5_0 } from './types/types-1.5.0';
 import { VaultExplorerPluginSettings_1_6_0 } from './types/types-1.6.0';
 import { loadDeviceId } from './svelte/shared/services/device-id-utils';
 import License from './svelte/shared/services/license';
+import { VaultExplorerPluginSettings_1_8_1 } from './types/types-1.8.1';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -199,8 +200,8 @@ export default class VaultExplorerPlugin extends Plugin {
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_2_1;
 					const groups = typedData.filters.properties.groups;
 
-					const updatedGroups: PropertyFilterGroup[] = groups.map(group => {
-						const updatedFilters: PropertyFilter[] = group.filters.map(filter => {
+					const updatedGroups: PropertyFilterGroup_1_5_0[] = groups.map(group => {
+						const updatedFilters: PropertyFilter_1_5_0[] = group.filters.map(filter => {
 							return {
 								...filter,
 								type: filter.type as any,
@@ -243,13 +244,45 @@ export default class VaultExplorerPlugin extends Plugin {
 				if (isVersionLessThan(settingsVersion, "1.6.1")) {
 					console.log("Upgrading settings from version 1.6.0 to 1.6.1");
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_6_0;
-					const newData: VaultExplorerPluginSettings = {
+					const newData: VaultExplorerPluginSettings_1_8_1 = {
 						...typedData,
 						properties: {
 							...typedData.properties,
 							createdDate: "",
 							modifiedDate: ""
 						}
+					}
+					data = newData as unknown as Record<string, unknown>;
+				}
+
+				if (isVersionLessThan(settingsVersion, "1.9.0")) {
+					console.log("Upgrading settings from version 1.8.1 to 1.9.0");
+					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_8_1;
+					const newData: VaultExplorerPluginSettings = {
+						...typedData,
+						filters: {
+							...typedData.filters,
+							custom: {
+								selectedGroupId: typedData.filters.properties.selectedGroupId,
+								groups: typedData.filters.properties.groups.map(group => {
+									const rules = group.filters.map(filter => {
+										return {
+											...filter,
+											valueData: "",
+											type: filter.type as any
+										}
+									});
+									return {
+										...group,
+										rules
+									}
+								})
+							}
+						}
+					}
+					delete (newData.filters as any).properties;
+					for (const group of newData.filters.custom.groups as any) {
+						delete group.filters;
 					}
 					data = newData as unknown as Record<string, unknown>;
 				}
