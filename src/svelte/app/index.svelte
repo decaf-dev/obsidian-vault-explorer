@@ -58,7 +58,6 @@
 	let pageSize: number = 0;
 
 	let searchFilter: string = "";
-	let folderFilter: string = "/";
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
 	let onlyFavorites: boolean = false;
@@ -105,7 +104,6 @@
 		pageSize = plugin.settings.pageSize;
 
 		searchFilter = plugin.settings.filters.search;
-		folderFilter = plugin.settings.filters.folder;
 		sortFilter = plugin.settings.filters.sort;
 		timestampFilter = plugin.settings.filters.timestamp;
 		onlyFavorites = plugin.settings.filters.onlyFavorites;
@@ -304,7 +302,6 @@
 	});
 
 	$: searchFilter,
-		folderFilter,
 		sortFilter,
 		timestampFilter,
 		onlyFavorites,
@@ -316,7 +313,6 @@
 
 	async function saveSettings() {
 		plugin.settings.filters.search = searchFilter;
-		plugin.settings.filters.folder = folderFilter;
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
@@ -463,23 +459,6 @@
 		menu.showAtMouseEvent(nativeEvent);
 	}
 
-	function openFolderFilterMenu(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent as MouseEvent;
-
-		const menu = new Menu();
-		menu.setUseNativeMenu(true);
-
-		for (const folder of folders) {
-			menu.addItem((item) => {
-				item.setTitle(folder === "/" ? "All" : folder);
-				item.setChecked(folderFilter === folder);
-				item.onClick(() => (folderFilter = folder));
-			});
-		}
-
-		menu.showAtMouseEvent(nativeEvent);
-	}
-
 	function openListFilterMenu(e: CustomEvent) {
 		const nativeEvent = e.detail.nativeEvent as MouseEvent;
 
@@ -582,11 +561,6 @@
 						on:change={handleOnlyFavoritesChange}
 					/>
 					<Flex>
-						<IconButton
-							ariaLabel="Change folder filter"
-							iconId="folder"
-							on:click={openFolderFilterMenu}
-						/>
 						<IconButton
 							ariaLabel="Change timestamp filter"
 							iconId="clock"
