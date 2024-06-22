@@ -79,8 +79,8 @@ export enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
 	IS_AFTER = "is-after",
-	// IS_ON_OR_BEFORE = "is-on-or-before",
-	// IS_ON_OR_AFTER = "is-on-or-after",
+	IS_ON_OR_BEFORE = "is-on-or-before",
+	IS_ON_OR_AFTER = "is-on-or-after",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }

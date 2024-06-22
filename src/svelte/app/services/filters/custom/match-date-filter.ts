@@ -29,12 +29,29 @@ export const matchDateFilter = (
 			return propertyValueDate.isAfter(compareDate, "day");
 		}
 
+		case DateFilterCondition.IS_ON_OR_AFTER: {
+			if (propertyValue === null) return matchIfNull;
+
+			const propertyValueDate = getMomentDate(propertyValue);
+			const compareDate = getMomentDate(compare);
+			return propertyValueDate.isAfter(compareDate, "day") || propertyValueDate.isSame(compareDate, "day");
+		}
+
+
 		case DateFilterCondition.IS_BEFORE: {
 			if (propertyValue === null) return matchIfNull;
 
 			const propertyValueDate = getMomentDate(propertyValue);
 			const compareDate = getMomentDate(compare);
 			return propertyValueDate.isBefore(compareDate, "day");
+		}
+
+		case DateFilterCondition.IS_ON_OR_BEFORE: {
+			if (propertyValue === null) return matchIfNull;
+
+			const propertyValueDate = getMomentDate(propertyValue);
+			const compareDate = getMomentDate(compare);
+			return propertyValueDate.isBefore(compareDate, "day") || propertyValueDate.isSame(compareDate, "day");
 		}
 
 		case DateFilterCondition.EXISTS:

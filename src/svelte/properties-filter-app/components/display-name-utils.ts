@@ -71,10 +71,10 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 			return "is after";
 		case DateFilterCondition.IS_BEFORE:
 			return "is before";
-		// case DateFilterCondition.IS_ON_OR_AFTER:
-		// 	return "is on or after";
-		// case DateFilterCondition.IS_ON_OR_BEFORE:
-		// 	return "is on or before";
+		case DateFilterCondition.IS_ON_OR_AFTER:
+			return "is on or after";
+		case DateFilterCondition.IS_ON_OR_BEFORE:
+			return "is on or before";
 		default:
 			return "";
 	}
