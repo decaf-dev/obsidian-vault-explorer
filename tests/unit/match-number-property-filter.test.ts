@@ -1,7 +1,7 @@
-import { matchNumberFilter } from "src/svelte/app/services/filters/custom/match-number-filter";
+import { matchNumberPropertyFilter } from "src/svelte/app/services/filters/custom/match-number-property-filter";
 import { NumberFilterCondition } from "src/types";
 
-describe('matchNumberFilter', () => {
+describe('matchNumberPropertyFilter', () => {
 
 	describe('Normal Cases', () => {
 		it('should return true for IS_EQUAL when values are equal', () => {
@@ -12,7 +12,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -26,7 +26,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -40,7 +40,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -54,7 +54,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -68,7 +68,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -82,7 +82,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -98,7 +98,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -112,7 +112,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -126,7 +126,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -140,7 +140,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchNumberFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -156,7 +156,7 @@ describe('matchNumberFilter', () => {
 			const matchIfNull = false;
 
 			// Act & Assert
-			expect(() => matchNumberFilter(propertyValue, compare, condition, matchIfNull)).toThrow(
+			expect(() => matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull)).toThrow(
 				`Number filter condition not supported: ${condition}`
 			);
 		});

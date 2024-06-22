@@ -13,9 +13,9 @@
 
 	export let selectedGroup: FilterGroup;
 
-	function handleAddFilterClick() {
+	function handleFilterAddClick() {
 		const newFilter = createPropertyFilter();
-		dispatch("filterAddClick", { filter: newFilter });
+		dispatch("ruleAddClick", { filter: newFilter });
 	}
 
 	function handleGroupNameChange(e: Event) {
@@ -38,12 +38,12 @@
 			<PropertyFilterList
 				filters={selectedGroup.rules}
 				on:filterConditionChange
-				on:filterTypeChange
+				on:filterPropertyTypeChange
 				on:filterPropertyNameChange
 				on:filterOperatorChange
 				on:filterValueChange
 				on:filterValueDataChange
-				on:filterToggle
+				on:ruleToggle
 				on:filterDeleteClick
 				on:filterMatchWhenPropertyDNEChange
 			/>
@@ -52,7 +52,7 @@
 		<IconButton
 			ariaLabel="Add filter rule"
 			iconId="plus"
-			on:click={handleAddFilterClick}
+			on:click={handleFilterAddClick}
 		/>
 	</div>
 </Stack>

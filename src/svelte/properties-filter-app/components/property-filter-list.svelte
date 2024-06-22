@@ -30,12 +30,12 @@
 			isEnabled={filter.isEnabled}
 			on:groupChange
 			on:filterConditionChange
-			on:filterTypeChange
+			on:filterPropertyTypeChange
 			on:filterOperatorChange
 			on:filterPropertyNameChange
 			on:filterValueChange
 			on:filterValueDataChange
-			on:filterToggle
+			on:ruleToggle
 			on:filterDeleteClick
 			on:filterMatchWhenPropertyDNEChange
 		/>

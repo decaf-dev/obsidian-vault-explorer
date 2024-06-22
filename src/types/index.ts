@@ -85,15 +85,49 @@ export enum DateFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition;
+export enum ContentFilterCondition {
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+}
 
-export enum FilterRuleType {
+//TODO add is child of and is parent of?
+export enum FolderFilterCondition {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+	// IS_CHILD_OF = "is-child-of",
+	// IS_PARENT_OF = "is-parent-of",
+}
+
+export enum FileNameFilterCondition {
+	IS = "is",
+	IS_NOT = "is-not",
+	CONTAINS = "contains",
+	DOES_NOT_CONTAIN = "does-not-contain",
+	STARTS_WITH = "starts-with",
+	ENDS_WITH = "ends-with",
+}
+
+export type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition | ContentFilterCondition | FolderFilterCondition | FileNameFilterCondition;
+
+//This matches the Obsidian property types
+export enum PropertyType {
 	TEXT = "text",
 	NUMBER = "number",
 	LIST = "list",
 	CHECKBOX = "checkbox",
 	DATE = "date",
 	DATETIME = "datetime",
+}
+
+export enum FilterRuleType {
+	PROPERTY = "property",
+	CONTENT = "content",
+	FOLDER = "folder",
+	FILE_NAME = "file-name",
 }
 
 export enum DatePropertyFilterValue {
@@ -111,43 +145,65 @@ interface BaseFilterRule {
 	id: string;
 	operator: FilterOperator;
 	type: FilterRuleType;
+	condition: FilterCondition;
 	isEnabled: boolean;
 	value: string;
 	matchWhenPropertyDNE: boolean;
 }
 
-export interface TextPropertyFilter extends BaseFilterRule {
-	type: FilterRuleType.TEXT;
+export interface TextPropertyFilterRule extends BaseFilterRule {
+	type: FilterRuleType.PROPERTY;
+	propertyType: PropertyType.TEXT;
 	propertyName: string;
 	condition: TextFilterCondition;
 }
 
-export interface NumberPropertyFilter extends BaseFilterRule {
-	type: FilterRuleType.NUMBER;
+export interface NumberPropertyFilterRule extends BaseFilterRule {
+	type: FilterRuleType.PROPERTY;
+	propertyType: PropertyType.NUMBER;
 	propertyName: string;
 	condition: NumberFilterCondition;
 }
 
-export interface ListPropertyFilter extends BaseFilterRule {
-	type: FilterRuleType.LIST
+export interface ListPropertyFilterRule extends BaseFilterRule {
+	type: FilterRuleType.PROPERTY;
+	propertyType: PropertyType.LIST;
 	propertyName: string;
 	condition: ListFilterCondition;
 }
 
-export interface CheckboxPropertyFilter extends BaseFilterRule {
-	type: FilterRuleType.CHECKBOX;
+export interface CheckboxPropertyFilterRule extends BaseFilterRule {
+	type: FilterRuleType.PROPERTY;
+	propertyType: PropertyType.CHECKBOX;
 	propertyName: string;
 	condition: CheckboxFilterCondition;
 }
 
-export interface DatePropertyFilter extends BaseFilterRule {
-	type: FilterRuleType.DATE | FilterRuleType.DATETIME;
+export interface DatePropertyFilterRule extends BaseFilterRule {
+	type: FilterRuleType.PROPERTY;
+	propertyType: PropertyType.DATE | PropertyType.DATETIME;
 	propertyName: string;
 	condition: DateFilterCondition;
 	valueData: string;
 }
 
-export type FilterRule = TextPropertyFilter | NumberPropertyFilter | ListPropertyFilter | CheckboxPropertyFilter | DatePropertyFilter;
+export interface FolderFilterRule extends BaseFilterRule {
+	type: FilterRuleType.FOLDER;
+	condition: FolderFilterCondition;
+}
+
+export interface FileNameFilterRule extends BaseFilterRule {
+	type: FilterRuleType.FILE_NAME;
+	condition: FileNameFilterCondition;
+}
+
+export interface ContentFilterRule extends BaseFilterRule {
+	type: FilterRuleType.CONTENT;
+	condition: ContentFilterCondition;
+}
+
+export type FilterRule = PropertyFilterRule | FolderFilterRule | FileNameFilterRule | ContentFilterRule;
+export type PropertyFilterRule = TextPropertyFilterRule | NumberPropertyFilterRule | ListPropertyFilterRule | CheckboxPropertyFilterRule | DatePropertyFilterRule;
 
 export interface FilterGroup {
 	id: string;

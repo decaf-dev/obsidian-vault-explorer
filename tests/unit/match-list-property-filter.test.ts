@@ -1,10 +1,10 @@
-import { matchListFilter } from "src/svelte/app/services/filters/custom/match-list-filter";
+import { matchListPropertyFilter } from "src/svelte/app/services/filters/custom/match-list-property-filter";
 import { ListFilterCondition } from "src/types";
 
-describe('matchListFilter', () => {
+describe('matchListPropertyFilter', () => {
 
 	describe('Normal Cases', () => {
-		it('should return true for matchListFilter(["apple", "banana", "cherry"], ["banana"], ListFilterCondition.CONTAINS, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple", "banana", "cherry"], ["banana"], ListFilterCondition.CONTAINS, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana", "cherry"];
 			const compare = ["banana"];
@@ -12,13 +12,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(["apple", "banana", "cherry"], ["banana", "apple"], ListFilterCondition.CONTAINS, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple", "banana", "cherry"], ["banana", "apple"], ListFilterCondition.CONTAINS, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana", "cherry"];
 			const compare = ["banana", "apple"];
@@ -26,13 +26,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(["apple pie", "banana", "cherry"], ["apple"], ListFilterCondition.CONTAINS, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple pie", "banana", "cherry"], ["apple"], ListFilterCondition.CONTAINS, false)', () => {
 			// Arrange
 			const propertyValue = ["apple pie", "banana", "cherry"];
 			const compare = ["apple"];
@@ -40,13 +40,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(["apple", "banana", "cherry"], ["grape"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple", "banana", "cherry"], ["grape"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana", "cherry"];
 			const compare = ["grape"];
@@ -54,13 +54,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(["apple", "banana", "cherry"], ["grape", "melon"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple", "banana", "cherry"], ["grape", "melon"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana", "cherry"];
 			const compare = ["grape", "melon"];
@@ -68,13 +68,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return false for matchListFilter(["apple pie", "banana", "cherry"], ["apple"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
+		it('should return false for matchListPropertyFilter(["apple pie", "banana", "cherry"], ["apple"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
 			// Arrange
 			const propertyValue = ["apple pie", "banana", "cherry"];
 			const compare = ["apple"];
@@ -82,13 +82,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
 		});
 
-		it('should return true for matchListFilter(["apple", "banana", "cherry"], [], ListFilterCondition.CONTAINS, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple", "banana", "cherry"], [], ListFilterCondition.CONTAINS, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana", "cherry"];
 			const compare: string[] = [];
@@ -96,13 +96,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(["apple", "banana", "cherry"], [], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple", "banana", "cherry"], [], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana", "cherry"];
 			const compare: string[] = [];
@@ -110,13 +110,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(["apple", "banana"], ["apple"], ListFilterCondition.CONTAINS, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple", "banana"], ["apple"], ListFilterCondition.CONTAINS, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana"];
 			const compare = ["apple"];
@@ -124,13 +124,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(["apple", "banana"], ["cherry"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
+		it('should return true for matchListPropertyFilter(["apple", "banana"], ["cherry"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana"];
 			const compare = ["cherry"];
@@ -138,7 +138,7 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -146,7 +146,7 @@ describe('matchListFilter', () => {
 	});
 
 	describe('Invalid Cases', () => {
-		it('should return false for matchListFilter(null, ["apple"], ListFilterCondition.CONTAINS, false)', () => {
+		it('should return false for matchListPropertyFilter(null, ["apple"], ListFilterCondition.CONTAINS, false)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = ["apple"];
@@ -154,13 +154,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
 		});
 
-		it('should return false for matchListFilter(null, ["banana"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
+		it('should return false for matchListPropertyFilter(null, ["banana"], ListFilterCondition.DOES_NOT_CONTAIN, false)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = ["banana"];
@@ -168,7 +168,7 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -176,7 +176,7 @@ describe('matchListFilter', () => {
 	});
 
 	describe('Edge Cases', () => {
-		it('should return false for matchListFilter(null, ["apple"], ListFilterCondition.EXISTS, false)', () => {
+		it('should return false for matchListPropertyFilter(null, ["apple"], ListFilterCondition.EXISTS, false)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = ["apple"];
@@ -184,13 +184,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
 		});
 
-		it('should return true for matchListFilter(null, ["banana"], ListFilterCondition.DOES_NOT_EXIST, false)', () => {
+		it('should return true for matchListPropertyFilter(null, ["banana"], ListFilterCondition.DOES_NOT_EXIST, false)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = ["banana"];
@@ -198,13 +198,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(null, ["apple"], ListFilterCondition.CONTAINS, true)', () => {
+		it('should return true for matchListPropertyFilter(null, ["apple"], ListFilterCondition.CONTAINS, true)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = ["apple"];
@@ -212,13 +212,13 @@ describe('matchListFilter', () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchListFilter(null, ["banana"], ListFilterCondition.DOES_NOT_CONTAIN, true)', () => {
+		it('should return true for matchListPropertyFilter(null, ["banana"], ListFilterCondition.DOES_NOT_CONTAIN, true)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = ["banana"];
@@ -226,7 +226,7 @@ describe('matchListFilter', () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchListFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -234,7 +234,7 @@ describe('matchListFilter', () => {
 	});
 
 	describe('Error Cases', () => {
-		it('should throw an error for matchListFilter(["apple"], ["apple"], "unsupported-condition", false)', () => {
+		it('should throw an error for matchListPropertyFilter(["apple"], ["apple"], "unsupported-condition", false)', () => {
 			// Arrange
 			const propertyValue = ["apple"];
 			const compare = ["apple"];
@@ -242,7 +242,7 @@ describe('matchListFilter', () => {
 			const matchIfNull = false;
 
 			// Act & Assert
-			expect(() => matchListFilter(propertyValue, compare, condition, matchIfNull)).toThrow();
+			expect(() => matchListPropertyFilter(propertyValue, compare, condition, matchIfNull)).toThrow();
 		});
 	});
 });

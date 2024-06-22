@@ -18,7 +18,6 @@
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";
 	import { filterByFavorites } from "./services/filters/favorite-filter";
-	import { filterByFolder } from "./services/filters/folder-filter";
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
@@ -321,16 +320,12 @@
 		};
 	});
 
-	$: filteredProperty = [...markdownFiles].filter((file) => {
+	$: filteredCustom = [...markdownFiles].filter((file) => {
 		const frontmatter = frontmatterCache[file.path];
-		return filterByGroups(frontmatter, propertyFilterGroups);
+		return filterByGroups(file, frontmatter, propertyFilterGroups);
 	});
 
-	$: filteredFolder = filteredProperty.filter((file) =>
-		filterByFolder(file, folderFilter),
-	);
-
-	$: formatted = filteredFolder.map((file) => {
+	$: formatted = filteredCustom.map((file) => {
 		const frontmatter = frontmatterCache[file.path];
 		return formatFileDataForRender(plugin.settings, file, frontmatter);
 	});

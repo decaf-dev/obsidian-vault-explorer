@@ -9,9 +9,9 @@
 		FilterOperator,
 		ListFilterCondition,
 		NumberFilterCondition,
-		FilterRuleType,
 		TextFilterCondition,
 		DatePropertyFilterValue,
+		PropertyType,
 	} from "src/types";
 	import {
 		getDisplayNameForDatePropertyFilterValue,
@@ -22,7 +22,7 @@
 	export let index: number;
 	export let id: string;
 	export let propertyName: string | null;
-	export let type: FilterRuleType;
+	export let propertyType: PropertyType;
 	export let operator: FilterOperator;
 	export let value: string;
 	export let valueData: string | null;
@@ -89,23 +89,23 @@
 	}
 
 	function handleToggle() {
-		dispatch("filterToggle", { id });
+		dispatch("ruleToggle", { id });
 	}
 
-	$: filterConditions = findFilterConditions(type);
+	$: filterConditions = findFilterConditions(propertyType);
 
 	$: filteredObsidianProperties = obsidianProperties.filter((prop) => {
-		if (type === "list") {
+		if (propertyType === "list") {
 			return (
 				prop.type === "aliases" ||
 				prop.type === "tags" ||
 				prop.type === "multitext"
 			);
 		}
-		return prop.type === type;
+		return prop.type === propertyType;
 	});
 
-	function findFilterConditions(type: FilterRuleType): FilterCondition[] {
+	function findFilterConditions(type: PropertyType): FilterCondition[] {
 		if (type === "text") {
 			return Object.values(TextFilterCondition);
 		} else if (type === "number") {
@@ -134,8 +134,8 @@
 				<option value="or">or</option>
 			</select>
 		{/if}
-		<select value={type} on:change={handleTypeChange}>
-			{#each Object.values(FilterRuleType) as type}
+		<select value={propertyType} on:change={handleTypeChange}>
+			{#each Object.values(PropertyType) as type}
 				<option value={type}>{type}</option>
 			{/each}
 		</select>
@@ -154,13 +154,13 @@
 				</option>
 			{/each}
 		</select>
-		{#if type === FilterRuleType.CHECKBOX && condition !== CheckboxFilterCondition.EXISTS && condition !== CheckboxFilterCondition.DOES_NOT_EXIST}
+		{#if propertyType === PropertyType.CHECKBOX && condition !== CheckboxFilterCondition.EXISTS && condition !== CheckboxFilterCondition.DOES_NOT_EXIST}
 			<select {value} on:change={handleValueChange}>
 				<option value="true">true</option>
 				<option value="false">false</option>
 			</select>
 		{/if}
-		{#if (type === FilterRuleType.DATE || type === FilterRuleType.DATETIME) && condition !== DateFilterCondition.EXISTS && condition !== DateFilterCondition.DOES_NOT_EXIST}
+		{#if (propertyType === PropertyType.DATE || propertyType === PropertyType.DATETIME) && condition !== DateFilterCondition.EXISTS && condition !== DateFilterCondition.DOES_NOT_EXIST}
 			<select {value} on:change={handleValueChange}>
 				{#each Object.values(DatePropertyFilterValue) as value}
 					<option {value}>
@@ -169,17 +169,17 @@
 				{/each}
 			</select>
 		{/if}
-		{#if type !== FilterRuleType.CHECKBOX && type !== FilterRuleType.DATE && type !== FilterRuleType.DATETIME && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+		{#if propertyType !== PropertyType.CHECKBOX && propertyType !== PropertyType.DATE && propertyType !== PropertyType.DATETIME && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input
-				type={type === FilterRuleType.NUMBER ? "number" : "text"}
-				placeholder={type === FilterRuleType.LIST
+				type={propertyType === PropertyType.NUMBER ? "number" : "text"}
+				placeholder={propertyType === PropertyType.LIST
 					? "item1,item2,item3"
 					: "Enter a value"}
 				{value}
 				on:change={handleValueChange}
 			/>
 		{/if}
-		{#if (type === FilterRuleType.DATE || type === FilterRuleType.DATETIME) && value == DatePropertyFilterValue.CUSTOM && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
+		{#if (propertyType === PropertyType.DATE || propertyType === PropertyType.DATETIME) && value == DatePropertyFilterValue.CUSTOM && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input
 				type="date"
 				value={valueData}
