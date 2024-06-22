@@ -87,15 +87,6 @@ export enum DateFilterCondition {
 
 export type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition;
 
-interface BaseFilterRule {
-	id: string;
-	operator: FilterOperator;
-	type: FilterRuleType;
-	isEnabled: boolean;
-	value: string;
-	matchWhenPropertyDNE: boolean;
-}
-
 export enum FilterRuleType {
 	TEXT = "text",
 	NUMBER = "number",
@@ -103,6 +94,15 @@ export enum FilterRuleType {
 	CHECKBOX = "checkbox",
 	DATE = "date",
 	DATETIME = "datetime",
+}
+
+interface BaseFilterRule {
+	id: string;
+	operator: FilterOperator;
+	type: FilterRuleType;
+	isEnabled: boolean;
+	value: string;
+	matchWhenPropertyDNE: boolean;
 }
 
 export interface TextPropertyFilter extends BaseFilterRule {
