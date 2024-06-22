@@ -94,12 +94,6 @@ export enum ContentFilterCondition {
 export enum FolderFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
-	CONTAINS = "contains",
-	DOES_NOT_CONTAIN = "does-not-contain",
-	STARTS_WITH = "starts-with",
-	ENDS_WITH = "ends-with",
-	// IS_CHILD_OF = "is-child-of",
-	// IS_PARENT_OF = "is-parent-of",
 }
 
 export enum FileNameFilterCondition {
@@ -125,9 +119,9 @@ export enum PropertyType {
 
 export enum FilterRuleType {
 	PROPERTY = "property",
-	CONTENT = "content",
 	FOLDER = "folder",
 	FILE_NAME = "file-name",
+	CONTENT = "content",
 }
 
 export enum DatePropertyFilterValue {

@@ -13,6 +13,9 @@
 		DatePropertyFilterValue,
 		PropertyType,
 		FilterRuleType,
+		ContentFilterCondition,
+		FolderFilterCondition,
+		FileNameFilterCondition,
 	} from "src/types";
 	import { generateRandomId } from "../shared/services/random";
 	import GroupEditView from "./components/group-edit-view.svelte";
@@ -107,7 +110,7 @@
 		groups = newGroups;
 	}
 
-	function handlePropertyFilterConditionChange(e: CustomEvent) {
+	function handleRuleConditionChange(e: CustomEvent) {
 		const { id, condition } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -160,7 +163,7 @@
 		groups = newGroups;
 	}
 
-	function handlePropertyFilterDeleteClick(e: CustomEvent) {
+	function handleRuleDeleteClick(e: CustomEvent) {
 		const { id } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -175,7 +178,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterPropertyNameChange(e: CustomEvent) {
+	function handlePropertyNameChange(e: CustomEvent) {
 		const { id, name } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -230,7 +233,47 @@
 		groups = newGroups;
 	}
 
-	function handlePropertyFilterTypeChange(e: CustomEvent) {
+	function handleRuleTypeChange(e: CustomEvent) {
+		const { id, type } = e.detail;
+
+		let newCondition: any;
+		if (type === FilterRuleType.PROPERTY) {
+			newCondition = TextFilterCondition.IS;
+		} else if (type === FilterRuleType.CONTENT) {
+			newCondition = ContentFilterCondition.CONTAINS;
+		} else if (type === FilterRuleType.FOLDER) {
+			newCondition = FolderFilterCondition.IS;
+		} else if (type === FilterRuleType.FILE_NAME) {
+			newCondition = FileNameFilterCondition.CONTAINS;
+		} else {
+			throw new Error(`Unhandled filter type: ${type}`);
+		}
+
+		const newGroups: FilterGroup[] = groups.map((group) => {
+			if (group.id === selectedGroupId) {
+				const newRules = group.rules.map((rule) => {
+					if (rule.id === id) {
+						return {
+							...rule,
+							type,
+							condition: newCondition,
+							value: "",
+						};
+					}
+					return rule;
+				});
+				return {
+					...group,
+					rules: newRules,
+				};
+			}
+			return group;
+		});
+
+		groups = newGroups;
+	}
+
+	function handlePropertyTypeChange(e: CustomEvent) {
 		const { id, propertyType } = e.detail;
 
 		let newCondition: any;
@@ -278,7 +321,7 @@
 		groups = newGroups;
 	}
 
-	function handlePropertyFilterValueChange(e: CustomEvent) {
+	function handleRuleValueChange(e: CustomEvent) {
 		const { id, value } = e.detail;
 
 		const newGroups: FilterGroup[] = groups.map((group) => {
@@ -309,7 +352,7 @@
 		groups = newGroups;
 	}
 
-	function handlePropertyFilterValueDataChange(e: CustomEvent) {
+	function handlePropertyValueDataChange(e: CustomEvent) {
 		const { id, value } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -328,7 +371,7 @@
 		groups = newGroups;
 	}
 
-	function handlePropertyFilterMatchWhenPropertyDNEChange(e: CustomEvent) {
+	function handlePropertyMatchWhenPropertyDNEChange(e: CustomEvent) {
 		const { id, matchWhenDNE } = e.detail;
 
 		const newGroups: FilterGroup[] = groups.map((group) =>
@@ -367,17 +410,18 @@
 		{#if selectedGroup !== undefined}
 			<GroupEditView
 				{selectedGroup}
-				on:groupNameChange={handleGroupNameChange}
+				on:ruleTypeChange={handleRuleTypeChange}
 				on:ruleAddClick={handleRuleAddClick}
-				on:filterPropertyTypeChange={handlePropertyFilterTypeChange}
-				on:filterConditionChange={handlePropertyFilterConditionChange}
-				on:filterDeleteClick={handlePropertyFilterDeleteClick}
-				on:filterPropertyNameChange={handleFilterPropertyNameChange}
+				on:ruleConditionChange={handleRuleConditionChange}
+				on:ruleDeleteClick={handleRuleDeleteClick}
+				on:ruleValueChange={handleRuleValueChange}
+				on:ruleOperatorChange={handleRuleOperatorChange}
 				on:ruleToggle={handleRuleToggle}
-				on:filterOperatorChange={handleRuleOperatorChange}
-				on:filterValueChange={handlePropertyFilterValueChange}
-				on:filterValueDataChange={handlePropertyFilterValueDataChange}
-				on:filterMatchWhenPropertyDNEChange={handlePropertyFilterMatchWhenPropertyDNEChange}
+				on:groupNameChange={handleGroupNameChange}
+				on:propertyTypeChange={handlePropertyTypeChange}
+				on:propertyNameChange={handlePropertyNameChange}
+				on:propertyValueDataChange={handlePropertyValueDataChange}
+				on:propertyMatchWhenPropertyDNEChange={handlePropertyMatchWhenPropertyDNEChange}
 			/>
 		{/if}
 	</Flex>

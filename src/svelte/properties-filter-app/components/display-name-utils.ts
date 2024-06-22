@@ -21,7 +21,6 @@ export const getDisplayNameForDatePropertyFilterValue = (value: DatePropertyFilt
 		default:
 			return "";
 	}
-
 }
 
 export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
@@ -40,22 +39,18 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 		case TextFilterCondition.CONTAINS:
 		case ListFilterCondition.CONTAINS:
 		case FileNameFilterCondition.CONTAINS:
-		case FolderFilterCondition.CONTAINS:
 		case ContentFilterCondition.CONTAINS:
 			return "contains";
 		case TextFilterCondition.DOES_NOT_CONTAIN:
 		case ListFilterCondition.DOES_NOT_CONTAIN:
 		case FileNameFilterCondition.DOES_NOT_CONTAIN:
-		case FolderFilterCondition.DOES_NOT_CONTAIN:
 		case ContentFilterCondition.DOES_NOT_CONTAIN:
 			return "does not contain";
 		case TextFilterCondition.STARTS_WITH:
 		case FileNameFilterCondition.STARTS_WITH:
-		case FolderFilterCondition.STARTS_WITH:
 			return "starts with";
 		case TextFilterCondition.ENDS_WITH:
 		case FileNameFilterCondition.ENDS_WITH:
-		case FolderFilterCondition.ENDS_WITH:
 			return "ends with";
 		case TextFilterCondition.EXISTS:
 		case NumberFilterCondition.EXISTS:

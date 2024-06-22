@@ -151,21 +151,6 @@
 	});
 
 	onMount(() => {
-		const handleFolderCreate = (...data: unknown[]) => {
-			// console.log("folder-create event triggered");
-			if (data.length > 0 && typeof data[0] === "string") {
-				const newFolder = data[0] as string;
-				folders = [...folders, newFolder];
-			}
-		};
-
-		EventManager.getInstance().on("folder-create", handleFolderCreate);
-		return () => {
-			EventManager.getInstance().off("folder-create", handleFolderCreate);
-		};
-	});
-
-	onMount(() => {
 		const handleDeleteFile = (...data: unknown[]) => {
 			// console.log("file-delete event triggered");
 			if (data.length > 0 && typeof data[0] === "string") {
@@ -179,25 +164,6 @@
 		EventManager.getInstance().on("file-delete", handleDeleteFile);
 		return () => {
 			EventManager.getInstance().off("file-delete", handleDeleteFile);
-		};
-	});
-
-	onMount(() => {
-		const handleDeleteFolder = (...data: unknown[]) => {
-			// console.log("folder-delete event triggered");
-			if (data.length > 0 && typeof data[0] === "string") {
-				const path = data[0] as string;
-				folders = folders.filter((folder) => folder !== path);
-
-				if (folderFilter === path) {
-					folderFilter = "/";
-				}
-			}
-		};
-
-		EventManager.getInstance().on("folder-delete", handleDeleteFolder);
-		return () => {
-			EventManager.getInstance().off("folder-delete", handleDeleteFolder);
 		};
 	});
 
@@ -232,32 +198,6 @@
 				"file-rename",
 				debounceHandleFileRename,
 			);
-		};
-	});
-
-	onMount(() => {
-		const handleFolderRename = (...data: unknown[]) => {
-			// console.log("folder-rename event triggered");
-			if (data.length < 2) return;
-			if (typeof data[0] === "string" && data[1] instanceof TFolder) {
-				const oldPath = data[0] as string;
-				const updatedFolder = data[1] as TFolder;
-				folders = folders.map((folder) => {
-					if (folder === oldPath) {
-						return updatedFolder.path;
-					}
-					return folder;
-				});
-
-				if (folderFilter === oldPath) {
-					folderFilter = updatedFolder.path;
-				}
-			}
-		};
-
-		EventManager.getInstance().on("folder-rename", handleFolderRename);
-		return () => {
-			EventManager.getInstance().off("folder-rename", handleFolderRename);
 		};
 	});
 

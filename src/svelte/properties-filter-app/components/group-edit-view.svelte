@@ -4,7 +4,7 @@
 	import Stack from "src/svelte/shared/components/stack.svelte";
 
 	import { FilterGroup } from "src/types";
-	import PropertyFilterList from "./property-filter-list.svelte";
+	import FilterRuleList from "./filter-rule-list.svelte";
 
 	import { createEventDispatcher } from "svelte";
 	import { createPropertyFilter } from "../utils";
@@ -35,17 +35,19 @@
 	<Divider borderWidth="1px" />
 	<div class="vault-explorer-group-edit-view__body">
 		{#if selectedGroup.rules.length > 0}
-			<PropertyFilterList
-				filters={selectedGroup.rules}
-				on:filterConditionChange
-				on:filterPropertyTypeChange
-				on:filterPropertyNameChange
-				on:filterOperatorChange
-				on:filterValueChange
-				on:filterValueDataChange
+			<FilterRuleList
+				rules={selectedGroup.rules}
+				on:ruleTypeChange
+				on:ruleConditionChange
+				on:ruleOperatorChange
+				on:ruleValueChange
+				on:ruleValueChange
 				on:ruleToggle
-				on:filterDeleteClick
-				on:filterMatchWhenPropertyDNEChange
+				on:ruleDeleteClick
+				on:propertyTypeChange
+				on:propertyNameChange
+				on:propertyMatchWhenPropertyDNEChange
+				on:propertyValueDataChange
 			/>
 			<Spacer direction="vertical" size="sm" />
 		{/if}

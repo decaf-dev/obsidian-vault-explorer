@@ -13,11 +13,11 @@ export const matchFileNameFilter = (
 	switch (condition) {
 		case FileNameFilterCondition.IS:
 			if (compare.length === 0) return true;
-			return compare === compare;
+			return fileName === compare;
 
 		case FileNameFilterCondition.IS_NOT:
 			if (compare.length === 0) return true;
-			return compare !== compare;
+			return fileName !== compare;
 
 		case FileNameFilterCondition.CONTAINS:
 			return fileName.includes(compare);

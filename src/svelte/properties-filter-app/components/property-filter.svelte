@@ -1,27 +1,21 @@
 <script lang="ts">
-	import IconButton from "src/svelte/shared/components/icon-button.svelte";
-	import Stack from "src/svelte/shared/components/stack.svelte";
-	import Switch from "src/svelte/shared/components/switch.svelte";
 	import {
 		CheckboxFilterCondition,
 		DateFilterCondition,
 		FilterCondition,
 		FilterOperator,
-		ListFilterCondition,
-		NumberFilterCondition,
 		TextFilterCondition,
 		DatePropertyFilterValue,
 		PropertyType,
+		FilterRuleType,
 	} from "src/types";
-	import {
-		getDisplayNameForDatePropertyFilterValue,
-		getDisplayNameForFilterCondition,
-	} from "./display-name-utils";
+	import { getDisplayNameForDatePropertyFilterValue } from "./display-name-utils";
 	import { getAllObsidianProperties } from "src/obsidian/utils";
 
 	export let index: number;
 	export let id: string;
-	export let propertyName: string | null;
+	export let type: FilterRuleType;
+	export let propertyName: string;
 	export let propertyType: PropertyType;
 	export let operator: FilterOperator;
 	export let value: string;
@@ -42,57 +36,37 @@
 	import store from "src/svelte/shared/services/store";
 	import VaultExplorerPlugin from "src/main";
 	import { ObsidianProperty } from "src/obsidian/types";
-	import Wrap from "src/svelte/shared/components/wrap.svelte";
+	import FilterRule from "./filter-rule.svelte";
 
 	const dispatch = createEventDispatcher();
 
-	function handleDeleteClick() {
-		dispatch("filterDeleteClick", { id });
+	function handleValueChange(e: Event) {
+		const value = (e.target as HTMLInputElement).value;
+		dispatch("ruleValueChange", { id, value });
+	}
+
+	function handlePropertyTypeChange(e: Event) {
+		const value = (e.target as HTMLSelectElement).value as PropertyType;
+		dispatch("propertyTypeChange", { id, propertyType: value });
 	}
 
 	function handlePropertyNameChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
-		dispatch("filterPropertyNameChange", { id, name: value });
-	}
-
-	function handleTypeChange(e: Event) {
-		const value = (e.target as HTMLInputElement).value;
-		dispatch("filterTypeChange", { id, type: value });
-	}
-
-	function handleConditionChange(e: Event) {
-		const value = (e.target as HTMLSelectElement).value;
-		dispatch("filterConditionChange", { id, condition: value });
-	}
-
-	function handleValueChange(e: Event) {
-		const value = (e.target as HTMLInputElement).value;
-		dispatch("filterValueChange", { id, value });
+		dispatch("propertyNameChange", { id, name: value });
 	}
 
 	function handleValueDataChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
-		dispatch("filterValueDataChange", { id, value });
-	}
-
-	function handleOperatorChange(e: Event) {
-		const value = (e.target as HTMLSelectElement).value;
-		dispatch("filterOperatorChange", { id, operator: value });
+		dispatch("propertyValueDataChange", { id, value });
 	}
 
 	function handleMatchWhenDNEChange(e: Event) {
 		const value = (e.target as HTMLInputElement).checked;
-		dispatch("filterMatchWhenPropertyDNEChange", {
+		dispatch("propertyMatchWhenPropertyDNEChange", {
 			id,
 			matchWhenDNE: value,
 		});
 	}
-
-	function handleToggle() {
-		dispatch("ruleToggle", { id });
-	}
-
-	$: filterConditions = findFilterConditions(propertyType);
 
 	$: filteredObsidianProperties = obsidianProperties.filter((prop) => {
 		if (propertyType === "list") {
@@ -104,56 +78,36 @@
 		}
 		return prop.type === propertyType;
 	});
-
-	function findFilterConditions(type: PropertyType): FilterCondition[] {
-		if (type === "text") {
-			return Object.values(TextFilterCondition);
-		} else if (type === "number") {
-			return Object.values(NumberFilterCondition);
-		} else if (type === "list") {
-			return Object.values(ListFilterCondition);
-		} else if (type === "checkbox") {
-			return Object.values(CheckboxFilterCondition);
-		} else if (type === "date" || type === "datetime") {
-			return Object.values(DateFilterCondition);
-		} else {
-			throw new Error(`Unknown filter type: ${type}`);
-		}
-	}
 </script>
 
-<div class="vault-explorer-property-filter">
-	<Wrap spacingX="sm" spacingY="sm" align="center">
-		{#if index > 0}
-			<select
-				class="vault-explorer-property-filter__operator"
-				value={operator}
-				on:change={handleOperatorChange}
-			>
-				<option value="and">and</option>
-				<option value="or">or</option>
-			</select>
-		{/if}
-		<select value={propertyType} on:change={handleTypeChange}>
+<FilterRule
+	{index}
+	{id}
+	{propertyType}
+	{type}
+	{operator}
+	{condition}
+	{isEnabled}
+	on:ruleDeleteClick
+	on:ruleTypeChange
+	on:ruleConditionChange
+	on:ruleOperatorChange
+	on:ruleToggle
+>
+	<svelte:fragment slot="before-condition">
+		<select value={propertyType} on:change={handlePropertyTypeChange}>
 			{#each Object.values(PropertyType) as type}
 				<option value={type}>{type}</option>
 			{/each}
 		</select>
-		{#if propertyName != null}
-			<select value={propertyName} on:change={handlePropertyNameChange}>
-				<option value="">select a property</option>
-				{#each filteredObsidianProperties as prop (prop.name)}
-					<option value={prop.name}>{prop.name}</option>
-				{/each}
-			</select>
-		{/if}
-		<select value={condition} on:change={handleConditionChange}>
-			{#each filterConditions as condition}
-				<option value={condition}>
-					{getDisplayNameForFilterCondition(condition)}
-				</option>
+		<select value={propertyName} on:change={handlePropertyNameChange}>
+			<option value="">select a property</option>
+			{#each filteredObsidianProperties as prop (prop.name)}
+				<option value={prop.name}>{prop.name}</option>
 			{/each}
 		</select>
+	</svelte:fragment>
+	<svelte:fragment slot="after-condition">
 		{#if propertyType === PropertyType.CHECKBOX && condition !== CheckboxFilterCondition.EXISTS && condition !== CheckboxFilterCondition.DOES_NOT_EXIST}
 			<select {value} on:change={handleValueChange}>
 				<option value="true">true</option>
@@ -194,27 +148,5 @@
 				on:change={handleMatchWhenDNEChange}
 			/>
 		{/if}
-		<Stack spacing="sm" align="center">
-			<Switch value={isEnabled} on:change={() => handleToggle()} />
-			<IconButton
-				ariaLabel="Delete filter rule"
-				iconId="trash"
-				on:click={() => handleDeleteClick()}
-			/>
-		</Stack>
-	</Wrap>
-</div>
-
-<style>
-	.vault-explorer-property-filter__operator {
-		width: 58px;
-	}
-
-	.vault-explorer-property-filter input {
-		max-width: 125px;
-	}
-
-	.vault-explorer-property-filter select {
-		max-width: 160px;
-	}
-</style>
+	</svelte:fragment>
+</FilterRule>

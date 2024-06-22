@@ -10,26 +10,16 @@ export const matchFolderFilter = (
 	console.assert(/^\s/.test(compare) === false, `FolderFilter compare "${compare}" must not contain whitespace`);
 	console.assert(/\s$/.test(compare) === false, `FolderFilter compare "${compare}" must not contain whitespace`);
 
+	//TODO handle /
+
 	switch (condition) {
 		case FolderFilterCondition.IS:
 			if (compare.length === 0) return true;
-			return compare === compare;
+			return folderName === compare;
 
 		case FolderFilterCondition.IS_NOT:
 			if (compare.length === 0) return true;
-			return compare !== compare;
-
-		case FolderFilterCondition.CONTAINS:
-			return folderName.includes(compare);
-
-		case FolderFilterCondition.DOES_NOT_CONTAIN:
-			return !folderName.includes(compare);
-
-		case FolderFilterCondition.STARTS_WITH:
-			return folderName.startsWith(compare);
-
-		case FolderFilterCondition.ENDS_WITH:
-			return folderName.endsWith(compare);
+			return folderName !== compare;
 
 		default:
 			throw new Error(`FolderFilterCondition not supported: ${condition}`);
