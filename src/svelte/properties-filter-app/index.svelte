@@ -12,6 +12,7 @@
 		FilterGroup,
 		TextFilterCondition,
 		FilterRuleType,
+		DatePropertyFilterValue,
 	} from "src/types";
 	import { generateRandomId } from "../shared/services/random";
 	import GroupEditView from "./components/group-edit-view.svelte";
@@ -244,7 +245,7 @@
 		} else if (type === "list") {
 			newCondition = ListFilterCondition.CONTAINS;
 		} else if (type === "date" || type === "datetime") {
-			newValue = "today";
+			newValue = DatePropertyFilterValue.TODAY;
 			newCondition = DateFilterCondition.IS;
 		} else {
 			throw new Error(`Unhandled filter type: ${type}`);

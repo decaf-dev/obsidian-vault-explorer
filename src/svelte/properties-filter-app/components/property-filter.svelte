@@ -11,8 +11,12 @@
 		NumberFilterCondition,
 		FilterRuleType,
 		TextFilterCondition,
+		DatePropertyFilterValue,
 	} from "src/types";
-	import { getDisplayNameForFilterCondition } from "./utils";
+	import {
+		getDisplayNameForDatePropertyFilterValue,
+		getDisplayNameForFilterCondition,
+	} from "./utils";
 	import { getAllObsidianProperties } from "src/obsidian/utils";
 
 	export let index: number;
@@ -158,13 +162,11 @@
 		{/if}
 		{#if (type === FilterRuleType.DATE || type === FilterRuleType.DATETIME) && condition !== DateFilterCondition.EXISTS && condition !== DateFilterCondition.DOES_NOT_EXIST}
 			<select {value} on:change={handleValueChange}>
-				<option value="today">Today</option>
-				<option value="tomorrow">Tomorrow</option>
-				<option value="one-week-ago">One week ago</option>
-				<option value="one-week-from-now">One week from now</option>
-				<option value="one-week-ago">One month ago</option>
-				<option value="one-month-from-now">One month from now</option>
-				<option value="custom">Custom</option>
+				{#each Object.values(DatePropertyFilterValue) as value}
+					<option {value}>
+						{getDisplayNameForDatePropertyFilterValue(value)}
+					</option>
+				{/each}
 			</select>
 		{/if}
 		{#if (type === FilterRuleType.DATE || type === FilterRuleType.DATETIME) && value == "custom" && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}

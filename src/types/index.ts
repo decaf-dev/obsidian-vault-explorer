@@ -96,6 +96,16 @@ export enum FilterRuleType {
 	DATETIME = "datetime",
 }
 
+export enum DatePropertyFilterValue {
+	TODAY = "today",
+	TOMORROW = "tomorrow",
+	YESTERDAY = "yesterday",
+	ONE_WEEK_AGO = "one-week-ago",
+	ONE_WEEK_FROM_NOW = "one-week-from-now",
+	ONE_MONTH_AGO = "one-month-ago",
+	ONE_MONTH_FROM_NOW = "one-month-from-now",
+}
+
 interface BaseFilterRule {
 	id: string;
 	operator: FilterOperator;
