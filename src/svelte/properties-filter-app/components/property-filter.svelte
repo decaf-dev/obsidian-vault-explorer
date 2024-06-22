@@ -175,8 +175,8 @@
 				placeholder={type === FilterRuleType.LIST
 					? "item1,item2,item3"
 					: "Enter a value"}
-				value={valueData}
-				on:change={handleValueDataChange}
+				{value}
+				on:change={handleValueChange}
 			/>
 		{/if}
 		{#if (type === FilterRuleType.DATE || type === FilterRuleType.DATETIME) && value == DatePropertyFilterValue.CUSTOM && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
