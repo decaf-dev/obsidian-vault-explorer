@@ -172,6 +172,9 @@
 		{#if type !== FilterRuleType.CHECKBOX && type !== FilterRuleType.DATE && type !== FilterRuleType.DATETIME && condition !== TextFilterCondition.EXISTS && condition !== TextFilterCondition.DOES_NOT_EXIST}
 			<input
 				type={type === FilterRuleType.NUMBER ? "number" : "text"}
+				placeholder={type === FilterRuleType.LIST
+					? "item1,item2,item3"
+					: "Enter a value"}
 				value={valueData}
 				on:change={handleValueDataChange}
 			/>
