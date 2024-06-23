@@ -2,6 +2,7 @@
 	import { onMount } from "svelte";
 	import License, { LICENSE_KEY_LENGTH } from "../shared/services/license";
 	import EventManager from "src/event/event-manager";
+	import PremiumLink from "../shared/components/premium-link.svelte";
 
 	interface Message {
 		type: "success" | "failure" | "info";
@@ -96,12 +97,7 @@
 			Enter your license key to unlock premium features.
 		</div>
 		{#if message == null}
-			<a
-				class="vault-explorer-premium-link"
-				href="https://vaultexplorer.com/docs/premium"
-				target="_blank"
-				rel="noopener">Learn more</a
-			>
+			<PremiumLink />
 		{/if}
 		{#if message != null}
 			<div class={messageClassName}>
