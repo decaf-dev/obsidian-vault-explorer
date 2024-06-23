@@ -51,7 +51,7 @@
 	let searchFilter: string = "";
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
-	let onlyFavorites: boolean = false;
+	let favoritesFilter: boolean = false;
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
 	let filterGroups: FilterGroup[] = [];
@@ -72,10 +72,10 @@
 		const { app, settings } = plugin;
 		files = app.vault.getFiles();
 		pageSize = settings.pageSize;
-		searchFilter = settings.filters.search;
-		sortFilter = settings.filters.sort;
-		timestampFilter = settings.filters.timestamp;
-		onlyFavorites = settings.filters.onlyFavorites;
+		searchFilter = settings.filters.search.value;
+		sortFilter = settings.filters.sort.value;
+		timestampFilter = settings.filters.timestamp.value;
+		favoritesFilter = settings.filters.favorites.value;
 		currentView = settings.views.currentView;
 		viewOrder = settings.views.order;
 		filterGroups = settings.filters.custom.groups;
@@ -289,7 +289,7 @@
 	}, 300);
 
 	const debounceFavoriteFilter = _.debounce((value) => {
-		onlyFavorites = value;
+		favoritesFilter = value;
 	}, 300);
 
 	function updateTimeValues() {
@@ -359,10 +359,10 @@
 	}
 
 	async function saveSettings() {
-		plugin.settings.filters.search = searchFilter;
-		plugin.settings.filters.sort = sortFilter;
-		plugin.settings.filters.timestamp = timestampFilter;
-		plugin.settings.filters.onlyFavorites = onlyFavorites;
+		plugin.settings.filters.search.value = searchFilter;
+		plugin.settings.filters.sort.value = sortFilter;
+		plugin.settings.filters.timestamp.value = timestampFilter;
+		plugin.settings.filters.favorites.value = favoritesFilter;
 		plugin.settings.views.order = viewOrder;
 		plugin.settings.views.currentView = currentView;
 		plugin.settings.filters.custom.groups = filterGroups;
@@ -604,7 +604,7 @@
 	);
 
 	$: filteredFavorites = filteredSearch.filter((file) =>
-		filterByFavorites(file, onlyFavorites),
+		filterByFavorites(file, favoritesFilter),
 	);
 
 	$: filteredTimestamp = filteredFavorites.filter((file) => {
@@ -635,7 +635,7 @@
 	$: searchFilter,
 		sortFilter,
 		timestampFilter,
-		onlyFavorites,
+		favoritesFilter,
 		currentView,
 		viewOrder,
 		filterGroups,
@@ -683,7 +683,7 @@
 					<Checkbox
 						id="favorites"
 						label="Favorites"
-						value={onlyFavorites}
+						value={favoritesFilter}
 						on:change={handleOnlyFavoritesChange}
 					/>
 					<Flex>
