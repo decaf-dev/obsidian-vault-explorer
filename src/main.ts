@@ -386,6 +386,7 @@ export default class VaultExplorerPlugin extends Plugin {
 						},
 					}
 				}
+				delete (newData.filters as any).onlyFavorites;
 				data = newData as unknown as Record<string, unknown>;
 			}
 		}
