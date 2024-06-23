@@ -1,4 +1,4 @@
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_12_1 {
 	logLevel: string;
 	properties: {
 		favorite: string;
@@ -23,7 +23,6 @@ export interface VaultExplorerPluginSettings {
 		currentView: ViewType;
 		order: ViewType[];
 		titleWrapping: WordBreak;
-		enableClockUpdates: boolean;
 	}
 	pageSize: number;
 	pluginVersion: string | null;

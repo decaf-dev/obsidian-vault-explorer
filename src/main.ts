@@ -23,6 +23,7 @@ import { loadDeviceId } from './svelte/shared/services/device-id-utils';
 import License from './svelte/shared/services/license';
 import { VaultExplorerPluginSettings_1_8_1 } from './types/types-1.8.1';
 import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
+import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -292,7 +293,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (isVersionLessThan(settingsVersion, "1.10.0")) {
 				console.log("Upgrading settings from version 1.9.1 to 1.10.0");
 				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_9_1;
-				const newData: VaultExplorerPluginSettings = {
+				const newData: VaultExplorerPluginSettings_1_12_1 = {
 					...typedData,
 					filters: {
 						...typedData.filters,
@@ -318,6 +319,19 @@ export default class VaultExplorerPlugin extends Plugin {
 				delete (newData.filters as any).properties;
 				for (const group of newData.filters.custom.groups as any) {
 					delete group.filters;
+				}
+				data = newData as unknown as Record<string, unknown>;
+			}
+
+			if (isVersionLessThan(settingsVersion, "1.13.0")) {
+				console.log("Upgrading settings from version 1.12.1 to 1.13.0");
+				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_12_1;
+				const newData: VaultExplorerPluginSettings = {
+					...typedData,
+					views: {
+						...typedData.views,
+						enableClockUpdates: true
+					}
 				}
 				data = newData as unknown as Record<string, unknown>;
 			}

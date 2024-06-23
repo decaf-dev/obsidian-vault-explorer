@@ -47,18 +47,7 @@
 		startOfLastWeekMillis = getStartOfLastWeekMillis();
 	}
 
-	onMount(() => {
-		updateTimeValues();
-		const interval = setInterval(updateTimeValues, 60000); // Update every minute
-
-		return () => {
-			clearInterval(interval);
-		};
-	});
-
-	let folders: string[] = [];
 	let pageSize: number = 0;
-
 	let searchFilter: string = "";
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
@@ -67,10 +56,39 @@
 	let currentView: ViewType = ViewType.GRID;
 	let filterGroups: FilterGroup[] = [];
 	let selectedFilterGroupId: string = "";
+
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
 
 	let files: TFile[] = [];
+
+	store.plugin.subscribe((p) => {
+		plugin = p;
+
+		const { app, settings } = plugin;
+		files = app.vault.getFiles();
+		pageSize = settings.pageSize;
+		searchFilter = settings.filters.search;
+		sortFilter = settings.filters.sort;
+		timestampFilter = settings.filters.timestamp;
+		onlyFavorites = settings.filters.onlyFavorites;
+		currentView = settings.views.currentView;
+		viewOrder = settings.views.order;
+		filterGroups = settings.filters.custom.groups;
+		selectedFilterGroupId = settings.filters.custom.selectedGroupId;
+
+		updateTimeValues();
+
+		let interval = null;
+		if (settings.views.enableClockUpdates) {
+			const MILLIS_MINUTE = 60000;
+			interval = setInterval(updateTimeValues, MILLIS_MINUTE);
+		}
+
+		return () => {
+			if (interval) clearInterval(interval);
+		};
+	});
 
 	const debounceSearchFilter = _.debounce((e) => {
 		searchFilter = e.target.value;
@@ -92,28 +110,6 @@
 	function updatePropertySettingTime() {
 		propertySettingTime = Date.now();
 	}
-
-	store.plugin.subscribe((p) => {
-		plugin = p;
-
-		const allFiles = plugin.app.vault.getAllLoadedFiles();
-		folders = allFiles
-			.filter((file) => file instanceof TFolder)
-			.map((folder) => folder.path);
-
-		files = plugin.app.vault.getFiles();
-
-		pageSize = plugin.settings.pageSize;
-
-		searchFilter = plugin.settings.filters.search;
-		sortFilter = plugin.settings.filters.sort;
-		timestampFilter = plugin.settings.filters.timestamp;
-		onlyFavorites = plugin.settings.filters.onlyFavorites;
-		currentView = plugin.settings.views.currentView;
-		viewOrder = plugin.settings.views.order;
-		filterGroups = plugin.settings.filters.custom.groups;
-		selectedFilterGroupId = plugin.settings.filters.custom.selectedGroupId;
-	});
 
 	onMount(() => {
 		function handlePropertiesFilterUpdate() {
