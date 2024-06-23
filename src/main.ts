@@ -27,6 +27,7 @@ import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
+	layoutReady: boolean = false;
 
 	async onload() {
 		await this.loadSettings();
@@ -55,6 +56,10 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.registerEvents();
 		this.registerHoverLinkSource(HOVER_LINK_SOURCE_ID, { display: this.manifest.name, defaultMod: true });
 		this.addSettingTab(new VaultExplorerSettingsTab(this.app, this));
+
+		this.app.workspace.onLayoutReady(() => {
+			this.layoutReady = true;
+		});
 
 	}
 
@@ -85,6 +90,10 @@ export default class VaultExplorerPlugin extends Plugin {
 		//Callback if a file is created
 		//This callback is already debounced by Obsidian
 		this.registerEvent(this.app.vault.on("create", (file: TAbstractFile) => {
+			//For some reason Obsidian will call this event for every file in the vault when the plugin is loaded
+			//We need to ignore these events
+			if (!this.layoutReady) return;
+
 			if (file instanceof TFolder) {
 				EventManager.getInstance().emit("folder-create", file);
 			} else if (file instanceof TFile) {
