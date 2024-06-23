@@ -1,16 +1,13 @@
 <script lang="ts">
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import Stack from "src/svelte/shared/components/stack.svelte";
+	import { createEventDispatcher } from "svelte";
+
 	export let id: string;
 	export let name: string;
 	export let isSelected: boolean;
 	export let isSticky: boolean;
 
-	$: className =
-		"vault-explorer-group-tag" +
-		(isSelected ? " vault-explorer-group-tag--active" : "");
-
-	import Icon from "src/svelte/shared/components/icon.svelte";
-	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
 
 	function handleClick(event: Event) {
@@ -28,6 +25,10 @@
 	function handleDrop(event: Event) {
 		dispatch("groupDrop", { nativeEvent: event, id });
 	}
+
+	$: className =
+		"vault-explorer-group-tag" +
+		(isSelected ? " vault-explorer-group-tag--active" : "");
 </script>
 
 <div

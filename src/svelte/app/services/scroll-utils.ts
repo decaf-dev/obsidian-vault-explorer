@@ -9,16 +9,28 @@
  * @param className - The class name of the items to scroll
  * @param direction - The direction to scroll. Either "left" or "right"
  * @param buttonSize - The size of the scroll buttons. This value should be constant
- * @returns 
+ * @returns - The amount to scroll
  */
 
 export const getScrollAmount = (
 	containerRef: HTMLElement,
 	className: string,
 	direction: "left" | "right",
-	buttonSize: number
 ) => {
-	const MIN_SCROLL_AMOUNT = 50;
+	/**
+	 * The width of the scroll buttons in pixels
+	 */
+	const BUTTON_WIDTH = 20;
+
+	/**
+	 * The minimum amount to scroll in pixels
+	 */
+	const MIN_SCROLL_AMOUNT = 40;
+
+	/**
+	 * The final distance to maintain between the scroll button and the item that is being scrolled to in pixels
+	 */
+	const BUTTON_DISTANCE = 2;
 
 	const items = containerRef.querySelectorAll(className);
 	let scrollAmount = 0;
@@ -28,7 +40,7 @@ export const getScrollAmount = (
 			const item = items[i] as HTMLElement;
 			const itemRight = getItemRight(item);
 			const containerRight =
-				containerRef.scrollLeft + containerRef.clientWidth - buttonSize;
+				containerRef.scrollLeft + containerRef.clientWidth - BUTTON_WIDTH - BUTTON_DISTANCE;
 
 			if (itemRight > containerRight) {
 				let diff = itemRight - containerRight;
@@ -47,7 +59,7 @@ export const getScrollAmount = (
 		for (let i = items.length - 1; i >= 0; i--) {
 			const item = items[i] as HTMLElement;
 			const itemLeft = item.offsetLeft;
-			const containerLeft = containerRef.scrollLeft + buttonSize;
+			const containerLeft = containerRef.scrollLeft + BUTTON_WIDTH + BUTTON_DISTANCE;
 
 			if (itemLeft < containerLeft) {
 				let diff = containerLeft - itemLeft;
@@ -63,8 +75,10 @@ export const getScrollAmount = (
 			}
 		}
 	}
+
 	return scrollAmount;
 }
 
-const getItemRight = (item: HTMLElement) => item.offsetLeft + item.clientWidth;
+//Use getBoundingClientRect().width because clientWidth may not be accurate when using flexbox
+const getItemRight = (item: HTMLElement) => item.offsetLeft + item.getBoundingClientRect().width;
 const getItemLeft = (item: HTMLElement) => item.offsetLeft;
