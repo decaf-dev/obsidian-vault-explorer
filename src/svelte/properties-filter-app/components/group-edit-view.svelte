@@ -4,7 +4,7 @@
 	import Stack from "src/svelte/shared/components/stack.svelte";
 
 	import { FilterGroup } from "src/types";
-	import PropertyFilterList from "./property-filter-list.svelte";
+	import FilterRuleList from "./filter-rule-list.svelte";
 
 	import { createEventDispatcher } from "svelte";
 	import { createPropertyFilter } from "../utils";
@@ -13,9 +13,9 @@
 
 	export let selectedGroup: FilterGroup;
 
-	function handleAddFilterClick() {
+	function handleFilterAddClick() {
 		const newFilter = createPropertyFilter();
-		dispatch("filterAddClick", { filter: newFilter });
+		dispatch("ruleAddClick", { filter: newFilter });
 	}
 
 	function handleGroupNameChange(e: Event) {
@@ -35,24 +35,27 @@
 	<Divider borderWidth="1px" />
 	<div class="vault-explorer-group-edit-view__body">
 		{#if selectedGroup.rules.length > 0}
-			<PropertyFilterList
-				filters={selectedGroup.rules}
-				on:filterConditionChange
-				on:filterTypeChange
-				on:filterPropertyNameChange
-				on:filterOperatorChange
-				on:filterValueChange
-				on:filterValueDataChange
-				on:filterToggle
-				on:filterDeleteClick
-				on:filterMatchWhenPropertyDNEChange
+			<FilterRuleList
+				rules={selectedGroup.rules}
+				on:ruleTypeChange
+				on:ruleConditionChange
+				on:ruleOperatorChange
+				on:ruleValueChange
+				on:ruleValueChange
+				on:ruleToggle
+				on:ruleDeleteClick
+				on:propertyTypeChange
+				on:propertyNameChange
+				on:propertyMatchWhenPropertyDNEChange
+				on:propertyValueDataChange
+				on:folderSubfoldersToggle
 			/>
 			<Spacer direction="vertical" size="sm" />
 		{/if}
 		<IconButton
-			ariaLabel="Add property filter"
+			ariaLabel="Add filter rule"
 			iconId="plus"
-			on:click={handleAddFilterClick}
+			on:click={handleFilterAddClick}
 		/>
 	</div>
 </Stack>

@@ -1,4 +1,19 @@
-import { CheckboxFilterCondition, DateFilterCondition, DatePropertyFilterValue, FilterCondition, ListFilterCondition, NumberFilterCondition, TextFilterCondition } from "src/types";
+import { CheckboxFilterCondition, ContentFilterCondition, DateFilterCondition, DatePropertyFilterValue, FileNameFilterCondition, FilterCondition, FilterRuleType, FolderFilterCondition, ListFilterCondition, NumberFilterCondition, TextFilterCondition } from "src/types";
+
+export const getDisplayNameForFilterRuleType = (type: FilterRuleType) => {
+	switch (type) {
+		case FilterRuleType.CONTENT:
+			return "content";
+		case FilterRuleType.FILE_NAME:
+			return "file name";
+		case FilterRuleType.FOLDER:
+			return "folder";
+		case FilterRuleType.PROPERTY:
+			return "property";
+		default:
+			return "";
+	}
+}
 
 export const getDisplayNameForDatePropertyFilterValue = (value: DatePropertyFilterValue) => {
 	switch (value) {
@@ -21,7 +36,6 @@ export const getDisplayNameForDatePropertyFilterValue = (value: DatePropertyFilt
 		default:
 			return "";
 	}
-
 }
 
 export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
@@ -29,19 +43,29 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 		case TextFilterCondition.IS:
 		case CheckboxFilterCondition.IS:
 		case DateFilterCondition.IS:
+		case FileNameFilterCondition.IS:
+		case FolderFilterCondition.IS:
 			return "is";
 		case TextFilterCondition.IS_NOT:
 		case CheckboxFilterCondition.IS_NOT:
+		case FileNameFilterCondition.IS_NOT:
+		case FolderFilterCondition.IS_NOT:
 			return "is not";
 		case TextFilterCondition.CONTAINS:
 		case ListFilterCondition.CONTAINS:
+		case FileNameFilterCondition.CONTAINS:
+		case ContentFilterCondition.CONTAINS:
 			return "contains";
 		case TextFilterCondition.DOES_NOT_CONTAIN:
 		case ListFilterCondition.DOES_NOT_CONTAIN:
+		case FileNameFilterCondition.DOES_NOT_CONTAIN:
+		case ContentFilterCondition.DOES_NOT_CONTAIN:
 			return "does not contain";
 		case TextFilterCondition.STARTS_WITH:
+		case FileNameFilterCondition.STARTS_WITH:
 			return "starts with";
 		case TextFilterCondition.ENDS_WITH:
+		case FileNameFilterCondition.ENDS_WITH:
 			return "ends with";
 		case TextFilterCondition.EXISTS:
 		case NumberFilterCondition.EXISTS:
@@ -55,6 +79,10 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 		case ListFilterCondition.DOES_NOT_EXIST:
 		case DateFilterCondition.DOES_NOT_EXIST:
 			return "does not exist";
+		case ContentFilterCondition.IS_EMPTY:
+			return "is empty";
+		case ContentFilterCondition.IS_NOT_EMPTY:
+			return "is not empty";
 		case NumberFilterCondition.IS_EQUAL:
 			return "=";
 		case NumberFilterCondition.IS_NOT_EQUAL:

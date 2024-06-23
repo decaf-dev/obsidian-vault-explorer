@@ -1,6 +1,6 @@
 
 import { FrontMatterCache } from "obsidian";
-import { FilterRuleType } from "src/types";
+import { PropertyType } from "src/types";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 
 describe("loadPropertyValue", () => {
@@ -9,7 +9,7 @@ describe("loadPropertyValue", () => {
 		const frontmatter: FrontMatterCache | undefined = undefined;
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, "test", FilterRuleType.TEXT);
+		const result = loadPropertyValue<string>(frontmatter, "test", PropertyType.TEXT);
 
 		//Assert
 		expect(result).toBeNull();
@@ -21,7 +21,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.TEXT);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.TEXT);
 
 		//Assert
 		expect(result).toBeNull();
@@ -33,7 +33,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.TEXT);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.TEXT);
 
 		//Assert
 		expect(result).toBeNull();
@@ -45,7 +45,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.TEXT);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.TEXT);
 
 		//Assert
 		expect(result).toBeNull();
@@ -57,7 +57,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.TEXT);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.TEXT);
 
 		//Assert
 		expect(result).toBeNull();
@@ -69,7 +69,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.TEXT);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.TEXT);
 
 		//Assert
 		expect(result).toBe("test");
@@ -81,7 +81,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<number>(frontmatter, propertyName, FilterRuleType.NUMBER);
+		const result = loadPropertyValue<number>(frontmatter, propertyName, PropertyType.NUMBER);
 
 		//Assert
 		expect(result).toBeNull();
@@ -93,7 +93,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<number>(frontmatter, propertyName, FilterRuleType.NUMBER);
+		const result = loadPropertyValue<number>(frontmatter, propertyName, PropertyType.NUMBER);
 
 		//Assert
 		expect(result).toBe(1);
@@ -105,7 +105,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<boolean>(frontmatter, propertyName, FilterRuleType.CHECKBOX);
+		const result = loadPropertyValue<boolean>(frontmatter, propertyName, PropertyType.CHECKBOX);
 
 		//Assert
 		expect(result).toBeNull();
@@ -117,7 +117,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<boolean>(frontmatter, propertyName, FilterRuleType.CHECKBOX);
+		const result = loadPropertyValue<boolean>(frontmatter, propertyName, PropertyType.CHECKBOX);
 
 		//Assert
 		expect(result).toBe(true);
@@ -129,7 +129,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string[]>(frontmatter, propertyName, FilterRuleType.LIST);
+		const result = loadPropertyValue<string[]>(frontmatter, propertyName, PropertyType.LIST);
 
 		//Assert
 		expect(result).toEqual(["test"]);
@@ -141,7 +141,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string[]>(frontmatter, propertyName, FilterRuleType.LIST);
+		const result = loadPropertyValue<string[]>(frontmatter, propertyName, PropertyType.LIST);
 
 		//Assert
 		expect(result).toEqual(["test"]);
@@ -154,7 +154,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string[]>(frontmatter, propertyName, FilterRuleType.LIST);
+		const result = loadPropertyValue<string[]>(frontmatter, propertyName, PropertyType.LIST);
 
 		//Assert
 		expect(result).toEqual(["test"]);
@@ -166,7 +166,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.DATE);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.DATE);
 
 		//Assert
 		expect(result).toBeNull();
@@ -178,7 +178,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.DATETIME);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.DATETIME);
 
 		//Assert
 		expect(result).toBeNull();
@@ -191,7 +191,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.DATE);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.DATE);
 
 		//Assert
 		expect(result).toBe("2021-01-01");
@@ -203,7 +203,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.DATETIME);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.DATETIME);
 
 		//Assert
 		expect(result).toBeNull();
@@ -215,7 +215,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.DATETIME);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.DATETIME);
 
 		//Assert
 		expect(result).toBeNull();
@@ -227,7 +227,7 @@ describe("loadPropertyValue", () => {
 		const propertyName = "test";
 
 		//Act
-		const result = loadPropertyValue<string>(frontmatter, propertyName, FilterRuleType.DATETIME);
+		const result = loadPropertyValue<string>(frontmatter, propertyName, PropertyType.DATETIME);
 
 		//Assert
 		expect(result).toBe("2021-01-01T00:00:00");

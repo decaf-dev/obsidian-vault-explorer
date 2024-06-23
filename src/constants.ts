@@ -20,7 +20,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		custom3: "",
 	},
 	filters: {
-		folder: "/",
 		search: "",
 		onlyFavorites: false,
 		timestamp: "all",

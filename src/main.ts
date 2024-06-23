@@ -3,7 +3,7 @@ import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { VaultExplorerPluginSettings, ViewType } from './types';
+import { FilterRuleType, VaultExplorerPluginSettings, ViewType } from './types';
 import { DEFAULT_SETTINGS, HOVER_LINK_SOURCE_ID, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
@@ -22,6 +22,7 @@ import { VaultExplorerPluginSettings_1_6_0 } from './types/types-1.6.0';
 import { loadDeviceId } from './svelte/shared/services/device-id-utils';
 import License from './svelte/shared/services/license';
 import { VaultExplorerPluginSettings_1_8_1 } from './types/types-1.8.1';
+import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -258,7 +259,7 @@ export default class VaultExplorerPlugin extends Plugin {
 				if (isVersionLessThan(settingsVersion, "1.9.0")) {
 					console.log("Upgrading settings from version 1.8.1 to 1.9.0");
 					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_8_1;
-					const newData: VaultExplorerPluginSettings = {
+					const newData: VaultExplorerPluginSettings_1_9_1 = {
 						...typedData,
 						filters: {
 							...typedData.filters,
@@ -286,6 +287,39 @@ export default class VaultExplorerPlugin extends Plugin {
 					}
 					data = newData as unknown as Record<string, unknown>;
 				}
+			}
+
+			if (isVersionLessThan(settingsVersion, "1.10.0")) {
+				console.log("Upgrading settings from version 1.9.1 to 1.10.0");
+				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_9_1;
+				const newData: VaultExplorerPluginSettings = {
+					...typedData,
+					filters: {
+						...typedData.filters,
+						custom: {
+							...typedData.filters.custom,
+							groups: typedData.filters.custom.groups.map(group => {
+								const rules = group.rules.map(rule => {
+									return {
+										...rule,
+										type: FilterRuleType.PROPERTY as any,
+										propertyType: rule.type as any,
+									}
+								});
+								return {
+									...group,
+									rules
+								}
+							})
+						}
+					}
+				}
+				delete (newData.filters as any).folder;
+				delete (newData.filters as any).properties;
+				for (const group of newData.filters.custom.groups as any) {
+					delete group.filters;
+				}
+				data = newData as unknown as Record<string, unknown>;
 			}
 		}
 

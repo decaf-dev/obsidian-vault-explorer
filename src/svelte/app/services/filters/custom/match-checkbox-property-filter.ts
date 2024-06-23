@@ -1,6 +1,6 @@
 import { CheckboxFilterCondition } from "src/types";
 
-export const matchCheckboxFilter = (
+export const matchCheckboxPropertyFilter = (
 	propertyValue: boolean | null,
 	compare: boolean | null,
 	condition: CheckboxFilterCondition,
@@ -24,6 +24,6 @@ export const matchCheckboxFilter = (
 			return propertyValue === null;
 
 		default:
-			throw new Error(`Checkbox filter condition not supported: ${condition}`);
+			throw new Error(`CheckboxFilterCondition not supported: ${condition}`);
 	}
 }

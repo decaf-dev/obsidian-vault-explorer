@@ -10,8 +10,12 @@
 		NumberFilterCondition,
 		FilterGroup,
 		TextFilterCondition,
-		FilterRuleType,
 		DatePropertyFilterValue,
+		PropertyType,
+		FilterRuleType,
+		ContentFilterCondition,
+		FolderFilterCondition,
+		FileNameFilterCondition,
 	} from "src/types";
 	import { generateRandomId } from "../shared/services/random";
 	import GroupEditView from "./components/group-edit-view.svelte";
@@ -52,7 +56,7 @@
 		selectedGroupId = id;
 	}
 
-	function handleAddGroupClick() {
+	function handleGroupAddClick() {
 		const newGroup: FilterGroup = {
 			id: generateRandomId(),
 			name: `Group ${groups.length + 1}`,
@@ -64,7 +68,7 @@
 		groups = [...groups, newGroup];
 	}
 
-	function handleDeleteGroupClick() {
+	function handleGroupDeleteClick() {
 		const index = groups.findIndex((group) => group.id === selectedGroupId);
 		const newGroups = groups.filter(
 			(group) => group.id !== selectedGroupId,
@@ -84,7 +88,7 @@
 		}
 	}
 
-	function handleFilterAddClick(e: CustomEvent) {
+	function handleRuleAddClick(e: CustomEvent) {
 		const { filter } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -106,7 +110,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterConditionChange(e: CustomEvent) {
+	function handleRuleConditionChange(e: CustomEvent) {
 		const { id, condition } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -159,7 +163,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterDeleteClick(e: CustomEvent) {
+	function handleRuleDeleteClick(e: CustomEvent) {
 		const { id } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -174,7 +178,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterPropertyNameChange(e: CustomEvent) {
+	function handlePropertyNameChange(e: CustomEvent) {
 		const { id, name } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -193,7 +197,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterToggle(e: CustomEvent) {
+	function handleRuleToggle(e: CustomEvent) {
 		const { id } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -212,7 +216,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterOperatorChange(e: CustomEvent) {
+	function handleRuleOperatorChange(e: CustomEvent) {
 		const { id, operator } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -229,25 +233,65 @@
 		groups = newGroups;
 	}
 
-	function handleFilterTypeChange(e: CustomEvent) {
+	function handleRuleTypeChange(e: CustomEvent) {
 		const { id, type } = e.detail;
 
 		let newCondition: any;
-		let newValue = "";
-		if (type === "text") {
+		if (type === FilterRuleType.PROPERTY) {
 			newCondition = TextFilterCondition.IS;
-		} else if (type === "number") {
+		} else if (type === FilterRuleType.CONTENT) {
+			newCondition = ContentFilterCondition.CONTAINS;
+		} else if (type === FilterRuleType.FOLDER) {
+			newCondition = FolderFilterCondition.IS;
+		} else if (type === FilterRuleType.FILE_NAME) {
+			newCondition = FileNameFilterCondition.CONTAINS;
+		} else {
+			throw new Error(`Unhandled filter type: ${type}`);
+		}
+
+		const newGroups: FilterGroup[] = groups.map((group) => {
+			if (group.id === selectedGroupId) {
+				const newRules = group.rules.map((rule) => {
+					if (rule.id === id) {
+						return {
+							...rule,
+							type,
+							condition: newCondition,
+							value: "",
+						};
+					}
+					return rule;
+				});
+				return {
+					...group,
+					rules: newRules,
+				};
+			}
+			return group;
+		});
+
+		groups = newGroups;
+	}
+
+	function handlePropertyTypeChange(e: CustomEvent) {
+		const { id, propertyType } = e.detail;
+
+		let newCondition: any;
+		let newValue = "";
+		if (propertyType === "text") {
+			newCondition = TextFilterCondition.IS;
+		} else if (propertyType === "number") {
 			newCondition = NumberFilterCondition.IS_EQUAL;
-		} else if (type === "checkbox") {
+		} else if (propertyType === "checkbox") {
 			newCondition = CheckboxFilterCondition.IS;
 			newValue = "true";
-		} else if (type === "list") {
+		} else if (propertyType === "list") {
 			newCondition = ListFilterCondition.CONTAINS;
-		} else if (type === "date" || type === "datetime") {
+		} else if (propertyType === "date" || propertyType === "datetime") {
 			newValue = DatePropertyFilterValue.TODAY;
 			newCondition = DateFilterCondition.IS;
 		} else {
-			throw new Error(`Unhandled filter type: ${type}`);
+			throw new Error(`Unhandled filter type: ${propertyType}`);
 		}
 
 		const newGroups: FilterGroup[] = groups.map((group) =>
@@ -258,19 +302,13 @@
 							rule.id === id
 								? {
 										...rule,
-										type,
-										...(type === FilterRuleType.TEXT ||
-										type === FilterRuleType.NUMBER ||
-										type === FilterRuleType.LIST ||
-										type === FilterRuleType.CHECKBOX ||
-										type === FilterRuleType.DATE ||
-										type === FilterRuleType.DATETIME
-											? { propertyName: "" }
-											: {}),
+										propertyType,
+										propertyName: "",
 										condition: newCondition,
 										value: newValue,
-										...(type === FilterRuleType.DATE ||
-										type === FilterRuleType.DATETIME
+										...(propertyType ===
+											PropertyType.DATE ||
+										propertyType === PropertyType.DATETIME
 											? { valueData: "" }
 											: {}),
 									}
@@ -283,7 +321,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterValueChange(e: CustomEvent) {
+	function handleRuleValueChange(e: CustomEvent) {
 		const { id, value } = e.detail;
 
 		const newGroups: FilterGroup[] = groups.map((group) => {
@@ -294,8 +332,9 @@
 						return {
 							...rule,
 							value,
-							...(rule.type === FilterRuleType.DATE ||
-							rule.type === FilterRuleType.DATETIME
+							...(rule.type === FilterRuleType.PROPERTY &&
+							(rule.propertyType === PropertyType.DATE ||
+								rule.propertyType) === PropertyType.DATETIME
 								? { valueData: "" }
 								: {}),
 						};
@@ -313,7 +352,7 @@
 		groups = newGroups;
 	}
 
-	function handleFilterValueDataChange(e: CustomEvent) {
+	function handlePropertyValueDataChange(e: CustomEvent) {
 		const { id, value } = e.detail;
 
 		const newGroups = groups.map((group) =>
@@ -332,7 +371,30 @@
 		groups = newGroups;
 	}
 
-	function handleFilterMatchWhenPropertyDNEChange(e: CustomEvent) {
+	function handleFolderSubfoldersToggle(e: CustomEvent) {
+		const { id, includeSubfolders } = e.detail;
+
+		const newGroups: FilterGroup[] = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						rules: group.rules.map((rule) =>
+							rule.id === id &&
+							rule.type === FilterRuleType.FOLDER
+								? {
+										...rule,
+										includeSubfolders,
+									}
+								: rule,
+						),
+					}
+				: group,
+		);
+
+		groups = newGroups;
+	}
+
+	function handlePropertyMatchWhenPropertyDNEChange(e: CustomEvent) {
 		const { id, matchWhenDNE } = e.detail;
 
 		const newGroups: FilterGroup[] = groups.map((group) =>
@@ -364,24 +426,26 @@
 			on:itemDragStart={handleGroupDragStart}
 			on:itemDragOver={handleGroupDragOver}
 			on:itemDrop={handleGroupDrop}
-			on:addGroupClick={handleAddGroupClick}
-			on:deleteGroupClick={handleDeleteGroupClick}
+			on:groupAddClick={handleGroupAddClick}
+			on:groupDeleteClick={handleGroupDeleteClick}
 		/>
 		<Divider direction="vertical" />
 		{#if selectedGroup !== undefined}
 			<GroupEditView
 				{selectedGroup}
+				on:ruleTypeChange={handleRuleTypeChange}
+				on:ruleAddClick={handleRuleAddClick}
+				on:ruleConditionChange={handleRuleConditionChange}
+				on:ruleDeleteClick={handleRuleDeleteClick}
+				on:ruleValueChange={handleRuleValueChange}
+				on:ruleOperatorChange={handleRuleOperatorChange}
+				on:ruleToggle={handleRuleToggle}
 				on:groupNameChange={handleGroupNameChange}
-				on:filterAddClick={handleFilterAddClick}
-				on:filterTypeChange={handleFilterTypeChange}
-				on:filterConditionChange={handleFilterConditionChange}
-				on:filterDeleteClick={handleFilterDeleteClick}
-				on:filterPropertyNameChange={handleFilterPropertyNameChange}
-				on:filterToggle={handleFilterToggle}
-				on:filterOperatorChange={handleFilterOperatorChange}
-				on:filterValueChange={handleFilterValueChange}
-				on:filterValueDataChange={handleFilterValueDataChange}
-				on:filterMatchWhenPropertyDNEChange={handleFilterMatchWhenPropertyDNEChange}
+				on:propertyTypeChange={handlePropertyTypeChange}
+				on:propertyNameChange={handlePropertyNameChange}
+				on:propertyValueDataChange={handlePropertyValueDataChange}
+				on:propertyMatchWhenPropertyDNEChange={handlePropertyMatchWhenPropertyDNEChange}
+				on:folderSubfoldersToggle={handleFolderSubfoldersToggle}
 			/>
 		{/if}
 	</Flex>

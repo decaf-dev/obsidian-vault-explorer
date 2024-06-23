@@ -1,6 +1,6 @@
 import { NumberFilterCondition } from "src/types";
 
-export const matchNumberFilter = (
+export const matchNumberPropertyFilter = (
 	propertyValue: number | null,
 	compare: number | null,
 	condition: NumberFilterCondition,
@@ -44,6 +44,6 @@ export const matchNumberFilter = (
 			return propertyValue === null;
 
 		default:
-			throw new Error(`Number filter condition not supported: ${condition}`);
+			throw new Error(`NumberFilterCondition not supported: ${condition}`);
 	}
 };
