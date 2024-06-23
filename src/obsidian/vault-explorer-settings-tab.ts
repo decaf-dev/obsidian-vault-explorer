@@ -166,7 +166,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Enable clock updates")
-			.setDesc("When enabled, time values will update every minute. This will cause a refresh of the Vault Explorer view. When disabled, time values will only update when the view is opened.")
+			.setDesc("When enabled, time values will update every minute, refreshing the Vault Explorer view. When disabled, time values will only update when the view is opened.")
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.views.enableClockUpdates)
 				.onChange(async (value) => {
