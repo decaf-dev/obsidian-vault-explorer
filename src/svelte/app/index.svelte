@@ -373,19 +373,31 @@
 	function handleGroupClick(e: CustomEvent) {
 		const { id, nativeEvent } = e.detail;
 
-		const disableOthers = nativeEvent.ctrlKey || nativeEvent.metaKey;
+		const ctrlOrMeta = nativeEvent.ctrlKey || nativeEvent.metaKey;
+
+		const clickedGroup = filterGroups.find((group) => group.id === id);
+		if (!clickedGroup) {
+			throw new Error(`Group with id ${id} not found`);
+		}
 
 		const newGroups = filterGroups.map((group) => {
 			if (group.id === id) {
-				if (disableOthers) {
-					return { ...group, isEnabled: true };
+				if (ctrlOrMeta) {
+					const newSticky = !group.isSticky;
+					return {
+						...group,
+						isSticky: newSticky,
+						isEnabled: newSticky,
+					};
 				} else {
 					return { ...group, isEnabled: !group.isEnabled };
 				}
-			} else if (disableOthers) {
-				return { ...group, isEnabled: false };
 			} else {
-				return group;
+				if (group.isSticky || ctrlOrMeta || clickedGroup.isSticky) {
+					return group;
+				} else {
+					return { ...group, isEnabled: false };
+				}
 			}
 		});
 		selectedFilterGroupId = id;
