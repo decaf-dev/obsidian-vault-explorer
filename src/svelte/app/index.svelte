@@ -293,6 +293,11 @@
 	}, 300);
 
 	function updateTimeValues() {
+		Logger.trace({
+			fileName: "app/index.ts",
+			functionName: "updateTimeValues",
+			message: "called",
+		});
 		startOfTodayMillis = getStartOfTodayMillis();
 		startOfThisWeekMillis = getStartOfThisWeekMillis();
 		startOfLastWeekMillis = getStartOfLastWeekMillis();
