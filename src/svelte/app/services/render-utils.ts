@@ -1,11 +1,11 @@
 import { FrontMatterCache, TFile } from "obsidian";
 import { PropertyType, VaultExplorerPluginSettings } from "src/types";
-import { MarkdownFileRenderData } from "../types";
+import { FileRenderData } from "../types";
 import { getTimeMillis, isDateSupported } from "../../shared/services/time-utils";
 import Logger from "js-logger";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 
-export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined,): MarkdownFileRenderData => {
+export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined,): FileRenderData => {
 	const tags: string[] | null = loadPropertyValue<string[]>(frontmatter, "tags", PropertyType.LIST);
 
 	const {
@@ -49,9 +49,11 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 		}
 	}
 
+	const { name, basename, extension, path } = file;
+	const displayName = extension === "md" ? basename : name;
 	return {
-		name: file.basename,
-		path: file.path,
+		name: displayName,
+		path,
 		tags,
 		favorite,
 		url,
