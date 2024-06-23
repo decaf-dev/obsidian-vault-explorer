@@ -10,8 +10,8 @@
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
 
-	function handleClick() {
-		dispatch("groupClick", { id });
+	function handleClick(event: Event) {
+		dispatch("groupClick", { id, nativeEvent: event });
 	}
 
 	function handleDragStart(event: Event) {
@@ -36,7 +36,7 @@
 	on:dragover={handleDragOver}
 	on:drop={handleDrop}
 	on:click={handleClick}
-	on:keydown={(e) => (e.key === "Enter" || e.key === " ") && handleClick()}
+	on:keydown={(e) => (e.key === "Enter" || e.key === " ") && handleClick(e)}
 >
 	{name}
 </div>
