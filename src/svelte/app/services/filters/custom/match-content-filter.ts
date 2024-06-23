@@ -5,6 +5,11 @@ export const matchContentFilter = (
 	compare: string,
 	condition: ContentFilterCondition,
 ): boolean => {
+	console.assert(content === content.toLowerCase(), `ContentFilter content "${content}" must be lowercase`);
+	console.assert(/^\s/.test(content) === false, `ContentFilter content "${content}" must not contain whitespace`);
+	console.assert(compare === compare.toLowerCase(), `ContentFilter compare "${compare}" must be lowercase`);
+	console.assert(/\s$/.test(compare) === false, `ContentFilter compare "${compare}" must not contain whitespace`);
+
 	switch (condition) {
 		case ContentFilterCondition.CONTAINS:
 			return content.includes(compare);

@@ -9,8 +9,8 @@ export const matchFolderFilter = (
 	}
 ): boolean => {
 	console.assert(filePath === filePath.toLowerCase(), `FolderFilter filePath "${filePath}" must be lowercase`);
+	console.assert(/^\s/.test(filePath) === false, `FolderFilter filePath "${filePath}" must not contain whitespace`);
 	console.assert(compare === compare.toLowerCase(), `FolderFilter compare "${compare}" must be lowercase`);
-	console.assert(/^\s/.test(compare) === false, `FolderFilter compare "${compare}" must not contain whitespace`);
 	console.assert(/\s$/.test(compare) === false, `FolderFilter compare "${compare}" must not contain whitespace`);
 
 	if (compare === "/") {

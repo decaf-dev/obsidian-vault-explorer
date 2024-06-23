@@ -6,8 +6,9 @@ export const matchFileNameFilter = (
 	condition: FileNameFilterCondition,
 ): boolean => {
 	console.assert(fileName === fileName.toLowerCase(), `FileNameFilter fileName "${fileName}" must be lowercase`);
-	console.assert(compare === compare.toLowerCase(), `FileNameFilter fileName "${compare}" must be lowercase`);
-	console.assert(/^\s/.test(compare) === false, `FileNameFilter compare "${compare}" must not contain whitespace`);
+	console.assert(/^\s/.test(fileName) === false, `FileNameFilter fileName "${fileName}" must not contain whitespace`);
+
+	console.assert(compare === compare.toLowerCase(), `FileNameFilter compare "${compare}" must be lowercase`);
 	console.assert(/\s$/.test(compare) === false, `FileNameFilter compare "${compare}" must not contain whitespace`);
 
 	switch (condition) {
