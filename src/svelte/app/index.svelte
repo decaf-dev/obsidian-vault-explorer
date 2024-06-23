@@ -384,13 +384,22 @@
 	}
 
 	function handleGroupClick(e: CustomEvent) {
-		const { id } = e.detail;
+		const { id, nativeEvent } = e.detail;
+
+		const disableOthers = nativeEvent.ctrlKey || nativeEvent.metaKey;
 
 		const newGroups = filterGroups.map((group) => {
 			if (group.id === id) {
-				return { ...group, isEnabled: !group.isEnabled };
+				if (disableOthers) {
+					return { ...group, isEnabled: true };
+				} else {
+					return { ...group, isEnabled: !group.isEnabled };
+				}
+			} else if (disableOthers) {
+				return { ...group, isEnabled: false };
+			} else {
+				return group;
 			}
-			return group;
 		});
 		selectedFilterGroupId = id;
 		filterGroups = newGroups;
