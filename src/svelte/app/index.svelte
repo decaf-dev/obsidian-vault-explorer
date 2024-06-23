@@ -315,7 +315,6 @@
 	let filteredCustom: TFile[] = [];
 
 	$: if (frontmatterCacheTime && filterGroups) {
-		console.log("frontmatterCacheTime", frontmatterCacheTime);
 		filterByCustomFilter().then((files) => {
 			filteredCustom = files;
 		});
