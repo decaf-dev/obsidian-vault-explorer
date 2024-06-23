@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { MarkdownFileRenderData } from "../types";
+	import { FileRenderData } from "../types";
 	import GridCard from "./grid-card.svelte";
 
-	export let data: MarkdownFileRenderData[];
+	export let data: FileRenderData[];
 	export let startIndex: number;
 	export let pageLength: number;
 
-	let displayedItems: MarkdownFileRenderData[] = [];
+	let displayedItems: FileRenderData[] = [];
 
 	$: {
 		if (startIndex < data.length) {

@@ -32,7 +32,7 @@
 		getStartOfTodayMillis,
 		getStartOfThisWeekMillis,
 	} from "../shared/services/time-utils";
-	import { MarkdownFileRenderData } from "./types";
+	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
 
 	let plugin: VaultExplorerPlugin;
@@ -70,7 +70,7 @@
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
 
-	let markdownFiles: TFile[] = [];
+	let files: TFile[] = [];
 
 	const debounceSearchFilter = _.debounce((e) => {
 		searchFilter = e.target.value;
@@ -101,7 +101,7 @@
 			.filter((file) => file instanceof TFolder)
 			.map((folder) => folder.path);
 
-		markdownFiles = plugin.app.vault.getMarkdownFiles();
+		files = plugin.app.vault.getFiles();
 
 		pageSize = plugin.settings.pageSize;
 
@@ -148,7 +148,7 @@
 			});
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
-				markdownFiles = [...markdownFiles, newFile];
+				files = [...files, newFile];
 			}
 		};
 
@@ -167,9 +167,7 @@
 			});
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
-				markdownFiles = markdownFiles.filter(
-					(file) => file.path !== path,
-				);
+				files = files.filter((file) => file.path !== path);
 			}
 		};
 
@@ -190,7 +188,7 @@
 			if (typeof data[0] === "string" && data[1] instanceof TFile) {
 				const oldPath = data[0] as string;
 				const updatedFile = data[1] as TFile;
-				markdownFiles = markdownFiles.map((file) => {
+				files = files.map((file) => {
 					if (file.path === oldPath) {
 						return updatedFile;
 					}
@@ -280,7 +278,7 @@
 	async function filterByCustomFilter() {
 		const promises: Promise<TFile | null>[] = [];
 
-		for (let file of markdownFiles) {
+		for (let file of files) {
 			promises.push(
 				(async () => {
 					const frontmatter =
@@ -319,7 +317,7 @@
 		});
 	}
 
-	let formatted: MarkdownFileRenderData[] = [];
+	let formatted: FileRenderData[] = [];
 	$: if (propertySettingTime) {
 		formatted = filteredCustom.map((file) => {
 			const frontmatter =

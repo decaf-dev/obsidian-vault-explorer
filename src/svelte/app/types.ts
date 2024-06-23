@@ -1,4 +1,4 @@
-export interface MarkdownFileRenderData {
+export interface FileRenderData {
 	name: string;
 	path: string;
 	tags: string[] | null;
