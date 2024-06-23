@@ -87,6 +87,8 @@ export enum DateFilterCondition {
 export enum ContentFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
+	IS_EMPTY = "is-empty",
+	IS_NOT_EMPTY = "is-not-empty",
 }
 
 //TODO add is child of and is parent of?

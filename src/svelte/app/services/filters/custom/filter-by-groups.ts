@@ -10,6 +10,7 @@ import { getDateDaysAgo, getDateDaysAhead } from "src/svelte/shared/services/tim
 import { matchFileNameFilter } from "./match-file-name-filter";
 import { matchContentFilter } from "./match-content-filter";
 import { matchFolderFilter } from "./match-folder-filter";
+import { removeFrontmatterBlock } from "../../frontmatter-utils";
 
 export const filterByGroups = (fileName: string, filePath: string, fileFrontmatter: FrontMatterCache | undefined, fileContent: string, groups: FilterGroup[]) => {
 	return groups.every((group) => {
@@ -162,8 +163,10 @@ const filterByFolder = (filePath: string, filter: FolderFilterRule): boolean => 
 }
 
 const filterByContent = (fileContent: string, filter: ContentFilterRule): boolean => {
-	const value = fileContent.toLowerCase();
-	const compare = filter.value;
+	let value = removeFrontmatterBlock(fileContent);
+	value = value.toLowerCase().trim();
+
+	const compare = filter.value.toLocaleLowerCase().trim();
 
 	const doesMatch = matchContentFilter(value, compare, filter.condition);
 	return doesMatch;

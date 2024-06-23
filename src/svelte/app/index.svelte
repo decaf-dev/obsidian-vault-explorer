@@ -289,8 +289,7 @@
 						plugin.app.metadataCache.getFileCache(
 							file,
 						)?.frontmatter;
-					const data = await plugin.app.vault.cachedRead(file);
-					const content = removeFrontmatterBlock(data);
+					const content = await plugin.app.vault.cachedRead(file);
 					const { name, path } = file;
 
 					if (

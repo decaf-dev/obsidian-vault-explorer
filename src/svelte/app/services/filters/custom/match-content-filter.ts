@@ -12,6 +12,12 @@ export const matchContentFilter = (
 		case ContentFilterCondition.DOES_NOT_CONTAIN:
 			return !content.includes(compare);
 
+		case ContentFilterCondition.IS_EMPTY:
+			return content === "";
+
+		case ContentFilterCondition.IS_NOT_EMPTY:
+			return content !== "";
+
 		default:
 			throw new Error(`ContentFilterCondition not supported: ${condition}`);
 	}

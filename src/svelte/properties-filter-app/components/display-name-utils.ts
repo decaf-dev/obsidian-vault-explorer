@@ -79,6 +79,10 @@ export const getDisplayNameForFilterCondition = (type: FilterCondition) => {
 		case ListFilterCondition.DOES_NOT_EXIST:
 		case DateFilterCondition.DOES_NOT_EXIST:
 			return "does not exist";
+		case ContentFilterCondition.IS_EMPTY:
+			return "is empty";
+		case ContentFilterCondition.IS_NOT_EMPTY:
+			return "is not empty";
 		case NumberFilterCondition.IS_EQUAL:
 			return "=";
 		case NumberFilterCondition.IS_NOT_EQUAL:
