@@ -15,6 +15,7 @@
 			if (!tagContainerRef) {
 				return;
 			}
+
 			const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
 			showScrollLeftButton = scrollLeft > 0;
 
@@ -26,7 +27,7 @@
 
 		if (tagContainerRef) {
 			tagContainerRef.addEventListener("scroll", handleScroll);
-			setTimeout(handleScroll, 0);
+			requestAnimationFrame(handleScroll);
 		}
 
 		return () => {
@@ -68,7 +69,7 @@
 	let showScrollRightButton = false;
 </script>
 
-<div class="vault-explorer-group-tag-list" style="position: relative">
+<div class="vault-explorer-group-tag-list">
 	<div
 		class="vault-explorer-group-tag-list__container"
 		bind:this={tagContainerRef}
@@ -105,6 +106,10 @@
 </div>
 
 <style>
+	.vault-explorer-group-tag-list {
+		position: relative;
+	}
+
 	.vault-explorer-group-tag-list__container {
 		max-width: 325px;
 		overflow-x: auto;

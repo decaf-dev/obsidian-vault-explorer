@@ -116,7 +116,7 @@
 
 		if (tagContainerRef) {
 			tagContainerRef.addEventListener("scroll", handleScroll);
-			setTimeout(handleScroll, 0);
+			requestAnimationFrame(handleScroll);
 		}
 
 		return () => {
