@@ -28,6 +28,59 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		const dateTimeProperties = getObsidianPropertiesByType(this.app, "datetime");
 		const checkboxProperties = getObsidianPropertiesByType(this.app, "checkbox");
 
+		new Setting(containerEl).setName("Filters").setHeading();
+
+		new Setting(containerEl)
+			.setName("Search filter")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.filters.favorites.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.filters.search.isEnabled = value;
+					await this.plugin.saveSettings();
+					// EventManager.getInstance().emit("clock-updates-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Favorites filter")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.filters.favorites.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.filters.favorites.isEnabled = value;
+					await this.plugin.saveSettings();
+					// EventManager.getInstance().emit("clock-updates-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Timestamp filter")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.filters.timestamp.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.filters.timestamp.isEnabled = value;
+					await this.plugin.saveSettings();
+					// EventManager.getInstance().emit("clock-updates-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Sort")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.filters.sort.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.filters.sort.isEnabled = value;
+					await this.plugin.saveSettings();
+					// EventManager.getInstance().emit("clock-updates-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Custom filter")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.filters.custom.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.filters.custom.isEnabled = value;
+					await this.plugin.saveSettings();
+					// EventManager.getInstance().emit("clock-updates-setting-change");
+				}));
+
+
 		new Setting(containerEl).setName("Views").setHeading();
 
 		new Setting(containerEl).setName("Page size").setDesc("The number of items to display per page.").addDropdown(dropdown => dropdown

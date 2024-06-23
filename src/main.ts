@@ -335,7 +335,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (isVersionLessThan(settingsVersion, "1.13.0")) {
 				console.log("Upgrading settings from version 1.12.1 to 1.13.0");
 				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_12_1;
-				const newData: VaultExplorerPluginSettings = {
+				const newData: VaultExplorerPluginSettings_1_13_1 = {
 					...typedData,
 					views: {
 						...typedData.views,
@@ -352,6 +352,38 @@ export default class VaultExplorerPlugin extends Plugin {
 								}
 							})
 						}
+					}
+				}
+				data = newData as unknown as Record<string, unknown>;
+			}
+
+			if (isVersionLessThan(settingsVersion, "1.14.0")) {
+				console.log("Upgrading settings from version 1.13.1 to 1.14.0");
+				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_13_1;
+				const newData: VaultExplorerPluginSettings = {
+					...typedData,
+					filters: {
+						...typedData.filters,
+						search: {
+							isEnabled: true,
+							value: typedData.filters.search
+						},
+						favorites: {
+							isEnabled: false,
+							value: typedData.filters.onlyFavorites
+						},
+						timestamp: {
+							isEnabled: true,
+							value: typedData.filters.timestamp
+						},
+						sort: {
+							isEnabled: true,
+							value: typedData.filters.sort
+						},
+						custom: {
+							isEnabled: true,
+							...typedData.filters.custom
+						},
 					}
 				}
 				data = newData as unknown as Record<string, unknown>;
