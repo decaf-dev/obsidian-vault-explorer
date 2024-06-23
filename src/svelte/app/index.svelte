@@ -34,7 +34,6 @@
 	} from "../shared/services/time-utils";
 	import { MarkdownFileRenderData } from "./types";
 	import Logger from "js-logger";
-	import { removeFrontmatterBlock } from "./services/frontmatter-utils";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -67,7 +66,7 @@
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
 	let filterGroups: FilterGroup[] = [];
-	let selectedPropertyFilterGroupId: string = "";
+	let selectedFilterGroupId: string = "";
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
 
@@ -113,8 +112,7 @@
 		currentView = plugin.settings.views.currentView;
 		viewOrder = plugin.settings.views.order;
 		filterGroups = plugin.settings.filters.custom.groups;
-		selectedPropertyFilterGroupId =
-			plugin.settings.filters.custom.selectedGroupId;
+		selectedFilterGroupId = plugin.settings.filters.custom.selectedGroupId;
 	});
 
 	onMount(() => {
@@ -125,7 +123,7 @@
 				message: "called",
 			});
 			filterGroups = plugin.settings.filters.custom.groups;
-			selectedPropertyFilterGroupId =
+			selectedFilterGroupId =
 				plugin.settings.filters.custom.selectedGroupId;
 		}
 
@@ -370,7 +368,7 @@
 		currentView,
 		viewOrder,
 		filterGroups,
-		selectedPropertyFilterGroupId,
+		selectedFilterGroupId,
 		saveSettings();
 
 	async function saveSettings() {
@@ -381,8 +379,7 @@
 		plugin.settings.views.order = viewOrder;
 		plugin.settings.views.currentView = currentView;
 		plugin.settings.filters.custom.groups = filterGroups;
-		plugin.settings.filters.custom.selectedGroupId =
-			selectedPropertyFilterGroupId;
+		plugin.settings.filters.custom.selectedGroupId = selectedFilterGroupId;
 		await plugin.saveSettings();
 	}
 
@@ -394,7 +391,7 @@
 				? { ...group, isEnabled: !group.isEnabled }
 				: { ...group, isEnabled: false },
 		);
-		selectedPropertyFilterGroupId = id;
+		selectedFilterGroupId = id;
 		filterGroups = newGroups;
 	}
 
