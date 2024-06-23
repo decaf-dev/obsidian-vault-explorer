@@ -13,6 +13,7 @@
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
+	import ScrollButton from "src/svelte/shared/components/scroll-button.svelte";
 
 	export let name: string;
 	export let path: string;
@@ -73,7 +74,6 @@
 				tagContainerRef,
 				".vault-explorer-tag",
 				"left",
-				20,
 			);
 			tagContainerRef.scrollBy({
 				left: -scrollAmount,
@@ -88,7 +88,6 @@
 				tagContainerRef,
 				".vault-explorer-tag",
 				"right",
-				20,
 			);
 			tagContainerRef.scrollBy({
 				left: scrollAmount,
@@ -160,17 +159,11 @@
 		{#if tags !== null}
 			<Stack spacing="xs">
 				{#if showScrollLeftButton}
-					<div
-						class="vault-explorer-scroll-button vault-explorer-scroll-button--left"
-					>
-						<IconButton
-							isTabbable={false}
-							ariaLabel="Scroll left"
-							noPadding
-							iconId="chevron-left"
-							on:click={handleScrollLeftClick}
-						/>
-					</div>
+					<ScrollButton
+						type="tag"
+						direction="left"
+						on:click={handleScrollLeftClick}
+					/>
 				{/if}
 				<div
 					class="vault-explorer-grid-card__tags"
@@ -181,17 +174,11 @@
 					{/each}
 				</div>
 				{#if showScrollRightButton}
-					<div
-						class="vault-explorer-scroll-button vault-explorer-scroll-button--right"
-					>
-						<IconButton
-							isTabbable={false}
-							ariaLabel="Scroll right"
-							noPadding
-							iconId="chevron-right"
-							on:click={handleScrollRightClick}
-						/>
-					</div>
+					<ScrollButton
+						type="tag"
+						direction="right"
+						on:click={handleScrollRightClick}
+					/>
 				{/if}
 			</Stack>
 		{/if}
@@ -264,20 +251,4 @@
 		font-size: var(--font-smallest);
 		color: var(--text-muted);
 	} */
-
-	.vault-explorer-scroll-button {
-		position: absolute;
-		background-color: var(--background-primary);
-		z-index: 1;
-		width: 20px;
-		height: 20px;
-	}
-
-	.vault-explorer-scroll-button--left {
-		left: 0;
-	}
-
-	.vault-explorer-scroll-button--right {
-		right: 0;
-	}
 </style>
