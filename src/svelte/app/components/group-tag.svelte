@@ -2,11 +2,14 @@
 	export let id: string;
 	export let name: string;
 	export let isSelected: boolean;
+	export let isSticky: boolean;
 
 	$: className =
 		"vault-explorer-group-tag" +
 		(isSelected ? " vault-explorer-group-tag--active" : "");
 
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
 
@@ -38,7 +41,15 @@
 	on:click={handleClick}
 	on:keydown={(e) => (e.key === "Enter" || e.key === " ") && handleClick(e)}
 >
-	{name}
+	{#if isSticky}
+		<Stack spacing="xs" align="center">
+			<Icon iconId="sticky-note" xs={true} />
+			<div>{name}</div>
+		</Stack>
+	{/if}
+	{#if !isSticky}
+		{name}
+	{/if}
 </div>
 
 <style>

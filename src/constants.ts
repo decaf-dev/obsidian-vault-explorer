@@ -32,7 +32,8 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 						id: randomGroupId,
 						name: "Group 1",
 						rules: [],
-						isEnabled: true
+						isEnabled: true,
+						isSticky: false
 					}
 				]
 		}

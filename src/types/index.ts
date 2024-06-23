@@ -207,6 +207,7 @@ export interface FilterGroup {
 	name: string;
 	rules: FilterRule[];
 	isEnabled: boolean;
+	isSticky: boolean;
 }
 
 export type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";

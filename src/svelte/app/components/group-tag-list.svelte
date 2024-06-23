@@ -13,6 +13,7 @@
 				id={group.id}
 				name={group.name}
 				isSelected={group.isEnabled}
+				isSticky={group.isSticky}
 				on:groupClick
 				on:groupDrop
 				on:groupDragOver

@@ -340,6 +340,18 @@ export default class VaultExplorerPlugin extends Plugin {
 					views: {
 						...typedData.views,
 						enableClockUpdates: true
+					},
+					filters: {
+						...typedData.filters,
+						custom: {
+							...typedData.filters.custom,
+							groups: typedData.filters.custom.groups.map(group => {
+								return {
+									...group,
+									isSticky: false
+								}
+							})
+						}
 					}
 				}
 				data = newData as unknown as Record<string, unknown>;
