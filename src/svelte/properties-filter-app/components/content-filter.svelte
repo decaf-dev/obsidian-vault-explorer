@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { FilterCondition, FilterOperator, FilterRuleType } from "src/types";
+	import {
+		ContentFilterCondition,
+		FilterCondition,
+		FilterOperator,
+		FilterRuleType,
+	} from "src/types";
 	import FilterRule from "./filter-rule.svelte";
 
 	export let index: number;
@@ -33,11 +38,14 @@
 	on:ruleOperatorChange
 	on:ruleToggle
 >
-	<input
-		slot="after-condition"
-		type="text"
-		placeholder="value"
-		{value}
-		on:input={handleValueChange}
-	/>
+	<svelte:fragment slot="after-condition">
+		{#if condition !== ContentFilterCondition.IS_EMPTY && condition !== ContentFilterCondition.IS_NOT_EMPTY}
+			<input
+				type="text"
+				placeholder="value"
+				{value}
+				on:input={handleValueChange}
+			/>
+		{/if}
+	</svelte:fragment>
 </FilterRule>
