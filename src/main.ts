@@ -23,9 +23,11 @@ import { loadDeviceId } from './svelte/shared/services/device-id-utils';
 import License from './svelte/shared/services/license';
 import { VaultExplorerPluginSettings_1_8_1 } from './types/types-1.8.1';
 import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
+import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
+	layoutReady: boolean = false;
 
 	async onload() {
 		await this.loadSettings();
@@ -54,6 +56,10 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.registerEvents();
 		this.registerHoverLinkSource(HOVER_LINK_SOURCE_ID, { display: this.manifest.name, defaultMod: true });
 		this.addSettingTab(new VaultExplorerSettingsTab(this.app, this));
+
+		this.app.workspace.onLayoutReady(() => {
+			this.layoutReady = true;
+		});
 
 	}
 
@@ -84,6 +90,10 @@ export default class VaultExplorerPlugin extends Plugin {
 		//Callback if a file is created
 		//This callback is already debounced by Obsidian
 		this.registerEvent(this.app.vault.on("create", (file: TAbstractFile) => {
+			//For some reason Obsidian will call this event for every file in the vault when the plugin is loaded
+			//We need to ignore these events
+			if (!this.layoutReady) return;
+
 			if (file instanceof TFolder) {
 				EventManager.getInstance().emit("folder-create", file);
 			} else if (file instanceof TFile) {
@@ -292,7 +302,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (isVersionLessThan(settingsVersion, "1.10.0")) {
 				console.log("Upgrading settings from version 1.9.1 to 1.10.0");
 				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_9_1;
-				const newData: VaultExplorerPluginSettings = {
+				const newData: VaultExplorerPluginSettings_1_12_1 = {
 					...typedData,
 					filters: {
 						...typedData.filters,
@@ -318,6 +328,31 @@ export default class VaultExplorerPlugin extends Plugin {
 				delete (newData.filters as any).properties;
 				for (const group of newData.filters.custom.groups as any) {
 					delete group.filters;
+				}
+				data = newData as unknown as Record<string, unknown>;
+			}
+
+			if (isVersionLessThan(settingsVersion, "1.13.0")) {
+				console.log("Upgrading settings from version 1.12.1 to 1.13.0");
+				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_12_1;
+				const newData: VaultExplorerPluginSettings = {
+					...typedData,
+					views: {
+						...typedData.views,
+						enableClockUpdates: true
+					},
+					filters: {
+						...typedData.filters,
+						custom: {
+							...typedData.filters.custom,
+							groups: typedData.filters.custom.groups.map(group => {
+								return {
+									...group,
+									isSticky: false
+								}
+							})
+						}
+					}
 				}
 				data = newData as unknown as Record<string, unknown>;
 			}

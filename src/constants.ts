@@ -32,7 +32,8 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 						id: randomGroupId,
 						name: "Group 1",
 						rules: [],
-						isEnabled: true
+						isEnabled: true,
+						isSticky: false
 					}
 				]
 		}
@@ -40,7 +41,8 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	views: {
 		currentView: ViewType.GRID,
 		order: [ViewType.GRID, ViewType.LIST],
-		titleWrapping: "normal"
+		titleWrapping: "normal",
+		enableClockUpdates: true
 	},
 	pageSize: 50,
 	pluginVersion: null

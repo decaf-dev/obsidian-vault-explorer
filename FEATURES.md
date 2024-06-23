@@ -46,6 +46,7 @@ Features are what the software should do.
 | Filter by file name                                              | #filter                  |
 | Filter by file content                                           | #filter                  |
 | License key for premium features                                 | #settings                |
+| Add sticky groups                                                | #filter                  |
 
 ## Event callbacks
 

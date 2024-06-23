@@ -162,6 +162,19 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					EventManager.getInstance().emit("property-setting-change");
 				}));
 
+		new Setting(containerEl).setName("Updates").setHeading();
+
+		new Setting(containerEl)
+			.setName("Enable clock updates")
+			.setDesc("When enabled, time values will update every minute, refreshing the Vault Explorer view. When disabled, time values will only update when the view is opened.")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.enableClockUpdates)
+				.onChange(async (value) => {
+					this.plugin.settings.views.enableClockUpdates = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("clock-updates-setting-change");
+				}));
+
 		new Setting(containerEl).setName("Premium").setHeading();
 
 		this.component = new Component({
@@ -191,16 +204,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
-	}
-
-	private getSettingMessageClassName(type: "success" | "failure" | "default" = "default") {
-		let className = "vault-explorer-setting-message";
-		if (type === "success") {
-			className += " vault-explorer-setting-message--success";
-		} else if (type === "failure") {
-			className += " vault-explorer-setting-message--failure";
-		}
-		return className;
 	}
 
 	onClose() {
