@@ -386,11 +386,12 @@
 	function handleGroupClick(e: CustomEvent) {
 		const { id } = e.detail;
 
-		const newGroups = filterGroups.map((group) =>
-			group.id === id
-				? { ...group, isEnabled: !group.isEnabled }
-				: { ...group, isEnabled: false },
-		);
+		const newGroups = filterGroups.map((group) => {
+			if (group.id === id) {
+				return { ...group, isEnabled: !group.isEnabled };
+			}
+			return group;
+		});
 		selectedFilterGroupId = id;
 		filterGroups = newGroups;
 	}
