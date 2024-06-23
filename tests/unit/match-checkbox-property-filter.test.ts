@@ -1,10 +1,10 @@
-import { matchCheckboxFilter } from "src/svelte/app/services/filters/custom/match-checkbox-filter";
+import { matchCheckboxPropertyFilter } from "src/svelte/app/services/filters/custom/match-checkbox-property-filter";
 import { CheckboxFilterCondition } from "src/types";
 
-describe('matchCheckboxFilter', () => {
+describe('matchCheckboxPropertyFilter', () => {
 
 	describe('Normal Cases', () => {
-		it('should return true for matchCheckboxFilter(true, true, CheckboxFilterCondition.IS, false)', () => {
+		it('should return true for matchCheckboxPropertyFilter(true, true, CheckboxFilterCondition.IS, false)', () => {
 			// Arrange
 			const propertyValue = true;
 			const compare = true;
@@ -12,13 +12,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchCheckboxFilter(false, false, CheckboxFilterCondition.IS, false)', () => {
+		it('should return true for matchCheckboxPropertyFilter(false, false, CheckboxFilterCondition.IS, false)', () => {
 			// Arrange
 			const propertyValue = false;
 			const compare = false;
@@ -26,13 +26,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchCheckboxFilter(true, false, CheckboxFilterCondition.IS_NOT, false)', () => {
+		it('should return true for matchCheckboxPropertyFilter(true, false, CheckboxFilterCondition.IS_NOT, false)', () => {
 			// Arrange
 			const propertyValue = true;
 			const compare = false;
@@ -40,13 +40,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchCheckboxFilter(false, true, CheckboxFilterCondition.IS_NOT, false)', () => {
+		it('should return true for matchCheckboxPropertyFilter(false, true, CheckboxFilterCondition.IS_NOT, false)', () => {
 			// Arrange
 			const propertyValue = false;
 			const compare = true;
@@ -54,13 +54,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchCheckboxFilter(true, true, CheckboxFilterCondition.EXISTS, false)', () => {
+		it('should return true for matchCheckboxPropertyFilter(true, true, CheckboxFilterCondition.EXISTS, false)', () => {
 			// Arrange
 			const propertyValue = true;
 			const compare = true;
@@ -68,13 +68,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchCheckboxFilter(false, true, CheckboxFilterCondition.EXISTS, false)', () => {
+		it('should return true for matchCheckboxPropertyFilter(false, true, CheckboxFilterCondition.EXISTS, false)', () => {
 			// Arrange
 			const propertyValue = false;
 			const compare = true;
@@ -82,7 +82,7 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -90,7 +90,7 @@ describe('matchCheckboxFilter', () => {
 	});
 
 	describe('Invalid Cases', () => {
-		it('should return false for matchCheckboxFilter(null, true, CheckboxFilterCondition.IS, false)', () => {
+		it('should return false for matchCheckboxPropertyFilter(null, true, CheckboxFilterCondition.IS, false)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = true;
@@ -98,13 +98,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
 		});
 
-		it('should return false for matchCheckboxFilter(null, false, CheckboxFilterCondition.IS_NOT, false)', () => {
+		it('should return false for matchCheckboxPropertyFilter(null, false, CheckboxFilterCondition.IS_NOT, false)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = false;
@@ -112,7 +112,7 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -120,7 +120,7 @@ describe('matchCheckboxFilter', () => {
 	});
 
 	describe('Edge Cases', () => {
-		it('should return false for matchCheckboxFilter(null, true, CheckboxFilterCondition.EXISTS, false)', () => {
+		it('should return false for matchCheckboxPropertyFilter(null, true, CheckboxFilterCondition.EXISTS, false)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = true;
@@ -128,13 +128,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
 		});
 
-		it('should return true for matchCheckboxFilter(null, true, CheckboxFilterCondition.DOES_NOT_EXIST, false)', () => {
+		it('should return true for matchCheckboxPropertyFilter(null, true, CheckboxFilterCondition.DOES_NOT_EXIST, false)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = true;
@@ -142,13 +142,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchCheckboxFilter(null, true, CheckboxFilterCondition.IS, true)', () => {
+		it('should return true for matchCheckboxPropertyFilter(null, true, CheckboxFilterCondition.IS, true)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = true;
@@ -156,13 +156,13 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it('should return true for matchCheckboxFilter(null, false, CheckboxFilterCondition.IS_NOT, true)', () => {
+		it('should return true for matchCheckboxPropertyFilter(null, false, CheckboxFilterCondition.IS_NOT, true)', () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = false;
@@ -170,7 +170,7 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchCheckboxFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -178,7 +178,7 @@ describe('matchCheckboxFilter', () => {
 	});
 
 	describe('Error Cases', () => {
-		it('should throw an error for matchCheckboxFilter(true, true, "unsupported-condition", false)', () => {
+		it('should throw an error for matchCheckboxPropertyFilter(true, true, "unsupported-condition", false)', () => {
 			// Arrange
 			const propertyValue = true;
 			const compare = true;
@@ -186,7 +186,7 @@ describe('matchCheckboxFilter', () => {
 			const matchIfNull = false;
 
 			// Act & Assert
-			expect(() => matchCheckboxFilter(propertyValue, compare, condition, matchIfNull)).toThrow();
+			expect(() => matchCheckboxPropertyFilter(propertyValue, compare, condition, matchIfNull)).toThrow();
 		});
 	});
 });

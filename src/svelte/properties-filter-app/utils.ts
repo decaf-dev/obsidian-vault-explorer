@@ -1,10 +1,11 @@
-import { FilterRuleType, TextFilterCondition, TextPropertyFilter } from "src/types";
+import { FilterRuleType, PropertyType, TextFilterCondition, TextPropertyFilterRule } from "src/types";
 import { generateRandomId } from "../shared/services/random";
 
-export const createPropertyFilter = (): TextPropertyFilter => {
+export const createPropertyFilter = (): TextPropertyFilterRule => {
 	return {
 		id: generateRandomId(),
-		type: FilterRuleType.TEXT,
+		type: FilterRuleType.PROPERTY,
+		propertyType: PropertyType.TEXT,
 		propertyName: "",
 		operator: "and",
 		isEnabled: true,

@@ -1,10 +1,10 @@
-import { matchDateFilter } from "src/svelte/app/services/filters/custom/match-date-filter";
+import { matchDatePropertyFilter } from "src/svelte/app/services/filters/custom/match-date-property-filter";
 import { DateFilterCondition } from "src/types";
 
-describe("matchDateFilter", () => {
+describe("matchDatePropertyFilter", () => {
 
 	describe("Normal Cases", () => {
-		it("should return true for matchDateFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS, false)", () => {
+		it("should return true for matchDatePropertyFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-01T12:00:00";
 			const compare = "2020-01-01";
@@ -12,13 +12,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return true for matchDateFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS_AFTER, false)", () => {
+		it("should return true for matchDatePropertyFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS_AFTER, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-02T12:00:00";
 			const compare = "2020-01-01";
@@ -26,13 +26,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return true for matchDateFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS_BEFORE, false)", () => {
+		it("should return true for matchDatePropertyFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS_BEFORE, false)", () => {
 			// Arrange
 			const propertyValue = "2019-12-31T12:00:00";
 			const compare = "2020-01-01";
@@ -40,13 +40,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return true for matchDateFilter(YYYY-MM-DD, YYYY-MM-DD, IS, false)", () => {
+		it("should return true for matchDatePropertyFilter(YYYY-MM-DD, YYYY-MM-DD, IS, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-01";
 			const compare = "2020-01-01";
@@ -54,13 +54,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return true for matchDateFilter(YYYY-MM-DD, YYYY-MM-DD, IS_AFTER, false)", () => {
+		it("should return true for matchDatePropertyFilter(YYYY-MM-DD, YYYY-MM-DD, IS_AFTER, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-02";
 			const compare = "2020-01-01";
@@ -68,13 +68,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return true for matchDateFilter(YYYY-MM-DD, YYYY-MM-DD, IS_BEFORE, false)", () => {
+		it("should return true for matchDatePropertyFilter(YYYY-MM-DD, YYYY-MM-DD, IS_BEFORE, false)", () => {
 			// Arrange
 			const propertyValue = "2019-12-31";
 			const compare = "2020-01-01";
@@ -82,7 +82,7 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -90,7 +90,7 @@ describe("matchDateFilter", () => {
 	});
 
 	describe("Invalid Cases", () => {
-		it("should return true for matchDateFilter(null, YYYY-MM-DD, IS, true)", () => {
+		it("should return true for matchDatePropertyFilter(null, YYYY-MM-DD, IS, true)", () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = "2020-01-01";
@@ -98,13 +98,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return true for matchDateFilter(null, YYYY-MM-DD, IS_BEFORE, true)", () => {
+		it("should return true for matchDatePropertyFilter(null, YYYY-MM-DD, IS_BEFORE, true)", () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = "2020-01-01";
@@ -112,13 +112,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return true for matchDateFilter(null, YYYY-MM-DD, IS_AFTER, true)", () => {
+		it("should return true for matchDatePropertyFilter(null, YYYY-MM-DD, IS_AFTER, true)", () => {
 			// Arrange
 			const propertyValue = null;
 			const compare = "2020-01-01";
@@ -126,7 +126,7 @@ describe("matchDateFilter", () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -134,7 +134,7 @@ describe("matchDateFilter", () => {
 	});
 
 	describe("Edge Cases", () => {
-		it("should return true for matchDateFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS, false)", () => {
+		it("should return true for matchDatePropertyFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-01T00:00:00";
 			const compare = "2020-01-01";
@@ -142,13 +142,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return false for matchDateFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS, false)", () => {
+		it("should return false for matchDatePropertyFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-01T23:59:59";
 			const compare = "2020-01-01";
@@ -156,13 +156,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
 		});
 
-		it("should return true for matchDateFilter(YYYY-MM-DDTHH:mm, YYYY-MM-DD, IS, false)", () => {
+		it("should return true for matchDatePropertyFilter(YYYY-MM-DDTHH:mm, YYYY-MM-DD, IS, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-01T00:00";
 			const compare = "2020-01-01";
@@ -170,13 +170,13 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 
-		it("should return false for matchDateFilter(YYYY-MM-DDTHH:mm, YYYY-MM-DD, IS, false)", () => {
+		it("should return false for matchDatePropertyFilter(YYYY-MM-DDTHH:mm, YYYY-MM-DD, IS, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-01T23:59";
 			const compare = "2020-01-01";
@@ -184,7 +184,7 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDateFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -192,7 +192,7 @@ describe("matchDateFilter", () => {
 	});
 
 	describe("Error Cases", () => {
-		it("should throw an error for matchDateFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, INVALID_CONDITION, false)", () => {
+		it("should throw an error for matchDatePropertyFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, INVALID_CONDITION, false)", () => {
 			// Arrange
 			const propertyValue = "2020-01-01T12:00:00";
 			const compare = "2020-01-01";
@@ -200,7 +200,7 @@ describe("matchDateFilter", () => {
 			const matchIfNull = false;
 
 			// Act & Assert
-			expect(() => matchDateFilter(propertyValue, compare, condition, matchIfNull)).toThrow();
+			expect(() => matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull)).toThrow();
 		});
 	});
 });

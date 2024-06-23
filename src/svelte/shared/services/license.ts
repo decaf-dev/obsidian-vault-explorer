@@ -1,6 +1,7 @@
 import Logger from "js-logger";
 import { requestUrl } from "obsidian";
 import { readDeviceId } from "./device-id-utils";
+import { writable } from "svelte/store";
 
 export const LICENSE_KEY_LENGTH = 8;
 
@@ -10,11 +11,13 @@ export default class License {
 	private isDeviceRegistered: boolean;
 	private licenseKey: string;
 	private responseMessage: string;
+	private isDeviceRegisteredStore = writable<boolean>();
 
 	private static instance: License;
 
 	constructor() {
 		this.isDeviceRegistered = false;
+		this.isDeviceRegisteredStore.set(false);
 		this.responseMessage = "";
 		this.licenseKey = localStorage.getItem(LOCAL_STORAGE_LICENSE_KEY) ?? "";
 	}
@@ -26,6 +29,7 @@ export default class License {
 		const result = await this.postRegisterDevice(licenseKey, deviceId);
 		if (result) {
 			this.isDeviceRegistered = true;
+			this.isDeviceRegisteredStore.set(true);
 			this.setLicenseKey(licenseKey);
 		}
 		return result;
@@ -38,6 +42,7 @@ export default class License {
 		const result = await this.postUnregisterDevice(this.licenseKey, deviceId);
 		if (result) {
 			this.isDeviceRegistered = false;
+			this.isDeviceRegisteredStore.set(false);
 			this.setLicenseKey("");
 		}
 		return result;
@@ -59,6 +64,7 @@ export default class License {
 		const result = await this.postVerifyDevice(this.licenseKey, deviceId);
 		if (result) {
 			this.isDeviceRegistered = true;
+			this.isDeviceRegisteredStore.set(true);
 		}
 	}
 
@@ -179,6 +185,11 @@ export default class License {
 	getIsDeviceRegistered() {
 		return this.isDeviceRegistered;
 	}
+
+	getIsDeviceRegisteredStore() {
+		return this.isDeviceRegisteredStore
+	}
+
 
 	getLicenseKey() {
 		return this.licenseKey;

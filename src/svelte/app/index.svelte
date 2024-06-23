@@ -5,7 +5,7 @@
 	import Checkbox from "../shared/components/checkbox.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { FrontMatterCache, Menu, TFile, TFolder } from "obsidian";
+	import { Menu, TFile, TFolder } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
 		FilterGroup,
@@ -18,7 +18,6 @@
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";
 	import { filterByFavorites } from "./services/filters/favorite-filter";
-	import { filterByFolder } from "./services/filters/folder-filter";
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
@@ -33,6 +32,9 @@
 		getStartOfTodayMillis,
 		getStartOfThisWeekMillis,
 	} from "../shared/services/time-utils";
+	import { MarkdownFileRenderData } from "./types";
+	import Logger from "js-logger";
+	import { removeFrontmatterBlock } from "./services/frontmatter-utils";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -59,7 +61,6 @@
 	let pageSize: number = 0;
 
 	let searchFilter: string = "";
-	let folderFilter: string = "/";
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
 	let onlyFavorites: boolean = false;
@@ -67,8 +68,8 @@
 	let currentView: ViewType = ViewType.GRID;
 	let propertyFilterGroups: FilterGroup[] = [];
 	let selectedPropertyFilterGroupId: string = "";
-
-	let frontmatterCache: Record<string, FrontMatterCache | undefined> = {};
+	let frontmatterCacheTime: number = Date.now();
+	let propertySettingTime: number = Date.now();
 
 	let markdownFiles: TFile[] = [];
 
@@ -80,16 +81,17 @@
 		onlyFavorites = value;
 	}, 300);
 
-	function updateFrontmatterCache() {
-		let localCache: Record<string, FrontMatterCache | undefined> = {};
-		markdownFiles.forEach((file) => {
-			const frontmatter =
-				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-
-			localCache[file.path] = frontmatter;
+	function updateFrontmatterCacheTime() {
+		Logger.trace({
+			fileName: "app/index.ts",
+			functionName: "updateFrontmatterCacheTime",
+			message: "called",
 		});
+		frontmatterCacheTime = Date.now();
+	}
 
-		frontmatterCache = localCache;
+	function updatePropertySettingTime() {
+		propertySettingTime = Date.now();
 	}
 
 	store.plugin.subscribe((p) => {
@@ -101,12 +103,10 @@
 			.map((folder) => folder.path);
 
 		markdownFiles = plugin.app.vault.getMarkdownFiles();
-		updateFrontmatterCache();
 
 		pageSize = plugin.settings.pageSize;
 
 		searchFilter = plugin.settings.filters.search;
-		folderFilter = plugin.settings.filters.folder;
 		sortFilter = plugin.settings.filters.sort;
 		timestampFilter = plugin.settings.filters.timestamp;
 		onlyFavorites = plugin.settings.filters.onlyFavorites;
@@ -119,6 +119,11 @@
 
 	onMount(() => {
 		function handlePropertiesFilterUpdate() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handlePropertiesFilterUpdate",
+				message: "called",
+			});
 			propertyFilterGroups = plugin.settings.filters.custom.groups;
 			selectedPropertyFilterGroupId =
 				plugin.settings.filters.custom.selectedGroupId;
@@ -138,7 +143,11 @@
 
 	onMount(() => {
 		const handleCreateFile = (...data: unknown[]) => {
-			// console.log("file-create event triggered");
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleCreateFile",
+				message: "called",
+			});
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
 				markdownFiles = [...markdownFiles, newFile];
@@ -152,23 +161,12 @@
 	});
 
 	onMount(() => {
-		const handleFolderCreate = (...data: unknown[]) => {
-			// console.log("folder-create event triggered");
-			if (data.length > 0 && typeof data[0] === "string") {
-				const newFolder = data[0] as string;
-				folders = [...folders, newFolder];
-			}
-		};
-
-		EventManager.getInstance().on("folder-create", handleFolderCreate);
-		return () => {
-			EventManager.getInstance().off("folder-create", handleFolderCreate);
-		};
-	});
-
-	onMount(() => {
 		const handleDeleteFile = (...data: unknown[]) => {
-			// console.log("file-delete event triggered");
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleDeleteFile",
+				message: "called",
+			});
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
 				markdownFiles = markdownFiles.filter(
@@ -184,27 +182,12 @@
 	});
 
 	onMount(() => {
-		const handleDeleteFolder = (...data: unknown[]) => {
-			// console.log("folder-delete event triggered");
-			if (data.length > 0 && typeof data[0] === "string") {
-				const path = data[0] as string;
-				folders = folders.filter((folder) => folder !== path);
-
-				if (folderFilter === path) {
-					folderFilter = "/";
-				}
-			}
-		};
-
-		EventManager.getInstance().on("folder-delete", handleDeleteFolder);
-		return () => {
-			EventManager.getInstance().off("folder-delete", handleDeleteFolder);
-		};
-	});
-
-	onMount(() => {
 		const handleFileRename = (...data: unknown[]) => {
-			// console.log("file-rename event triggered");
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleFileRename",
+				message: "called",
+			});
 			if (data.length < 2) return;
 			if (typeof data[0] === "string" && data[1] instanceof TFile) {
 				const oldPath = data[0] as string;
@@ -215,13 +198,6 @@
 					}
 					return file;
 				});
-
-				if (frontmatterCache[oldPath]) {
-					frontmatterCache = {
-						...frontmatterCache,
-						[updatedFile.path]: frontmatterCache[oldPath],
-					};
-				}
 			}
 		};
 
@@ -237,44 +213,15 @@
 	});
 
 	onMount(() => {
-		const handleFolderRename = (...data: unknown[]) => {
-			// console.log("folder-rename event triggered");
-			if (data.length < 2) return;
-			if (typeof data[0] === "string" && data[1] instanceof TFolder) {
-				const oldPath = data[0] as string;
-				const updatedFolder = data[1] as TFolder;
-				folders = folders.map((folder) => {
-					if (folder === oldPath) {
-						return updatedFolder.path;
-					}
-					return folder;
-				});
-
-				if (folderFilter === oldPath) {
-					folderFilter = updatedFolder.path;
-				}
-			}
-		};
-
-		EventManager.getInstance().on("folder-rename", handleFolderRename);
-		return () => {
-			EventManager.getInstance().off("folder-rename", handleFolderRename);
-		};
-	});
-
-	onMount(() => {
 		const handleMetadataChange = (...data: unknown[]) => {
-			// console.log("metadata-change event triggered");
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleMetadataChange",
+				message: "called",
+			});
+
 			if (data.length > 0 && data[0] instanceof TFile) {
-				const file = data[0] as TFile;
-
-				const frontmatter =
-					plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-
-				frontmatterCache = {
-					...frontmatterCache,
-					[file.path]: frontmatter,
-				};
+				updateFrontmatterCacheTime();
 			}
 		};
 
@@ -288,52 +235,100 @@
 	});
 
 	onMount(() => {
-		function handlePageSizeChange() {
+		function handlePageSizeSettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handlePageSizeSettingChange",
+				message: "called",
+			});
+
 			pageSize = plugin.settings.pageSize;
 		}
 
 		EventManager.getInstance().on(
 			"page-size-setting-change",
-			handlePageSizeChange,
+			handlePageSizeSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
 				"page-size-setting-change",
-				handlePageSizeChange,
+				handlePageSizeSettingChange,
 			);
 		};
 	});
 
 	onMount(() => {
-		function handlePropertyChange() {
-			updateFrontmatterCache();
+		function handlePropertySettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handlePropertySettingChange",
+				message: "called",
+			});
+			updatePropertySettingTime();
 		}
 
 		EventManager.getInstance().on(
 			"property-setting-change",
-			handlePropertyChange,
+			handlePropertySettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
 				"property-setting-change",
-				handlePropertyChange,
+				handlePropertySettingChange,
 			);
 		};
 	});
 
-	$: filteredProperty = [...markdownFiles].filter((file) => {
-		const frontmatter = frontmatterCache[file.path];
-		return filterByGroups(frontmatter, propertyFilterGroups);
-	});
+	async function filterByCustomFilter() {
+		const promises: Promise<TFile | null>[] = [];
 
-	$: filteredFolder = filteredProperty.filter((file) =>
-		filterByFolder(file, folderFilter),
-	);
+		for (let file of markdownFiles) {
+			promises.push(
+				(async () => {
+					const frontmatter =
+						plugin.app.metadataCache.getFileCache(
+							file,
+						)?.frontmatter;
+					const content = await plugin.app.vault.cachedRead(file);
+					const { name, path } = file;
 
-	$: formatted = filteredFolder.map((file) => {
-		const frontmatter = frontmatterCache[file.path];
-		return formatFileDataForRender(plugin.settings, file, frontmatter);
-	});
+					if (
+						filterByGroups(
+							name,
+							path,
+							frontmatter,
+							content,
+							propertyFilterGroups,
+						)
+					) {
+						return file;
+					}
+					return null;
+				})(),
+			);
+		}
+
+		const results = await Promise.all(promises);
+		return results.filter((file) => file !== null) as TFile[];
+	}
+
+	let filteredCustom: TFile[] = [];
+
+	$: if (frontmatterCacheTime && propertyFilterGroups) {
+		console.log("frontmatterCacheTime", frontmatterCacheTime);
+		filterByCustomFilter().then((files) => {
+			filteredCustom = files;
+		});
+	}
+
+	let formatted: MarkdownFileRenderData[] = [];
+	$: if (propertySettingTime) {
+		formatted = filteredCustom.map((file) => {
+			const frontmatter =
+				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+			return formatFileDataForRender(plugin.settings, file, frontmatter);
+		});
+	}
 
 	$: filteredSearch = formatted.filter((file) =>
 		filterBySearch(file, searchFilter),
@@ -369,7 +364,6 @@
 	});
 
 	$: searchFilter,
-		folderFilter,
 		sortFilter,
 		timestampFilter,
 		onlyFavorites,
@@ -381,7 +375,6 @@
 
 	async function saveSettings() {
 		plugin.settings.filters.search = searchFilter;
-		plugin.settings.filters.folder = folderFilter;
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
@@ -528,23 +521,6 @@
 		menu.showAtMouseEvent(nativeEvent);
 	}
 
-	function openFolderFilterMenu(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent as MouseEvent;
-
-		const menu = new Menu();
-		menu.setUseNativeMenu(true);
-
-		for (const folder of folders) {
-			menu.addItem((item) => {
-				item.setTitle(folder === "/" ? "All" : folder);
-				item.setChecked(folderFilter === folder);
-				item.onClick(() => (folderFilter = folder));
-			});
-		}
-
-		menu.showAtMouseEvent(nativeEvent);
-	}
-
 	function openListFilterMenu(e: CustomEvent) {
 		const nativeEvent = e.detail.nativeEvent as MouseEvent;
 
@@ -648,11 +624,6 @@
 					/>
 					<Flex>
 						<IconButton
-							ariaLabel="Change folder filter"
-							iconId="folder"
-							on:click={openFolderFilterMenu}
-						/>
-						<IconButton
 							ariaLabel="Change timestamp filter"
 							iconId="clock"
 							on:click={openListFilterMenu}
@@ -679,7 +650,7 @@
 					<span class="vault-explorer-empty-label">No groups</span>
 				{/if}
 				<IconButton
-					ariaLabel="Change properties filter"
+					ariaLabel="Change custom filter"
 					iconId="ellipsis-vertical"
 					on:click={openPropertiesFilterModal}
 				/>

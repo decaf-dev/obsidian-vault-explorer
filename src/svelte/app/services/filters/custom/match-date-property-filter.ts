@@ -1,16 +1,16 @@
 import { getMomentDate, isDateSupported } from "src/svelte/shared/services/time-utils";
 import { DateFilterCondition } from "src/types";
 
-export const matchDateFilter = (
+export const matchDatePropertyFilter = (
 	propertyValue: string | null,
 	compare: string,
 	condition: DateFilterCondition,
 	matchIfNull: boolean
 ) => {
 	if (propertyValue) {
-		console.assert(isDateSupported(propertyValue), `DateFilter propertyValue "${propertyValue}" must be supported date format`);
+		console.assert(isDateSupported(propertyValue), `DatePropertyFilter propertyValue "${propertyValue}" must be supported date format`);
 	}
-	console.assert(isDateSupported(compare), `DateFilter compare "${compare}" must be supported date format`);
+	console.assert(isDateSupported(compare), `DatePropertyFilter compare "${compare}" must be supported date format`);
 
 	switch (condition) {
 		case DateFilterCondition.IS: {
@@ -61,6 +61,6 @@ export const matchDateFilter = (
 			return propertyValue === null;
 
 		default:
-			throw new Error(`Date filter condition not supported: ${condition}`);
+			throw new Error(`DateFilterCondition not supported: ${condition}`);
 	}
 }

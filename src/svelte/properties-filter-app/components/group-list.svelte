@@ -30,12 +30,12 @@
 
 	const dispatch = createEventDispatcher();
 
-	function handleAddGroupClick() {
-		dispatch("addGroupClick");
+	function handleGroupAddClick() {
+		dispatch("groupAddClick");
 	}
 
-	function handleDeleteGroupClick() {
-		dispatch("deleteGroupClick");
+	function handleGroupDeleteClick() {
+		dispatch("groupDeleteClick");
 	}
 </script>
 
@@ -43,14 +43,14 @@
 	<Stack direction="column" spacing="sm">
 		<Stack spacing="sm">
 			<IconButton
-				ariaLabel="Add property filter group"
+				ariaLabel="Add filter group"
 				iconId="plus"
-				on:click={() => handleAddGroupClick()}
+				on:click={() => handleGroupAddClick()}
 			/>
 			<IconButton
-				ariaLabel="Delete property filter group"
+				ariaLabel="Delete filter group"
 				iconId="trash"
-				on:click={() => handleDeleteGroupClick()}
+				on:click={() => handleGroupDeleteClick()}
 			/>
 		</Stack>
 		<div class="vault-explorer-group-list" bind:this={listContainerRef}>

@@ -1,6 +1,6 @@
 import Logger from "js-logger";
 import { FrontMatterCache } from "obsidian";
-import { FilterRuleType } from "src/types";
+import { PropertyType } from "src/types";
 import { isDateSupported } from "./time-utils";
 
 /**
@@ -10,7 +10,7 @@ import { isDateSupported } from "./time-utils";
  * @param expectedType - The expected type of the property
  * @returns - The property value or null if the property isn't valid
  */
-export const loadPropertyValue = <T>(frontmatter: FrontMatterCache | undefined, propertyName: string, expectedType: FilterRuleType): T | null => {
+export const loadPropertyValue = <T>(frontmatter: FrontMatterCache | undefined, propertyName: string, expectedType: PropertyType): T | null => {
 	//If the file has no frontmatter, return null
 	if (!frontmatter) {
 		return null;
@@ -29,32 +29,32 @@ export const loadPropertyValue = <T>(frontmatter: FrontMatterCache | undefined, 
 	}
 
 	//Validate the property value for the expected type
-	if (expectedType === FilterRuleType.TEXT) {
+	if (expectedType === PropertyType.TEXT) {
 		if (typeof propertyValue !== "string") {
 			Logger.warn(`Property value of type 'text' is not a string: ${propertyValue}`);
 			return null;
 		}
-	} else if (expectedType === FilterRuleType.NUMBER) {
+	} else if (expectedType === PropertyType.NUMBER) {
 		if (typeof propertyValue !== "number") {
 			Logger.warn(`Property value of type 'number' is not a number: ${propertyValue}`);
 			return null;
 		}
-	} else if (expectedType === FilterRuleType.DATE) {
+	} else if (expectedType === PropertyType.DATE) {
 		if (typeof propertyValue !== "string") {
 			Logger.warn(`Property value of type 'date' is not a string: ${propertyValue}`);
 			return null;
 		}
-	} else if (expectedType === FilterRuleType.DATETIME) {
+	} else if (expectedType === PropertyType.DATETIME) {
 		if (typeof propertyValue !== "string") {
 			Logger.warn(`Property value of type 'datetime' is not a string: ${propertyValue}`);
 			return null;
 		}
-	} else if (expectedType === FilterRuleType.CHECKBOX) {
+	} else if (expectedType === PropertyType.CHECKBOX) {
 		if (typeof propertyValue !== "boolean") {
 			Logger.warn(`Property value of type 'checkbox' is not a boolean: ${propertyValue}`);
 			return null;
 		}
-	} else if (expectedType === FilterRuleType.LIST) {
+	} else if (expectedType === PropertyType.LIST) {
 		if (!Array.isArray(propertyValue)) {
 			Logger.warn(`Property value of type 'list' is not an array: ${propertyValue}`);
 			//Don't return null here, because the property value can be converted to an array
@@ -63,19 +63,19 @@ export const loadPropertyValue = <T>(frontmatter: FrontMatterCache | undefined, 
 
 	//In older versions of Obsidian, the date can be stored in the frontmatter
 	//in a format other than YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS
-	if (expectedType === FilterRuleType.DATE) {
+	if (expectedType === PropertyType.DATE) {
 		if (!isDateSupported(propertyValue)) {
 			Logger.warn(`Property value of type 'date' has unsupported date format: ${propertyValue}`);
 			return null;
 		}
-	} else if (expectedType === FilterRuleType.DATETIME) {
+	} else if (expectedType === PropertyType.DATETIME) {
 		if (!isDateSupported(propertyValue)) {
 			Logger.warn(`Property value of type 'datetime' has unsupported date format: ${propertyValue}`);
 			return null;
 		}
 	}
 
-	if (expectedType === FilterRuleType.LIST) {
+	if (expectedType === PropertyType.LIST) {
 		//If the property is not an array, return it as an array
 		//This is a bug in Obsidian?
 		if (!Array.isArray(propertyValue)) {
