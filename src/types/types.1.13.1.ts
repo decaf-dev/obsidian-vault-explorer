@@ -1,4 +1,4 @@
-interface VaultExplorerPluginSettings_1_13_1 {
+export interface VaultExplorerPluginSettings_1_13_1 {
 	logLevel: string;
 	properties: {
 		favorite: string;

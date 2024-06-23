@@ -24,6 +24,7 @@ import License from './svelte/shared/services/license';
 import { VaultExplorerPluginSettings_1_8_1 } from './types/types-1.8.1';
 import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
 import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
+import { VaultExplorerPluginSettings_1_13_1 } from './types/types.1.13.1';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
