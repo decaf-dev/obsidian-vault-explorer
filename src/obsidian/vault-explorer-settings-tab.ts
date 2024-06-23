@@ -172,7 +172,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.views.enableClockUpdates = value;
 					await this.plugin.saveSettings();
-					// EventManager.getInstance().emit("enable-periodic-time-filter-updates-setting-change");
+					EventManager.getInstance().emit("clock-updates-setting-change");
 				}));
 
 		new Setting(containerEl).setName("Premium").setHeading();

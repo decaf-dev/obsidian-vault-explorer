@@ -1,11 +1,14 @@
 <script lang="ts">
+	// ============================================
+	// Imports
+	// ============================================
 	import Stack from "../shared/components/stack.svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import IconButton from "../shared/components/icon-button.svelte";
 	import Checkbox from "../shared/components/checkbox.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { Menu, TFile, TFolder } from "obsidian";
+	import { Menu, TFile } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
 		FilterGroup,
@@ -35,17 +38,14 @@
 	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
 
+	// ============================================
+	// Variables
+	// ============================================
 	let plugin: VaultExplorerPlugin;
 
 	let startOfTodayMillis: number;
 	let startOfThisWeekMillis: number;
 	let startOfLastWeekMillis: number;
-
-	function updateTimeValues() {
-		startOfTodayMillis = getStartOfTodayMillis();
-		startOfThisWeekMillis = getStartOfThisWeekMillis();
-		startOfLastWeekMillis = getStartOfLastWeekMillis();
-	}
 
 	let pageSize: number = 0;
 	let searchFilter: string = "";
@@ -61,7 +61,11 @@
 	let propertySettingTime: number = Date.now();
 
 	let files: TFile[] = [];
+	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
 
+	// ============================================
+	// Lifecycle hooks
+	// ============================================
 	store.plugin.subscribe((p) => {
 		plugin = p;
 
@@ -77,39 +81,45 @@
 		filterGroups = settings.filters.custom.groups;
 		selectedFilterGroupId = settings.filters.custom.selectedGroupId;
 
-		updateTimeValues();
-
-		let interval = null;
 		if (settings.views.enableClockUpdates) {
-			const MILLIS_MINUTE = 60000;
-			interval = setInterval(updateTimeValues, MILLIS_MINUTE);
+			setTimeValuesUpdateInterval();
 		}
-
-		return () => {
-			if (interval) clearInterval(interval);
-		};
 	});
 
-	const debounceSearchFilter = _.debounce((e) => {
-		searchFilter = e.target.value;
-	}, 300);
+	onMount(() => {
+		function handleClockUpdatesSettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleClockUpdatesSettingChange",
+				message: "called",
+			});
 
-	const debounceFavoriteFilter = _.debounce((value) => {
-		onlyFavorites = value;
-	}, 300);
+			const isEnabled = plugin.settings.views.enableClockUpdates;
+			if (isEnabled) {
+				updateTimeValues();
+				setTimeValuesUpdateInterval();
+			} else if (timeValuesUpdateInterval != null) {
+				clearInterval(timeValuesUpdateInterval);
+			}
+		}
 
-	function updateFrontmatterCacheTime() {
-		Logger.trace({
-			fileName: "app/index.ts",
-			functionName: "updateFrontmatterCacheTime",
-			message: "called",
-		});
-		frontmatterCacheTime = Date.now();
-	}
+		updateTimeValues();
 
-	function updatePropertySettingTime() {
-		propertySettingTime = Date.now();
-	}
+		EventManager.getInstance().on(
+			"clock-updates-setting-change",
+			handleClockUpdatesSettingChange,
+		);
+
+		return () => {
+			if (timeValuesUpdateInterval != null)
+				clearInterval(timeValuesUpdateInterval);
+
+			EventManager.getInstance().off(
+				"clock-updates-setting-change",
+				handleClockUpdatesSettingChange,
+			);
+		};
+	});
 
 	onMount(() => {
 		function handlePropertiesFilterUpdate() {
@@ -271,6 +281,41 @@
 		};
 	});
 
+	// ============================================
+	// Functions
+	// ============================================
+	const debounceSearchFilter = _.debounce((e) => {
+		searchFilter = e.target.value;
+	}, 300);
+
+	const debounceFavoriteFilter = _.debounce((value) => {
+		onlyFavorites = value;
+	}, 300);
+
+	function updateTimeValues() {
+		startOfTodayMillis = getStartOfTodayMillis();
+		startOfThisWeekMillis = getStartOfThisWeekMillis();
+		startOfLastWeekMillis = getStartOfLastWeekMillis();
+	}
+
+	function setTimeValuesUpdateInterval() {
+		const MILLIS_MINUTE = 60000;
+		timeValuesUpdateInterval = setInterval(updateTimeValues, MILLIS_MINUTE);
+	}
+
+	function updateFrontmatterCacheTime() {
+		Logger.trace({
+			fileName: "app/index.ts",
+			functionName: "updateFrontmatterCacheTime",
+			message: "called",
+		});
+		frontmatterCacheTime = Date.now();
+	}
+
+	function updatePropertySettingTime() {
+		propertySettingTime = Date.now();
+	}
+
 	async function filterByCustomFilter() {
 		const promises: Promise<TFile | null>[] = [];
 
@@ -307,66 +352,6 @@
 		const results = await Promise.all(promises);
 		return results.filter((file) => file !== null) as TFile[];
 	}
-
-	let filteredCustom: TFile[] = [];
-
-	$: if (frontmatterCacheTime && filterGroups) {
-		filterByCustomFilter().then((files) => {
-			filteredCustom = files;
-		});
-	}
-
-	let formatted: FileRenderData[] = [];
-	$: if (propertySettingTime) {
-		formatted = filteredCustom.map((file) => {
-			const frontmatter =
-				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-			return formatFileDataForRender(plugin.settings, file, frontmatter);
-		});
-	}
-
-	$: filteredSearch = formatted.filter((file) =>
-		filterBySearch(file, searchFilter),
-	);
-
-	$: filteredFavorites = filteredSearch.filter((file) =>
-		filterByFavorites(file, onlyFavorites),
-	);
-
-	$: filteredTimestamp = filteredFavorites.filter((file) => {
-		const { modifiedMillis, createdMillis } = file;
-		return filterByTimestamp({
-			createdMillis,
-			modifiedMillis,
-			timestampFilter,
-			startOfTodayMillis,
-			startOfThisWeekMillis,
-			startOfLastWeekMillis,
-		});
-	});
-
-	$: renderData = [...filteredTimestamp].sort((a, b) => {
-		if (sortFilter === "file-name-asc") {
-			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-		} else if (sortFilter === "file-name-desc") {
-			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-		} else if (sortFilter === "modified-asc") {
-			return a.modifiedMillis - b.modifiedMillis;
-		} else if (sortFilter === "modified-desc") {
-			return b.modifiedMillis - a.modifiedMillis;
-		}
-		return 0;
-	});
-
-	$: searchFilter,
-		sortFilter,
-		timestampFilter,
-		onlyFavorites,
-		currentView,
-		viewOrder,
-		filterGroups,
-		selectedFilterGroupId,
-		saveSettings();
 
 	async function saveSettings() {
 		plugin.settings.filters.search = searchFilter;
@@ -489,6 +474,10 @@
 		});
 	}
 
+	function handlePageChange(newPage: number) {
+		currentPage = newPage;
+	}
+
 	function openPropertiesFilterModal() {
 		new PropertiesFilterModal(plugin).open();
 	}
@@ -574,17 +563,75 @@
 		debounceFavoriteFilter(value);
 	}
 
-	let currentPage = 1;
+	// ============================================
+	// Reactive statements and computed data
+	// ============================================
+	let filteredCustom: TFile[] = [];
+	$: if (frontmatterCacheTime && filterGroups) {
+		filterByCustomFilter().then((files) => {
+			filteredCustom = files;
+		});
+	}
+
+	let formatted: FileRenderData[] = [];
+	$: if (propertySettingTime) {
+		formatted = filteredCustom.map((file) => {
+			const frontmatter =
+				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+			return formatFileDataForRender(plugin.settings, file, frontmatter);
+		});
+	}
+
+	$: filteredSearch = formatted.filter((file) =>
+		filterBySearch(file, searchFilter),
+	);
+
+	$: filteredFavorites = filteredSearch.filter((file) =>
+		filterByFavorites(file, onlyFavorites),
+	);
+
+	$: filteredTimestamp = filteredFavorites.filter((file) => {
+		const { modifiedMillis, createdMillis } = file;
+		return filterByTimestamp({
+			createdMillis,
+			modifiedMillis,
+			timestampFilter,
+			startOfTodayMillis,
+			startOfThisWeekMillis,
+			startOfLastWeekMillis,
+		});
+	});
+
+	$: renderData = [...filteredTimestamp].sort((a, b) => {
+		if (sortFilter === "file-name-asc") {
+			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+		} else if (sortFilter === "file-name-desc") {
+			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+		} else if (sortFilter === "modified-asc") {
+			return a.modifiedMillis - b.modifiedMillis;
+		} else if (sortFilter === "modified-desc") {
+			return b.modifiedMillis - a.modifiedMillis;
+		}
+		return 0;
+	});
+
+	$: searchFilter,
+		sortFilter,
+		timestampFilter,
+		onlyFavorites,
+		currentView,
+		viewOrder,
+		filterGroups,
+		selectedFilterGroupId,
+		saveSettings();
+
 	$: totalItems = renderData.length;
 	$: totalPages = Math.ceil(totalItems / pageSize);
 
+	let currentPage = 1;
 	$: startIndex = (currentPage - 1) * pageSize;
 	$: pageLength = Math.min(pageSize, renderData.length - startIndex);
 	$: endIndex = startIndex + pageLength;
-
-	function changePage(newPage: number) {
-		currentPage = newPage;
-	}
 </script>
 
 <div class="vault-explorer">
@@ -687,24 +734,24 @@
 					<IconButton
 						iconId="chevrons-left"
 						ariaLabel="First page"
-						on:click={() => changePage(1)}
+						on:click={() => handlePageChange(1)}
 					/>
 					<IconButton
 						iconId="chevron-left"
 						ariaLabel="Previous page"
 						disabled={currentPage === 1}
-						on:click={() => changePage(currentPage - 1)}
+						on:click={() => handlePageChange(currentPage - 1)}
 					/>
 					<IconButton
 						iconId="chevron-right"
 						ariaLabel="Next page"
 						disabled={currentPage === totalPages}
-						on:click={() => changePage(currentPage + 1)}
+						on:click={() => handlePageChange(currentPage + 1)}
 					/>
 					<IconButton
 						iconId="chevrons-right"
 						ariaLabel="Last page"
-						on:click={() => changePage(totalPages)}
+						on:click={() => handlePageChange(totalPages)}
 					/>
 				</Flex>
 			</Stack>
