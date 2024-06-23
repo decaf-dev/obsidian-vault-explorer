@@ -285,8 +285,12 @@
 						plugin.app.metadataCache.getFileCache(
 							file,
 						)?.frontmatter;
-					const content = await plugin.app.vault.cachedRead(file);
-					const { name, path } = file;
+
+					const { name, path, extension } = file;
+					let content = "";
+					if (extension === "md") {
+						content = await plugin.app.vault.cachedRead(file);
+					}
 
 					if (
 						filterByGroups(
@@ -311,7 +315,6 @@
 	let filteredCustom: TFile[] = [];
 
 	$: if (frontmatterCacheTime && filterGroups) {
-		console.log("frontmatterCacheTime", frontmatterCacheTime);
 		filterByCustomFilter().then((files) => {
 			filteredCustom = files;
 		});
