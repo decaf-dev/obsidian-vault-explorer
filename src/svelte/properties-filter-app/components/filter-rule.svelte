@@ -22,6 +22,7 @@
 	} from "./display-name-utils";
 	import { createEventDispatcher } from "svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
+	import License from "src/svelte/shared/services/license";
 
 	export let index: number;
 	export let id: string;
@@ -31,7 +32,15 @@
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
 
+	let enablePremiumFeatures = false;
+
 	const dispatch = createEventDispatcher();
+
+	License.getInstance()
+		.getIsDeviceRegisteredStore()
+		.subscribe((isRegistered) => {
+			enablePremiumFeatures = isRegistered;
+		});
 
 	function handleDeleteClick() {
 		dispatch("ruleDeleteClick", { id });
@@ -110,7 +119,11 @@
 			{/each}
 		</select>
 		<slot name="before-condition"></slot>
-		<select value={condition} on:change={handleConditionChange}>
+		<select
+			disabled={type === FilterRuleType.CONTENT && !enablePremiumFeatures}
+			value={condition}
+			on:change={handleConditionChange}
+		>
 			{#each filterConditions as condition}
 				<option value={condition}>
 					{getDisplayNameForFilterCondition(condition)}
@@ -125,6 +138,7 @@
 				iconId="trash"
 				on:click={() => handleDeleteClick()}
 			/>
+			<slot name="after-toggle"></slot>
 		</Stack>
 	</Wrap>
 </div>

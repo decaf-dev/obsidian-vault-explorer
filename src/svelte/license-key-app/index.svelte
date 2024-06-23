@@ -93,7 +93,7 @@
 	<div class="setting-item-info">
 		<div class="setting-item-name">License key</div>
 		<div class="setting-item-description">
-			Register your device to unlock premium features.
+			Enter your license key to unlock premium features.
 		</div>
 		{#if message == null}
 			<a
@@ -122,10 +122,6 @@
 </div>
 
 <style>
-	.vault-explorer-premium-link {
-		font-size: var(--font-smallest);
-	}
-
 	.vault-explorer-setting-message {
 		color: var(--text-muted);
 		font-size: var(--font-smallest);
