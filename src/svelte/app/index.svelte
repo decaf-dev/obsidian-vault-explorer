@@ -33,6 +33,8 @@
 		getStartOfThisWeekMillis,
 	} from "../shared/services/time-utils";
 	import { MarkdownFileRenderData } from "./types";
+	import Logger from "js-logger";
+	import { removeFrontmatterBlock } from "./services/frontmatter-utils";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -80,6 +82,11 @@
 	}, 300);
 
 	function updateFrontmatterCacheTime() {
+		Logger.trace({
+			fileName: "app/index.ts",
+			functionName: "updateFrontmatterCacheTime",
+			message: "called",
+		});
 		frontmatterCacheTime = Date.now();
 	}
 
@@ -112,6 +119,11 @@
 
 	onMount(() => {
 		function handlePropertiesFilterUpdate() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handlePropertiesFilterUpdate",
+				message: "called",
+			});
 			propertyFilterGroups = plugin.settings.filters.custom.groups;
 			selectedPropertyFilterGroupId =
 				plugin.settings.filters.custom.selectedGroupId;
@@ -131,7 +143,11 @@
 
 	onMount(() => {
 		const handleCreateFile = (...data: unknown[]) => {
-			// console.log("file-create event triggered");
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleCreateFile",
+				message: "called",
+			});
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
 				markdownFiles = [...markdownFiles, newFile];
@@ -146,7 +162,11 @@
 
 	onMount(() => {
 		const handleDeleteFile = (...data: unknown[]) => {
-			// console.log("file-delete event triggered");
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleDeleteFile",
+				message: "called",
+			});
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
 				markdownFiles = markdownFiles.filter(
@@ -163,7 +183,11 @@
 
 	onMount(() => {
 		const handleFileRename = (...data: unknown[]) => {
-			// console.log("file-rename event triggered");
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleFileRename",
+				message: "called",
+			});
 			if (data.length < 2) return;
 			if (typeof data[0] === "string" && data[1] instanceof TFile) {
 				const oldPath = data[0] as string;
@@ -190,6 +214,12 @@
 
 	onMount(() => {
 		const handleMetadataChange = (...data: unknown[]) => {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleMetadataChange",
+				message: "called",
+			});
+
 			if (data.length > 0 && data[0] instanceof TFile) {
 				updateFrontmatterCacheTime();
 			}
@@ -205,53 +235,90 @@
 	});
 
 	onMount(() => {
-		function handlePageSizeChange() {
+		function handlePageSizeSettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handlePageSizeSettingChange",
+				message: "called",
+			});
+
 			pageSize = plugin.settings.pageSize;
 		}
 
 		EventManager.getInstance().on(
 			"page-size-setting-change",
-			handlePageSizeChange,
+			handlePageSizeSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
 				"page-size-setting-change",
-				handlePageSizeChange,
+				handlePageSizeSettingChange,
 			);
 		};
 	});
 
 	onMount(() => {
-		function handlePropertyChange() {
-			updateFrontmatterCacheTime();
+		function handlePropertySettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handlePropertySettingChange",
+				message: "called",
+			});
+			updatePropertySettingTime();
 		}
 
 		EventManager.getInstance().on(
 			"property-setting-change",
-			handlePropertyChange,
+			handlePropertySettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
 				"property-setting-change",
-				handlePropertyChange,
+				handlePropertySettingChange,
 			);
 		};
 	});
 
+	async function filterByCustomFilter() {
+		const promises: Promise<TFile | null>[] = [];
+
+		for (let file of markdownFiles) {
+			promises.push(
+				(async () => {
+					const frontmatter =
+						plugin.app.metadataCache.getFileCache(
+							file,
+						)?.frontmatter;
+					const data = await plugin.app.vault.cachedRead(file);
+					const content = removeFrontmatterBlock(data);
+					const { name, path } = file;
+
+					if (
+						filterByGroups(
+							name,
+							path,
+							frontmatter,
+							content,
+							propertyFilterGroups,
+						)
+					) {
+						return file;
+					}
+					return null;
+				})(),
+			);
+		}
+
+		const results = await Promise.all(promises);
+		return results.filter((file) => file !== null) as TFile[];
+	}
+
 	let filteredCustom: TFile[] = [];
 
-	$: if (frontmatterCacheTime) {
-		filteredCustom = [...markdownFiles].filter((file) => {
-			const frontmatter =
-				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-			const { name, path } = file;
-			return filterByGroups(
-				name,
-				path,
-				frontmatter,
-				"",
-				propertyFilterGroups,
-			);
+	$: if (frontmatterCacheTime && propertyFilterGroups) {
+		console.log("frontmatterCacheTime", frontmatterCacheTime);
+		filterByCustomFilter().then((files) => {
+			filteredCustom = files;
 		});
 	}
 
