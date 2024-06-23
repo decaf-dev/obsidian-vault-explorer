@@ -42,6 +42,10 @@ Features are what the software should do.
 | Set custom text properties                                       | #settings                |
 | Set the log level                                                | #settings                |
 | Move focus with left and right arrows                            | #accessibility           |
+| Filter by folder                                                 | #filter                  |
+| Filter by file name                                              | #filter                  |
+| Filter by file content                                           | #filter                  |
+| License key for premium features                                 | #settings                |
 
 ## Event callbacks
 

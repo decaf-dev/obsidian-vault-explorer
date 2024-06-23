@@ -34,7 +34,6 @@
 	} from "../shared/services/time-utils";
 	import { MarkdownFileRenderData } from "./types";
 	import Logger from "js-logger";
-	import { removeFrontmatterBlock } from "./services/frontmatter-utils";
 
 	let plugin: VaultExplorerPlugin;
 
@@ -66,8 +65,8 @@
 	let onlyFavorites: boolean = false;
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
-	let propertyFilterGroups: FilterGroup[] = [];
-	let selectedPropertyFilterGroupId: string = "";
+	let filterGroups: FilterGroup[] = [];
+	let selectedFilterGroupId: string = "";
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
 
@@ -112,9 +111,8 @@
 		onlyFavorites = plugin.settings.filters.onlyFavorites;
 		currentView = plugin.settings.views.currentView;
 		viewOrder = plugin.settings.views.order;
-		propertyFilterGroups = plugin.settings.filters.custom.groups;
-		selectedPropertyFilterGroupId =
-			plugin.settings.filters.custom.selectedGroupId;
+		filterGroups = plugin.settings.filters.custom.groups;
+		selectedFilterGroupId = plugin.settings.filters.custom.selectedGroupId;
 	});
 
 	onMount(() => {
@@ -124,8 +122,8 @@
 				functionName: "handlePropertiesFilterUpdate",
 				message: "called",
 			});
-			propertyFilterGroups = plugin.settings.filters.custom.groups;
-			selectedPropertyFilterGroupId =
+			filterGroups = plugin.settings.filters.custom.groups;
+			selectedFilterGroupId =
 				plugin.settings.filters.custom.selectedGroupId;
 		}
 
@@ -298,7 +296,7 @@
 							path,
 							frontmatter,
 							content,
-							propertyFilterGroups,
+							filterGroups,
 						)
 					) {
 						return file;
@@ -314,7 +312,7 @@
 
 	let filteredCustom: TFile[] = [];
 
-	$: if (frontmatterCacheTime && propertyFilterGroups) {
+	$: if (frontmatterCacheTime && filterGroups) {
 		console.log("frontmatterCacheTime", frontmatterCacheTime);
 		filterByCustomFilter().then((files) => {
 			filteredCustom = files;
@@ -369,8 +367,8 @@
 		onlyFavorites,
 		currentView,
 		viewOrder,
-		propertyFilterGroups,
-		selectedPropertyFilterGroupId,
+		filterGroups,
+		selectedFilterGroupId,
 		saveSettings();
 
 	async function saveSettings() {
@@ -380,22 +378,31 @@
 		plugin.settings.filters.onlyFavorites = onlyFavorites;
 		plugin.settings.views.order = viewOrder;
 		plugin.settings.views.currentView = currentView;
-		plugin.settings.filters.custom.groups = propertyFilterGroups;
-		plugin.settings.filters.custom.selectedGroupId =
-			selectedPropertyFilterGroupId;
+		plugin.settings.filters.custom.groups = filterGroups;
+		plugin.settings.filters.custom.selectedGroupId = selectedFilterGroupId;
 		await plugin.saveSettings();
 	}
 
 	function handleGroupClick(e: CustomEvent) {
-		const { id } = e.detail;
+		const { id, nativeEvent } = e.detail;
 
-		const newGroups = propertyFilterGroups.map((group) =>
-			group.id === id
-				? { ...group, isEnabled: !group.isEnabled }
-				: { ...group, isEnabled: false },
-		);
-		selectedPropertyFilterGroupId = id;
-		propertyFilterGroups = newGroups;
+		const disableOthers = nativeEvent.ctrlKey || nativeEvent.metaKey;
+
+		const newGroups = filterGroups.map((group) => {
+			if (group.id === id) {
+				if (disableOthers) {
+					return { ...group, isEnabled: true };
+				} else {
+					return { ...group, isEnabled: !group.isEnabled };
+				}
+			} else if (disableOthers) {
+				return { ...group, isEnabled: false };
+			} else {
+				return group;
+			}
+		});
+		selectedFilterGroupId = id;
+		filterGroups = newGroups;
 	}
 
 	function handleViewDragOver(e: CustomEvent) {
@@ -434,20 +441,16 @@
 		const dragId = nativeEvent.dataTransfer.getData("text");
 		nativeEvent.dataTransfer.dropEffect = "move";
 
-		const draggedIndex = propertyFilterGroups.findIndex(
+		const draggedIndex = filterGroups.findIndex(
 			(group) => group.id === dragId,
 		);
-		const dragged = propertyFilterGroups.find(
-			(group) => group.id === dragId,
-		);
+		const dragged = filterGroups.find((group) => group.id === dragId);
 
-		const droppedIndex = propertyFilterGroups.findIndex(
-			(group) => group.id === id,
-		);
+		const droppedIndex = filterGroups.findIndex((group) => group.id === id);
 
 		if (!dragged || draggedIndex === -1 || droppedIndex === -1) return;
 
-		let newGroups = [...propertyFilterGroups];
+		let newGroups = [...filterGroups];
 
 		// Remove the dragged item
 		newGroups.splice(draggedIndex, 1);
@@ -455,7 +458,7 @@
 		// Insert the dragged item at the drop index
 		newGroups.splice(droppedIndex, 0, dragged);
 
-		propertyFilterGroups = newGroups;
+		filterGroups = newGroups;
 	}
 
 	function handleGroupDragOver(e: CustomEvent) {
@@ -637,16 +640,16 @@
 				</Stack>
 			</Flex>
 			<Stack align="center" spacing="sm">
-				{#if propertyFilterGroups.length > 0}
+				{#if filterGroups.length > 0}
 					<GroupTagList
-						groups={propertyFilterGroups}
+						groups={filterGroups}
 						on:groupClick={handleGroupClick}
 						on:groupDrop={handleGroupDrop}
 						on:groupDragOver={handleGroupDragOver}
 						on:groupDragStart={handleGroupDragStart}
 					/>
 				{/if}
-				{#if propertyFilterGroups.length === 0}
+				{#if filterGroups.length === 0}
 					<span class="vault-explorer-empty-label">No groups</span>
 				{/if}
 				<IconButton
