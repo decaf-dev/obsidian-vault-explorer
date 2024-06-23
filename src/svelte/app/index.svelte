@@ -37,6 +37,7 @@
 	} from "../shared/services/time-utils";
 	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
+	import SearchFilter from "./components/search-filter.svelte";
 
 	// ============================================
 	// Variables
@@ -653,30 +654,11 @@
 
 <div class="vault-explorer">
 	<div class="vault-explorer-header">
-		<Stack spacing="md">
-			<div class="vault-explorer-search-container">
-				<input
-					type="text"
-					placeholder="Search..."
-					value={searchFilter}
-					on:input={debounceSearchFilter}
-				/>
-				{#if searchFilter.length > 0}
-					<div
-						tabindex="0"
-						role="button"
-						aria-label="Clear search"
-						class="search-input-clear-button"
-						on:click={() => (searchFilter = "")}
-						on:keydown={(e) => {
-							if (e.key === "Enter") {
-								searchFilter = "";
-							}
-						}}
-					/>
-				{/if}
-			</div>
-		</Stack>
+		<SearchFilter
+			value={searchFilter}
+			on:input={debounceSearchFilter}
+			on:clear={() => (searchFilter = "")}
+		/>
 		<Stack direction="column" spacing="sm">
 			<Flex justify="space-between">
 				<Stack spacing="sm">
@@ -792,16 +774,6 @@
 		flex-direction: column;
 		row-gap: 1rem;
 		margin-bottom: 2rem;
-	}
-
-	.vault-explorer input[type="text"] {
-		width: 100%;
-	}
-
-	.vault-explorer-search-container {
-		position: relative;
-		width: 100%;
-		max-width: 300px;
 	}
 
 	.vault-explorer-empty-label {
