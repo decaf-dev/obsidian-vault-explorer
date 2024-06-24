@@ -33,7 +33,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Search filter")
 			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.filters.favorites.isEnabled)
+				.setValue(this.plugin.settings.filters.search.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.filters.search.isEnabled = value;
 					await this.plugin.saveSettings();

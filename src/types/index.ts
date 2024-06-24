@@ -10,10 +10,7 @@ export interface VaultExplorerPluginSettings {
 		custom3: string;
 	},
 	filters: {
-		search: {
-			isEnabled: boolean;
-			value: string;
-		},
+		search: SearchFilter;
 		favorites: {
 			isEnabled: boolean;
 			value: boolean;
@@ -40,6 +37,11 @@ export interface VaultExplorerPluginSettings {
 	}
 	pageSize: number;
 	pluginVersion: string | null;
+}
+
+export interface SearchFilter {
+	isEnabled: boolean;
+	value: string;
 }
 
 export type WordBreak = "normal" | "break-word";

@@ -10,7 +10,7 @@
 	}
 </script>
 
-<div class="vault-explorer-search-container">
+<div class="vault-explorer-search-filter">
 	<input type="text" placeholder="Search..." {value} on:input />
 	{#if value.length > 0}
 		<div
@@ -29,11 +29,11 @@
 </div>
 
 <style>
-	.vault-explorer input[type="text"] {
+	.vault-explorer-search-filter input[type="text"] {
 		width: 100%;
 	}
 
-	.vault-explorer-search-container {
+	.vault-explorer-search-filter {
 		position: relative;
 		width: 100%;
 		max-width: 300px;

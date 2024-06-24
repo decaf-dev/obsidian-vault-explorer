@@ -12,6 +12,7 @@
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
 		FilterGroup,
+		SearchFilter,
 		SortFilter,
 		TimestampFilter,
 		ViewType,
@@ -37,7 +38,7 @@
 	} from "../shared/services/time-utils";
 	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
-	import SearchFilter from "./components/search-filter.svelte";
+	import SearchFilterComponent from "./components/search-filter.svelte";
 
 	// ============================================
 	// Variables
@@ -49,7 +50,7 @@
 	let startOfLastWeekMillis: number;
 
 	let pageSize: number = 0;
-	let searchFilter: string = "";
+	let searchFilter: SearchFilter | null = null;
 	let sortFilter: SortFilter = "file-name-asc";
 	let timestampFilter: TimestampFilter = "all";
 	let favoritesFilter: boolean = false;
@@ -73,7 +74,7 @@
 		const { app, settings } = plugin;
 		files = app.vault.getFiles();
 		pageSize = settings.pageSize;
-		searchFilter = settings.filters.search.value;
+		searchFilter = settings.filters.search;
 		sortFilter = settings.filters.sort.value;
 		timestampFilter = settings.filters.timestamp.value;
 		favoritesFilter = settings.filters.favorites.value;
@@ -286,7 +287,8 @@
 	// Functions
 	// ============================================
 	const debounceSearchFilter = _.debounce((e) => {
-		searchFilter = e.target.value;
+		if (searchFilter == null) return;
+		searchFilter.value = e.target.value;
 	}, 300);
 
 	const debounceFavoriteFilter = _.debounce((value) => {
@@ -360,7 +362,9 @@
 	}
 
 	async function saveSettings() {
-		plugin.settings.filters.search.value = searchFilter;
+		if (searchFilter != null) {
+			plugin.settings.filters.search = searchFilter;
+		}
 		plugin.settings.filters.sort.value = sortFilter;
 		plugin.settings.filters.timestamp.value = timestampFilter;
 		plugin.settings.filters.favorites.value = favoritesFilter;
@@ -600,9 +604,15 @@
 		});
 	}
 
-	$: filteredSearch = formatted.filter((file) =>
-		filterBySearch(file, searchFilter),
-	);
+	$: filteredSearch = formatted.filter((file) => {
+		if (searchFilter != null) {
+			const { isEnabled, value } = searchFilter;
+			if (isEnabled) {
+				return filterBySearch(file, value);
+			}
+		}
+		return true;
+	});
 
 	$: filteredFavorites = filteredSearch.filter((file) =>
 		filterByFavorites(file, favoritesFilter),
@@ -654,11 +664,14 @@
 
 <div class="vault-explorer">
 	<div class="vault-explorer-header">
-		<SearchFilter
-			value={searchFilter}
-			on:input={debounceSearchFilter}
-			on:clear={() => (searchFilter = "")}
-		/>
+		{#if searchFilter != null && searchFilter.isEnabled}
+			<SearchFilterComponent
+				value={searchFilter.value}
+				on:input={debounceSearchFilter}
+				on:clear={() =>
+					searchFilter !== null ? (searchFilter.value = "") : ""}
+			/>
+		{/if}
 		<Stack direction="column" spacing="sm">
 			<Flex justify="space-between">
 				<Stack spacing="sm">
