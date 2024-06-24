@@ -697,7 +697,7 @@
 				/>
 			{/if}
 		</Stack>
-		<Flex>
+		<Flex align="center">
 			<TabList
 				initialSelectedIndex={viewOrder.findIndex(
 					(view) => view === currentView,
