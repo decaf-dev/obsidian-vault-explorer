@@ -72,7 +72,6 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (file instanceof TFolder) {
 				EventManager.getInstance().emit("folder-rename", oldPath, file);
 			} else if (file instanceof TFile) {
-				if (file.extension !== "md") return;
 				EventManager.getInstance().emit("file-rename", oldPath, file);
 			}
 		}));
@@ -84,7 +83,6 @@ export default class VaultExplorerPlugin extends Plugin {
 				EventManager.getInstance().emit("folder-delete", file.path);
 			} else
 				if (file instanceof TFile) {
-					if (file.extension !== "md") return;
 					EventManager.getInstance().emit("file-delete", file.path);
 				}
 		}));
@@ -99,7 +97,6 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (file instanceof TFolder) {
 				EventManager.getInstance().emit("folder-create", file);
 			} else if (file instanceof TFile) {
-				if (file.extension !== "md") return;
 				EventManager.getInstance().emit("file-create", file);
 			}
 		}));
