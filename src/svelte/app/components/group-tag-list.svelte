@@ -5,37 +5,75 @@
 	import ScrollButton from "src/svelte/shared/components/scroll-button.svelte";
 	import { getScrollAmount } from "../services/scroll-utils";
 	import { onMount } from "svelte";
+	import store from "src/svelte/shared/services/store";
+	import VaultExplorerPlugin from "src/main";
+	import EventManager from "src/event/event-manager";
 
 	export let groups: FilterGroup[] = [];
+	let plugin: VaultExplorerPlugin;
 	let tagContainerRef: HTMLDivElement | null;
+	let enableScrollButtons = false;
+	let showScrollLeftButton = false;
+	let showScrollRightButton = false;
 
 	onMount(() => {
-		// Function to update the scrollLeft value and the showScrollLeftButton state
-		function handleScroll() {
-			if (!tagContainerRef) {
-				return;
+		store.plugin.subscribe((value) => {
+			plugin = value;
+			enableScrollButtons = plugin.settings.enableScrollButtons;
+		});
+	});
+
+	onMount(() => {
+		function handleScrollButtonSettingChange() {
+			const newValue = plugin.settings.enableScrollButtons;
+			enableScrollButtons = newValue;
+			if (newValue === false) {
+				showScrollLeftButton = false;
+				showScrollRightButton = false;
 			}
-
-			const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
-			showScrollLeftButton = scrollLeft > 0;
-
-			//When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
-			//Sometimes the scrollLeft + clientWidth is less than 1 than the scrollWidth, in that case,
-			//we subtract 1 from the scrollWidth to avoid showing the scroll right button
-			showScrollRightButton = scrollLeft + clientWidth < scrollWidth - 1;
 		}
 
-		if (tagContainerRef) {
-			tagContainerRef.addEventListener("scroll", handleScroll);
-			requestAnimationFrame(handleScroll);
-		}
+		EventManager.getInstance().on(
+			"scroll-buttons-setting-change",
+			handleScrollButtonSettingChange,
+		);
 
 		return () => {
-			if (tagContainerRef) {
+			EventManager.getInstance().off(
+				"scroll-buttons-setting-change",
+				handleScrollButtonSettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function addScrollListener() {
+			if (tagContainerRef && enableScrollButtons) {
+				tagContainerRef.addEventListener("scroll", handleScroll);
+				requestAnimationFrame(handleScroll);
+			}
+		}
+
+		addScrollListener();
+
+		return () => {
+			if (tagContainerRef && enableScrollButtons) {
 				tagContainerRef.removeEventListener("scroll", handleScroll);
 			}
 		};
 	});
+
+	function handleScroll() {
+		if (!tagContainerRef) return;
+
+		const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
+		showScrollLeftButton = scrollLeft > 0;
+
+		// When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
+		// To account for minor discrepancies, we use Math.round to round the result
+		showScrollRightButton =
+			Math.round(scrollLeft + clientWidth) < scrollWidth;
+	}
 
 	function handleScrollLeftClick() {
 		if (tagContainerRef) {
@@ -65,8 +103,14 @@
 		}
 	}
 
-	let showScrollLeftButton = false;
-	let showScrollRightButton = false;
+	$: if (tagContainerRef) {
+		if (enableScrollButtons) {
+			tagContainerRef.addEventListener("scroll", handleScroll);
+			handleScroll();
+		} else {
+			tagContainerRef.removeEventListener("scroll", handleScroll);
+		}
+	}
 </script>
 
 <div class="vault-explorer-group-tag-list">

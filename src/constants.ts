@@ -20,11 +20,24 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		custom3: "",
 	},
 	filters: {
-		search: "",
-		onlyFavorites: false,
-		timestamp: "all",
-		sort: "file-name-asc",
+		search: {
+			isEnabled: true,
+			value: ""
+		},
+		favorites: {
+			isEnabled: true,
+			value: false
+		},
+		timestamp: {
+			isEnabled: true,
+			value: "all"
+		},
+		sort: {
+			isEnabled: true,
+			value: "file-name-asc",
+		},
 		custom: {
+			isEnabled: true,
 			selectedGroupId: randomGroupId,
 			groups:
 				[
@@ -44,6 +57,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		titleWrapping: "normal",
 		enableClockUpdates: true
 	},
+	enableScrollButtons: true,
 	pageSize: 50,
 	pluginVersion: null
 }

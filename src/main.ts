@@ -24,6 +24,7 @@ import License from './svelte/shared/services/license';
 import { VaultExplorerPluginSettings_1_8_1 } from './types/types-1.8.1';
 import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
 import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
+import { VaultExplorerPluginSettings_1_13_1 } from './types/types.1.13.1';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -335,7 +336,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (isVersionLessThan(settingsVersion, "1.13.0")) {
 				console.log("Upgrading settings from version 1.12.1 to 1.13.0");
 				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_12_1;
-				const newData: VaultExplorerPluginSettings = {
+				const newData: VaultExplorerPluginSettings_1_13_1 = {
 					...typedData,
 					views: {
 						...typedData.views,
@@ -354,6 +355,40 @@ export default class VaultExplorerPlugin extends Plugin {
 						}
 					}
 				}
+				data = newData as unknown as Record<string, unknown>;
+			}
+
+			if (isVersionLessThan(settingsVersion, "1.14.0")) {
+				console.log("Upgrading settings from version 1.13.1 to 1.14.0");
+				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_13_1;
+				const newData: VaultExplorerPluginSettings = {
+					...typedData,
+					filters: {
+						...typedData.filters,
+						search: {
+							isEnabled: true,
+							value: typedData.filters.search
+						},
+						favorites: {
+							isEnabled: true,
+							value: typedData.filters.onlyFavorites
+						},
+						timestamp: {
+							isEnabled: true,
+							value: typedData.filters.timestamp
+						},
+						sort: {
+							isEnabled: true,
+							value: typedData.filters.sort
+						},
+						custom: {
+							isEnabled: true,
+							...typedData.filters.custom
+						},
+					},
+					enableScrollButtons: true,
+				}
+				delete (newData.filters as any).onlyFavorites;
 				data = newData as unknown as Record<string, unknown>;
 			}
 		}

@@ -94,7 +94,7 @@
 	<div class="setting-item-info">
 		<div class="setting-item-name">License key</div>
 		<div class="setting-item-description">
-			Enter your license key to unlock premium features.
+			Enter your license key to enable premium features.
 		</div>
 		{#if message == null}
 			<PremiumLink />

@@ -26,10 +26,15 @@
 	let tagContainerRef: HTMLDivElement | null;
 	let wordBreak: WordBreak = "normal";
 
+	let enableScrollButtons: boolean = false;
+	let renderScrollLeftButton = false;
+	let renderScrollRightButton = false;
+
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		wordBreak = plugin.settings.views.titleWrapping;
+		enableScrollButtons = plugin.settings.enableScrollButtons;
 	});
 
 	onMount(() => {
@@ -46,6 +51,47 @@
 				"title-wrapping-setting-change",
 				handleTitleWrappingSettingChange,
 			);
+		};
+	});
+
+	onMount(() => {
+		function handleScrollButtonSettingChange() {
+			const newValue = plugin.settings.enableScrollButtons;
+			enableScrollButtons = newValue;
+
+			if (newValue === false) {
+				renderScrollLeftButton = false;
+				renderScrollRightButton = false;
+			}
+		}
+
+		EventManager.getInstance().on(
+			"scroll-buttons-setting-change",
+			handleScrollButtonSettingChange,
+		);
+
+		return () => {
+			EventManager.getInstance().off(
+				"scroll-buttons-setting-change",
+				handleScrollButtonSettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function addScrollListener() {
+			if (tagContainerRef && enableScrollButtons) {
+				tagContainerRef.addEventListener("scroll", handleScroll);
+				requestAnimationFrame(handleScroll);
+			}
+		}
+
+		addScrollListener();
+
+		return () => {
+			if (tagContainerRef && enableScrollButtons) {
+				tagContainerRef.removeEventListener("scroll", handleScroll);
+			}
 		};
 	});
 
@@ -96,35 +142,26 @@
 		}
 	}
 
-	let showScrollLeftButton = false;
-	let showScrollRightButton = false;
+	function handleScroll() {
+		if (!tagContainerRef) return;
 
-	onMount(() => {
-		// Function to update the scrollLeft value and the showScrollLeftButton state
-		function handleScroll() {
-			if (!tagContainerRef) {
-				return;
-			}
-			const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
-			showScrollLeftButton = scrollLeft > 0;
+		const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
+		renderScrollLeftButton = scrollLeft > 0;
 
-			//When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
-			//Sometimes the scrollLeft + clientWidth is less than 1 than the scrollWidth, in that case,
-			//we subtract 1 from the scrollWidth to avoid showing the scroll right button
-			showScrollRightButton = scrollLeft + clientWidth < scrollWidth - 1;
-		}
+		// When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
+		// To account for minor discrepancies, we use Math.round to round the result
+		renderScrollRightButton =
+			Math.round(scrollLeft + clientWidth) < scrollWidth;
+	}
 
-		if (tagContainerRef) {
+	$: if (tagContainerRef) {
+		if (enableScrollButtons) {
 			tagContainerRef.addEventListener("scroll", handleScroll);
-			requestAnimationFrame(handleScroll);
+			handleScroll();
+		} else {
+			tagContainerRef.removeEventListener("scroll", handleScroll);
 		}
-
-		return () => {
-			if (tagContainerRef) {
-				tagContainerRef.removeEventListener("scroll", handleScroll);
-			}
-		};
-	});
+	}
 </script>
 
 <div class="vault-explorer-grid-card">
@@ -158,7 +195,7 @@
 	<div class="vault-explorer-grid-card__content">
 		{#if tags !== null}
 			<Stack spacing="xs">
-				{#if showScrollLeftButton}
+				{#if renderScrollLeftButton}
 					<ScrollButton
 						type="tag"
 						direction="left"
@@ -173,7 +210,7 @@
 						<Tag name={tag} />
 					{/each}
 				</div>
-				{#if showScrollRightButton}
+				{#if renderScrollRightButton}
 					<ScrollButton
 						type="tag"
 						direction="right"
