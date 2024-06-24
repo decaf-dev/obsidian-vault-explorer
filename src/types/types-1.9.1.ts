@@ -74,7 +74,6 @@ enum CheckboxFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-//TODO: add is between
 enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
