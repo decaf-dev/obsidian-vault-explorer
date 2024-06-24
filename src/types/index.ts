@@ -22,6 +22,7 @@ export interface VaultExplorerPluginSettings {
 		titleWrapping: WordBreak;
 		enableClockUpdates: boolean;
 	}
+	enableScrollButtons: boolean;
 	pageSize: number;
 	pluginVersion: string | null;
 }
