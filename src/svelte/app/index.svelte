@@ -255,14 +255,39 @@
 			}
 		};
 
-		const debounceHandleFileRename = _.debounce(handleFileRename, 300);
-
-		EventManager.getInstance().on("file-rename", debounceHandleFileRename);
+		EventManager.getInstance().on("file-rename", handleFileRename);
 		return () => {
-			EventManager.getInstance().off(
-				"file-rename",
-				debounceHandleFileRename,
-			);
+			EventManager.getInstance().off("file-rename", handleFileRename);
+		};
+	});
+
+	onMount(() => {
+		const handleFileModify = async (...data: unknown[]) => {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleFileModify",
+				message: "called",
+			});
+			if (data.length > 0 && data[0] instanceof TFile) {
+				const file = data[0] as TFile;
+				const content = await plugin.app.vault.cachedRead(file);
+				console.log(content);
+				const updatedContentForFiles = contentForFiles.map((entry) => {
+					if (entry.path === file.path) {
+						return {
+							path: file.path,
+							content,
+						};
+					}
+					return entry;
+				});
+				contentForFiles = updatedContentForFiles;
+			}
+		};
+
+		EventManager.getInstance().on("file-modify", handleFileModify);
+		return () => {
+			EventManager.getInstance().off("file-modify", handleFileModify);
 		};
 	});
 
