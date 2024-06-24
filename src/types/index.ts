@@ -11,18 +11,9 @@ export interface VaultExplorerPluginSettings {
 	},
 	filters: {
 		search: SearchFilter;
-		favorites: {
-			isEnabled: boolean;
-			value: boolean;
-		},
-		sort: {
-			isEnabled: boolean;
-			value: SortFilter;
-		},
-		timestamp: {
-			isEnabled: boolean;
-			value: TimestampFilter;
-		}
+		favorites: FavoritesFilter;
+		sort: SortFilter;
+		timestamp: TimestampFilter;
 		custom: {
 			isEnabled: boolean;
 			selectedGroupId: string;
@@ -43,6 +34,25 @@ export interface SearchFilter {
 	isEnabled: boolean;
 	value: string;
 }
+
+export interface FavoritesFilter {
+	isEnabled: boolean;
+	value: boolean;
+};
+
+export interface SortFilter {
+	isEnabled: boolean;
+	value: SortOptions;
+};
+
+export interface TimestampFilter {
+	isEnabled: boolean;
+	value: TimestampFilterOptions;
+}
+
+export type TimestampFilterOptions = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
+
+export type SortOptions = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
 
 export type WordBreak = "normal" | "break-word";
 
@@ -224,7 +234,3 @@ export interface FilterGroup {
 	isEnabled: boolean;
 	isSticky: boolean;
 }
-
-export type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
-
-export type TimestampFilter = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";

@@ -5,12 +5,13 @@
 	import Stack from "../shared/components/stack.svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import IconButton from "../shared/components/icon-button.svelte";
-	import Checkbox from "../shared/components/checkbox.svelte";
+	import FavoritesFilterComponent from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
 	import { Menu, TFile } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
+		FavoritesFilter,
 		FilterGroup,
 		SearchFilter,
 		SortFilter,
@@ -39,6 +40,7 @@
 	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
 	import SearchFilterComponent from "./components/search-filter.svelte";
+	import { DEBOUNCE_INPUT_TIME } from "./constants";
 
 	// ============================================
 	// Variables
@@ -50,10 +52,22 @@
 	let startOfLastWeekMillis: number;
 
 	let pageSize: number = 0;
-	let searchFilter: SearchFilter | null = null;
-	let sortFilter: SortFilter = "file-name-asc";
-	let timestampFilter: TimestampFilter = "all";
-	let favoritesFilter: boolean = false;
+	let searchFilter: SearchFilter = {
+		isEnabled: true,
+		value: "",
+	};
+	let favoritesFilter: FavoritesFilter = {
+		isEnabled: false,
+		value: false,
+	};
+	let timestampFilter: TimestampFilter = {
+		isEnabled: true,
+		value: "all",
+	};
+	let sortFilter: SortFilter = {
+		isEnabled: true,
+		value: "file-name-asc",
+	};
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
 	let filterGroups: FilterGroup[] = [];
@@ -75,9 +89,9 @@
 		files = app.vault.getFiles();
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
-		sortFilter = settings.filters.sort.value;
-		timestampFilter = settings.filters.timestamp.value;
-		favoritesFilter = settings.filters.favorites.value;
+		favoritesFilter = settings.filters.favorites;
+		sortFilter = settings.filters.sort;
+		timestampFilter = settings.filters.timestamp;
 		currentView = settings.views.currentView;
 		viewOrder = settings.views.order;
 		filterGroups = settings.filters.custom.groups;
@@ -286,14 +300,14 @@
 	// ============================================
 	// Functions
 	// ============================================
-	const debounceSearchFilter = _.debounce((e) => {
+	const debounceSearchFilterChange = _.debounce((e) => {
 		if (searchFilter == null) return;
 		searchFilter.value = e.target.value;
-	}, 300);
+	}, DEBOUNCE_INPUT_TIME);
 
-	const debounceFavoriteFilter = _.debounce((value) => {
+	const debounceFavoriteFilterChange = _.debounce((value) => {
 		favoritesFilter = value;
-	}, 300);
+	}, DEBOUNCE_INPUT_TIME);
 
 	function updateTimeValues() {
 		Logger.trace({
@@ -362,12 +376,10 @@
 	}
 
 	async function saveSettings() {
-		if (searchFilter != null) {
-			plugin.settings.filters.search = searchFilter;
-		}
-		plugin.settings.filters.sort.value = sortFilter;
-		plugin.settings.filters.timestamp.value = timestampFilter;
-		plugin.settings.filters.favorites.value = favoritesFilter;
+		plugin.settings.filters.search = searchFilter;
+		plugin.settings.filters.sort = sortFilter;
+		plugin.settings.filters.timestamp = timestampFilter;
+		plugin.settings.filters.favorites = favoritesFilter;
 		plugin.settings.views.order = viewOrder;
 		plugin.settings.views.currentView = currentView;
 		plugin.settings.filters.custom.groups = filterGroups;
@@ -510,24 +522,24 @@
 		menu.setUseNativeMenu(true);
 		menu.addItem((item) => {
 			item.setTitle("File name (A-Z)");
-			item.setChecked(sortFilter === "file-name-asc");
-			item.onClick(() => (sortFilter = "file-name-asc"));
+			item.setChecked(sortFilter.value === "file-name-asc");
+			item.onClick(() => (sortFilter.value = "file-name-asc"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("File name (Z-A)");
-			item.setChecked(sortFilter === "file-name-desc");
-			item.onClick(() => (sortFilter = "file-name-desc"));
+			item.setChecked(sortFilter.value === "file-name-desc");
+			item.onClick(() => (sortFilter.value = "file-name-desc"));
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("Modified time (new to old)");
-			item.setChecked(sortFilter === "modified-desc");
-			item.onClick(() => (sortFilter = "modified-desc"));
+			item.setChecked(sortFilter.value === "modified-desc");
+			item.onClick(() => (sortFilter.value = "modified-desc"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("Modified time (old to new)");
-			item.setChecked(sortFilter === "modified-asc");
-			item.onClick(() => (sortFilter = "modified-asc"));
+			item.setChecked(sortFilter.value === "modified-asc");
+			item.onClick(() => (sortFilter.value = "modified-asc"));
 		});
 		menu.showAtMouseEvent(nativeEvent);
 	}
@@ -537,52 +549,53 @@
 
 		const menu = new Menu();
 		menu.setUseNativeMenu(true);
+
 		menu.addItem((item) => {
 			item.setTitle("All");
-			item.setChecked(timestampFilter === "all");
-			item.onClick(() => (timestampFilter = "all"));
+			item.setChecked(timestampFilter.value === "all");
+			item.onClick(() => (timestampFilter.value = "all"));
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("Modified today");
-			item.setChecked(timestampFilter === "modified-today");
-			item.onClick(() => (timestampFilter = "modified-today"));
+			item.setChecked(timestampFilter.value === "modified-today");
+			item.onClick(() => (timestampFilter.value = "modified-today"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("Created today");
-			item.setChecked(timestampFilter === "created-today");
-			item.onClick(() => (timestampFilter = "created-today"));
+			item.setChecked(timestampFilter.value === "created-today");
+			item.onClick(() => (timestampFilter.value = "created-today"));
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("Modifed this week");
-			item.setChecked(timestampFilter === "modified-this-week");
-			item.onClick(() => (timestampFilter = "modified-this-week"));
+			item.setChecked(timestampFilter.value === "modified-this-week");
+			item.onClick(() => (timestampFilter.value = "modified-this-week"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("Created this week");
-			item.setChecked(timestampFilter === "created-this-week");
-			item.onClick(() => (timestampFilter = "created-this-week"));
+			item.setChecked(timestampFilter.value === "created-this-week");
+			item.onClick(() => (timestampFilter.value = "created-this-week"));
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("Modifed 2 weeks");
-			item.setChecked(timestampFilter === "modified-2-weeks");
-			item.onClick(() => (timestampFilter = "modified-2-weeks"));
+			item.setChecked(timestampFilter.value === "modified-2-weeks");
+			item.onClick(() => (timestampFilter.value = "modified-2-weeks"));
 		});
 		menu.addItem((item) => {
 			item.setTitle("Created 2 weeks");
-			item.setChecked(timestampFilter === "created-2-weeks");
-			item.onClick(() => (timestampFilter = "created-2-weeks"));
+			item.setChecked(timestampFilter.value === "created-2-weeks");
+			item.onClick(() => (timestampFilter.value = "created-2-weeks"));
 		});
 
 		menu.showAtMouseEvent(nativeEvent);
 	}
 
-	function handleOnlyFavoritesChange(e: CustomEvent) {
+	function handleFavoritesChange(e: CustomEvent) {
 		const nativeEvent = e.detail.nativeEvent;
 		const value = (nativeEvent.target as HTMLInputElement).checked;
-		debounceFavoriteFilter(value);
+		debounceFavoriteFilterChange(value);
 	}
 
 	// ============================================
@@ -605,25 +618,27 @@
 	}
 
 	$: filteredSearch = formatted.filter((file) => {
-		if (searchFilter != null) {
-			const { isEnabled, value } = searchFilter;
-			if (isEnabled) {
-				return filterBySearch(file, value);
-			}
+		const { isEnabled, value } = searchFilter;
+		if (isEnabled) {
+			return filterBySearch(file, value);
 		}
 		return true;
 	});
 
-	$: filteredFavorites = filteredSearch.filter((file) =>
-		filterByFavorites(file, favoritesFilter),
-	);
+	$: filteredFavorites = filteredSearch.filter((file) => {
+		const { isEnabled, value } = favoritesFilter;
+		if (isEnabled) {
+			return filterByFavorites(file, value);
+		}
+		return true;
+	});
 
 	$: filteredTimestamp = filteredFavorites.filter((file) => {
 		const { modifiedMillis, createdMillis } = file;
 		return filterByTimestamp({
+			timestampFilter: timestampFilter.value,
 			createdMillis,
 			modifiedMillis,
-			timestampFilter,
 			startOfTodayMillis,
 			startOfThisWeekMillis,
 			startOfLastWeekMillis,
@@ -631,13 +646,13 @@
 	});
 
 	$: renderData = [...filteredTimestamp].sort((a, b) => {
-		if (sortFilter === "file-name-asc") {
+		if (sortFilter.value === "file-name-asc") {
 			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-		} else if (sortFilter === "file-name-desc") {
+		} else if (sortFilter.value === "file-name-desc") {
 			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-		} else if (sortFilter === "modified-asc") {
+		} else if (sortFilter.value === "modified-asc") {
 			return a.modifiedMillis - b.modifiedMillis;
-		} else if (sortFilter === "modified-desc") {
+		} else if (sortFilter.value === "modified-desc") {
 			return b.modifiedMillis - a.modifiedMillis;
 		}
 		return 0;
@@ -664,23 +679,22 @@
 
 <div class="vault-explorer">
 	<div class="vault-explorer-header">
-		{#if searchFilter != null && searchFilter.isEnabled}
+		{#if searchFilter.isEnabled}
 			<SearchFilterComponent
 				value={searchFilter.value}
-				on:input={debounceSearchFilter}
-				on:clear={() =>
-					searchFilter !== null ? (searchFilter.value = "") : ""}
+				on:input={debounceSearchFilterChange}
+				on:clear={() => (searchFilter.value = "")}
 			/>
 		{/if}
 		<Stack direction="column" spacing="sm">
 			<Flex justify="space-between">
 				<Stack spacing="sm">
-					<Checkbox
-						id="favorites"
-						label="Favorites"
-						value={favoritesFilter}
-						on:change={handleOnlyFavoritesChange}
-					/>
+					{#if favoritesFilter.isEnabled}
+						<FavoritesFilterComponent
+							value={favoritesFilter.value}
+							on:change={handleFavoritesChange}
+						/>
+					{/if}
 					<Flex>
 						<IconButton
 							ariaLabel="Change timestamp filter"
