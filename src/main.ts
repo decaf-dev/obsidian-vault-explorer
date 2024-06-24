@@ -26,6 +26,7 @@ import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
 import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
 import { VaultExplorerPluginSettings_1_13_1 } from './types/types-1.13.1';
 import { VaultExplorerPluginSettings_1_14_2 } from './types/types-1.14.2';
+import { VaultExplorerPluginSettings_1_16_0, ViewType_1_16_0 } from './types/types-1.16.0';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -359,7 +360,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (isVersionLessThan(settingsVersion, "1.14.0")) {
 				console.log("Upgrading settings from version 1.13.1 to 1.14.0");
 				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_13_1;
-				const newData: VaultExplorerPluginSettings = {
+				const newData: VaultExplorerPluginSettings_1_14_2 = {
 					...typedData,
 					filters: {
 						...typedData.filters,
@@ -393,13 +394,59 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (isVersionLessThan(settingsVersion, "1.15.0")) {
 				console.log("Upgrading settings from version 1.14.2 to 1.15.0");
 				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_14_2;
-				const newData: VaultExplorerPluginSettings = {
+				const newData: VaultExplorerPluginSettings_1_16_0 = {
 					...typedData,
 					views: {
 						...typedData.views,
-						order: [...typedData.views.order, ViewType.FEED],
+						order: [...typedData.views.order, ViewType_1_16_0.FEED],
 					}
 				}
+				data = newData as unknown as Record<string, unknown>;
+			}
+
+			if (isVersionLessThan(settingsVersion, "1.17.0")) {
+				console.log("Upgrading settings from version 1.16.0 to 1.17.0");
+				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_16_0;
+				const newData: VaultExplorerPluginSettings = {
+					...typedData,
+					views: {
+						global: {
+							enableClockUpdates: typedData.views.enableClockUpdates,
+							currentView: typedData.views.currentView,
+							enableScrollButtons: typedData.enableScrollButtons,
+							pageSize: typedData.pageSize,
+							order: typedData.views.order,
+							titleWrapping: typedData.views.titleWrapping
+						},
+						dashboard: {
+							isEnabled: false
+						},
+						grid: {
+							isEnabled: true
+						},
+						list: {
+							isEnabled: true
+						},
+						table: {
+							isEnabled: false
+						},
+						feed: {
+							isEnabled: true
+						},
+						recommended: {
+							isEnabled: false
+						},
+						related: {
+							isEnabled: false
+						}
+					}
+				}
+				delete (newData as any).views.order;
+				delete (newData as any).views.currentView;
+				delete (newData as any).views.enableClockUpdates;
+				delete (newData as any).views.titleWrapping;
+				delete (newData as any).enableScrollButtons;
+				delete (newData as any).pageSize;
 				data = newData as unknown as Record<string, unknown>;
 			}
 		}
