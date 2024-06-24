@@ -52,14 +52,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		}
 	},
 	views: {
-		global: {
-			currentView: ViewType.GRID,
-			order: [...Object.values(ViewType)],
-			titleWrapping: "normal",
-			enableClockUpdates: true,
-			enableScrollButtons: true,
-			pageSize: 50
-		},
 		dashboard: {
 			isEnabled: false
 		},
@@ -82,5 +74,11 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			isEnabled: false
 		}
 	},
+	currentView: ViewType.GRID,
+	order: [...Object.values(ViewType)],
+	titleWrapping: "normal",
+	enableClockUpdates: true,
+	enableScrollButtons: true,
+	pageSize: 50,
 	pluginVersion: null
 }

@@ -16,14 +16,6 @@ export interface VaultExplorerPluginSettings {
 		custom: CustomFilter;
 	},
 	views: {
-		global: {
-			titleWrapping: WordBreak;
-			enableClockUpdates: boolean;
-			currentView: ViewType;
-			enableScrollButtons: boolean;
-			pageSize: number;
-			order: ViewType[];
-		}
 		dashboard: DashboardView;
 		grid: GridView;
 		list: ListView;
@@ -32,6 +24,12 @@ export interface VaultExplorerPluginSettings {
 		recommended: RecommendedView;
 		related: RelatedView;
 	}
+	titleWrapping: WordBreak;
+	enableClockUpdates: boolean;
+	currentView: ViewType;
+	enableScrollButtons: boolean;
+	pageSize: number;
+	order: ViewType[];
 	pluginVersion: string | null;
 	logLevel: string;
 }

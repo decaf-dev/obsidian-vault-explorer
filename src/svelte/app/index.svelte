@@ -4,7 +4,6 @@
 	// ============================================
 	import Stack from "../shared/components/stack.svelte";
 	import Flex from "../shared/components/flex.svelte";
-	import IconButton from "../shared/components/icon-button.svelte";
 	import FavoritesFilterComponent from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
@@ -101,11 +100,11 @@
 		favoritesFilter = settings.filters.favorites;
 		sortFilter = settings.filters.sort;
 		timestampFilter = settings.filters.timestamp;
-		currentView = settings.views.currentView;
-		viewOrder = settings.views.order;
+		currentView = settings.currentView;
+		viewOrder = settings.order;
 		customFilter = settings.filters.custom;
 
-		if (settings.views.enableClockUpdates) {
+		if (settings.enableClockUpdates) {
 			setTimeValuesUpdateInterval();
 		}
 
@@ -148,7 +147,7 @@
 				message: "called",
 			});
 
-			const isEnabled = plugin.settings.views.enableClockUpdates;
+			const isEnabled = plugin.settings.enableClockUpdates;
 			if (isEnabled) {
 				updateTimeValues();
 				setTimeValuesUpdateInterval();
@@ -430,8 +429,8 @@
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.favorites = favoritesFilter;
-		plugin.settings.views.order = viewOrder;
-		plugin.settings.views.currentView = currentView;
+		plugin.settings.order = viewOrder;
+		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		await plugin.saveSettings();
 	}

@@ -410,14 +410,6 @@ export default class VaultExplorerPlugin extends Plugin {
 				const newData: VaultExplorerPluginSettings = {
 					...typedData,
 					views: {
-						global: {
-							enableClockUpdates: typedData.views.enableClockUpdates,
-							currentView: typedData.views.currentView,
-							enableScrollButtons: typedData.enableScrollButtons,
-							pageSize: typedData.pageSize,
-							order: typedData.views.order,
-							titleWrapping: typedData.views.titleWrapping
-						},
 						dashboard: {
 							isEnabled: false
 						},
@@ -439,14 +431,16 @@ export default class VaultExplorerPlugin extends Plugin {
 						related: {
 							isEnabled: false
 						}
-					}
+					},
+					enableClockUpdates: typedData.views.enableClockUpdates,
+					currentView: typedData.views.currentView,
+					order: typedData.views.order,
+					titleWrapping: typedData.views.titleWrapping
 				}
 				delete (newData as any).views.order;
 				delete (newData as any).views.currentView;
 				delete (newData as any).views.enableClockUpdates;
 				delete (newData as any).views.titleWrapping;
-				delete (newData as any).enableScrollButtons;
-				delete (newData as any).pageSize;
 				data = newData as unknown as Record<string, unknown>;
 			}
 		}

@@ -92,9 +92,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				"250": "250",
 				"500": "500",
 			})
-			.setValue(this.plugin.settings.views.global.pageSize.toString())
+			.setValue(this.plugin.settings.pageSize.toString())
 			.onChange(async (value) => {
-				this.plugin.settings.views.global.pageSize = parseInt(value);
+				this.plugin.settings.pageSize = parseInt(value);
 				await this.plugin.saveSettings();
 				EventManager.getInstance().emit("page-size-setting-change");
 			}));
@@ -108,9 +108,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					"normal": "Normal",
 					"break-word": "Break Word",
 				})
-				cb.setValue(this.plugin.settings.views.global.titleWrapping).onChange(
+				cb.setValue(this.plugin.settings.titleWrapping).onChange(
 					async (value) => {
-						this.plugin.settings.views.global.titleWrapping = value as WordBreak;
+						this.plugin.settings.titleWrapping = value as WordBreak;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit("title-wrapping-setting-change");
 					}
@@ -221,9 +221,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.setName("Enable scroll buttons")
 			.setDesc("When enabled, scroll buttons will be displayed for scrollable content. You could disable this setting if only use a touchscreen or trackpad.")
 			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.views.global.enableScrollButtons)
+				.setValue(this.plugin.settings.enableScrollButtons)
 				.onChange(async (value) => {
-					this.plugin.settings.views.global.enableScrollButtons = value;
+					this.plugin.settings.enableScrollButtons = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("scroll-buttons-setting-change");
 				}));
@@ -234,9 +234,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.setName("Enable clock updates")
 			.setDesc("When enabled, time values will update every minute, refreshing the Vault Explorer view. When disabled, time values will only update when the view is first opened.")
 			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.views.global.enableClockUpdates)
+				.setValue(this.plugin.settings.enableClockUpdates)
 				.onChange(async (value) => {
-					this.plugin.settings.views.global.enableClockUpdates = value;
+					this.plugin.settings.enableClockUpdates = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("clock-updates-setting-change");
 				}));
