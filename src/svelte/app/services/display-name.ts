@@ -6,6 +6,8 @@ export const getDisplayNameForViewType = (viewType: ViewType) => {
 			return "Grid";
 		case ViewType.LIST:
 			return "List";
+		case ViewType.FEED:
+			return "Feed";
 		default:
 			throw new Error(`Unhandled view type: ${viewType}`);
 	}
