@@ -43,6 +43,7 @@
 	import { DEBOUNCE_INPUT_TIME } from "./constants";
 	import CustomFilterComponent from "./components/custom-filter.svelte";
 	import FeedView from "./components/feed-view.svelte";
+	import PaginationIndicator from "./components/pagination-indicator.svelte";
 
 	// ============================================
 	// Variables
@@ -536,8 +537,9 @@
 		});
 	}
 
-	function handlePageChange(newPage: number) {
-		currentPage = newPage;
+	function handlePageChange(e: CustomEvent) {
+		const { value } = e.detail;
+		currentPage = value;
 	}
 
 	function handleSortChange(e: CustomEvent) {
@@ -714,41 +716,14 @@
 					>
 				{/each}
 			</TabList>
-			<Stack justify="flex-end" align="center">
-				<Stack spacing="xs">
-					<Stack spacing="xs">
-						<span>{startIndex + 1}</span>
-						<span>-</span>
-						<span>{endIndex}</span>
-					</Stack>
-					<span>of</span>
-					<span>{renderData.length}</span>
-				</Stack>
-				<Flex>
-					<IconButton
-						iconId="chevrons-left"
-						ariaLabel="First page"
-						on:click={() => handlePageChange(1)}
-					/>
-					<IconButton
-						iconId="chevron-left"
-						ariaLabel="Previous page"
-						disabled={currentPage === 1}
-						on:click={() => handlePageChange(currentPage - 1)}
-					/>
-					<IconButton
-						iconId="chevron-right"
-						ariaLabel="Next page"
-						disabled={currentPage === totalPages}
-						on:click={() => handlePageChange(currentPage + 1)}
-					/>
-					<IconButton
-						iconId="chevrons-right"
-						ariaLabel="Last page"
-						on:click={() => handlePageChange(totalPages)}
-					/>
-				</Flex>
-			</Stack>
+			<PaginationIndicator
+				{startIndex}
+				{endIndex}
+				{currentPage}
+				{totalPages}
+				{totalItems}
+				on:change={handlePageChange}
+			/>
 		</Flex>
 		{#if currentView === "grid"}
 			<GridView data={renderData} {startIndex} {pageLength} />
