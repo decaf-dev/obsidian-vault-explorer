@@ -57,6 +57,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		titleWrapping: "normal",
 		enableClockUpdates: true
 	},
+	enableScrollButtons: true,
 	pageSize: 50,
 	pluginVersion: null
 }

@@ -385,7 +385,8 @@ export default class VaultExplorerPlugin extends Plugin {
 							isEnabled: true,
 							...typedData.filters.custom
 						},
-					}
+					},
+					enableScrollButtons: true,
 				}
 				delete (newData.filters as any).onlyFavorites;
 				data = newData as unknown as Record<string, unknown>;

@@ -215,6 +215,19 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					EventManager.getInstance().emit("property-setting-change");
 				}));
 
+		new Setting(containerEl).setName("Accessibility").setHeading();
+
+		new Setting(containerEl)
+			.setName("Enable scroll buttons")
+			.setDesc("When enabled, scroll buttons will be displayed for scrollable content. You could disable this setting if only use a touchscreen or trackpad.")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableScrollButtons)
+				.onChange(async (value) => {
+					this.plugin.settings.enableScrollButtons = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("scroll-buttons-setting-change");
+				}));
+
 		new Setting(containerEl).setName("Updates").setHeading();
 
 		new Setting(containerEl)
