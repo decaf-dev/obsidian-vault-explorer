@@ -730,8 +730,10 @@
 		</Flex>
 		{#if currentView === "grid"}
 			<GridView data={renderData} {startIndex} {pageLength} />
-		{:else}
+		{:else if currentView === "list"}
 			<ListView data={renderData} {startIndex} {pageLength} />
+		{:else if currentView === "feed"}
+			<p>Feed view</p>
 		{/if}
 	</div>
 </div>

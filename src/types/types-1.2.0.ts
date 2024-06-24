@@ -26,11 +26,12 @@ export interface VaultExplorerPluginSettings_1_2_0 {
 	pluginVersion: string | null;
 }
 
-
+export { ViewType as ViewType_1_2_0 };
 enum ViewType {
 	GRID = "grid",
 	LIST = "list",
 }
+
 
 type FilterOperator = "and" | "or";
 

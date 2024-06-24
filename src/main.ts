@@ -15,7 +15,7 @@ import { formatMessageForLogger, stringToLogLevel } from './logger';
 import { LOG_LEVEL_WARN } from './logger/constants';
 import { VaultExplorerPluginSettings_1_0_1 } from './types/types-1.0.1';
 import { moveFocus } from './focus-utils';
-import { VaultExplorerPluginSettings_1_2_0 } from './types/types-1.2.0';
+import { VaultExplorerPluginSettings_1_2_0, ViewType_1_2_0 } from './types/types-1.2.0';
 import { VaultExplorerPluginSettings_1_2_1 } from './types/types-1.2.1';
 import { PropertyFilterGroup_1_5_0, PropertyFilter_1_5_0, VaultExplorerPluginSettings_1_5_0 } from './types/types-1.5.0';
 import { VaultExplorerPluginSettings_1_6_0 } from './types/types-1.6.0';
@@ -24,7 +24,8 @@ import License from './svelte/shared/services/license';
 import { VaultExplorerPluginSettings_1_8_1 } from './types/types-1.8.1';
 import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
 import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
-import { VaultExplorerPluginSettings_1_13_1 } from './types/types.1.13.1';
+import { VaultExplorerPluginSettings_1_13_1 } from './types/types-1.13.1';
+import { VaultExplorerPluginSettings_1_14_2 } from './types/types-1.14.2';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -187,8 +188,8 @@ export default class VaultExplorerPlugin extends Plugin {
 					const newData: VaultExplorerPluginSettings_1_2_0 = {
 						...typedData,
 						views: {
-							currentView: typedData.currentView as unknown as ViewType,
-							order: [ViewType.GRID, ViewType.LIST]
+							currentView: typedData.currentView as unknown as ViewType_1_2_0,
+							order: [ViewType_1_2_0.GRID, ViewType_1_2_0.LIST]
 						}
 					}
 					data = newData as unknown as Record<string, unknown>;
@@ -389,6 +390,19 @@ export default class VaultExplorerPlugin extends Plugin {
 					enableScrollButtons: true,
 				}
 				delete (newData.filters as any).onlyFavorites;
+				data = newData as unknown as Record<string, unknown>;
+			}
+
+			if (isVersionLessThan(settingsVersion, "1.15.0")) {
+				console.log("Upgrading settings from version 1.14.2 to 1.15.0");
+				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_14_2;
+				const newData: VaultExplorerPluginSettings = {
+					...typedData,
+					views: {
+						...typedData.views,
+						order: [...typedData.views.order, ViewType.FEED],
+					}
+				}
 				data = newData as unknown as Record<string, unknown>;
 			}
 		}
