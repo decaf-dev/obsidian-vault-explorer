@@ -52,12 +52,35 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		}
 	},
 	views: {
-		currentView: ViewType.GRID,
-		order: [...Object.values(ViewType)],
-		titleWrapping: "normal",
-		enableClockUpdates: true
+		global: {
+			currentView: ViewType.GRID,
+			order: [...Object.values(ViewType)],
+			titleWrapping: "normal",
+			enableClockUpdates: true,
+			enableScrollButtons: true,
+			pageSize: 50
+		},
+		dashboard: {
+			isEnabled: false
+		},
+		grid: {
+			isEnabled: true
+		},
+		list: {
+			isEnabled: true
+		},
+		table: {
+			isEnabled: false
+		},
+		feed: {
+			isEnabled: true
+		},
+		recommended: {
+			isEnabled: false
+		},
+		related: {
+			isEnabled: false
+		}
 	},
-	enableScrollButtons: true,
-	pageSize: 50,
 	pluginVersion: null
 }
