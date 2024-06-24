@@ -78,7 +78,6 @@
 
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
-	let filterGroups: FilterGroup[] = [];
 
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
@@ -370,7 +369,7 @@
 		propertySettingTime = Date.now();
 	}
 
-	async function filterByCustomFilter() {
+	async function filterByCustomFilter(groups: FilterGroup[]) {
 		const promises: Promise<TFile | null>[] = [];
 
 		for (let file of files) {
@@ -388,13 +387,7 @@
 					}
 
 					if (
-						filterByGroups(
-							name,
-							path,
-							frontmatter,
-							content,
-							filterGroups,
-						)
+						filterByGroups(name, path, frontmatter, content, groups)
 					) {
 						return file;
 					}
@@ -423,12 +416,13 @@
 
 		const ctrlOrMeta = nativeEvent.ctrlKey || nativeEvent.metaKey;
 
-		const clickedGroup = filterGroups.find((group) => group.id === id);
+		const { groups } = customFilter;
+		const clickedGroup = groups.find((group) => group.id === id);
 		if (!clickedGroup) {
 			throw new Error(`Group with id ${id} not found`);
 		}
 
-		const newGroups = filterGroups.map((group) => {
+		const newGroups = groups.map((group) => {
 			if (group.id === id) {
 				if (ctrlOrMeta) {
 					const newSticky = !group.isSticky;
@@ -449,7 +443,7 @@
 			}
 		});
 		customFilter.selectedGroupId = id;
-		filterGroups = newGroups;
+		customFilter.groups = newGroups;
 	}
 
 	function handleViewDragOver(e: CustomEvent) {
@@ -493,16 +487,16 @@
 		const dragId = nativeEvent.dataTransfer.getData("text");
 		nativeEvent.dataTransfer.dropEffect = "move";
 
-		const draggedIndex = filterGroups.findIndex(
-			(group) => group.id === dragId,
-		);
-		const dragged = filterGroups.find((group) => group.id === dragId);
+		const { groups } = customFilter;
 
-		const droppedIndex = filterGroups.findIndex((group) => group.id === id);
+		const draggedIndex = groups.findIndex((group) => group.id === dragId);
+		const dragged = groups.find((group) => group.id === dragId);
+
+		const droppedIndex = groups.findIndex((group) => group.id === id);
 
 		if (!dragged || draggedIndex === -1 || droppedIndex === -1) return;
 
-		let newGroups = [...filterGroups];
+		let newGroups = [...groups];
 
 		// Remove the dragged item
 		newGroups.splice(draggedIndex, 1);
@@ -510,7 +504,7 @@
 		// Insert the dragged item at the drop index
 		newGroups.splice(droppedIndex, 0, dragged);
 
-		filterGroups = newGroups;
+		customFilter.groups = newGroups;
 	}
 
 	function handleGroupDragOver(e: CustomEvent) {
@@ -563,8 +557,8 @@
 	// Reactive statements and computed data
 	// ============================================
 	let filteredCustom: TFile[] = [];
-	$: if (frontmatterCacheTime && filterGroups) {
-		filterByCustomFilter().then((files) => {
+	$: if (frontmatterCacheTime && customFilter.groups) {
+		filterByCustomFilter(customFilter.groups).then((files) => {
 			filteredCustom = files;
 		});
 	}
@@ -597,7 +591,7 @@
 	$: filteredTimestamp = filteredFavorites.filter((file) => {
 		const { modifiedMillis, createdMillis } = file;
 		return filterByTimestamp({
-			timestampFilter: timestampFilter.value,
+			value: timestampFilter.value,
 			createdMillis,
 			modifiedMillis,
 			startOfTodayMillis,
@@ -625,7 +619,6 @@
 		favoritesFilter,
 		currentView,
 		viewOrder,
-		filterGroups,
 		customFilter,
 		saveSettings();
 
