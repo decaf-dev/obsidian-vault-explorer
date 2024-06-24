@@ -337,7 +337,7 @@
 	}, DEBOUNCE_INPUT_TIME);
 
 	const debounceFavoriteFilterChange = _.debounce((value) => {
-		favoritesFilter = value;
+		favoritesFilter.value = value;
 	}, DEBOUNCE_INPUT_TIME);
 
 	function updateTimeValues() {
