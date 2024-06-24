@@ -12,7 +12,6 @@
 	import {
 		CustomFilter,
 		FavoritesFilter,
-		FilterGroup,
 		SearchFilter,
 		SortFilter,
 		TimestampFilter,
@@ -36,13 +35,14 @@
 		getStartOfTodayMillis,
 		getStartOfThisWeekMillis,
 	} from "../shared/services/time-utils";
-	import { FileRenderData } from "./types";
+	import { FileContent, FileRenderData } from "./types";
 	import Logger from "js-logger";
 	import SearchFilterComponent from "./components/search-filter.svelte";
 	import TimestampFilterComponent from "./components/timestamp-filter.svelte";
 	import SortFilterComponent from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME } from "./constants";
 	import CustomFilterComponent from "./components/custom-filter.svelte";
+	import FeedView from "./components/feed-view.svelte";
 
 	// ============================================
 	// Variables
@@ -84,11 +84,12 @@
 
 	let files: TFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
+	let contentForFiles: FileContent[] = [];
 
 	// ============================================
 	// Lifecycle hooks
 	// ============================================
-	store.plugin.subscribe((p) => {
+	store.plugin.subscribe(async (p) => {
 		plugin = p;
 
 		const { app, settings } = plugin;
@@ -105,6 +106,8 @@
 		if (settings.views.enableClockUpdates) {
 			setTimeValuesUpdateInterval();
 		}
+
+		contentForFiles = await loadContentForFiles(files);
 	});
 
 	onMount(() => {
@@ -356,6 +359,32 @@
 		timeValuesUpdateInterval = setInterval(updateTimeValues, MILLIS_MINUTE);
 	}
 
+	async function loadContentForFiles(files: TFile[]): Promise<FileContent[]> {
+		const promises: Promise<FileContent>[] = [];
+
+		for (let file of files) {
+			promises.push(
+				(async () => {
+					const { extension } = file;
+					if (extension === "md") {
+						const content = await plugin.app.vault.cachedRead(file);
+						return {
+							path: file.path,
+							content,
+						};
+					}
+					return {
+						path: file.path,
+						content: null,
+					};
+				})(),
+			);
+		}
+
+		const results = await Promise.all(promises);
+		return results;
+	}
+
 	function updateFrontmatterCacheTime() {
 		Logger.trace({
 			fileName: "app/index.ts",
@@ -367,37 +396,6 @@
 
 	function updatePropertySettingTime() {
 		propertySettingTime = Date.now();
-	}
-
-	async function filterByCustomFilter(groups: FilterGroup[]) {
-		const promises: Promise<TFile | null>[] = [];
-
-		for (let file of files) {
-			promises.push(
-				(async () => {
-					const frontmatter =
-						plugin.app.metadataCache.getFileCache(
-							file,
-						)?.frontmatter;
-
-					const { name, path, extension } = file;
-					let content = "";
-					if (extension === "md") {
-						content = await plugin.app.vault.cachedRead(file);
-					}
-
-					if (
-						filterByGroups(name, path, frontmatter, content, groups)
-					) {
-						return file;
-					}
-					return null;
-				})(),
-			);
-		}
-
-		const results = await Promise.all(promises);
-		return results.filter((file) => file !== null) as TFile[];
 	}
 
 	async function saveSettings() {
@@ -557,9 +555,25 @@
 	// Reactive statements and computed data
 	// ============================================
 	let filteredCustom: TFile[] = [];
+
 	$: if (frontmatterCacheTime && customFilter.groups) {
-		filterByCustomFilter(customFilter.groups).then((files) => {
-			filteredCustom = files;
+		console.log("Frontmatter cache time", frontmatterCacheTime);
+		filteredCustom = files.filter((file) => {
+			const { name, path } = file;
+			const frontmatter =
+				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+
+			let content =
+				contentForFiles.find((content) => content.path === path)
+					?.content ?? "";
+
+			return filterByGroups(
+				name,
+				path,
+				frontmatter,
+				content,
+				customFilter.groups,
+			);
 		});
 	}
 
@@ -568,7 +582,15 @@
 		formatted = filteredCustom.map((file) => {
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-			return formatFileDataForRender(plugin.settings, file, frontmatter);
+			const content =
+				contentForFiles.find((content) => content.path === file.path)
+					?.content ?? null;
+			return formatFileDataForRender(
+				plugin.settings,
+				file,
+				frontmatter,
+				content,
+			);
 		});
 	}
 
@@ -733,7 +755,7 @@
 		{:else if currentView === "list"}
 			<ListView data={renderData} {startIndex} {pageLength} />
 		{:else if currentView === "feed"}
-			<p>Feed view</p>
+			<FeedView data={renderData} />
 		{/if}
 	</div>
 </div>
