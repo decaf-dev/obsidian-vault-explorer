@@ -61,29 +61,27 @@ export interface RecommendedView extends BaseView {
 export interface RelatedView extends BaseView {
 }
 
-
-export interface SearchFilter {
+interface BaseFilter {
 	isEnabled: boolean;
+}
+
+export interface SearchFilter extends BaseFilter {
 	value: string;
 }
 
-export interface FavoritesFilter {
-	isEnabled: boolean;
+export interface FavoritesFilter extends BaseFilter {
 	value: boolean;
 };
 
-export interface SortFilter {
-	isEnabled: boolean;
+export interface SortFilter extends BaseFilter {
 	value: SortFilterOption;
 };
 
-export interface TimestampFilter {
-	isEnabled: boolean;
+export interface TimestampFilter extends BaseFilter {
 	value: TimestampFilterOption;
 }
 
-export interface CustomFilter {
-	isEnabled: boolean;
+export interface CustomFilter extends BaseFilter {
 	selectedGroupId: string;
 	groups: FilterGroup[];
 }
