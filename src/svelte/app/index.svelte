@@ -8,7 +8,7 @@
 	import FavoritesFilterComponent from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { Menu, TFile } from "obsidian";
+	import { TFile } from "obsidian";
 	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
 		FavoritesFilter,
@@ -40,6 +40,8 @@
 	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
 	import SearchFilterComponent from "./components/search-filter.svelte";
+	import TimestampFilterComponent from "./components/timestamp-filter.svelte";
+	import SortFilterComponent from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME } from "./constants";
 
 	// ============================================
@@ -426,6 +428,11 @@
 		nativeEvent.preventDefault();
 	}
 
+	function handleTimestampFilterChange(e: CustomEvent) {
+		const { value } = e.detail;
+		timestampFilter.value = value;
+	}
+
 	function handleViewDragStart(e: CustomEvent, id: string) {
 		const { nativeEvent } = e.detail;
 		nativeEvent.dataTransfer.setData("text", id);
@@ -516,80 +523,9 @@
 		new PropertiesFilterModal(plugin).open();
 	}
 
-	function openSortMenu(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent as MouseEvent;
-		const menu = new Menu();
-		menu.setUseNativeMenu(true);
-		menu.addItem((item) => {
-			item.setTitle("File name (A-Z)");
-			item.setChecked(sortFilter.value === "file-name-asc");
-			item.onClick(() => (sortFilter.value = "file-name-asc"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("File name (Z-A)");
-			item.setChecked(sortFilter.value === "file-name-desc");
-			item.onClick(() => (sortFilter.value = "file-name-desc"));
-		});
-		menu.addSeparator();
-		menu.addItem((item) => {
-			item.setTitle("Modified time (new to old)");
-			item.setChecked(sortFilter.value === "modified-desc");
-			item.onClick(() => (sortFilter.value = "modified-desc"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("Modified time (old to new)");
-			item.setChecked(sortFilter.value === "modified-asc");
-			item.onClick(() => (sortFilter.value = "modified-asc"));
-		});
-		menu.showAtMouseEvent(nativeEvent);
-	}
-
-	function openListFilterMenu(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent as MouseEvent;
-
-		const menu = new Menu();
-		menu.setUseNativeMenu(true);
-
-		menu.addItem((item) => {
-			item.setTitle("All");
-			item.setChecked(timestampFilter.value === "all");
-			item.onClick(() => (timestampFilter.value = "all"));
-		});
-		menu.addSeparator();
-		menu.addItem((item) => {
-			item.setTitle("Modified today");
-			item.setChecked(timestampFilter.value === "modified-today");
-			item.onClick(() => (timestampFilter.value = "modified-today"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("Created today");
-			item.setChecked(timestampFilter.value === "created-today");
-			item.onClick(() => (timestampFilter.value = "created-today"));
-		});
-		menu.addSeparator();
-		menu.addItem((item) => {
-			item.setTitle("Modifed this week");
-			item.setChecked(timestampFilter.value === "modified-this-week");
-			item.onClick(() => (timestampFilter.value = "modified-this-week"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("Created this week");
-			item.setChecked(timestampFilter.value === "created-this-week");
-			item.onClick(() => (timestampFilter.value = "created-this-week"));
-		});
-		menu.addSeparator();
-		menu.addItem((item) => {
-			item.setTitle("Modifed 2 weeks");
-			item.setChecked(timestampFilter.value === "modified-2-weeks");
-			item.onClick(() => (timestampFilter.value = "modified-2-weeks"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("Created 2 weeks");
-			item.setChecked(timestampFilter.value === "created-2-weeks");
-			item.onClick(() => (timestampFilter.value = "created-2-weeks"));
-		});
-
-		menu.showAtMouseEvent(nativeEvent);
+	function handleSortChange(e: CustomEvent) {
+		const { value } = e.detail;
+		sortFilter.value = value;
 	}
 
 	function handleFavoritesChange(e: CustomEvent) {
@@ -696,16 +632,18 @@
 						/>
 					{/if}
 					<Flex>
-						<IconButton
-							ariaLabel="Change timestamp filter"
-							iconId="clock"
-							on:click={openListFilterMenu}
-						/>
-						<IconButton
-							ariaLabel="Change sort order"
-							iconId="arrow-up-narrow-wide"
-							on:click={openSortMenu}
-						/>
+						{#if timestampFilter.isEnabled}
+							<TimestampFilterComponent
+								value={timestampFilter.value}
+								on:change={handleTimestampFilterChange}
+							/>
+						{/if}
+						{#if sortFilter.isEnabled}
+							<SortFilterComponent
+								value={sortFilter.value}
+								on:change={handleSortChange}
+							/>
+						{/if}
 					</Flex>
 				</Stack>
 			</Flex>

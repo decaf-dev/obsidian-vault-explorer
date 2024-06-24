@@ -42,17 +42,17 @@ export interface FavoritesFilter {
 
 export interface SortFilter {
 	isEnabled: boolean;
-	value: SortOptions;
+	value: SortFilterOption;
 };
 
 export interface TimestampFilter {
 	isEnabled: boolean;
-	value: TimestampFilterOptions;
+	value: TimestampFilterOption;
 }
 
-export type TimestampFilterOptions = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
+export type TimestampFilterOption = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
 
-export type SortOptions = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
+export type SortFilterOption = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
 
 export type WordBreak = "normal" | "break-word";
 
