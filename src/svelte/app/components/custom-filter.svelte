@@ -7,7 +7,7 @@
 	import { FilterGroup } from "src/types";
 	import GroupTagList from "./group-tag-list.svelte";
 
-	export let filterGroups: FilterGroup[] = [];
+	export let groups: FilterGroup[] = [];
 
 	let plugin: VaultExplorerPlugin;
 
@@ -21,16 +21,16 @@
 </script>
 
 <Stack align="center" spacing="sm">
-	{#if filterGroups.length > 0}
+	{#if groups.length > 0}
 		<GroupTagList
-			groups={filterGroups}
+			{groups}
 			on:groupClick
 			on:groupDrop
 			on:groupDragOver
 			on:groupDragStart
 		/>
 	{/if}
-	{#if filterGroups.length === 0}
+	{#if groups.length === 0}
 		<span class="vault-explorer-empty-label">No groups</span>
 	{/if}
 	<IconButton

@@ -646,7 +646,7 @@
 			</Flex>
 			{#if customFilter.isEnabled}
 				<CustomFilterComponent
-					{filterGroups}
+					groups={customFilter.groups}
 					on:groupClick={handleGroupClick}
 					on:groupDrop={handleGroupDrop}
 					on:groupDragOver={handleGroupDragOver}
