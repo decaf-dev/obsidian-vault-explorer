@@ -4,8 +4,9 @@ import { FileRenderData } from "../types";
 import { getTimeMillis, isDateSupported } from "../../shared/services/time-utils";
 import Logger from "js-logger";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
+import { removeFrontmatterBlock } from "./frontmatter-utils";
 
-export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined,): FileRenderData => {
+export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined, content: string | null): FileRenderData => {
 	const tags: string[] | null = loadPropertyValue<string[]>(frontmatter, "tags", PropertyType.LIST);
 
 	const {
@@ -29,8 +30,7 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 
 	let createdMillis = file.stat.ctime;
 	if (creationDate != null) {
-		//In older versions of Obsidian, the creation date could stored in the frontmatter
-		//not in a supported date format
+		//It's possible that the creation date is stored in the frontmatter in an unsupported date format
 		if (isDateSupported(creationDate)) {
 			createdMillis = getTimeMillis(creationDate);
 		} else {
@@ -40,8 +40,7 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 
 	let modifiedMillis = file.stat.mtime;
 	if (modifiedDate != null) {
-		//In older versions of Obsidian, the modified date could stored in the frontmatter
-		//in an unsupported date format
+		//It's possible that the modified date is stored in the frontmatter in an unsupported date format
 		if (isDateSupported(modifiedDate)) {
 			modifiedMillis = getTimeMillis(modifiedDate);
 		} else {
@@ -51,17 +50,29 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 
 	const { name, basename, extension, path } = file;
 	const displayName = extension === "md" ? basename : name;
+
+	let filteredContent = "";
+	if (content != null) {
+		filteredContent = removeFrontmatterBlock(content);
+
+		const length = filteredContent.length;
+		if (length > 80) {
+			filteredContent = filteredContent.slice(0, 78);
+			filteredContent += "...";
+		}
+	}
+
 	return {
 		name: displayName,
 		path,
+		url,
+		content: filteredContent,
 		tags,
 		favorite,
-		url,
 		createdMillis,
 		modifiedMillis,
 		custom1,
 		custom2,
 		custom3,
-
 	};
 }

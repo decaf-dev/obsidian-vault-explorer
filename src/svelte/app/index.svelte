@@ -12,7 +12,6 @@
 	import {
 		CustomFilter,
 		FavoritesFilter,
-		FilterGroup,
 		SearchFilter,
 		SortFilter,
 		TimestampFilter,
@@ -36,13 +35,16 @@
 		getStartOfTodayMillis,
 		getStartOfThisWeekMillis,
 	} from "../shared/services/time-utils";
-	import { FileRenderData } from "./types";
+	import { FileContent, FileRenderData } from "./types";
 	import Logger from "js-logger";
 	import SearchFilterComponent from "./components/search-filter.svelte";
 	import TimestampFilterComponent from "./components/timestamp-filter.svelte";
 	import SortFilterComponent from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME } from "./constants";
 	import CustomFilterComponent from "./components/custom-filter.svelte";
+	import FeedView from "./components/feed-view.svelte";
+	import PaginationIndicator from "./components/pagination-indicator.svelte";
+	import Wrap from "../shared/components/wrap.svelte";
 
 	// ============================================
 	// Variables
@@ -84,11 +86,12 @@
 
 	let files: TFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
+	let contentForFiles: FileContent[] = [];
 
 	// ============================================
 	// Lifecycle hooks
 	// ============================================
-	store.plugin.subscribe((p) => {
+	store.plugin.subscribe(async (p) => {
 		plugin = p;
 
 		const { app, settings } = plugin;
@@ -105,6 +108,8 @@
 		if (settings.views.enableClockUpdates) {
 			setTimeValuesUpdateInterval();
 		}
+
+		contentForFiles = await loadContentForFiles(files);
 	});
 
 	onMount(() => {
@@ -250,14 +255,39 @@
 			}
 		};
 
-		const debounceHandleFileRename = _.debounce(handleFileRename, 300);
-
-		EventManager.getInstance().on("file-rename", debounceHandleFileRename);
+		EventManager.getInstance().on("file-rename", handleFileRename);
 		return () => {
-			EventManager.getInstance().off(
-				"file-rename",
-				debounceHandleFileRename,
-			);
+			EventManager.getInstance().off("file-rename", handleFileRename);
+		};
+	});
+
+	onMount(() => {
+		const handleFileModify = async (...data: unknown[]) => {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleFileModify",
+				message: "called",
+			});
+			if (data.length > 0 && data[0] instanceof TFile) {
+				const file = data[0] as TFile;
+				const content = await plugin.app.vault.cachedRead(file);
+				console.log(content);
+				const updatedContentForFiles = contentForFiles.map((entry) => {
+					if (entry.path === file.path) {
+						return {
+							path: file.path,
+							content,
+						};
+					}
+					return entry;
+				});
+				contentForFiles = updatedContentForFiles;
+			}
+		};
+
+		EventManager.getInstance().on("file-modify", handleFileModify);
+		return () => {
+			EventManager.getInstance().off("file-modify", handleFileModify);
 		};
 	});
 
@@ -356,6 +386,32 @@
 		timeValuesUpdateInterval = setInterval(updateTimeValues, MILLIS_MINUTE);
 	}
 
+	async function loadContentForFiles(files: TFile[]): Promise<FileContent[]> {
+		const promises: Promise<FileContent>[] = [];
+
+		for (let file of files) {
+			promises.push(
+				(async () => {
+					const { extension } = file;
+					if (extension === "md") {
+						const content = await plugin.app.vault.cachedRead(file);
+						return {
+							path: file.path,
+							content,
+						};
+					}
+					return {
+						path: file.path,
+						content: null,
+					};
+				})(),
+			);
+		}
+
+		const results = await Promise.all(promises);
+		return results;
+	}
+
 	function updateFrontmatterCacheTime() {
 		Logger.trace({
 			fileName: "app/index.ts",
@@ -367,37 +423,6 @@
 
 	function updatePropertySettingTime() {
 		propertySettingTime = Date.now();
-	}
-
-	async function filterByCustomFilter(groups: FilterGroup[]) {
-		const promises: Promise<TFile | null>[] = [];
-
-		for (let file of files) {
-			promises.push(
-				(async () => {
-					const frontmatter =
-						plugin.app.metadataCache.getFileCache(
-							file,
-						)?.frontmatter;
-
-					const { name, path, extension } = file;
-					let content = "";
-					if (extension === "md") {
-						content = await plugin.app.vault.cachedRead(file);
-					}
-
-					if (
-						filterByGroups(name, path, frontmatter, content, groups)
-					) {
-						return file;
-					}
-					return null;
-				})(),
-			);
-		}
-
-		const results = await Promise.all(promises);
-		return results.filter((file) => file !== null) as TFile[];
 	}
 
 	async function saveSettings() {
@@ -538,8 +563,9 @@
 		});
 	}
 
-	function handlePageChange(newPage: number) {
-		currentPage = newPage;
+	function handlePageChange(e: CustomEvent) {
+		const { value } = e.detail;
+		currentPage = value;
 	}
 
 	function handleSortChange(e: CustomEvent) {
@@ -557,9 +583,25 @@
 	// Reactive statements and computed data
 	// ============================================
 	let filteredCustom: TFile[] = [];
+
 	$: if (frontmatterCacheTime && customFilter.groups) {
-		filterByCustomFilter(customFilter.groups).then((files) => {
-			filteredCustom = files;
+		console.log("Frontmatter cache time", frontmatterCacheTime);
+		filteredCustom = files.filter((file) => {
+			const { name, path } = file;
+			const frontmatter =
+				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
+
+			let content =
+				contentForFiles.find((content) => content.path === path)
+					?.content ?? "";
+
+			return filterByGroups(
+				name,
+				path,
+				frontmatter,
+				content,
+				customFilter.groups,
+			);
 		});
 	}
 
@@ -568,7 +610,15 @@
 		formatted = filteredCustom.map((file) => {
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-			return formatFileDataForRender(plugin.settings, file, frontmatter);
+			const content =
+				contentForFiles.find((content) => content.path === file.path)
+					?.content ?? null;
+			return formatFileDataForRender(
+				plugin.settings,
+				file,
+				frontmatter,
+				content,
+			);
 		});
 	}
 
@@ -675,63 +725,40 @@
 				/>
 			{/if}
 		</Stack>
-		<Flex>
-			<TabList
-				initialSelectedIndex={viewOrder.findIndex(
-					(view) => view === currentView,
-				)}
-			>
-				{#each viewOrder as view}
-					<Tab
-						draggable={true}
-						on:click={() => (currentView = view)}
-						on:dragstart={(e) => handleViewDragStart(e, view)}
-						on:dragover={handleViewDragOver}
-						on:drop={(e) => handleViewDrop(e, view)}
-						>{getDisplayNameForViewType(view)}</Tab
-					>
-				{/each}
-			</TabList>
-			<Stack justify="flex-end" align="center">
-				<Stack spacing="xs">
-					<Stack spacing="xs">
-						<span>{startIndex + 1}</span>
-						<span>-</span>
-						<span>{endIndex}</span>
-					</Stack>
-					<span>of</span>
-					<span>{renderData.length}</span>
-				</Stack>
-				<Flex>
-					<IconButton
-						iconId="chevrons-left"
-						ariaLabel="First page"
-						on:click={() => handlePageChange(1)}
-					/>
-					<IconButton
-						iconId="chevron-left"
-						ariaLabel="Previous page"
-						disabled={currentPage === 1}
-						on:click={() => handlePageChange(currentPage - 1)}
-					/>
-					<IconButton
-						iconId="chevron-right"
-						ariaLabel="Next page"
-						disabled={currentPage === totalPages}
-						on:click={() => handlePageChange(currentPage + 1)}
-					/>
-					<IconButton
-						iconId="chevrons-right"
-						ariaLabel="Last page"
-						on:click={() => handlePageChange(totalPages)}
-					/>
-				</Flex>
-			</Stack>
-		</Flex>
+		<Wrap align="center" spacingY="sm" justify="space-between">
+			<div class="vault-explorer-view-select">
+				<TabList
+					initialSelectedIndex={viewOrder.findIndex(
+						(view) => view === currentView,
+					)}
+				>
+					{#each viewOrder as view}
+						<Tab
+							draggable={true}
+							on:click={() => (currentView = view)}
+							on:dragstart={(e) => handleViewDragStart(e, view)}
+							on:dragover={handleViewDragOver}
+							on:drop={(e) => handleViewDrop(e, view)}
+							>{getDisplayNameForViewType(view)}</Tab
+						>
+					{/each}
+				</TabList>
+			</div>
+			<PaginationIndicator
+				{startIndex}
+				{endIndex}
+				{currentPage}
+				{totalPages}
+				{totalItems}
+				on:change={handlePageChange}
+			/>
+		</Wrap>
 		{#if currentView === "grid"}
 			<GridView data={renderData} {startIndex} {pageLength} />
-		{:else}
+		{:else if currentView === "list"}
 			<ListView data={renderData} {startIndex} {pageLength} />
+		{:else if currentView === "feed"}
+			<FeedView data={renderData} />
 		{/if}
 	</div>
 </div>
@@ -747,5 +774,9 @@
 		flex-direction: column;
 		row-gap: 1rem;
 		margin-bottom: 2rem;
+	}
+
+	.vault-explorer-view-select {
+		margin-left: -4px;
 	}
 </style>
