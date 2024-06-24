@@ -60,7 +60,6 @@ export enum CheckboxFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-//TODO: add more types
 export enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
