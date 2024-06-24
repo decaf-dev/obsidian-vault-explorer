@@ -701,22 +701,24 @@
 			{/if}
 		</Stack>
 		<Wrap align="center" spacingY="sm" justify="space-between">
-			<TabList
-				initialSelectedIndex={viewOrder.findIndex(
-					(view) => view === currentView,
-				)}
-			>
-				{#each viewOrder as view}
-					<Tab
-						draggable={true}
-						on:click={() => (currentView = view)}
-						on:dragstart={(e) => handleViewDragStart(e, view)}
-						on:dragover={handleViewDragOver}
-						on:drop={(e) => handleViewDrop(e, view)}
-						>{getDisplayNameForViewType(view)}</Tab
-					>
-				{/each}
-			</TabList>
+			<div class="vault-explorer-view-select">
+				<TabList
+					initialSelectedIndex={viewOrder.findIndex(
+						(view) => view === currentView,
+					)}
+				>
+					{#each viewOrder as view}
+						<Tab
+							draggable={true}
+							on:click={() => (currentView = view)}
+							on:dragstart={(e) => handleViewDragStart(e, view)}
+							on:dragover={handleViewDragOver}
+							on:drop={(e) => handleViewDrop(e, view)}
+							>{getDisplayNameForViewType(view)}</Tab
+						>
+					{/each}
+				</TabList>
+			</div>
 			<PaginationIndicator
 				{startIndex}
 				{endIndex}
@@ -747,5 +749,9 @@
 		flex-direction: column;
 		row-gap: 1rem;
 		margin-bottom: 2rem;
+	}
+
+	.vault-explorer-view-select {
+		margin-left: -4px;
 	}
 </style>

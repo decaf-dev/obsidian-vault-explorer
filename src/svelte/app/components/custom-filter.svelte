@@ -20,27 +20,33 @@
 	}
 </script>
 
-<Stack align="center" spacing="sm">
-	{#if groups.length > 0}
-		<GroupTagList
-			{groups}
-			on:groupClick
-			on:groupDrop
-			on:groupDragOver
-			on:groupDragStart
+<div class="vault-explorer-custom-filter">
+	<Stack align="center" spacing="sm">
+		{#if groups.length > 0}
+			<GroupTagList
+				{groups}
+				on:groupClick
+				on:groupDrop
+				on:groupDragOver
+				on:groupDragStart
+			/>
+		{/if}
+		{#if groups.length === 0}
+			<span class="vault-explorer-empty-label">No groups</span>
+		{/if}
+		<IconButton
+			ariaLabel="Change custom filter"
+			iconId="ellipsis-vertical"
+			on:click={handleButtonClick}
 		/>
-	{/if}
-	{#if groups.length === 0}
-		<span class="vault-explorer-empty-label">No groups</span>
-	{/if}
-	<IconButton
-		ariaLabel="Change custom filter"
-		iconId="ellipsis-vertical"
-		on:click={handleButtonClick}
-	/>
-</Stack>
+	</Stack>
+</div>
 
 <style>
+	.vault-explorer-custom-filter {
+		margin-left: -4px;
+	}
+
 	.vault-explorer-empty-label {
 		color: var(--text-faint);
 		font-size: var(--font-smaller);
