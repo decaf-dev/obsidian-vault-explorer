@@ -109,6 +109,34 @@
 	});
 
 	onMount(() => {
+		function handleFilterToggleSettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleFilterToggleSettingChange",
+				message: "called",
+			});
+
+			searchFilter = plugin.settings.filters.search;
+			favoritesFilter = plugin.settings.filters.favorites;
+			sortFilter = plugin.settings.filters.sort;
+			timestampFilter = plugin.settings.filters.timestamp;
+			customFilter = plugin.settings.filters.custom;
+		}
+
+		EventManager.getInstance().on(
+			"filter-toggle-setting-change",
+			handleFilterToggleSettingChange,
+		);
+
+		return () => {
+			EventManager.getInstance().off(
+				"filter-toggle-setting-change",
+				handleFilterToggleSettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
 		function handleClockUpdatesSettingChange() {
 			Logger.trace({
 				fileName: "app/index.ts",

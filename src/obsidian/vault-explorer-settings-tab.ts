@@ -37,7 +37,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.filters.search.isEnabled = value;
 					await this.plugin.saveSettings();
-					// EventManager.getInstance().emit("clock-updates-setting-change");
+					EventManager.getInstance().emit("filter-toggle-setting-change");
 				}));
 
 		new Setting(containerEl)
@@ -47,7 +47,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.filters.favorites.isEnabled = value;
 					await this.plugin.saveSettings();
-					// EventManager.getInstance().emit("clock-updates-setting-change");
+					EventManager.getInstance().emit("filter-toggle-setting-change");
 				}));
 
 		new Setting(containerEl)
@@ -57,17 +57,17 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.filters.timestamp.isEnabled = value;
 					await this.plugin.saveSettings();
-					// EventManager.getInstance().emit("clock-updates-setting-change");
+					EventManager.getInstance().emit("filter-toggle-setting-change");
 				}));
 
 		new Setting(containerEl)
-			.setName("Sort")
+			.setName("Sort filter")
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.filters.sort.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.filters.sort.isEnabled = value;
 					await this.plugin.saveSettings();
-					// EventManager.getInstance().emit("clock-updates-setting-change");
+					EventManager.getInstance().emit("filter-toggle-setting-change");
 				}));
 
 		new Setting(containerEl)
@@ -77,7 +77,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.filters.custom.isEnabled = value;
 					await this.plugin.saveSettings();
-					// EventManager.getInstance().emit("clock-updates-setting-change");
+					EventManager.getInstance().emit("filter-toggle-setting-change");
 				}));
 
 
