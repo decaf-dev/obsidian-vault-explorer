@@ -47,6 +47,8 @@ Features are what the software should do.
 | Filter by file content                                           | #filter                  |
 | License key for premium features                                 | #settings                |
 | Add sticky groups                                                | #filter                  |
+| Disable filters condtionally                                     | #filter                  |
+| Left/right buttons to allow a user to scroll between groups      | #accessibility           |
 
 ## Event callbacks
 

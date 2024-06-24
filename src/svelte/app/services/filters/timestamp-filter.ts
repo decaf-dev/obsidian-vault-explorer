@@ -1,7 +1,7 @@
-import { TimestampFilter } from "src/types";
+import { TimestampFilterOption } from "src/types";
 
 interface FilterByTimestampParams {
-	timestampFilter: TimestampFilter;
+	timestampFilter: TimestampFilterOption;
 	createdMillis: number;
 	modifiedMillis: number;
 	startOfTodayMillis: number;

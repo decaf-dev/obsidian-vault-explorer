@@ -5,13 +5,15 @@
 	import Stack from "../shared/components/stack.svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import IconButton from "../shared/components/icon-button.svelte";
-	import Checkbox from "../shared/components/checkbox.svelte";
+	import FavoritesFilterComponent from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { Menu, TFile } from "obsidian";
-	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
+	import { TFile } from "obsidian";
 	import {
+		CustomFilter,
+		FavoritesFilter,
 		FilterGroup,
+		SearchFilter,
 		SortFilter,
 		TimestampFilter,
 		ViewType,
@@ -28,7 +30,6 @@
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
-	import GroupTagList from "./components/group-tag-list.svelte";
 	import { getDisplayNameForViewType } from "./services/display-name";
 	import {
 		getStartOfLastWeekMillis,
@@ -37,6 +38,11 @@
 	} from "../shared/services/time-utils";
 	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
+	import SearchFilterComponent from "./components/search-filter.svelte";
+	import TimestampFilterComponent from "./components/timestamp-filter.svelte";
+	import SortFilterComponent from "./components/sort-filter.svelte";
+	import { DEBOUNCE_INPUT_TIME } from "./constants";
+	import CustomFilterComponent from "./components/custom-filter.svelte";
 
 	// ============================================
 	// Variables
@@ -48,14 +54,31 @@
 	let startOfLastWeekMillis: number;
 
 	let pageSize: number = 0;
-	let searchFilter: string = "";
-	let sortFilter: SortFilter = "file-name-asc";
-	let timestampFilter: TimestampFilter = "all";
-	let onlyFavorites: boolean = false;
+	let searchFilter: SearchFilter = {
+		isEnabled: true,
+		value: "",
+	};
+	let favoritesFilter: FavoritesFilter = {
+		isEnabled: false,
+		value: false,
+	};
+	let timestampFilter: TimestampFilter = {
+		isEnabled: true,
+		value: "all",
+	};
+	let sortFilter: SortFilter = {
+		isEnabled: true,
+		value: "file-name-asc",
+	};
+	let customFilter: CustomFilter = {
+		isEnabled: true,
+		groups: [],
+		selectedGroupId: "",
+	};
+
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
 	let filterGroups: FilterGroup[] = [];
-	let selectedFilterGroupId: string = "";
 
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
@@ -73,17 +96,44 @@
 		files = app.vault.getFiles();
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
+		favoritesFilter = settings.filters.favorites;
 		sortFilter = settings.filters.sort;
 		timestampFilter = settings.filters.timestamp;
-		onlyFavorites = settings.filters.onlyFavorites;
 		currentView = settings.views.currentView;
 		viewOrder = settings.views.order;
-		filterGroups = settings.filters.custom.groups;
-		selectedFilterGroupId = settings.filters.custom.selectedGroupId;
+		customFilter = settings.filters.custom;
 
 		if (settings.views.enableClockUpdates) {
 			setTimeValuesUpdateInterval();
 		}
+	});
+
+	onMount(() => {
+		function handleFilterToggleSettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleFilterToggleSettingChange",
+				message: "called",
+			});
+
+			searchFilter = plugin.settings.filters.search;
+			favoritesFilter = plugin.settings.filters.favorites;
+			sortFilter = plugin.settings.filters.sort;
+			timestampFilter = plugin.settings.filters.timestamp;
+			customFilter = plugin.settings.filters.custom;
+		}
+
+		EventManager.getInstance().on(
+			"filter-toggle-setting-change",
+			handleFilterToggleSettingChange,
+		);
+
+		return () => {
+			EventManager.getInstance().off(
+				"filter-toggle-setting-change",
+				handleFilterToggleSettingChange,
+			);
+		};
 	});
 
 	onMount(() => {
@@ -128,9 +178,7 @@
 				functionName: "handlePropertiesFilterUpdate",
 				message: "called",
 			});
-			filterGroups = plugin.settings.filters.custom.groups;
-			selectedFilterGroupId =
-				plugin.settings.filters.custom.selectedGroupId;
+			customFilter.groups = plugin.settings.filters.custom.groups;
 		}
 
 		EventManager.getInstance().on(
@@ -284,13 +332,14 @@
 	// ============================================
 	// Functions
 	// ============================================
-	const debounceSearchFilter = _.debounce((e) => {
-		searchFilter = e.target.value;
-	}, 300);
+	const debounceSearchFilterChange = _.debounce((e) => {
+		if (searchFilter == null) return;
+		searchFilter.value = e.target.value;
+	}, DEBOUNCE_INPUT_TIME);
 
-	const debounceFavoriteFilter = _.debounce((value) => {
-		onlyFavorites = value;
-	}, 300);
+	const debounceFavoriteFilterChange = _.debounce((value) => {
+		favoritesFilter = value;
+	}, DEBOUNCE_INPUT_TIME);
 
 	function updateTimeValues() {
 		Logger.trace({
@@ -362,11 +411,10 @@
 		plugin.settings.filters.search = searchFilter;
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
-		plugin.settings.filters.onlyFavorites = onlyFavorites;
+		plugin.settings.filters.favorites = favoritesFilter;
 		plugin.settings.views.order = viewOrder;
 		plugin.settings.views.currentView = currentView;
-		plugin.settings.filters.custom.groups = filterGroups;
-		plugin.settings.filters.custom.selectedGroupId = selectedFilterGroupId;
+		plugin.settings.filters.custom = customFilter;
 		await plugin.saveSettings();
 	}
 
@@ -400,13 +448,18 @@
 				}
 			}
 		});
-		selectedFilterGroupId = id;
+		customFilter.selectedGroupId = id;
 		filterGroups = newGroups;
 	}
 
 	function handleViewDragOver(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
 		nativeEvent.preventDefault();
+	}
+
+	function handleTimestampFilterChange(e: CustomEvent) {
+		const { value } = e.detail;
+		timestampFilter.value = value;
 	}
 
 	function handleViewDragStart(e: CustomEvent, id: string) {
@@ -495,89 +548,15 @@
 		currentPage = newPage;
 	}
 
-	function openPropertiesFilterModal() {
-		new PropertiesFilterModal(plugin).open();
+	function handleSortChange(e: CustomEvent) {
+		const { value } = e.detail;
+		sortFilter.value = value;
 	}
 
-	function openSortMenu(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent as MouseEvent;
-		const menu = new Menu();
-		menu.setUseNativeMenu(true);
-		menu.addItem((item) => {
-			item.setTitle("File name (A-Z)");
-			item.setChecked(sortFilter === "file-name-asc");
-			item.onClick(() => (sortFilter = "file-name-asc"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("File name (Z-A)");
-			item.setChecked(sortFilter === "file-name-desc");
-			item.onClick(() => (sortFilter = "file-name-desc"));
-		});
-		menu.addSeparator();
-		menu.addItem((item) => {
-			item.setTitle("Modified time (new to old)");
-			item.setChecked(sortFilter === "modified-desc");
-			item.onClick(() => (sortFilter = "modified-desc"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("Modified time (old to new)");
-			item.setChecked(sortFilter === "modified-asc");
-			item.onClick(() => (sortFilter = "modified-asc"));
-		});
-		menu.showAtMouseEvent(nativeEvent);
-	}
-
-	function openListFilterMenu(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent as MouseEvent;
-
-		const menu = new Menu();
-		menu.setUseNativeMenu(true);
-		menu.addItem((item) => {
-			item.setTitle("All");
-			item.setChecked(timestampFilter === "all");
-			item.onClick(() => (timestampFilter = "all"));
-		});
-		menu.addSeparator();
-		menu.addItem((item) => {
-			item.setTitle("Modified today");
-			item.setChecked(timestampFilter === "modified-today");
-			item.onClick(() => (timestampFilter = "modified-today"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("Created today");
-			item.setChecked(timestampFilter === "created-today");
-			item.onClick(() => (timestampFilter = "created-today"));
-		});
-		menu.addSeparator();
-		menu.addItem((item) => {
-			item.setTitle("Modifed this week");
-			item.setChecked(timestampFilter === "modified-this-week");
-			item.onClick(() => (timestampFilter = "modified-this-week"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("Created this week");
-			item.setChecked(timestampFilter === "created-this-week");
-			item.onClick(() => (timestampFilter = "created-this-week"));
-		});
-		menu.addSeparator();
-		menu.addItem((item) => {
-			item.setTitle("Modifed 2 weeks");
-			item.setChecked(timestampFilter === "modified-2-weeks");
-			item.onClick(() => (timestampFilter = "modified-2-weeks"));
-		});
-		menu.addItem((item) => {
-			item.setTitle("Created 2 weeks");
-			item.setChecked(timestampFilter === "created-2-weeks");
-			item.onClick(() => (timestampFilter = "created-2-weeks"));
-		});
-
-		menu.showAtMouseEvent(nativeEvent);
-	}
-
-	function handleOnlyFavoritesChange(e: CustomEvent) {
+	function handleFavoritesChange(e: CustomEvent) {
 		const nativeEvent = e.detail.nativeEvent;
 		const value = (nativeEvent.target as HTMLInputElement).checked;
-		debounceFavoriteFilter(value);
+		debounceFavoriteFilterChange(value);
 	}
 
 	// ============================================
@@ -599,20 +578,28 @@
 		});
 	}
 
-	$: filteredSearch = formatted.filter((file) =>
-		filterBySearch(file, searchFilter),
-	);
+	$: filteredSearch = formatted.filter((file) => {
+		const { isEnabled, value } = searchFilter;
+		if (isEnabled) {
+			return filterBySearch(file, value);
+		}
+		return true;
+	});
 
-	$: filteredFavorites = filteredSearch.filter((file) =>
-		filterByFavorites(file, onlyFavorites),
-	);
+	$: filteredFavorites = filteredSearch.filter((file) => {
+		const { isEnabled, value } = favoritesFilter;
+		if (isEnabled) {
+			return filterByFavorites(file, value);
+		}
+		return true;
+	});
 
 	$: filteredTimestamp = filteredFavorites.filter((file) => {
 		const { modifiedMillis, createdMillis } = file;
 		return filterByTimestamp({
+			timestampFilter: timestampFilter.value,
 			createdMillis,
 			modifiedMillis,
-			timestampFilter,
 			startOfTodayMillis,
 			startOfThisWeekMillis,
 			startOfLastWeekMillis,
@@ -620,13 +607,13 @@
 	});
 
 	$: renderData = [...filteredTimestamp].sort((a, b) => {
-		if (sortFilter === "file-name-asc") {
+		if (sortFilter.value === "file-name-asc") {
 			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-		} else if (sortFilter === "file-name-desc") {
+		} else if (sortFilter.value === "file-name-desc") {
 			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-		} else if (sortFilter === "modified-asc") {
+		} else if (sortFilter.value === "modified-asc") {
 			return a.modifiedMillis - b.modifiedMillis;
-		} else if (sortFilter === "modified-desc") {
+		} else if (sortFilter.value === "modified-desc") {
 			return b.modifiedMillis - a.modifiedMillis;
 		}
 		return 0;
@@ -635,11 +622,11 @@
 	$: searchFilter,
 		sortFilter,
 		timestampFilter,
-		onlyFavorites,
+		favoritesFilter,
 		currentView,
 		viewOrder,
 		filterGroups,
-		selectedFilterGroupId,
+		customFilter,
 		saveSettings();
 
 	$: totalItems = renderData.length;
@@ -653,72 +640,47 @@
 
 <div class="vault-explorer">
 	<div class="vault-explorer-header">
-		<Stack spacing="md">
-			<div class="vault-explorer-search-container">
-				<input
-					type="text"
-					placeholder="Search..."
-					value={searchFilter}
-					on:input={debounceSearchFilter}
-				/>
-				{#if searchFilter.length > 0}
-					<div
-						tabindex="0"
-						role="button"
-						aria-label="Clear search"
-						class="search-input-clear-button"
-						on:click={() => (searchFilter = "")}
-						on:keydown={(e) => {
-							if (e.key === "Enter") {
-								searchFilter = "";
-							}
-						}}
-					/>
-				{/if}
-			</div>
-		</Stack>
+		{#if searchFilter.isEnabled}
+			<SearchFilterComponent
+				value={searchFilter.value}
+				on:input={debounceSearchFilterChange}
+				on:clear={() => (searchFilter.value = "")}
+			/>
+		{/if}
 		<Stack direction="column" spacing="sm">
 			<Flex justify="space-between">
 				<Stack spacing="sm">
-					<Checkbox
-						id="favorites"
-						label="Favorites"
-						value={onlyFavorites}
-						on:change={handleOnlyFavoritesChange}
-					/>
+					{#if favoritesFilter.isEnabled}
+						<FavoritesFilterComponent
+							value={favoritesFilter.value}
+							on:change={handleFavoritesChange}
+						/>
+					{/if}
 					<Flex>
-						<IconButton
-							ariaLabel="Change timestamp filter"
-							iconId="clock"
-							on:click={openListFilterMenu}
-						/>
-						<IconButton
-							ariaLabel="Change sort order"
-							iconId="arrow-up-narrow-wide"
-							on:click={openSortMenu}
-						/>
+						{#if timestampFilter.isEnabled}
+							<TimestampFilterComponent
+								value={timestampFilter.value}
+								on:change={handleTimestampFilterChange}
+							/>
+						{/if}
+						{#if sortFilter.isEnabled}
+							<SortFilterComponent
+								value={sortFilter.value}
+								on:change={handleSortChange}
+							/>
+						{/if}
 					</Flex>
 				</Stack>
 			</Flex>
-			<Stack align="center" spacing="sm">
-				{#if filterGroups.length > 0}
-					<GroupTagList
-						groups={filterGroups}
-						on:groupClick={handleGroupClick}
-						on:groupDrop={handleGroupDrop}
-						on:groupDragOver={handleGroupDragOver}
-						on:groupDragStart={handleGroupDragStart}
-					/>
-				{/if}
-				{#if filterGroups.length === 0}
-					<span class="vault-explorer-empty-label">No groups</span>
-				{/if}
-				<IconButton
-					ariaLabel="Change custom filter"
-					iconId="ellipsis-vertical"
-					on:click={openPropertiesFilterModal}
+			{#if customFilter.isEnabled}
+				<CustomFilterComponent
+					groups={customFilter.groups}
+					on:groupClick={handleGroupClick}
+					on:groupDrop={handleGroupDrop}
+					on:groupDragOver={handleGroupDragOver}
+					on:groupDragStart={handleGroupDragStart}
 				/>
-			</Stack>
+			{/if}
 		</Stack>
 		<Flex>
 			<TabList
@@ -792,20 +754,5 @@
 		flex-direction: column;
 		row-gap: 1rem;
 		margin-bottom: 2rem;
-	}
-
-	.vault-explorer input[type="text"] {
-		width: 100%;
-	}
-
-	.vault-explorer-search-container {
-		position: relative;
-		width: 100%;
-		max-width: 300px;
-	}
-
-	.vault-explorer-empty-label {
-		color: var(--text-faint);
-		font-size: var(--font-smaller);
 	}
 </style>
