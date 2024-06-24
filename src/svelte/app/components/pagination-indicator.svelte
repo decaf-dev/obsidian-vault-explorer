@@ -18,38 +18,43 @@
 	}
 </script>
 
-<Stack justify="flex-end" align="center">
-	<Stack spacing="xs">
+<div class="vault-explorer-pagination-indicator">
+	<Stack justify="flex-end" align="center">
 		<Stack spacing="xs">
-			<span>{startIndex + 1}</span>
-			<span>-</span>
-			<span>{endIndex}</span>
+			<Stack spacing="xs">
+				<span>{startIndex + 1}</span>
+				<span>-</span>
+				<span>{endIndex}</span>
+			</Stack>
+			<span>of</span>
+			<span>{totalItems}</span>
 		</Stack>
-		<span>of</span>
-		<span>{totalItems}</span>
+		<Flex>
+			<IconButton
+				iconId="chevrons-left"
+				ariaLabel="First page"
+				on:click={() => handlePageChange(1)}
+			/>
+			<IconButton
+				iconId="chevron-left"
+				ariaLabel="Previous page"
+				disabled={currentPage === 1}
+				on:click={() => handlePageChange(currentPage - 1)}
+			/>
+			<IconButton
+				iconId="chevron-right"
+				ariaLabel="Next page"
+				disabled={currentPage === totalPages}
+				on:click={() => handlePageChange(currentPage + 1)}
+			/>
+			<IconButton
+				iconId="chevrons-right"
+				ariaLabel="Last page"
+				on:click={() => handlePageChange(totalPages)}
+			/>
+		</Flex>
 	</Stack>
-	<Flex>
-		<IconButton
-			iconId="chevrons-left"
-			ariaLabel="First page"
-			on:click={() => handlePageChange(1)}
-		/>
-		<IconButton
-			iconId="chevron-left"
-			ariaLabel="Previous page"
-			disabled={currentPage === 1}
-			on:click={() => handlePageChange(currentPage - 1)}
-		/>
-		<IconButton
-			iconId="chevron-right"
-			ariaLabel="Next page"
-			disabled={currentPage === totalPages}
-			on:click={() => handlePageChange(currentPage + 1)}
-		/>
-		<IconButton
-			iconId="chevrons-right"
-			ariaLabel="Last page"
-			on:click={() => handlePageChange(totalPages)}
-		/>
-	</Flex>
-</Stack>
+</div>
+
+<style>
+</style>

@@ -44,6 +44,7 @@
 	import CustomFilterComponent from "./components/custom-filter.svelte";
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
+	import Wrap from "../shared/components/wrap.svelte";
 
 	// ============================================
 	// Variables
@@ -699,7 +700,7 @@
 				/>
 			{/if}
 		</Stack>
-		<Flex align="center">
+		<Wrap align="center" spacingY="sm" justify="space-between">
 			<TabList
 				initialSelectedIndex={viewOrder.findIndex(
 					(view) => view === currentView,
@@ -724,7 +725,7 @@
 				{totalItems}
 				on:change={handlePageChange}
 			/>
-		</Flex>
+		</Wrap>
 		{#if currentView === "grid"}
 			<GridView data={renderData} {startIndex} {pageLength} />
 		{:else if currentView === "list"}

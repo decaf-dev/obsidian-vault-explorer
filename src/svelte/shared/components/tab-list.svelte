@@ -40,8 +40,7 @@
 
 <style>
 	.vault-explorer-tab-list {
-		width: 100%;
-		overflow-x: auto;
+		width: max-content;
 	}
 
 	.vault-explorer-tab-list--line {
