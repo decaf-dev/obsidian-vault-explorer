@@ -9,8 +9,8 @@
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
 	import { TFile } from "obsidian";
-	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
 	import {
+		CustomFilter,
 		FavoritesFilter,
 		FilterGroup,
 		SearchFilter,
@@ -30,7 +30,6 @@
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
-	import GroupTagList from "./components/group-tag-list.svelte";
 	import { getDisplayNameForViewType } from "./services/display-name";
 	import {
 		getStartOfLastWeekMillis,
@@ -43,6 +42,7 @@
 	import TimestampFilterComponent from "./components/timestamp-filter.svelte";
 	import SortFilterComponent from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME } from "./constants";
+	import CustomFilterComponent from "./components/custom-filter.svelte";
 
 	// ============================================
 	// Variables
@@ -70,10 +70,15 @@
 		isEnabled: true,
 		value: "file-name-asc",
 	};
+	let customFilter: CustomFilter = {
+		isEnabled: true,
+		groups: [],
+		selectedGroupId: "",
+	};
+
 	let viewOrder: ViewType[] = [];
 	let currentView: ViewType = ViewType.GRID;
 	let filterGroups: FilterGroup[] = [];
-	let selectedFilterGroupId: string = "";
 
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
@@ -96,8 +101,7 @@
 		timestampFilter = settings.filters.timestamp;
 		currentView = settings.views.currentView;
 		viewOrder = settings.views.order;
-		filterGroups = settings.filters.custom.groups;
-		selectedFilterGroupId = settings.filters.custom.selectedGroupId;
+		customFilter = settings.filters.custom;
 
 		if (settings.views.enableClockUpdates) {
 			setTimeValuesUpdateInterval();
@@ -146,9 +150,7 @@
 				functionName: "handlePropertiesFilterUpdate",
 				message: "called",
 			});
-			filterGroups = plugin.settings.filters.custom.groups;
-			selectedFilterGroupId =
-				plugin.settings.filters.custom.selectedGroupId;
+			customFilter.groups = plugin.settings.filters.custom.groups;
 		}
 
 		EventManager.getInstance().on(
@@ -384,8 +386,7 @@
 		plugin.settings.filters.favorites = favoritesFilter;
 		plugin.settings.views.order = viewOrder;
 		plugin.settings.views.currentView = currentView;
-		plugin.settings.filters.custom.groups = filterGroups;
-		plugin.settings.filters.custom.selectedGroupId = selectedFilterGroupId;
+		plugin.settings.filters.custom = customFilter;
 		await plugin.saveSettings();
 	}
 
@@ -419,7 +420,7 @@
 				}
 			}
 		});
-		selectedFilterGroupId = id;
+		customFilter.selectedGroupId = id;
 		filterGroups = newGroups;
 	}
 
@@ -519,10 +520,6 @@
 		currentPage = newPage;
 	}
 
-	function openPropertiesFilterModal() {
-		new PropertiesFilterModal(plugin).open();
-	}
-
 	function handleSortChange(e: CustomEvent) {
 		const { value } = e.detail;
 		sortFilter.value = value;
@@ -601,7 +598,7 @@
 		currentView,
 		viewOrder,
 		filterGroups,
-		selectedFilterGroupId,
+		customFilter,
 		saveSettings();
 
 	$: totalItems = renderData.length;
@@ -647,25 +644,15 @@
 					</Flex>
 				</Stack>
 			</Flex>
-			<Stack align="center" spacing="sm">
-				{#if filterGroups.length > 0}
-					<GroupTagList
-						groups={filterGroups}
-						on:groupClick={handleGroupClick}
-						on:groupDrop={handleGroupDrop}
-						on:groupDragOver={handleGroupDragOver}
-						on:groupDragStart={handleGroupDragStart}
-					/>
-				{/if}
-				{#if filterGroups.length === 0}
-					<span class="vault-explorer-empty-label">No groups</span>
-				{/if}
-				<IconButton
-					ariaLabel="Change custom filter"
-					iconId="ellipsis-vertical"
-					on:click={openPropertiesFilterModal}
+			{#if customFilter.isEnabled}
+				<CustomFilterComponent
+					{filterGroups}
+					on:groupClick={handleGroupClick}
+					on:groupDrop={handleGroupDrop}
+					on:groupDragOver={handleGroupDragOver}
+					on:groupDragStart={handleGroupDragStart}
 				/>
-			</Stack>
+			{/if}
 		</Stack>
 		<Flex>
 			<TabList
@@ -739,10 +726,5 @@
 		flex-direction: column;
 		row-gap: 1rem;
 		margin-bottom: 2rem;
-	}
-
-	.vault-explorer-empty-label {
-		color: var(--text-faint);
-		font-size: var(--font-smaller);
 	}
 </style>

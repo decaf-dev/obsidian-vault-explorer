@@ -14,11 +14,7 @@ export interface VaultExplorerPluginSettings {
 		favorites: FavoritesFilter;
 		sort: SortFilter;
 		timestamp: TimestampFilter;
-		custom: {
-			isEnabled: boolean;
-			selectedGroupId: string;
-			groups: FilterGroup[];
-		}
+		custom: CustomFilter;
 	},
 	views: {
 		currentView: ViewType;
@@ -48,6 +44,12 @@ export interface SortFilter {
 export interface TimestampFilter {
 	isEnabled: boolean;
 	value: TimestampFilterOption;
+}
+
+export interface CustomFilter {
+	isEnabled: boolean;
+	selectedGroupId: string;
+	groups: FilterGroup[];
 }
 
 export type TimestampFilterOption = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
