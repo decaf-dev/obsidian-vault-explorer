@@ -370,7 +370,7 @@ export default class VaultExplorerPlugin extends Plugin {
 							value: typedData.filters.search
 						},
 						favorites: {
-							isEnabled: false,
+							isEnabled: true,
 							value: typedData.filters.onlyFavorites
 						},
 						timestamp: {
