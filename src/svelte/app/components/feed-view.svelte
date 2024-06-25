@@ -7,12 +7,29 @@
 
 	export let enablePremiumFeatures = false;
 	export let data: FileRenderData[] = [];
+	export let startIndex;
+	export let pageLength;
+
+	let displayedItems: FileRenderData[] = [];
 
 	License.getInstance()
 		.getIsDeviceRegisteredStore()
 		.subscribe((isRegistered) => {
 			enablePremiumFeatures = isRegistered;
 		});
+
+	$: {
+		if (startIndex < data.length) {
+			displayedItems = Array.from({ length: pageLength }, (_, i) => {
+				const index = startIndex + i;
+				return data[index];
+			});
+		} else {
+			displayedItems = [];
+		}
+	}
+	//TODO replace file.path with a unique id that is generated when the
+	//file is added
 </script>
 
 <div class="vault-explorer-feed-view">
@@ -23,7 +40,7 @@
 		</div>
 	{/if}
 	{#if enablePremiumFeatures}
-		{#each data as fileData}
+		{#each displayedItems as fileData (fileData.path)}
 			<FeedCard
 				name={fileData.name}
 				path={fileData.path}
