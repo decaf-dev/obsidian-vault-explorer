@@ -4,18 +4,24 @@
 	// ============================================
 	import Stack from "../shared/components/stack.svelte";
 	import Flex from "../shared/components/flex.svelte";
-	import IconButton from "../shared/components/icon-button.svelte";
-	import FavoritesFilterComponent from "./components/favorites-filter.svelte";
+	import FavoritesFilter from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
 	import { TFile } from "obsidian";
 	import {
-		CustomFilter,
-		FavoritesFilter,
-		SearchFilter,
-		SortFilter,
-		TimestampFilter,
-		ViewType,
+		TCustomFilter,
+		TDashboardView,
+		TFavoritesFilter,
+		TSearchFilter,
+		TSortFilter,
+		TTimestampFilter,
+		TExplorerView,
+		TListView,
+		TGridView,
+		TRecommendedView,
+		TRelatedView,
+		TTableView,
+		TFeedView,
 	} from "src/types";
 	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
@@ -29,7 +35,7 @@
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
-	import { getDisplayNameForViewType } from "./services/display-name";
+	import { getDisplayNameForView } from "./services/display-name";
 	import {
 		getStartOfLastWeekMillis,
 		getStartOfTodayMillis,
@@ -37,11 +43,11 @@
 	} from "../shared/services/time-utils";
 	import { FileContent, FileRenderData } from "./types";
 	import Logger from "js-logger";
-	import SearchFilterComponent from "./components/search-filter.svelte";
-	import TimestampFilterComponent from "./components/timestamp-filter.svelte";
-	import SortFilterComponent from "./components/sort-filter.svelte";
+	import SearchFilter from "./components/search-filter.svelte";
+	import TimestampFilter from "./components/timestamp-filter.svelte";
+	import SortFilter from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME } from "./constants";
-	import CustomFilterComponent from "./components/custom-filter.svelte";
+	import CustomFilter from "./components/custom-filter.svelte";
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
@@ -56,30 +62,29 @@
 	let startOfLastWeekMillis: number;
 
 	let pageSize: number = 0;
-	let searchFilter: SearchFilter = {
+	let searchFilter: TSearchFilter = {
 		isEnabled: true,
 		value: "",
 	};
-	let favoritesFilter: FavoritesFilter = {
+	let favoritesFilter: TFavoritesFilter = {
 		isEnabled: false,
 		value: false,
 	};
-	let timestampFilter: TimestampFilter = {
+	let timestampFilter: TTimestampFilter = {
 		isEnabled: true,
 		value: "all",
 	};
-	let sortFilter: SortFilter = {
+	let sortFilter: TSortFilter = {
 		isEnabled: true,
 		value: "file-name-asc",
 	};
-	let customFilter: CustomFilter = {
+	let customFilter: TCustomFilter = {
 		isEnabled: true,
 		groups: [],
 		selectedGroupId: "",
 	};
 
-	let viewOrder: ViewType[] = [];
-	let currentView: ViewType = ViewType.GRID;
+	let currentView: TExplorerView | null = TExplorerView.GRID;
 
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
@@ -87,6 +92,36 @@
 	let files: TFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
 	let contentForFiles: FileContent[] = [];
+
+	let dashboardView: TDashboardView = {
+		isEnabled: false,
+	};
+
+	let listView: TListView = {
+		isEnabled: false,
+	};
+
+	let gridView: TGridView = {
+		isEnabled: false,
+	};
+
+	let feedView: TFeedView = {
+		isEnabled: false,
+	};
+
+	let tableView: TTableView = {
+		isEnabled: false,
+	};
+
+	let recommendedView: TRecommendedView = {
+		isEnabled: false,
+	};
+
+	let relatedView: TRelatedView = {
+		isEnabled: false,
+	};
+
+	let viewOrder: TExplorerView[] = [];
 
 	// ============================================
 	// Lifecycle hooks
@@ -101,11 +136,18 @@
 		favoritesFilter = settings.filters.favorites;
 		sortFilter = settings.filters.sort;
 		timestampFilter = settings.filters.timestamp;
-		currentView = settings.views.currentView;
-		viewOrder = settings.views.order;
+		currentView = settings.currentView;
 		customFilter = settings.filters.custom;
+		dashboardView = settings.views.dashboard;
+		listView = settings.views.list;
+		gridView = settings.views.grid;
+		feedView = settings.views.feed;
+		tableView = settings.views.table;
+		recommendedView = settings.views.recommended;
+		relatedView = settings.views.related;
+		viewOrder = settings.viewOrder;
 
-		if (settings.views.enableClockUpdates) {
+		if (settings.enableClockUpdates) {
 			setTimeValuesUpdateInterval();
 		}
 
@@ -148,7 +190,7 @@
 				message: "called",
 			});
 
-			const isEnabled = plugin.settings.views.enableClockUpdates;
+			const isEnabled = plugin.settings.enableClockUpdates;
 			if (isEnabled) {
 				updateTimeValues();
 				setTimeValuesUpdateInterval();
@@ -314,6 +356,30 @@
 	});
 
 	onMount(() => {
+		function handleViewToggleSettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleViewToggleSettingChange",
+				message: "called",
+			});
+
+			viewOrder = plugin.settings.viewOrder;
+			currentView = plugin.settings.currentView;
+		}
+
+		EventManager.getInstance().on(
+			"view-toggle-setting-change",
+			handleViewToggleSettingChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"view-toggle-setting-change",
+				handleViewToggleSettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
 		function handlePageSizeSettingChange() {
 			Logger.trace({
 				fileName: "app/index.ts",
@@ -430,9 +496,16 @@
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.favorites = favoritesFilter;
-		plugin.settings.views.order = viewOrder;
-		plugin.settings.views.currentView = currentView;
+		plugin.settings.views.dashboard = dashboardView;
+		plugin.settings.views.list = listView;
+		plugin.settings.views.grid = gridView;
+		plugin.settings.views.feed = feedView;
+		plugin.settings.views.table = tableView;
+		plugin.settings.views.recommended = recommendedView;
+		plugin.settings.views.related = relatedView;
+		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
+		plugin.settings.viewOrder = viewOrder;
 		await plugin.saveSettings();
 	}
 
@@ -663,13 +736,25 @@
 		return 0;
 	});
 
+	//TODO fix double save on settings change
+	//A settings toggle will save the settings
+	//An event will then be emitted and the variable will be
+	//updated in this component. This statement will then run
+	//and save the settings again
 	$: searchFilter,
 		sortFilter,
 		timestampFilter,
 		favoritesFilter,
 		currentView,
-		viewOrder,
 		customFilter,
+		dashboardView,
+		listView,
+		gridView,
+		feedView,
+		tableView,
+		recommendedView,
+		relatedView,
+		viewOrder,
 		saveSettings();
 
 	$: totalItems = renderData.length;
@@ -684,7 +769,7 @@
 <div class="vault-explorer">
 	<div class="vault-explorer-header">
 		{#if searchFilter.isEnabled}
-			<SearchFilterComponent
+			<SearchFilter
 				value={searchFilter.value}
 				on:input={debounceSearchFilterChange}
 				on:clear={() => (searchFilter.value = "")}
@@ -694,20 +779,20 @@
 			<Flex justify="space-between">
 				<Stack spacing="sm">
 					{#if favoritesFilter.isEnabled}
-						<FavoritesFilterComponent
+						<FavoritesFilter
 							value={favoritesFilter.value}
 							on:change={handleFavoritesChange}
 						/>
 					{/if}
 					<Flex>
 						{#if timestampFilter.isEnabled}
-							<TimestampFilterComponent
+							<TimestampFilter
 								value={timestampFilter.value}
 								on:change={handleTimestampFilterChange}
 							/>
 						{/if}
 						{#if sortFilter.isEnabled}
-							<SortFilterComponent
+							<SortFilter
 								value={sortFilter.value}
 								on:change={handleSortChange}
 							/>
@@ -716,7 +801,7 @@
 				</Stack>
 			</Flex>
 			{#if customFilter.isEnabled}
-				<CustomFilterComponent
+				<CustomFilter
 					groups={customFilter.groups}
 					on:groupClick={handleGroupClick}
 					on:groupDrop={handleGroupDrop}
@@ -739,7 +824,7 @@
 							on:dragstart={(e) => handleViewDragStart(e, view)}
 							on:dragover={handleViewDragOver}
 							on:drop={(e) => handleViewDrop(e, view)}
-							>{getDisplayNameForViewType(view)}</Tab
+							>{getDisplayNameForView(view)}</Tab
 						>
 					{/each}
 				</TabList>
@@ -758,7 +843,7 @@
 		{:else if currentView === "list"}
 			<ListView data={renderData} {startIndex} {pageLength} />
 		{:else if currentView === "feed"}
-			<FeedView data={renderData} />
+			<FeedView data={renderData} {startIndex} {pageLength} />
 		{/if}
 	</div>
 </div>
