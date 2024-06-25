@@ -843,7 +843,7 @@
 		{:else if currentView === "list"}
 			<ListView data={renderData} {startIndex} {pageLength} />
 		{:else if currentView === "feed"}
-			<FeedView data={renderData} />
+			<FeedView data={renderData} {startIndex} {pageLength} />
 		{/if}
 	</div>
 </div>
