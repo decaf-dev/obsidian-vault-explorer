@@ -9,28 +9,28 @@ export interface VaultExplorerPluginSettings {
 		custom3: string;
 	},
 	filters: {
-		search: SearchFilter;
-		favorites: FavoritesFilter;
-		sort: SortFilter;
-		timestamp: TimestampFilter;
-		custom: CustomFilter;
+		search: TSearchFilter;
+		favorites: TFavoritesFilter;
+		sort: TSortFilter;
+		timestamp: TTimestampFilter;
+		custom: TCustomFilter;
 	},
 	views: {
-		dashboard: DashboardView;
-		grid: GridView;
-		list: ListView;
-		table: TableView;
-		feed: FeedView;
-		recommended: RecommendedView;
-		related: RelatedView;
+		dashboard: TDashboardView;
+		grid: TGridView;
+		list: TListView;
+		table: TTableView;
+		feed: TFeedView;
+		recommended: TRecommendedView;
+		related: TRelatedView;
 	}
 	titleWrapping: WordBreak;
 	enableClockUpdates: boolean;
-	currentView: ViewType;
+	currentView: TExplorerView;
 	enableScrollButtons: boolean;
 	pageSize: number;
-	viewOrder: ViewType[];
 	pluginVersion: string | null;
+	viewOrder: TExplorerView[];
 	logLevel: string;
 }
 
@@ -38,48 +38,48 @@ interface BaseView {
 	isEnabled: boolean;
 }
 
-export interface TableView extends BaseView {
+export interface TTableView extends BaseView {
 }
 
-export interface ListView extends BaseView {
+export interface TListView extends BaseView {
 }
 
-export interface GridView extends BaseView {
+export interface TGridView extends BaseView {
 }
 
-export interface DashboardView extends BaseView {
+export interface TDashboardView extends BaseView {
 }
 
-export interface FeedView extends BaseView {
+export interface TFeedView extends BaseView {
 }
 
-export interface RecommendedView extends BaseView {
+export interface TRecommendedView extends BaseView {
 }
 
-export interface RelatedView extends BaseView {
+export interface TRelatedView extends BaseView {
 }
 
 interface BaseFilter {
 	isEnabled: boolean;
 }
 
-export interface SearchFilter extends BaseFilter {
+export interface TSearchFilter extends BaseFilter {
 	value: string;
 }
 
-export interface FavoritesFilter extends BaseFilter {
+export interface TFavoritesFilter extends BaseFilter {
 	value: boolean;
 };
 
-export interface SortFilter extends BaseFilter {
+export interface TSortFilter extends BaseFilter {
 	value: SortFilterOption;
 };
 
-export interface TimestampFilter extends BaseFilter {
+export interface TTimestampFilter extends BaseFilter {
 	value: TimestampFilterOption;
 }
 
-export interface CustomFilter extends BaseFilter {
+export interface TCustomFilter extends BaseFilter {
 	selectedGroupId: string;
 	groups: FilterGroup[];
 }
@@ -90,7 +90,7 @@ export type SortFilterOption = "file-name-asc" | "file-name-desc" | "modified-as
 
 export type WordBreak = "normal" | "break-word";
 
-export enum ViewType {
+export enum TExplorerView {
 	DASHBOARD = "dashboard",
 	GRID = "grid",
 	LIST = "list",

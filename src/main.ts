@@ -3,7 +3,7 @@ import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { FilterRuleType, VaultExplorerPluginSettings, ViewType } from './types';
+import { FilterRuleType, TExplorerView, VaultExplorerPluginSettings } from './types';
 import { DEFAULT_SETTINGS, HOVER_LINK_SOURCE_ID, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
@@ -432,9 +432,9 @@ export default class VaultExplorerPlugin extends Plugin {
 							isEnabled: false
 						}
 					},
+					viewOrder: typedData.views.order as unknown as TExplorerView[],
 					enableClockUpdates: typedData.views.enableClockUpdates,
-					currentView: typedData.views.currentView,
-					viewOrder: typedData.views.order,
+					currentView: typedData.views.currentView as unknown as TExplorerView,
 					titleWrapping: typedData.views.titleWrapping
 				}
 				delete (newData as any).views.order;

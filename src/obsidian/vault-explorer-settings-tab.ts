@@ -90,6 +90,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.dashboard.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.dashboard.isEnabled = value;
+
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
 				}));
