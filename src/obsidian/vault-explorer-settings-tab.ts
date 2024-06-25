@@ -83,6 +83,86 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Views").setHeading();
 
+		new Setting(containerEl)
+			.setName("Dashboard view")
+			.addToggle(toggle => toggle
+				.setDisabled(true) //TODO - Implement dashboard view
+				.setValue(this.plugin.settings.views.dashboard.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.dashboard.isEnabled = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Grid view")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.grid.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.grid.isEnabled = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("List view")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.list.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.list.isEnabled = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Feed view")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.feed.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.feed.isEnabled = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Table view")
+			.addToggle(toggle => toggle
+				.setDisabled(true) //TODO implement
+				.setTooltip("This view is not yet implemented.")
+				.setValue(this.plugin.settings.views.table.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.table.isEnabled = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+
+		new Setting(containerEl)
+			.setName("Recommended view")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.recommended.isEnabled)
+				.setDisabled(true) //TODO implement
+				.setTooltip("This view is not yet implemented.")
+				.onChange(async (value) => {
+					this.plugin.settings.views.recommended.isEnabled = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Related view")
+			.addToggle(toggle => toggle
+				.setDisabled(true) //TODO implement
+				.setTooltip("This view is not yet implemented.")
+				.setValue(this.plugin.settings.views.related.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.related.isEnabled = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl).setName("General").setHeading();
+
 		new Setting(containerEl).setName("Page size").setDesc("The number of items to display per page.").addDropdown(dropdown => dropdown
 			.addOptions({
 				"10": "10",
@@ -116,6 +196,17 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+
+		new Setting(containerEl)
+			.setName("Enable scroll buttons")
+			.setDesc("When enabled, scroll buttons will be displayed for scrollable content.")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableScrollButtons)
+				.onChange(async (value) => {
+					this.plugin.settings.enableScrollButtons = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("scroll-buttons-setting-change");
+				}));
 
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
@@ -213,19 +304,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.plugin.settings.properties.custom3 = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("property-setting-change");
-				}));
-
-		new Setting(containerEl).setName("Accessibility").setHeading();
-
-		new Setting(containerEl)
-			.setName("Enable scroll buttons")
-			.setDesc("When enabled, scroll buttons will be displayed for scrollable content. You could disable this setting if only use a touchscreen or trackpad.")
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.enableScrollButtons)
-				.onChange(async (value) => {
-					this.plugin.settings.enableScrollButtons = value;
-					await this.plugin.saveSettings();
-					EventManager.getInstance().emit("scroll-buttons-setting-change");
 				}));
 
 		new Setting(containerEl).setName("Updates").setHeading();

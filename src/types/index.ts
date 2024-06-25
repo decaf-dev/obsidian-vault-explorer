@@ -94,8 +94,8 @@ export enum ViewType {
 	DASHBOARD = "dashboard",
 	GRID = "grid",
 	LIST = "list",
-	TABLE = "table",
 	FEED = "feed",
+	TABLE = "table",
 	RECOMMENDED = "recommended",
 	RELATED = "related",
 }
