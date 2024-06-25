@@ -29,7 +29,7 @@ export interface VaultExplorerPluginSettings {
 	currentView: ViewType;
 	enableScrollButtons: boolean;
 	pageSize: number;
-	order: ViewType[];
+	viewOrder: ViewType[];
 	pluginVersion: string | null;
 	logLevel: string;
 }

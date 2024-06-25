@@ -75,7 +75,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		}
 	},
 	currentView: ViewType.GRID,
-	order: [...Object.values(ViewType)],
+	viewOrder: [...Object.values(ViewType)],
 	titleWrapping: "normal",
 	enableClockUpdates: true,
 	enableScrollButtons: true,

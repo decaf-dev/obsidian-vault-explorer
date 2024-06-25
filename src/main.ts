@@ -434,7 +434,7 @@ export default class VaultExplorerPlugin extends Plugin {
 					},
 					enableClockUpdates: typedData.views.enableClockUpdates,
 					currentView: typedData.views.currentView,
-					order: typedData.views.order,
+					viewOrder: typedData.views.order,
 					titleWrapping: typedData.views.titleWrapping
 				}
 				delete (newData as any).views.order;

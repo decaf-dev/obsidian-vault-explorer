@@ -101,7 +101,7 @@
 		sortFilter = settings.filters.sort;
 		timestampFilter = settings.filters.timestamp;
 		currentView = settings.currentView;
-		viewOrder = settings.order;
+		viewOrder = settings.viewOrder;
 		customFilter = settings.filters.custom;
 
 		if (settings.enableClockUpdates) {
@@ -429,7 +429,7 @@
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.favorites = favoritesFilter;
-		plugin.settings.order = viewOrder;
+		plugin.settings.viewOrder = viewOrder;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		await plugin.saveSettings();
