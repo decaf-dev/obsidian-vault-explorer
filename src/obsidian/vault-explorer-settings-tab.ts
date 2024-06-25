@@ -4,7 +4,7 @@ import { getDropdownOptionsForProperties, getObsidianPropertiesByType } from "./
 import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { WordBreak } from "src/types";
+import { TExplorerView, WordBreak } from "src/types";
 import EventManager from "src/event/event-manager";
 import Component from "../svelte/license-key-app/index.svelte";
 
@@ -83,6 +83,93 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Views").setHeading();
 
+		new Setting(containerEl)
+			.setName("Dashboard view")
+			.addToggle(toggle => toggle
+				.setDisabled(true) //TODO - Implement dashboard view
+				.setValue(this.plugin.settings.views.dashboard.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.dashboard.isEnabled = value;
+					this.updateViewOrder(TExplorerView.DASHBOARD, value);
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Grid view")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.grid.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.grid.isEnabled = value;
+					this.updateViewOrder(TExplorerView.GRID, value);
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("List view")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.list.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.list.isEnabled = value;
+					this.updateViewOrder(TExplorerView.LIST, value);
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Feed view")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.feed.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.feed.isEnabled = value;
+					this.updateViewOrder(TExplorerView.FEED, value);
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Table view")
+			.addToggle(toggle => toggle
+				.setDisabled(true) //TODO implement
+				.setTooltip("This view is not yet implemented.")
+				.setValue(this.plugin.settings.views.table.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.table.isEnabled = value;
+					this.updateViewOrder(TExplorerView.TABLE, value);
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+
+		new Setting(containerEl)
+			.setName("Recommended view")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.views.recommended.isEnabled)
+				.setDisabled(true) //TODO implement
+				.setTooltip("This view is not yet implemented.")
+				.onChange(async (value) => {
+					this.plugin.settings.views.recommended.isEnabled = value;
+					this.updateViewOrder(TExplorerView.RECOMMENDED, value);
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl)
+			.setName("Related view")
+			.addToggle(toggle => toggle
+				.setDisabled(true) //TODO implement
+				.setTooltip("This view is not yet implemented.")
+				.setValue(this.plugin.settings.views.related.isEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.views.related.isEnabled = value;
+					this.updateViewOrder(TExplorerView.RELATED, value);
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("view-toggle-setting-change");
+				}));
+
+		new Setting(containerEl).setName("General").setHeading();
+
 		new Setting(containerEl).setName("Page size").setDesc("The number of items to display per page.").addDropdown(dropdown => dropdown
 			.addOptions({
 				"10": "10",
@@ -108,14 +195,25 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					"normal": "Normal",
 					"break-word": "Break Word",
 				})
-				cb.setValue(this.plugin.settings.views.titleWrapping).onChange(
+				cb.setValue(this.plugin.settings.titleWrapping).onChange(
 					async (value) => {
-						this.plugin.settings.views.titleWrapping = value as WordBreak;
+						this.plugin.settings.titleWrapping = value as WordBreak;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit("title-wrapping-setting-change");
 					}
 				);
 			});
+
+		new Setting(containerEl)
+			.setName("Enable scroll buttons")
+			.setDesc("When enabled, scroll buttons will be displayed for scrollable content.")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableScrollButtons)
+				.onChange(async (value) => {
+					this.plugin.settings.enableScrollButtons = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("scroll-buttons-setting-change");
+				}));
 
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
@@ -215,28 +313,15 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					EventManager.getInstance().emit("property-setting-change");
 				}));
 
-		new Setting(containerEl).setName("Accessibility").setHeading();
-
-		new Setting(containerEl)
-			.setName("Enable scroll buttons")
-			.setDesc("When enabled, scroll buttons will be displayed for scrollable content. You could disable this setting if only use a touchscreen or trackpad.")
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.enableScrollButtons)
-				.onChange(async (value) => {
-					this.plugin.settings.enableScrollButtons = value;
-					await this.plugin.saveSettings();
-					EventManager.getInstance().emit("scroll-buttons-setting-change");
-				}));
-
 		new Setting(containerEl).setName("Updates").setHeading();
 
 		new Setting(containerEl)
 			.setName("Enable clock updates")
 			.setDesc("When enabled, time values will update every minute, refreshing the Vault Explorer view. When disabled, time values will only update when the view is first opened.")
 			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.views.enableClockUpdates)
+				.setValue(this.plugin.settings.enableClockUpdates)
 				.onChange(async (value) => {
-					this.plugin.settings.views.enableClockUpdates = value;
+					this.plugin.settings.enableClockUpdates = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("clock-updates-setting-change");
 				}));
@@ -274,5 +359,26 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 	onClose() {
 		this.component?.$destroy();
+	}
+
+	private updateViewOrder(view: TExplorerView, value: boolean) {
+		if (value) {
+			this.plugin.settings.viewOrder.push(view);
+
+			//If the user turned off all views, set the current view to the first view that is turned on
+			if (this.plugin.settings.currentView == null)
+				this.plugin.settings.currentView = view;
+		} else {
+			const filtered = this.plugin.settings.viewOrder.filter(v => v !== view);
+			this.plugin.settings.viewOrder = filtered;
+
+			//If the user turned off the current view, set the current view to the first view
+			//that is turned on, otherwise set it to null
+			if (filtered.length > 0) {
+				this.plugin.settings.currentView = filtered[0];
+			} else {
+				this.plugin.settings.currentView = null;
+			}
+		}
 	}
 }

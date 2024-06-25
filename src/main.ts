@@ -3,7 +3,7 @@ import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { FilterRuleType, VaultExplorerPluginSettings, ViewType } from './types';
+import { FilterRuleType, TExplorerView, VaultExplorerPluginSettings } from './types';
 import { DEFAULT_SETTINGS, HOVER_LINK_SOURCE_ID, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
@@ -26,6 +26,7 @@ import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
 import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
 import { VaultExplorerPluginSettings_1_13_1 } from './types/types-1.13.1';
 import { VaultExplorerPluginSettings_1_14_2 } from './types/types-1.14.2';
+import { VaultExplorerPluginSettings_1_16_0, ViewType_1_16_0 } from './types/types-1.16.0';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -359,7 +360,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (isVersionLessThan(settingsVersion, "1.14.0")) {
 				console.log("Upgrading settings from version 1.13.1 to 1.14.0");
 				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_13_1;
-				const newData: VaultExplorerPluginSettings = {
+				const newData: VaultExplorerPluginSettings_1_14_2 = {
 					...typedData,
 					filters: {
 						...typedData.filters,
@@ -393,13 +394,53 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (isVersionLessThan(settingsVersion, "1.15.0")) {
 				console.log("Upgrading settings from version 1.14.2 to 1.15.0");
 				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_14_2;
-				const newData: VaultExplorerPluginSettings = {
+				const newData: VaultExplorerPluginSettings_1_16_0 = {
 					...typedData,
 					views: {
 						...typedData.views,
-						order: [...typedData.views.order, ViewType.FEED],
+						order: [...typedData.views.order, ViewType_1_16_0.FEED],
 					}
 				}
+				data = newData as unknown as Record<string, unknown>;
+			}
+
+			if (isVersionLessThan(settingsVersion, "1.17.0")) {
+				console.log("Upgrading settings from version 1.16.0 to 1.17.0");
+				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_16_0;
+				const newData: VaultExplorerPluginSettings = {
+					...typedData,
+					views: {
+						dashboard: {
+							isEnabled: false
+						},
+						grid: {
+							isEnabled: true
+						},
+						list: {
+							isEnabled: true
+						},
+						table: {
+							isEnabled: false
+						},
+						feed: {
+							isEnabled: true
+						},
+						recommended: {
+							isEnabled: false
+						},
+						related: {
+							isEnabled: false
+						}
+					},
+					viewOrder: typedData.views.order as unknown as TExplorerView[],
+					enableClockUpdates: typedData.views.enableClockUpdates,
+					currentView: typedData.views.currentView as unknown as TExplorerView,
+					titleWrapping: typedData.views.titleWrapping
+				}
+				delete (newData as any).views.order;
+				delete (newData as any).views.currentView;
+				delete (newData as any).views.enableClockUpdates;
+				delete (newData as any).views.titleWrapping;
 				data = newData as unknown as Record<string, unknown>;
 			}
 		}

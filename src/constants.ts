@@ -1,6 +1,6 @@
 import { LOG_LEVEL_WARN } from "./logger/constants";
 import { generateRandomId } from "./svelte/shared/services/random";
-import { VaultExplorerPluginSettings, ViewType } from "./types";
+import { VaultExplorerPluginSettings, TExplorerView } from "./types";
 
 export const VAULT_EXPLORER_VIEW = "vault-explorer";
 
@@ -52,12 +52,33 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		}
 	},
 	views: {
-		currentView: ViewType.GRID,
-		order: [...Object.values(ViewType)],
-		titleWrapping: "normal",
-		enableClockUpdates: true
+		dashboard: {
+			isEnabled: false,
+		},
+		grid: {
+			isEnabled: true,
+		},
+		list: {
+			isEnabled: true,
+		},
+		table: {
+			isEnabled: false,
+		},
+		feed: {
+			isEnabled: true,
+		},
+		recommended: {
+			isEnabled: false,
+		},
+		related: {
+			isEnabled: false,
+		}
 	},
+	currentView: TExplorerView.GRID,
+	titleWrapping: "normal",
+	enableClockUpdates: true,
 	enableScrollButtons: true,
 	pageSize: 50,
+	viewOrder: [TExplorerView.GRID, TExplorerView.LIST, TExplorerView.FEED],
 	pluginVersion: null
 }
