@@ -4,7 +4,7 @@ import { getDropdownOptionsForProperties, getObsidianPropertiesByType } from "./
 import { LOG_LEVEL_DEBUG, LOG_LEVEL_ERROR, LOG_LEVEL_INFO, LOG_LEVEL_OFF, LOG_LEVEL_TRACE, LOG_LEVEL_WARN } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { WordBreak } from "src/types";
+import { TExplorerView, WordBreak } from "src/types";
 import EventManager from "src/event/event-manager";
 import Component from "../svelte/license-key-app/index.svelte";
 
@@ -90,7 +90,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.dashboard.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.dashboard.isEnabled = value;
-
+					this.updateViewOrder(TExplorerView.DASHBOARD, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
 				}));
@@ -101,6 +101,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.grid.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.grid.isEnabled = value;
+					this.updateViewOrder(TExplorerView.GRID, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
 				}));
@@ -111,6 +112,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.list.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.list.isEnabled = value;
+					this.updateViewOrder(TExplorerView.LIST, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
 				}));
@@ -121,6 +123,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.feed.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.feed.isEnabled = value;
+					this.updateViewOrder(TExplorerView.FEED, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
 				}));
@@ -133,6 +136,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.table.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.table.isEnabled = value;
+					this.updateViewOrder(TExplorerView.TABLE, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
 				}));
@@ -146,6 +150,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setTooltip("This view is not yet implemented.")
 				.onChange(async (value) => {
 					this.plugin.settings.views.recommended.isEnabled = value;
+					this.updateViewOrder(TExplorerView.RECOMMENDED, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
 				}));
@@ -158,6 +163,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.related.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.related.isEnabled = value;
+					this.updateViewOrder(TExplorerView.RELATED, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
 				}));
@@ -353,5 +359,15 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 	onClose() {
 		this.component?.$destroy();
+	}
+
+	private updateViewOrder(view: TExplorerView, value: boolean) {
+		if (value) {
+			this.plugin.settings.viewOrder.push(view);
+		} else {
+			const filtered = this.plugin.settings.viewOrder.filter(v => v !== view);
+			this.plugin.settings.viewOrder = filtered;
+			this.plugin.settings.currentView = filtered[0];
+		}
 	}
 }
