@@ -84,7 +84,7 @@
 		selectedGroupId: "",
 	};
 
-	let currentView: TExplorerView = TExplorerView.GRID;
+	let currentView: TExplorerView | null = TExplorerView.GRID;
 
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingTime: number = Date.now();
@@ -351,6 +351,30 @@
 			EventManager.getInstance().off(
 				"metadata-change",
 				handleMetadataChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function handleViewToggleSettingChange() {
+			Logger.trace({
+				fileName: "app/index.ts",
+				functionName: "handleViewToggleSettingChange",
+				message: "called",
+			});
+
+			viewOrder = plugin.settings.viewOrder;
+			currentView = plugin.settings.currentView;
+		}
+
+		EventManager.getInstance().on(
+			"view-toggle-setting-change",
+			handleViewToggleSettingChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"view-toggle-setting-change",
+				handleViewToggleSettingChange,
 			);
 		};
 	});
@@ -712,6 +736,11 @@
 		return 0;
 	});
 
+	//TODO fix double save on settings change
+	//A settings toggle will save the settings
+	//An event will then be emitted and the variable will be
+	//updated in this component. This statement will then run
+	//and save the settings again
 	$: searchFilter,
 		sortFilter,
 		timestampFilter,

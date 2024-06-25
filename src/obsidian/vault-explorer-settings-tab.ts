@@ -364,10 +364,21 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	private updateViewOrder(view: TExplorerView, value: boolean) {
 		if (value) {
 			this.plugin.settings.viewOrder.push(view);
+
+			//If the user turned off all views, set the current view to the first view that is turned on
+			if (this.plugin.settings.currentView == null)
+				this.plugin.settings.currentView = view;
 		} else {
 			const filtered = this.plugin.settings.viewOrder.filter(v => v !== view);
 			this.plugin.settings.viewOrder = filtered;
-			this.plugin.settings.currentView = filtered[0];
+
+			//If the user turned off the current view, set the current view to the first view
+			//that is turned on, otherwise set it to null
+			if (filtered.length > 0) {
+				this.plugin.settings.currentView = filtered[0];
+			} else {
+				this.plugin.settings.currentView = null;
+			}
 		}
 	}
 }

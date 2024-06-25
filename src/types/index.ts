@@ -26,7 +26,7 @@ export interface VaultExplorerPluginSettings {
 	}
 	titleWrapping: WordBreak;
 	enableClockUpdates: boolean;
-	currentView: TExplorerView;
+	currentView: TExplorerView | null;
 	enableScrollButtons: boolean;
 	pageSize: number;
 	pluginVersion: string | null;
