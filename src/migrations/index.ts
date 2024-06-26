@@ -12,8 +12,9 @@ import Migrate_1_15_0 from "./migrate_1_15_0";
 import Migrate_1_17_0 from "./migrate_1_17_0";
 import Migrate_1_13_0 from "./migrate_1_13_0";
 import Migrate_1_10_0 from "./migrate_1_10_0";
+import { isVersionLessThan } from "src/utils";
 
-export const migrations: TMigration[] = [
+const migrations: TMigration[] = [
 	{
 		from: "0.3.3",
 		to: "0.4.0",
@@ -80,3 +81,19 @@ export const migrations: TMigration[] = [
 		migrate: Migrate_1_17_0,
 	},
 ];
+
+export const preformMigrations = (settingsVersion: string, data: Record<string, unknown>) => {
+	let updatedData = structuredClone(data);
+
+	for (const migration of migrations) {
+		const { from, to } = migration;
+		if (isVersionLessThan(settingsVersion, to)) {
+			console.log(`Upgrading settings from version ${from} to ${to}`);
+			const migrator = new migration.migrate();
+			const newData = migrator.migrate(updatedData);
+			updatedData = newData;
+		}
+	}
+
+	return updatedData;
+}
