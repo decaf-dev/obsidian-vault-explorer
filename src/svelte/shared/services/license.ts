@@ -197,7 +197,7 @@ export default class License {
 	 * @param value - The license key
 	 */
 	private updateLicenseKey(value: string) {
-		Logger.trace({ filename: "license.ts", functionName: "updateLicenseKey", message: "called" });
+		Logger.trace({ fileName: "license.ts", functionName: "updateLicenseKey", message: "called" });
 		this.licenseKey = value;
 		this.setStoredLicenseKey(value);
 	}
@@ -207,14 +207,14 @@ export default class License {
 	 * @param value - The registration status of the device
 	 */
 	private updateDeviceRegistered(value: boolean) {
-		Logger.trace({ filename: "license.ts", functionName: "updateDeviceRegistered", message: "called" });
+		Logger.trace({ fileName: "license.ts", functionName: "updateDeviceRegistered", message: "called" });
 		this.isDeviceRegistered = value;
 		this.isDeviceRegisteredStore.set(value);
 		this.setStoredDeviceRegistered(value);
 	}
 
 	private setStoredLicenseKey(value: string) {
-		Logger.trace({ filename: "license.ts", functionName: "setStoredLicenseKey", message: "called" });
+		Logger.trace({ fileName: "license.ts", functionName: "setStoredLicenseKey", message: "called" });
 		localStorage.setItem(LOCAL_STORAGE_LICENSE_KEY, value);
 	}
 
@@ -231,7 +231,7 @@ export default class License {
 	}
 
 	setStoredDeviceRegistered(value: boolean) {
-		Logger.trace({ filename: "license.ts", functionName: "setStoredDeviceRegistered", message: "called" });
+		Logger.trace({ fileName: "license.ts", functionName: "setStoredDeviceRegistered", message: "called" });
 		localStorage.setItem(LOCAL_STORAGE_DEVICE_REGISTERED, value.toString());
 	}
 
