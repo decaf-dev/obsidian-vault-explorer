@@ -313,7 +313,7 @@
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const file = data[0] as TFile;
 				const content = await plugin.app.vault.cachedRead(file);
-				console.log(content);
+
 				const updatedContentForFiles = contentForFiles.map((entry) => {
 					if (entry.path === file.path) {
 						return {
@@ -658,7 +658,7 @@
 	let filteredCustom: TFile[] = [];
 
 	$: if (frontmatterCacheTime && customFilter.groups) {
-		console.log("Frontmatter cache time", frontmatterCacheTime);
+		Logger.debug(`Frontmatter cache time: ${frontmatterCacheTime}`);
 		filteredCustom = files.filter((file) => {
 			const { name, path } = file;
 			const frontmatter =

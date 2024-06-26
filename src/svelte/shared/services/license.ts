@@ -7,6 +7,8 @@ export const LICENSE_KEY_LENGTH = 8;
 
 const LOCAL_STORAGE_LICENSE_KEY = "vault-explorer-license-key";
 
+const LOCAL_STORAGE_DEVICE_REGISTERED = "vault-explorer-device-registration";
+
 export default class License {
 	private isDeviceRegistered: boolean;
 	private licenseKey: string;
@@ -16,10 +18,16 @@ export default class License {
 	private static instance: License;
 
 	constructor() {
-		this.isDeviceRegistered = false;
-		this.isDeviceRegisteredStore.set(false);
+		const storedDeviceRegistered = this.getStoredDeviceRegistered();
+		this.isDeviceRegistered = storedDeviceRegistered;
+		this.isDeviceRegisteredStore.set(storedDeviceRegistered);
+		Logger.debug({ fileName: "license.ts", functionName: "constructor", message: "loaded storedDeviceRegistered", }, storedDeviceRegistered);
+
 		this.responseMessage = "";
-		this.licenseKey = localStorage.getItem(LOCAL_STORAGE_LICENSE_KEY) ?? "";
+
+		const storedKey = this.getStoredLicenseKey();
+		this.licenseKey = storedKey;
+		Logger.debug({ fileName: "license.ts", functionName: "constructor", message: "loaded storedKey" }, storedKey);
 	}
 
 	async registerDevice(licenseKey: string) {
@@ -28,9 +36,8 @@ export default class License {
 		const deviceId = readDeviceId();
 		const result = await this.postRegisterDevice(licenseKey, deviceId);
 		if (result) {
-			this.isDeviceRegistered = true;
-			this.isDeviceRegisteredStore.set(true);
-			this.setLicenseKey(licenseKey);
+			this.updateDeviceRegistered(true);
+			this.updateLicenseKey(licenseKey);
 		}
 		return result;
 	}
@@ -41,9 +48,8 @@ export default class License {
 		const deviceId = readDeviceId();
 		const result = await this.postUnregisterDevice(this.licenseKey, deviceId);
 		if (result) {
-			this.isDeviceRegistered = false;
-			this.isDeviceRegisteredStore.set(false);
-			this.setLicenseKey("");
+			this.updateLicenseKey("");
+			this.updateDeviceRegistered(false);
 		}
 		return result;
 	}
@@ -63,8 +69,9 @@ export default class License {
 
 		const result = await this.postVerifyDevice(this.licenseKey, deviceId);
 		if (result) {
-			this.isDeviceRegistered = true;
-			this.isDeviceRegisteredStore.set(true);
+			this.updateDeviceRegistered(true);
+		} else {
+			this.updateDeviceRegistered(false);
 		}
 	}
 
@@ -88,6 +95,13 @@ export default class License {
 		} catch (err: unknown) {
 			const error = err as Error;
 			Logger.error({ fileName: "license.ts", functionName: "postVerifyDevice", message: "error verifying device" }, error.message);
+
+			if (error.message.contains("net::ERR_INTERNET_DISCONNECTED")) {
+				const deviceRegistered = License.getInstance().getIsDeviceRegistered();
+				Logger.debug({ fileName: "license.ts", functionName: "postVerifyDevice", message: "returning last deviceRegistered state", }, deviceRegistered);
+				return deviceRegistered;
+
+			}
 			return false;
 		}
 	};
@@ -172,14 +186,53 @@ export default class License {
 			}
 			this.responseMessage = message;
 
+
 			Logger.error({ fileName: "license.ts", functionName: "postUnregisterDevice", message: "error unregistering device" }, error.message);
 			return false;
 		}
 	}
 
-	private setLicenseKey(value: string) {
-		localStorage.setItem(LOCAL_STORAGE_LICENSE_KEY, value);
+	/**
+	 * Sets the class licenseKey and updates local storage
+	 * @param value - The license key
+	 */
+	private updateLicenseKey(value: string) {
+		Logger.trace({ filename: "license.ts", functionName: "updateLicenseKey", message: "called" });
 		this.licenseKey = value;
+		this.setStoredLicenseKey(value);
+	}
+
+	/**
+	 * Sets the class registration flag and updates local storage
+	 * @param value - The registration status of the device
+	 */
+	private updateDeviceRegistered(value: boolean) {
+		Logger.trace({ filename: "license.ts", functionName: "updateDeviceRegistered", message: "called" });
+		this.isDeviceRegistered = value;
+		this.isDeviceRegisteredStore.set(value);
+		this.setStoredDeviceRegistered(value);
+	}
+
+	private setStoredLicenseKey(value: string) {
+		Logger.trace({ filename: "license.ts", functionName: "setStoredLicenseKey", message: "called" });
+		localStorage.setItem(LOCAL_STORAGE_LICENSE_KEY, value);
+	}
+
+	private getStoredLicenseKey() {
+		return localStorage.getItem(LOCAL_STORAGE_LICENSE_KEY) ?? ""
+	}
+
+	private getStoredDeviceRegistered() {
+		const value = localStorage.getItem(LOCAL_STORAGE_DEVICE_REGISTERED);
+		if (value) {
+			return value === "true";
+		}
+		return false;
+	}
+
+	setStoredDeviceRegistered(value: boolean) {
+		Logger.trace({ filename: "license.ts", functionName: "setStoredDeviceRegistered", message: "called" });
+		localStorage.setItem(LOCAL_STORAGE_DEVICE_REGISTERED, value.toString());
 	}
 
 	getIsDeviceRegistered() {

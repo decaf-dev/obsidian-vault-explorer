@@ -1,3 +1,4 @@
+/** @see {isVaultExplorerPluginSettings} ts-auto-guard:type-guard */
 export interface VaultExplorerPluginSettings {
 	properties: {
 		favorite: string;

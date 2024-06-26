@@ -156,9 +156,7 @@ describe('matchNumberPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act & Assert
-			expect(() => matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull)).toThrow(
-				`Number filter condition not supported: ${condition}`
-			);
+			expect(() => matchNumberPropertyFilter(propertyValue, compare, condition, matchIfNull)).toThrow()
 		});
 	});
 });

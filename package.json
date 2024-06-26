@@ -1,11 +1,12 @@
 {
 	"name": "obsidian-vault-explorer",
-	"version": "1.17.1",
+	"version": "1.17.2",
 	"description": "Explore your vault in visual format",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"guardgen": "ts-auto-guard",
 		"test": "jest --config jest.config.js"
 	},
 	"keywords": [],
@@ -25,6 +26,7 @@
 		"jest": "^29.7.0",
 		"obsidian": "latest",
 		"svelte-preprocess": "^5.1.4",
+		"ts-auto-guard": "^5.0.0",
 		"ts-jest": "^29.1.4",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"

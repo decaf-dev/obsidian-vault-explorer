@@ -3,30 +3,16 @@ import { Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import VaultExplorerView from './obsidian/vault-explorer-view';
 import VaultExplorerSettingsTab from './obsidian/vault-explorer-settings-tab';
 
-import { FilterRuleType, TExplorerView, VaultExplorerPluginSettings } from './types';
+import { VaultExplorerPluginSettings } from './types';
 import { DEFAULT_SETTINGS, HOVER_LINK_SOURCE_ID, VAULT_EXPLORER_VIEW } from './constants';
 import _ from 'lodash';
 import EventManager from './event/event-manager';
-import { isVersionLessThan } from './utils';
-import { VaultExplorerPluginSettings_0_3_3 } from './types/types-0.3.0';
-import { VaultExplorerPluginSettings_0_5_5 } from './types/types-0.5.5';
+import { preformMigrations } from './migrations';
 import Logger from 'js-logger';
 import { formatMessageForLogger, stringToLogLevel } from './logger';
-import { LOG_LEVEL_WARN } from './logger/constants';
-import { VaultExplorerPluginSettings_1_0_1 } from './types/types-1.0.1';
 import { moveFocus } from './focus-utils';
-import { VaultExplorerPluginSettings_1_2_0, ViewType_1_2_0 } from './types/types-1.2.0';
-import { VaultExplorerPluginSettings_1_2_1 } from './types/types-1.2.1';
-import { PropertyFilterGroup_1_5_0, PropertyFilter_1_5_0, VaultExplorerPluginSettings_1_5_0 } from './types/types-1.5.0';
-import { VaultExplorerPluginSettings_1_6_0 } from './types/types-1.6.0';
 import { loadDeviceId } from './svelte/shared/services/device-id-utils';
 import License from './svelte/shared/services/license';
-import { VaultExplorerPluginSettings_1_8_1 } from './types/types-1.8.1';
-import { VaultExplorerPluginSettings_1_9_1 } from './types/types-1.9.1';
-import { VaultExplorerPluginSettings_1_12_1 } from './types/types-1.12.1';
-import { VaultExplorerPluginSettings_1_13_1 } from './types/types-1.13.1';
-import { VaultExplorerPluginSettings_1_14_2 } from './types/types-1.14.2';
-import { VaultExplorerPluginSettings_1_16_0, ViewType_1_16_0 } from './types/types-1.16.0';
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -35,9 +21,6 @@ export default class VaultExplorerPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		this.setupLogger();
-
-		await loadDeviceId();
-		await License.getInstance().verifyLicense();
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
@@ -63,6 +46,9 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.app.workspace.onLayoutReady(() => {
 			this.layoutReady = true;
 		});
+
+		await loadDeviceId();
+		await License.getInstance().verifyLicense();
 
 	}
 
@@ -133,320 +119,21 @@ export default class VaultExplorerPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		let data: Record<string, unknown> | null = await this.loadData();
+		const loadedData: Record<string, unknown> | null = await this.loadData();
 
-		if (data !== null) {
-			//This will be null if the settings are from a version before 0.3.0
-			const settingsVersion = (data["pluginVersion"] as string) ?? null;
-			if (settingsVersion !== null) {
-				if (isVersionLessThan(settingsVersion, "0.4.0")) {
-					console.log("Upgrading settings from version 0.3.3 to 0.4.0");
-					const typedData = (data as unknown) as VaultExplorerPluginSettings_0_3_3;
-					const newData: VaultExplorerPluginSettings_0_5_5 = {
-						...typedData,
-						filters: {
-							...typedData.filters,
-							properties: {
-								...typedData.filters.properties,
-								groups: []
-							}
-						}
-					}
-					data = newData as unknown as Record<string, unknown>;
-				}
+		let currentData: Record<string, unknown> = {};
 
-				if (isVersionLessThan(settingsVersion, "1.0.0")) {
-					console.log("Upgrading settings from version 0.5.5 to 1.0.0");
-					const typedData = (data as unknown) as VaultExplorerPluginSettings_0_5_5;
-					const newData: VaultExplorerPluginSettings_1_0_1 = {
-						...typedData,
-						logLevel: LOG_LEVEL_WARN,
-						filters: {
-							...typedData.filters,
-							properties: {
-								...typedData.filters.properties,
-								groups: typedData.filters.properties.groups.map(group => {
-									const { id, name, filters, isEnabled } = group;
-									return {
-										id,
-										name,
-										filters,
-										isEnabled
-									}
-								})
-							}
-						}
-					}
-					data = newData as unknown as Record<string, unknown>;
-				}
-
-				if (isVersionLessThan(settingsVersion, "1.1.0")) {
-					console.log("Upgrading settings from version 1.0.1 to 1.1.0");
-					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_0_1;
-					const newData: VaultExplorerPluginSettings_1_2_0 = {
-						...typedData,
-						views: {
-							currentView: typedData.currentView as unknown as ViewType_1_2_0,
-							order: [ViewType_1_2_0.GRID, ViewType_1_2_0.LIST]
-						}
-					}
-					data = newData as unknown as Record<string, unknown>;
-				}
-
-				if (isVersionLessThan(settingsVersion, "1.2.1")) {
-					console.log("Upgrading settings from version 1.2.0 to 1.2.1");
-					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_2_0;
-					const newData: VaultExplorerPluginSettings_1_2_1 = {
-						...typedData,
-						views: {
-							...typedData.views,
-							titleWrapping: "normal"
-						}
-					}
-					data = newData as unknown as Record<string, unknown>;
-				}
-
-				if (isVersionLessThan(settingsVersion, "1.3.0")) {
-					console.log("Upgrading settings from version 1.2.1 to 1.3.0");
-					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_2_1;
-					const groups = typedData.filters.properties.groups;
-
-					const updatedGroups: PropertyFilterGroup_1_5_0[] = groups.map(group => {
-						const updatedFilters: PropertyFilter_1_5_0[] = group.filters.map(filter => {
-							return {
-								...filter,
-								type: filter.type as any,
-								matchWhenPropertyDNE: false
-							}
-						});
-						return {
-							...group,
-							filters: updatedFilters
-						}
-					});
-
-					const newData: VaultExplorerPluginSettings_1_5_0 = {
-						...typedData,
-						filters: {
-							...typedData.filters,
-							properties: {
-								...typedData.filters.properties,
-								groups: updatedGroups,
-							}
-						}
-					}
-					data = newData as unknown as Record<string, unknown>;
-				}
-
-				if (isVersionLessThan(settingsVersion, "1.6.0")) {
-					console.log("Upgrading settings from version 1.5.0 to 1.6.0");
-					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_5_0;
-					const newData: VaultExplorerPluginSettings_1_6_0 = {
-						...typedData,
-						properties: {
-							...typedData.properties,
-							creationDate: "",
-							modifiedDate: ""
-						}
-					}
-					data = newData as unknown as Record<string, unknown>;
-				}
-
-				if (isVersionLessThan(settingsVersion, "1.6.1")) {
-					console.log("Upgrading settings from version 1.6.0 to 1.6.1");
-					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_6_0;
-					const newData: VaultExplorerPluginSettings_1_8_1 = {
-						...typedData,
-						properties: {
-							...typedData.properties,
-							createdDate: "",
-							modifiedDate: ""
-						}
-					}
-					data = newData as unknown as Record<string, unknown>;
-				}
-
-				if (isVersionLessThan(settingsVersion, "1.9.0")) {
-					console.log("Upgrading settings from version 1.8.1 to 1.9.0");
-					const typedData = (data as unknown) as VaultExplorerPluginSettings_1_8_1;
-					const newData: VaultExplorerPluginSettings_1_9_1 = {
-						...typedData,
-						filters: {
-							...typedData.filters,
-							custom: {
-								selectedGroupId: typedData.filters.properties.selectedGroupId,
-								groups: typedData.filters.properties.groups.map(group => {
-									const rules = group.filters.map(filter => {
-										return {
-											...filter,
-											valueData: "",
-											type: filter.type as any
-										}
-									});
-									return {
-										...group,
-										rules
-									}
-								})
-							}
-						}
-					}
-					delete (newData.filters as any).properties;
-					for (const group of newData.filters.custom.groups as any) {
-						delete group.filters;
-					}
-					data = newData as unknown as Record<string, unknown>;
-				}
-			}
-
-			if (isVersionLessThan(settingsVersion, "1.10.0")) {
-				console.log("Upgrading settings from version 1.9.1 to 1.10.0");
-				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_9_1;
-				const newData: VaultExplorerPluginSettings_1_12_1 = {
-					...typedData,
-					filters: {
-						...typedData.filters,
-						custom: {
-							...typedData.filters.custom,
-							groups: typedData.filters.custom.groups.map(group => {
-								const rules = group.rules.map(rule => {
-									return {
-										...rule,
-										type: FilterRuleType.PROPERTY as any,
-										propertyType: rule.type as any,
-									}
-								});
-								return {
-									...group,
-									rules
-								}
-							})
-						}
-					}
-				}
-				delete (newData.filters as any).folder;
-				delete (newData.filters as any).properties;
-				for (const group of newData.filters.custom.groups as any) {
-					delete group.filters;
-				}
-				data = newData as unknown as Record<string, unknown>;
-			}
-
-			if (isVersionLessThan(settingsVersion, "1.13.0")) {
-				console.log("Upgrading settings from version 1.12.1 to 1.13.0");
-				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_12_1;
-				const newData: VaultExplorerPluginSettings_1_13_1 = {
-					...typedData,
-					views: {
-						...typedData.views,
-						enableClockUpdates: true
-					},
-					filters: {
-						...typedData.filters,
-						custom: {
-							...typedData.filters.custom,
-							groups: typedData.filters.custom.groups.map(group => {
-								return {
-									...group,
-									isSticky: false
-								}
-							})
-						}
-					}
-				}
-				data = newData as unknown as Record<string, unknown>;
-			}
-
-			if (isVersionLessThan(settingsVersion, "1.14.0")) {
-				console.log("Upgrading settings from version 1.13.1 to 1.14.0");
-				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_13_1;
-				const newData: VaultExplorerPluginSettings_1_14_2 = {
-					...typedData,
-					filters: {
-						...typedData.filters,
-						search: {
-							isEnabled: true,
-							value: typedData.filters.search
-						},
-						favorites: {
-							isEnabled: true,
-							value: typedData.filters.onlyFavorites
-						},
-						timestamp: {
-							isEnabled: true,
-							value: typedData.filters.timestamp
-						},
-						sort: {
-							isEnabled: true,
-							value: typedData.filters.sort
-						},
-						custom: {
-							isEnabled: true,
-							...typedData.filters.custom
-						},
-					},
-					enableScrollButtons: true,
-				}
-				delete (newData.filters as any).onlyFavorites;
-				data = newData as unknown as Record<string, unknown>;
-			}
-
-			if (isVersionLessThan(settingsVersion, "1.15.0")) {
-				console.log("Upgrading settings from version 1.14.2 to 1.15.0");
-				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_14_2;
-				const newData: VaultExplorerPluginSettings_1_16_0 = {
-					...typedData,
-					views: {
-						...typedData.views,
-						order: [...typedData.views.order, ViewType_1_16_0.FEED],
-					}
-				}
-				data = newData as unknown as Record<string, unknown>;
-			}
-
-			if (isVersionLessThan(settingsVersion, "1.17.0")) {
-				console.log("Upgrading settings from version 1.16.0 to 1.17.0");
-				const typedData = (data as unknown) as VaultExplorerPluginSettings_1_16_0;
-				const newData: VaultExplorerPluginSettings = {
-					...typedData,
-					views: {
-						dashboard: {
-							isEnabled: false
-						},
-						grid: {
-							isEnabled: true
-						},
-						list: {
-							isEnabled: true
-						},
-						table: {
-							isEnabled: false
-						},
-						feed: {
-							isEnabled: true
-						},
-						recommended: {
-							isEnabled: false
-						},
-						related: {
-							isEnabled: false
-						}
-					},
-					viewOrder: typedData.views.order as unknown as TExplorerView[],
-					enableClockUpdates: typedData.views.enableClockUpdates,
-					currentView: typedData.views.currentView as unknown as TExplorerView,
-					titleWrapping: typedData.views.titleWrapping
-				}
-				delete (newData as any).views.order;
-				delete (newData as any).views.currentView;
-				delete (newData as any).views.enableClockUpdates;
-				delete (newData as any).views.titleWrapping;
-				data = newData as unknown as Record<string, unknown>;
+		if (loadedData !== null) {
+			//This will be undefined if the settings are from a version before 0.3.0
+			const loadedVersion = loadedData["pluginVersion"] as string ?? null;
+			if (loadedVersion !== null) {
+				const newData = preformMigrations(loadedVersion, loadedData);
+				currentData = newData;
 			}
 		}
 
-		//Apply default settings. This will make it so we don't need to do migrations for just adding new settings
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
+		//Apply default settings
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, currentData);
 		//Update the plugin version to the current version
 		this.settings.pluginVersion = this.manifest.version;
 		await this.saveSettings();
