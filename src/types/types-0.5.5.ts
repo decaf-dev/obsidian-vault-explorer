@@ -22,6 +22,8 @@ export interface VaultExplorerPluginSettings_0_5_5 {
 	pluginVersion: string | null;
 }
 
+export { TextFilterCondition as TextFilterCondition_0_5_5, PropertyFilterType as PropertyFilterType_0_5_5, NumberFilterCondition as NumberFilterCondition_0_5_5, ListFilterCondition as ListFilterCondition_0_5_5, CheckboxFilterCondition as CheckboxFilterCondition_0_5_5, DateFilterCondition as DateFilterCondition_0_5_5 };
+
 export type FilterOperator = "and" | "or";
 
 export enum TextFilterCondition {

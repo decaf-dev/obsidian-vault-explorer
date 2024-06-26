@@ -22,6 +22,8 @@ export interface VaultExplorerPluginSettings_0_3_3 {
 	pluginVersion: string | null;
 }
 
+export { TextFilterCondition as TextFilterCondition_0_3_3 };
+
 interface TextPropertyFilter extends BasePropertyFilter {
 	condition: TextFilterCondition;
 	value: string;
