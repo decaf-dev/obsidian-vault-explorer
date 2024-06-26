@@ -7,6 +7,8 @@ export const LICENSE_KEY_LENGTH = 8;
 
 const LOCAL_STORAGE_LICENSE_KEY = "vault-explorer-license-key";
 
+const LOCAL_STORAGE_LICENSE_LAST_VALIDATION = "vault-explorer-license-last-validation";
+
 export default class License {
 	private isDeviceRegistered: boolean;
 	private licenseKey: string;
@@ -31,6 +33,7 @@ export default class License {
 			this.isDeviceRegistered = true;
 			this.isDeviceRegisteredStore.set(true);
 			this.setLicenseKey(licenseKey);
+			this.setLastValidation(true);
 		}
 		return result;
 	}
@@ -44,6 +47,7 @@ export default class License {
 			this.isDeviceRegistered = false;
 			this.isDeviceRegisteredStore.set(false);
 			this.setLicenseKey("");
+			this.setLastValidation(false);
 		}
 		return result;
 	}
@@ -65,6 +69,9 @@ export default class License {
 		if (result) {
 			this.isDeviceRegistered = true;
 			this.isDeviceRegisteredStore.set(true);
+			this.setLastValidation(true);
+		} else {
+			this.setLastValidation(false);
 		}
 	}
 
@@ -88,6 +95,13 @@ export default class License {
 		} catch (err: unknown) {
 			const error = err as Error;
 			Logger.error({ fileName: "license.ts", functionName: "postVerifyDevice", message: "error verifying device" }, error.message);
+
+			if (error.message.contains("net::ERR_INTERNET_DISCONNECTED")) {
+				const state = License.getInstance().getLastValidationState();
+				Logger.debug({ fileName: "license.ts", functionName: "postVerifyDevice", message: "returning last validation state", }, state);
+				return state;
+
+			}
 			return false;
 		}
 	};
@@ -172,6 +186,7 @@ export default class License {
 			}
 			this.responseMessage = message;
 
+
 			Logger.error({ fileName: "license.ts", functionName: "postUnregisterDevice", message: "error unregistering device" }, error.message);
 			return false;
 		}
@@ -180,6 +195,15 @@ export default class License {
 	private setLicenseKey(value: string) {
 		localStorage.setItem(LOCAL_STORAGE_LICENSE_KEY, value);
 		this.licenseKey = value;
+	}
+
+	private setLastValidation(value: boolean) {
+		localStorage.setItem(LOCAL_STORAGE_LICENSE_LAST_VALIDATION, value.toString());
+	}
+
+	getLastValidationState() {
+		const value = localStorage.getItem(LOCAL_STORAGE_LICENSE_LAST_VALIDATION) ?? "";
+		return value === "true";
 	}
 
 	getIsDeviceRegistered() {
