@@ -21,13 +21,13 @@ export default class License {
 		const storedDeviceRegistered = this.getStoredDeviceRegistered();
 		this.isDeviceRegistered = storedDeviceRegistered;
 		this.isDeviceRegisteredStore.set(storedDeviceRegistered);
-		Logger.debug({ fileName: "license.ts", functionName: "constructor", message: "loaded storedDeviceRegistered", }, storedDeviceRegistered);
+		Logger.debug({ fileName: "license.ts", functionName: "constructor", message: "loaded stored device registration", }, storedDeviceRegistered);
 
 		this.responseMessage = "";
 
 		const storedKey = this.getStoredLicenseKey();
 		this.licenseKey = storedKey;
-		Logger.debug({ fileName: "license.ts", functionName: "constructor", message: "loaded storedKey" }, storedKey);
+		Logger.debug({ fileName: "license.ts", functionName: "constructor", message: "loaded stored license key" }, storedKey);
 	}
 
 	async registerDevice(licenseKey: string) {
