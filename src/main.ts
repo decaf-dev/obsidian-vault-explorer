@@ -22,9 +22,6 @@ export default class VaultExplorerPlugin extends Plugin {
 		await this.loadSettings();
 		this.setupLogger();
 
-		await loadDeviceId();
-		await License.getInstance().verifyLicense();
-
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
 			(leaf) => new VaultExplorerView(leaf, this)
@@ -49,6 +46,9 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.app.workspace.onLayoutReady(() => {
 			this.layoutReady = true;
 		});
+
+		await loadDeviceId();
+		await License.getInstance().verifyLicense();
 
 	}
 
