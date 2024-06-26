@@ -4,7 +4,6 @@ import { VaultExplorerPluginSettings_1_9_1 } from "src/types/types-1.9.1";
 
 export default class Migrate_1_9_0 implements MigrationInterface {
 	migrate(data: Record<string, unknown>) {
-		console.log("Upgrading settings from version 1.8.1 to 1.9.0");
 		const typedData = (data as unknown) as VaultExplorerPluginSettings_1_8_1;
 		const newData: VaultExplorerPluginSettings_1_9_1 = {
 			...typedData,

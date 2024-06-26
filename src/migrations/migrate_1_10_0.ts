@@ -1,4 +1,4 @@
-import { FilterRuleType, VaultExplorerPluginSettings_1_12_1 } from "src/types/types-1.12.1";
+import { FilterRuleType_1_12_1, VaultExplorerPluginSettings_1_12_1 } from "src/types/types-1.12.1";
 import MigrationInterface from "./migration_interface";
 import { VaultExplorerPluginSettings_1_9_1 } from "src/types/types-1.9.1";
 
@@ -15,7 +15,7 @@ export default class Migrate_1_10_0 implements MigrationInterface {
 						const rules = group.rules.map(rule => {
 							return {
 								...rule,
-								type: FilterRuleType.PROPERTY as any,
+								type: FilterRuleType_1_12_1.PROPERTY as any,
 								propertyType: rule.type as any,
 							}
 						});
