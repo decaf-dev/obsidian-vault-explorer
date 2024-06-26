@@ -13,6 +13,7 @@ export default class Migrate_1_6_1 implements MigrationInterface {
 				modifiedDate: ""
 			}
 		}
+		delete (newData.properties as any).creationDate;
 		return newData as unknown as Record<string, unknown>;
 	}
 }
