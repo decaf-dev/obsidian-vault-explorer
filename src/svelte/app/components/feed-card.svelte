@@ -9,6 +9,7 @@
 	import { formatBearTime } from "../services/time-utils";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Tag from "src/svelte/shared/components/tag.svelte";
+	import { removeFrontmatterBlock } from "../services/frontmatter-utils";
 
 	export let name: string;
 	export let path: string;
@@ -55,6 +56,20 @@
 	}
 
 	const creationString = formatBearTime(createdMillis);
+
+	function getDisplayContent(content: string | null) {
+		if (content != null) {
+			const contentWithoutFrontmatter = removeFrontmatterBlock(content);
+			if (contentWithoutFrontmatter.length > 250) {
+				return contentWithoutFrontmatter.slice(0, 250) + "...";
+			} else {
+				return contentWithoutFrontmatter;
+			}
+		}
+		return content;
+	}
+
+	$: displayContent = getDisplayContent(content);
 </script>
 
 <div class="vault-explorer-feed-card">
@@ -80,8 +95,10 @@
 		>
 			{name}
 		</div>
-		{#if content != null && content.length > 0}
-			<div class="vault-explorer-feed-card__content">{content}</div>
+		{#if displayContent != null && displayContent.length > 0}
+			<div class="vault-explorer-feed-card__content">
+				{displayContent}
+			</div>
 		{/if}
 		{#if tags != null}
 			<div class="vault-explorer-feed-card__tags">

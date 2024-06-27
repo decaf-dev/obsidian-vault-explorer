@@ -44,7 +44,6 @@
 			<FeedCard
 				name={fileData.name}
 				path={fileData.path}
-				url={fileData.url}
 				tags={fileData.tags}
 				content={fileData.content}
 				createdMillis={fileData.createdMillis}
