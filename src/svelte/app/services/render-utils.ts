@@ -4,7 +4,6 @@ import { FileRenderData } from "../types";
 import { getTimeMillis, isDateSupported } from "../../shared/services/time-utils";
 import Logger from "js-logger";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
-import { removeFrontmatterBlock } from "./frontmatter-utils";
 
 export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, file: TFile, frontmatter: FrontMatterCache | undefined, content: string | null): FileRenderData => {
 	const tags: string[] | null = loadPropertyValue<string[]>(frontmatter, "tags", PropertyType.LIST);
@@ -51,22 +50,11 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 	const { name, basename, extension, path } = file;
 	const displayName = extension === "md" ? basename : name;
 
-	let filteredContent = "";
-	if (content != null) {
-		filteredContent = removeFrontmatterBlock(content);
-
-		const length = filteredContent.length;
-		if (length > 250) {
-			filteredContent = filteredContent.slice(0, 250);
-			filteredContent += "...";
-		}
-	}
-
 	return {
 		name: displayName,
 		path,
 		url,
-		content: filteredContent,
+		content,
 		tags,
 		favorite,
 		createdMillis,
