@@ -12,7 +12,6 @@
 
 	export let name: string;
 	export let path: string;
-	export let url: string | null;
 	export let tags: string[] | null;
 	export let createdMillis: number;
 	export let content: string | null;
@@ -55,12 +54,6 @@
 		}
 	}
 
-	function handleUrlClick() {
-		if (url != null) {
-			window.open(url, "_blank");
-		}
-	}
-
 	const creationString = formatBearTime(createdMillis);
 </script>
 
@@ -86,9 +79,6 @@
 			}}
 		>
 			{name}
-			<!-- {#if url !== null}
-			<IconButton iconId="external-link" on:click={handleUrlClick} />
-		{/if} -->
 		</div>
 		{#if content != null && content.length > 0}
 			<div class="vault-explorer-feed-card__content">{content}</div>
