@@ -22,12 +22,12 @@
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((value) => {
 		plugin = value;
-		wordBreak = plugin.settings.views.titleWrapping;
+		wordBreak = plugin.settings.titleWrapping;
 	});
 
 	onMount(() => {
 		function handleTitleWrappingSettingChange() {
-			wordBreak = plugin.settings.views.titleWrapping;
+			wordBreak = plugin.settings.titleWrapping;
 		}
 
 		EventManager.getInstance().on(
