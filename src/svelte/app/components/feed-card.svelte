@@ -9,10 +9,10 @@
 	import { formatBearTime } from "../services/time-utils";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Tag from "src/svelte/shared/components/tag.svelte";
+	import { removeFrontmatterBlock } from "../services/frontmatter-utils";
 
 	export let name: string;
 	export let path: string;
-	export let url: string | null;
 	export let tags: string[] | null;
 	export let createdMillis: number;
 	export let content: string | null;
@@ -22,12 +22,12 @@
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((value) => {
 		plugin = value;
-		wordBreak = plugin.settings.views.titleWrapping;
+		wordBreak = plugin.settings.titleWrapping;
 	});
 
 	onMount(() => {
 		function handleTitleWrappingSettingChange() {
-			wordBreak = plugin.settings.views.titleWrapping;
+			wordBreak = plugin.settings.titleWrapping;
 		}
 
 		EventManager.getInstance().on(
@@ -55,13 +55,21 @@
 		}
 	}
 
-	function handleUrlClick() {
-		if (url != null) {
-			window.open(url, "_blank");
+	const creationString = formatBearTime(createdMillis);
+
+	function getDisplayContent(content: string | null) {
+		if (content != null) {
+			const contentWithoutFrontmatter = removeFrontmatterBlock(content);
+			if (contentWithoutFrontmatter.length > 250) {
+				return contentWithoutFrontmatter.slice(0, 250) + "...";
+			} else {
+				return contentWithoutFrontmatter;
+			}
 		}
+		return content;
 	}
 
-	const creationString = formatBearTime(createdMillis);
+	$: displayContent = getDisplayContent(content);
 </script>
 
 <div class="vault-explorer-feed-card">
@@ -86,12 +94,11 @@
 			}}
 		>
 			{name}
-			<!-- {#if url !== null}
-			<IconButton iconId="external-link" on:click={handleUrlClick} />
-		{/if} -->
 		</div>
-		{#if content != null && content.length > 0}
-			<div class="vault-explorer-feed-card__content">{content}</div>
+		{#if displayContent != null && displayContent.length > 0}
+			<div class="vault-explorer-feed-card__content">
+				{displayContent}
+			</div>
 		{/if}
 		{#if tags != null}
 			<div class="vault-explorer-feed-card__tags">
@@ -108,7 +115,6 @@
 
 <style>
 	.vault-explorer-feed-card {
-		max-width: 350px;
 		padding-bottom: 10px;
 		border-bottom: 1px solid var(--background-modifier-border);
 		margin-bottom: 10px;

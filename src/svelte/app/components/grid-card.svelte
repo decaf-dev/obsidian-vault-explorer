@@ -33,13 +33,13 @@
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
 		plugin = p;
-		wordBreak = plugin.settings.views.titleWrapping;
+		wordBreak = plugin.settings.titleWrapping;
 		enableScrollButtons = plugin.settings.enableScrollButtons;
 	});
 
 	onMount(() => {
 		function handleTitleWrappingSettingChange() {
-			wordBreak = plugin.settings.views.titleWrapping;
+			wordBreak = plugin.settings.titleWrapping;
 		}
 
 		EventManager.getInstance().on(
