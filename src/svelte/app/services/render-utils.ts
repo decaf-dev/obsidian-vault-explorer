@@ -56,8 +56,8 @@ export const formatFileDataForRender = (settings: VaultExplorerPluginSettings, f
 		filteredContent = removeFrontmatterBlock(content);
 
 		const length = filteredContent.length;
-		if (length > 80) {
-			filteredContent = filteredContent.slice(0, 78);
+		if (length > 250) {
+			filteredContent = filteredContent.slice(0, 250);
 			filteredContent += "...";
 		}
 	}
