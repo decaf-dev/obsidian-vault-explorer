@@ -108,7 +108,6 @@
 
 <style>
 	.vault-explorer-feed-card {
-		max-width: 350px;
 		padding-bottom: 10px;
 		border-bottom: 1px solid var(--background-modifier-border);
 		margin-bottom: 10px;

@@ -51,7 +51,6 @@
 
 <style>
 	.vault-explorer-list-item {
-		max-width: 800px;
 		padding-bottom: 2px;
 		border-bottom: 1px solid var(--background-modifier-border);
 		margin-bottom: 10px;
