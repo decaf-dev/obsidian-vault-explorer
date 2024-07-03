@@ -28,6 +28,54 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		const dateTimeProperties = getObsidianPropertiesByType(this.app, "datetime");
 		const checkboxProperties = getObsidianPropertiesByType(this.app, "checkbox");
 
+		new Setting(containerEl).setName("General").setHeading();
+
+		new Setting(containerEl).setName("Page size").setDesc("The number of items to display per page.").addDropdown(dropdown => dropdown
+			.addOptions({
+				"10": "10",
+				"25": "25",
+				"50": "50",
+				"100": "100",
+				"250": "250",
+				"500": "500",
+			})
+			.setValue(this.plugin.settings.pageSize.toString())
+			.onChange(async (value) => {
+				this.plugin.settings.pageSize = parseInt(value);
+				await this.plugin.saveSettings();
+				EventManager.getInstance().emit("page-size-setting-change");
+			}));
+		new Setting(containerEl)
+			.setName("Title wrapping")
+			.setDesc(
+				"Sets the wrapping style for the title."
+			)
+			.addDropdown((cb) => {
+				cb.addOptions({
+					"normal": "Normal",
+					"break-word": "Break Word",
+				})
+				cb.setValue(this.plugin.settings.titleWrapping).onChange(
+					async (value) => {
+						this.plugin.settings.titleWrapping = value as WordBreak;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit("title-wrapping-setting-change");
+					}
+				);
+			});
+
+		new Setting(containerEl)
+			.setName("Enable scroll buttons")
+			.setDesc("When enabled, scroll buttons will be displayed for scrollable content.")
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableScrollButtons)
+				.onChange(async (value) => {
+					this.plugin.settings.enableScrollButtons = value;
+					await this.plugin.saveSettings();
+					EventManager.getInstance().emit("scroll-buttons-setting-change");
+				}));
+
+
 		new Setting(containerEl).setName("Filters").setHeading();
 
 		new Setting(containerEl)
@@ -166,53 +214,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.updateViewOrder(TExplorerView.RELATED, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit("view-toggle-setting-change");
-				}));
-
-		new Setting(containerEl).setName("General").setHeading();
-
-		new Setting(containerEl).setName("Page size").setDesc("The number of items to display per page.").addDropdown(dropdown => dropdown
-			.addOptions({
-				"10": "10",
-				"25": "25",
-				"50": "50",
-				"100": "100",
-				"250": "250",
-				"500": "500",
-			})
-			.setValue(this.plugin.settings.pageSize.toString())
-			.onChange(async (value) => {
-				this.plugin.settings.pageSize = parseInt(value);
-				await this.plugin.saveSettings();
-				EventManager.getInstance().emit("page-size-setting-change");
-			}));
-		new Setting(containerEl)
-			.setName("Title wrapping")
-			.setDesc(
-				"Sets the wrapping style for the title."
-			)
-			.addDropdown((cb) => {
-				cb.addOptions({
-					"normal": "Normal",
-					"break-word": "Break Word",
-				})
-				cb.setValue(this.plugin.settings.titleWrapping).onChange(
-					async (value) => {
-						this.plugin.settings.titleWrapping = value as WordBreak;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit("title-wrapping-setting-change");
-					}
-				);
-			});
-
-		new Setting(containerEl)
-			.setName("Enable scroll buttons")
-			.setDesc("When enabled, scroll buttons will be displayed for scrollable content.")
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.enableScrollButtons)
-				.onChange(async (value) => {
-					this.plugin.settings.enableScrollButtons = value;
-					await this.plugin.saveSettings();
-					EventManager.getInstance().emit("scroll-buttons-setting-change");
 				}));
 
 		new Setting(containerEl).setName("Built-in properties").setHeading();
