@@ -61,7 +61,8 @@
 			id: generateRandomId(),
 			name: `Group ${groups.length + 1}`,
 			rules: [createPropertyFilter()],
-			isEnabled: groups.length === 0,
+			isEnabled: false,
+			isSticky: false,
 		};
 
 		selectedGroupId = newGroup.id;
