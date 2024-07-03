@@ -240,18 +240,18 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					EventManager.getInstance().emit("property-setting-change");
 				}));
 
-		const createdDateDesc = new DocumentFragment();
-		createdDateDesc.createDiv({
+		const creationDateDesc = new DocumentFragment();
+		creationDateDesc.createDiv({
 			text: "The property containing the creation date. This must be a date or datetime property.",
 		});
-		createdDateDesc.createDiv({
+		creationDateDesc.createDiv({
 			text: "If set to 'Select a property', the file's created at date will be used.",
 		});
 
 
 		new Setting(containerEl)
-			.setName("Created date property")
-			.setDesc(createdDateDesc)
+			.setName("Creation date property")
+			.setDesc(creationDateDesc)
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
 				.setValue(this.plugin.settings.properties.createdDate)
 				.onChange(async (value) => {
@@ -260,17 +260,17 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					EventManager.getInstance().emit("property-setting-change");
 				}));
 
-		const modifiedDateDesc = new DocumentFragment();
-		modifiedDateDesc.createDiv({
+		const modificationDateDesc = new DocumentFragment();
+		modificationDateDesc.createDiv({
 			text: "The property containing the modification date. This must be a date or datetime property.",
 		});
-		modifiedDateDesc.createDiv({
+		modificationDateDesc.createDiv({
 			text: "If set to 'Select a property', the file's modified at date will be used.",
 		});
 
 		new Setting(containerEl)
-			.setName('Modified date property')
-			.setDesc(modifiedDateDesc)
+			.setName('Modification date property')
+			.setDesc(modificationDateDesc)
 			.addDropdown(dropdown => dropdown.addOptions(getDropdownOptionsForProperties([...dateProperties, ...dateTimeProperties]))
 				.setValue(this.plugin.settings.properties.modifiedDate)
 				.onChange(async (value) => {
