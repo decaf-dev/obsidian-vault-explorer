@@ -49,6 +49,8 @@ Features are what the software should do.
 | Add sticky groups                                                | #filter                  |
 | Disable filters condtionally                                     | #filter                  |
 | Left/right buttons to allow a user to scroll between groups      | #accessibility           |
+| Duplicate a filter rule                                          | #filter                  |
+| Random sort                                                      | #filter                  |
 
 ## Event callbacks
 
