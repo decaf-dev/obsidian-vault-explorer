@@ -862,6 +862,6 @@
 	}
 
 	.vault-explorer-view-select {
-		margin-left: -4px;
+		flex: 1;
 	}
 </style>
