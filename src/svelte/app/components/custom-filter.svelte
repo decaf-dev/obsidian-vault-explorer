@@ -43,10 +43,6 @@
 </div>
 
 <style>
-	.vault-explorer-custom-filter {
-		margin-left: -4px;
-	}
-
 	.vault-explorer-empty-label {
 		color: var(--text-faint);
 		font-size: var(--font-smaller);

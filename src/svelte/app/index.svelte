@@ -760,6 +760,12 @@
 	$: totalItems = renderData.length;
 	$: totalPages = Math.ceil(totalItems / pageSize);
 
+	//When using filters, the total pages can be less than the current page
+	//in this case, reset the current page to 1
+	$: if (totalPages < currentPage) {
+		currentPage = 1;
+	}
+
 	let currentPage = 1;
 	$: startIndex = (currentPage - 1) * pageSize;
 	$: pageLength = Math.min(pageSize, renderData.length - startIndex);
@@ -862,6 +868,6 @@
 	}
 
 	.vault-explorer-view-select {
-		margin-left: -4px;
+		flex: 1;
 	}
 </style>

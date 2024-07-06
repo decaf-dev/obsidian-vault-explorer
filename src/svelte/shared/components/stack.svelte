@@ -7,7 +7,8 @@
 		| "flex-end"
 		| "unset" = "unset";
 	export let align: "flex-start" | "center" | "flex-end" | "unset" = "unset";
-	export let direction: "row" | "column" = "row";
+	export let direction: "row" | "column" | "row-reverse" | "column-reverse" =
+		"row";
 	export let width = "unset";
 	export let height = "unset";
 
@@ -38,7 +39,9 @@
 		flex-direction: {direction};
 		justify-content: {justify};
 		align-items: {align};
-		{direction === 'row' ? 'column-gap' : 'row-gap'}: {spacingPx}px;
+		{direction === 'row' || direction === 'row-reverse'
+		? 'column-gap'
+		: 'row-gap'}: {spacingPx}px;
 		width: {width};
 		height: {height};
 	"
