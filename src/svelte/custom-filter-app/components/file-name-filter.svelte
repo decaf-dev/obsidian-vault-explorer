@@ -28,6 +28,7 @@
 	{condition}
 	{isEnabled}
 	on:ruleDeleteClick
+	on:ruleDuplicateClick
 	on:ruleTypeChange
 	on:ruleConditionChange
 	on:ruleOperatorChange

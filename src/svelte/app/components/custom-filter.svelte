@@ -1,13 +1,13 @@
 <script lang="ts">
 	import VaultExplorerPlugin from "src/main";
-	import PropertiesFilterModal from "src/obsidian/properties-filter-modal";
+	import PropertiesFilterModal from "src/obsidian/custom-filter-modal";
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import store from "src/svelte/shared/services/store";
-	import { FilterGroup } from "src/types";
+	import { TFilterGroup } from "src/types";
 	import GroupTagList from "./group-tag-list.svelte";
 
-	export let groups: FilterGroup[] = [];
+	export let groups: TFilterGroup[] = [];
 
 	let plugin: VaultExplorerPlugin;
 

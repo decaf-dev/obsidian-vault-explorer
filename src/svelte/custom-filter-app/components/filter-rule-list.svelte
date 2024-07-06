@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import PropertyFilter from "./property-filter.svelte";
-	import { FilterRule, FilterRuleType, PropertyType } from "src/types";
+	import { TFilterRule, FilterRuleType, PropertyType } from "src/types";
 	import ContentFilter from "./content-filter.svelte";
 	import FolderFilter from "./folder-filter.svelte";
 	import FileNameFilter from "./file-name-filter.svelte";
 
-	export let rules: FilterRule[] = [];
+	export let rules: TFilterRule[] = [];
 </script>
 
 <Stack direction="column" spacing="md" width="100%">
@@ -32,6 +32,7 @@
 				on:ruleValueChange
 				on:ruleToggle
 				on:ruleDeleteClick
+				on:ruleDuplicateClick
 				on:propertyNameChange
 				on:propertyTypeChange
 				on:propertyValueDataChange
@@ -53,6 +54,7 @@
 				on:ruleOperatorChange
 				on:ruleValueChange
 				on:ruleToggle
+				on:ruleDuplicateClick
 				on:ruleDeleteClick
 			/>
 		{/if}
@@ -72,6 +74,7 @@
 				on:ruleOperatorChange
 				on:ruleValueChange
 				on:ruleToggle
+				on:ruleDuplicateClick
 				on:ruleDeleteClick
 				on:folderSubfoldersToggle
 			/>
@@ -91,6 +94,7 @@
 				on:ruleOperatorChange
 				on:ruleValueChange
 				on:ruleToggle
+				on:ruleDuplicateClick
 				on:ruleDeleteClick
 			/>
 		{/if}

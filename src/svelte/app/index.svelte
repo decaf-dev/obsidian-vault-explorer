@@ -53,6 +53,7 @@
 	import Wrap from "../shared/components/wrap.svelte";
 	import { randomFileSortStore } from "./services/random-file-sort-store";
 	import { fileContentStore } from "./services/file-content-store";
+	import { fileStore } from "./services/file-store";
 
 	// ============================================
 	// Variables
@@ -134,7 +135,6 @@
 		plugin = p;
 
 		const { app, settings } = plugin;
-		files = app.vault.getFiles();
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
 		favoritesFilter = settings.filters.favorites;
@@ -155,6 +155,7 @@
 			setTimeValuesUpdateInterval();
 		}
 
+		fileStore.load(app);
 		fileContentStore.load(app);
 		randomFileSortStore.load(files);
 	});
@@ -167,10 +168,14 @@
 		contentCache = value;
 	});
 
+	fileStore.subscribe((value) => {
+		files = value;
+	});
+
 	onMount(() => {
 		function handleFilterToggleSettingChange() {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handleFilterToggleSettingChange",
 				message: "called",
 			});
@@ -198,7 +203,7 @@
 	onMount(() => {
 		function handleClockUpdatesSettingChange() {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handleClockUpdatesSettingChange",
 				message: "called",
 			});
@@ -233,7 +238,7 @@
 	onMount(() => {
 		function handlePropertiesFilterUpdate() {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handlePropertiesFilterUpdate",
 				message: "called",
 			});
@@ -255,14 +260,14 @@
 	onMount(() => {
 		const handleCreateFile = (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handleCreateFile",
 				message: "called",
 			});
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
-				files = [...files, newFile];
 
+				fileStore.onFileCreate(newFile);
 				randomFileSortStore.onFileCreate(newFile.path);
 				fileContentStore.onFileCreate(plugin.app, newFile);
 			}
@@ -277,16 +282,14 @@
 	onMount(() => {
 		const handleDeleteFile = (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handleDeleteFile",
 				message: "called",
 			});
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
 
-				//Remove the file from the files array
-				files = files.filter((file) => file.path !== path);
-
+				fileStore.onFileDelete(path);
 				randomFileSortStore.onFileDelete(path);
 				fileContentStore.onFileDelete(path);
 			}
@@ -301,7 +304,7 @@
 	onMount(() => {
 		const handleFileRename = (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handleFileRename",
 				message: "called",
 			});
@@ -310,13 +313,7 @@
 				const oldPath = data[0] as string;
 				const updatedFile = data[1] as TFile;
 
-				files = files.map((file) => {
-					if (file.path === oldPath) {
-						return updatedFile;
-					}
-					return file;
-				});
-
+				fileStore.onFileRename(oldPath, updatedFile);
 				randomFileSortStore.onFileRename(oldPath, updatedFile.path);
 				fileContentStore.onFileRename(oldPath, updatedFile.path);
 			}
@@ -331,7 +328,7 @@
 	onMount(() => {
 		const handleFileModify = async (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handleFileModify",
 				message: "called",
 			});
@@ -352,7 +349,7 @@
 	onMount(() => {
 		const handleMetadataChange = (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handleMetadataChange",
 				message: "called",
 			});
@@ -374,7 +371,7 @@
 	onMount(() => {
 		function handleViewToggleSettingChange() {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handleViewToggleSettingChange",
 				message: "called",
 			});
@@ -398,7 +395,7 @@
 	onMount(() => {
 		function handlePageSizeSettingChange() {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handlePageSizeSettingChange",
 				message: "called",
 			});
@@ -421,7 +418,7 @@
 	onMount(() => {
 		function handlePropertySettingChange() {
 			Logger.trace({
-				fileName: "app/index.ts",
+				fileName: "app/index.svelte",
 				functionName: "handlePropertySettingChange",
 				message: "called",
 			});
@@ -454,7 +451,7 @@
 
 	function updateTimeValues() {
 		Logger.trace({
-			fileName: "app/index.ts",
+			fileName: "app/index.svelte",
 			functionName: "updateTimeValues",
 			message: "called",
 		});
@@ -470,7 +467,7 @@
 
 	function updateFrontmatterCacheTime() {
 		Logger.trace({
-			fileName: "app/index.ts",
+			fileName: "app/index.svelte",
 			functionName: "updateFrontmatterCacheTime",
 			message: "called",
 		});
