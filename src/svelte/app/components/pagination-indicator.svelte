@@ -56,7 +56,7 @@
 	<Stack
 		align="center"
 		direction={isWrapped ? "row-reverse" : "row"}
-		justify={isWrapped ? "flex-end" : "flex-start"}
+		justify="flex-end"
 		spacing="md"
 	>
 		<Stack spacing="xs">
