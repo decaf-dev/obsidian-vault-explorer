@@ -654,7 +654,7 @@
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
-			const content = contentCache[path];
+			const content = contentCache[path] ?? null;
 
 			return filterByGroups(
 				name,
@@ -672,7 +672,7 @@
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
-			const content = contentCache[file.path];
+			const content = contentCache[file.path] ?? null;
 			return formatFileDataForRender(
 				plugin.settings,
 				file,
@@ -721,8 +721,8 @@
 		} else if (value === "modified-desc") {
 			return b.modifiedMillis - a.modifiedMillis;
 		} else if (value === "random") {
-			const sortKeyA = randomSortCache[a.path];
-			const sortKeyB = randomSortCache[b.path];
+			const sortKeyA = randomSortCache[a.path] ?? 0;
+			const sortKeyB = randomSortCache[b.path] ?? 0;
 			return sortKeyA - sortKeyB;
 		}
 		return 0;
