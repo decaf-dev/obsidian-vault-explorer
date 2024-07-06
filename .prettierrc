@@ -1,0 +1,9 @@
+{
+  "tabWidth": 4,
+  "useTabs": true,
+  "endOfLine": "lf",
+  "charset": "utf-8",
+  "insertFinalNewline": false,
+  "semi": true,
+  "quotes": "double"
+}
