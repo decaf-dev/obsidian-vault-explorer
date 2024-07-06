@@ -51,7 +51,7 @@
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
-	import { randomFileSort } from "./services/random-file-sort-store";
+	import { randomFileSortStore } from "./services/random-file-sort-store";
 	import { fileContentStore } from "./services/file-content-store";
 
 	// ============================================
@@ -156,10 +156,10 @@
 		}
 
 		fileContentStore.load(app);
-		randomFileSort.load(files);
+		randomFileSortStore.load(files);
 	});
 
-	randomFileSort.subscribe((value) => {
+	randomFileSortStore.subscribe((value) => {
 		randomSortCache = value;
 	});
 
@@ -263,7 +263,7 @@
 				const newFile = data[0] as TFile;
 				files = [...files, newFile];
 
-				randomFileSort.createFile(newFile.path);
+				randomFileSortStore.onFileCreate(newFile.path);
 				fileContentStore.onFileCreate(plugin.app, newFile);
 			}
 		};
@@ -287,7 +287,7 @@
 				//Remove the file from the files array
 				files = files.filter((file) => file.path !== path);
 
-				randomFileSort.deleteFile(path);
+				randomFileSortStore.onFileDelete(path);
 				fileContentStore.onFileDelete(path);
 			}
 		};
@@ -317,7 +317,7 @@
 					return file;
 				});
 
-				randomFileSort.renameFile(oldPath, updatedFile.path);
+				randomFileSortStore.onFileRename(oldPath, updatedFile.path);
 				fileContentStore.onFileRename(oldPath, updatedFile.path);
 			}
 		};
