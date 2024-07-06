@@ -8,14 +8,14 @@ export interface VaultExplorerPluginSettings {
 		custom1: string;
 		custom2: string;
 		custom3: string;
-	},
+	};
 	filters: {
 		search: TSearchFilter;
 		favorites: TFavoritesFilter;
 		sort: TSortFilter;
 		timestamp: TTimestampFilter;
 		custom: TCustomFilter;
-	},
+	};
 	views: {
 		dashboard: TDashboardView;
 		grid: TGridView;
@@ -24,7 +24,7 @@ export interface VaultExplorerPluginSettings {
 		feed: TFeedView;
 		recommended: TRecommendedView;
 		related: TRelatedView;
-	}
+	};
 	titleWrapping: WordBreak;
 	enableClockUpdates: boolean;
 	currentView: TExplorerView | null;
@@ -39,26 +39,19 @@ interface BaseView {
 	isEnabled: boolean;
 }
 
-export interface TTableView extends BaseView {
-}
+export interface TTableView extends BaseView {}
 
-export interface TListView extends BaseView {
-}
+export interface TListView extends BaseView {}
 
-export interface TGridView extends BaseView {
-}
+export interface TGridView extends BaseView {}
 
-export interface TDashboardView extends BaseView {
-}
+export interface TDashboardView extends BaseView {}
 
-export interface TFeedView extends BaseView {
-}
+export interface TFeedView extends BaseView {}
 
-export interface TRecommendedView extends BaseView {
-}
+export interface TRecommendedView extends BaseView {}
 
-export interface TRelatedView extends BaseView {
-}
+export interface TRelatedView extends BaseView {}
 
 interface BaseFilter {
 	isEnabled: boolean;
@@ -70,11 +63,11 @@ export interface TSearchFilter extends BaseFilter {
 
 export interface TFavoritesFilter extends BaseFilter {
 	value: boolean;
-};
+}
 
 export interface TSortFilter extends BaseFilter {
 	value: SortFilterOption;
-};
+}
 
 export interface TTimestampFilter extends BaseFilter {
 	value: TimestampFilterOption;
@@ -85,9 +78,21 @@ export interface TCustomFilter extends BaseFilter {
 	groups: FilterGroup[];
 }
 
-export type TimestampFilterOption = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
+export type TimestampFilterOption =
+	| "created-today"
+	| "modified-today"
+	| "created-this-week"
+	| "modified-this-week"
+	| "created-2-weeks"
+	| "modified-2-weeks"
+	| "all";
 
-export type SortFilterOption = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
+export type SortFilterOption =
+	| "file-name-asc"
+	| "file-name-desc"
+	| "modified-asc"
+	| "modified-desc"
+	| "random";
 
 export type WordBreak = "normal" | "break-word";
 
@@ -172,7 +177,15 @@ export enum FileNameFilterCondition {
 	ENDS_WITH = "ends-with",
 }
 
-export type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition | ContentFilterCondition | FolderFilterCondition | FileNameFilterCondition;
+export type FilterCondition =
+	| TextFilterCondition
+	| NumberFilterCondition
+	| DateFilterCondition
+	| CheckboxFilterCondition
+	| ListFilterCondition
+	| ContentFilterCondition
+	| FolderFilterCondition
+	| FileNameFilterCondition;
 
 //This matches the Obsidian property types
 export enum PropertyType {
@@ -199,7 +212,7 @@ export enum DatePropertyFilterValue {
 	ONE_WEEK_AGO = "one-week-ago",
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
 	ONE_MONTH_AGO = "one-month-ago",
-	CUSTOM = "custom"
+	CUSTOM = "custom",
 }
 
 interface BaseFilterRule {
@@ -264,8 +277,17 @@ export interface ContentFilterRule extends BaseFilterRule {
 	condition: ContentFilterCondition;
 }
 
-export type FilterRule = PropertyFilterRule | FolderFilterRule | FileNameFilterRule | ContentFilterRule;
-export type PropertyFilterRule = TextPropertyFilterRule | NumberPropertyFilterRule | ListPropertyFilterRule | CheckboxPropertyFilterRule | DatePropertyFilterRule;
+export type FilterRule =
+	| PropertyFilterRule
+	| FolderFilterRule
+	| FileNameFilterRule
+	| ContentFilterRule;
+export type PropertyFilterRule =
+	| TextPropertyFilterRule
+	| NumberPropertyFilterRule
+	| ListPropertyFilterRule
+	| CheckboxPropertyFilterRule
+	| DatePropertyFilterRule;
 
 export interface FilterGroup {
 	id: string;

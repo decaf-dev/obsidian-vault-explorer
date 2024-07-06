@@ -37,6 +37,12 @@
 			item.setChecked(value === "modified-asc");
 			item.onClick(() => handleValueChange("modified-asc"));
 		});
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item.setTitle("Random");
+			item.setChecked(value === "random");
+			item.onClick(() => handleValueChange("random"));
+		});
 		menu.showAtMouseEvent(nativeEvent);
 	}
 </script>

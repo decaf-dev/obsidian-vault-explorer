@@ -51,6 +51,7 @@
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
+	import { randomFileSort } from "./services/random-file-sort-store";
 
 	// ============================================
 	// Variables
@@ -92,6 +93,7 @@
 	let files: TFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
 	let contentForFiles: FileContent[] = [];
+	let randomSortFiles: Record<string, number> = {};
 
 	let dashboardView: TDashboardView = {
 		isEnabled: false,
@@ -152,6 +154,12 @@
 		}
 
 		contentForFiles = await loadContentForFiles(files);
+
+		randomFileSort.load(files);
+	});
+
+	randomFileSort.subscribe((value) => {
+		randomSortFiles = value;
 	});
 
 	onMount(() => {
@@ -249,6 +257,8 @@
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
 				files = [...files, newFile];
+
+				randomFileSort.createFile(newFile.path);
 			}
 		};
 
@@ -267,7 +277,11 @@
 			});
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
+
+				//Remove the file from the files array
 				files = files.filter((file) => file.path !== path);
+
+				randomFileSort.deleteFile(path);
 			}
 		};
 
@@ -288,12 +302,15 @@
 			if (typeof data[0] === "string" && data[1] instanceof TFile) {
 				const oldPath = data[0] as string;
 				const updatedFile = data[1] as TFile;
+
 				files = files.map((file) => {
 					if (file.path === oldPath) {
 						return updatedFile;
 					}
 					return file;
 				});
+
+				randomFileSort.renameFile(oldPath, updatedFile.path);
 			}
 		};
 
@@ -724,14 +741,19 @@
 	});
 
 	$: renderData = [...filteredTimestamp].sort((a, b) => {
-		if (sortFilter.value === "file-name-asc") {
+		const { value } = sortFilter;
+		if (value === "file-name-asc") {
 			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-		} else if (sortFilter.value === "file-name-desc") {
+		} else if (value === "file-name-desc") {
 			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-		} else if (sortFilter.value === "modified-asc") {
+		} else if (value === "modified-asc") {
 			return a.modifiedMillis - b.modifiedMillis;
-		} else if (sortFilter.value === "modified-desc") {
+		} else if (value === "modified-desc") {
 			return b.modifiedMillis - a.modifiedMillis;
+		} else if (value === "random") {
+			const sortKeyA = randomSortFiles[a.path];
+			const sortKeyB = randomSortFiles[b.path];
+			return sortKeyA - sortKeyB;
 		}
 		return 0;
 	});
