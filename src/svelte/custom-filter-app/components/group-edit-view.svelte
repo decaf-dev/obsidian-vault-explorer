@@ -3,7 +3,7 @@
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 
-	import { FilterGroup } from "src/types";
+	import { TFilterGroup } from "src/types";
 	import FilterRuleList from "./filter-rule-list.svelte";
 
 	import { createEventDispatcher } from "svelte";
@@ -11,7 +11,7 @@
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	const dispatch = createEventDispatcher();
 
-	export let selectedGroup: FilterGroup;
+	export let selectedGroup: TFilterGroup;
 
 	function handleFilterAddClick() {
 		const newFilter = createPropertyFilter();
@@ -44,6 +44,7 @@
 				on:ruleValueChange
 				on:ruleToggle
 				on:ruleDeleteClick
+				on:ruleDuplicateClick
 				on:propertyTypeChange
 				on:propertyNameChange
 				on:propertyMatchWhenPropertyDNEChange
