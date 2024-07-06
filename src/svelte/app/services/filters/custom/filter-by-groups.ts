@@ -216,7 +216,7 @@ const filterByPropertyType = (
 		const compare = value
 			.trim()
 			.split(",")
-			.map((v) => v.trim())
+			.map((v) => v.toLowerCase().trim())
 			.filter((v) => v !== "");
 
 		const doesMatch = matchListPropertyFilter(
