@@ -1,4 +1,4 @@
-import { App, TFile } from "obsidian";
+import { TFile } from "obsidian";
 import { writable } from "svelte/store";
 
 type RandomFileSortStore = Record<string, number>;
@@ -22,14 +22,14 @@ function createRandomFileSortStore() {
 		set(randomSortFiles);
 	}
 
-	function createFile(path: string) {
+	function handleFileCreate(path: string) {
 		update((files) => {
 			// Create a shallow copy of the files object to ensure reactivity
 			return { ...files, [path]: randomSortKey() };
 		});
 	}
 
-	function renameFile(oldPath: string, newPath: string) {
+	function handleFileRename(oldPath: string, newPath: string) {
 		update((files) => {
 			if (files.hasOwnProperty(oldPath)) {
 				// Create a shallow copy of the files object
@@ -42,7 +42,7 @@ function createRandomFileSortStore() {
 		});
 	}
 
-	function deleteFile(path: string) {
+	function handleFileDelete(path: string) {
 		update((files) => {
 			// Create a shallow copy and delete the property
 			const { [path]: _, ...newFiles } = files;
@@ -53,10 +53,10 @@ function createRandomFileSortStore() {
 	return {
 		load,
 		subscribe,
-		createFile,
-		renameFile,
-		deleteFile,
+		onFileCreate: handleFileCreate,
+		onFileRename: handleFileRename,
+		onFileDelete: handleFileDelete,
 	};
 }
 
-export const randomFileSort = createRandomFileSortStore();
+export const randomFileSortStore = createRandomFileSortStore();

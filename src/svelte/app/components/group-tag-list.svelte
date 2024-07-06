@@ -3,7 +3,7 @@
 	import GroupTag from "./group-tag.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import ScrollButton from "src/svelte/shared/components/scroll-button.svelte";
-	import { getScrollAmount } from "../services/scroll-utils";
+	import { getScrollAmount } from "../services/utils/scroll-utils";
 	import { onMount } from "svelte";
 	import store from "src/svelte/shared/services/store";
 	import VaultExplorerPlugin from "src/main";
