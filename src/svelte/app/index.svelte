@@ -53,6 +53,7 @@
 	import Wrap from "../shared/components/wrap.svelte";
 	import { randomFileSortStore } from "./services/random-file-sort-store";
 	import { fileContentStore } from "./services/file-content-store";
+	import { fileStore } from "./services/file-store";
 
 	// ============================================
 	// Variables
@@ -134,7 +135,6 @@
 		plugin = p;
 
 		const { app, settings } = plugin;
-		files = app.vault.getFiles();
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
 		favoritesFilter = settings.filters.favorites;
@@ -155,6 +155,7 @@
 			setTimeValuesUpdateInterval();
 		}
 
+		fileStore.load(app);
 		fileContentStore.load(app);
 		randomFileSortStore.load(files);
 	});
@@ -165,6 +166,10 @@
 
 	fileContentStore.subscribe((value) => {
 		contentCache = value;
+	});
+
+	fileStore.subscribe((value) => {
+		files = value;
 	});
 
 	onMount(() => {
@@ -261,8 +266,8 @@
 			});
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
-				files = [...files, newFile];
 
+				fileStore.onFileCreate(newFile);
 				randomFileSortStore.onFileCreate(newFile.path);
 				fileContentStore.onFileCreate(plugin.app, newFile);
 			}
@@ -284,9 +289,7 @@
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
 
-				//Remove the file from the files array
-				files = files.filter((file) => file.path !== path);
-
+				fileStore.onFileDelete(path);
 				randomFileSortStore.onFileDelete(path);
 				fileContentStore.onFileDelete(path);
 			}
@@ -310,13 +313,7 @@
 				const oldPath = data[0] as string;
 				const updatedFile = data[1] as TFile;
 
-				files = files.map((file) => {
-					if (file.path === oldPath) {
-						return updatedFile;
-					}
-					return file;
-				});
-
+				fileStore.onFileRename(oldPath, updatedFile);
 				randomFileSortStore.onFileRename(oldPath, updatedFile.path);
 				fileContentStore.onFileRename(oldPath, updatedFile.path);
 			}
