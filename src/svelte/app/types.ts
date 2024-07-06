@@ -1,6 +1,8 @@
 export interface FileRenderData {
-	name: string;
+	displayName: string;
 	path: string;
+	extension: string;
+	baseName: string;
 	content: string | null;
 	url: string | null;
 	tags: string[] | null;

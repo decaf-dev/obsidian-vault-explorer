@@ -47,31 +47,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("General").setHeading();
 
 		new Setting(containerEl)
-			.setName("Page size")
-			.setDesc("The number of items to display per page.")
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOptions({
-						"10": "10",
-						"25": "25",
-						"50": "50",
-						"100": "100",
-						"250": "250",
-						"500": "500",
-					})
-					.setValue(this.plugin.settings.pageSize.toString())
-					.onChange(async (value) => {
-						this.plugin.settings.pageSize = parseInt(value);
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							"page-size-setting-change"
-						);
-					})
-			);
-
-		new Setting(containerEl)
 			.setName("Title wrapping")
-			.setDesc("Sets the wrapping style for the title.")
+			.setDesc("Set the wrapping style for the title.")
 			.addDropdown((cb) => {
 				cb.addOptions({
 					normal: "Normal",
@@ -114,6 +91,29 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							"scroll-buttons-setting-change"
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Page size")
+			.setDesc("Number of items to display per page.")
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions({
+						"10": "10",
+						"25": "25",
+						"50": "50",
+						"100": "100",
+						"250": "250",
+						"500": "500",
+					})
+					.setValue(this.plugin.settings.pageSize.toString())
+					.onChange(async (value) => {
+						this.plugin.settings.pageSize = parseInt(value);
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							"page-size-setting-change"
 						);
 					})
 			);
@@ -294,7 +294,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Favorite property")
 			.setDesc(
-				"The property used to mark a note as a favorite. This must be a checkbox property."
+				"Property used to mark a note as a favorite. This must be a checkbox property."
 			)
 			.addDropdown((dropdown) =>
 				dropdown
@@ -314,7 +314,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("URL property")
 			.setDesc(
-				"The property used to store the URL of the content. This must be a text property."
+				"Property used to store the URL of the content. This must be a text property."
 			)
 			.addDropdown((dropdown) =>
 				dropdown
@@ -331,7 +331,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		const creationDateDesc = new DocumentFragment();
 		creationDateDesc.createDiv({
-			text: "The property containing the creation date. This must be a date or datetime property.",
+			text: "Property containing the creation date. This must be a date or datetime property.",
 		});
 		creationDateDesc.createDiv({
 			text: "If set to 'Select a property', the file's created at date will be used.",
@@ -360,7 +360,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		const modificationDateDesc = new DocumentFragment();
 		modificationDateDesc.createDiv({
-			text: "The property containing the modification date. This must be a date or datetime property.",
+			text: "Property containing the modification date. This must be a date or datetime property.",
 		});
 		modificationDateDesc.createDiv({
 			text: "If set to 'Select a property', the file's modified at date will be used.",
@@ -391,7 +391,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Custom property 1")
-			.setDesc("The first custom property. This must be a text property.")
+			.setDesc("First custom property. This must be a text property.")
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOptions(getDropdownOptionsForProperties(textProperties))
@@ -407,9 +407,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Custom property 2")
-			.setDesc(
-				"The second custom property. This must be a text property."
-			)
+			.setDesc("Second custom property. This must be a text property.")
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOptions(getDropdownOptionsForProperties(textProperties))
@@ -425,7 +423,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Custom property 3")
-			.setDesc("The third custom property. This must be a text property.")
+			.setDesc("Third custom property. This must be a text property.")
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOptions(getDropdownOptionsForProperties(textProperties))
@@ -468,7 +466,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Log level")
 			.setDesc(
-				"Sets the log level. Please use trace to see all log messages."
+				"Set the log level. Please use trace to see all log messages."
 			)
 			.addDropdown((cb) => {
 				cb.addOptions({

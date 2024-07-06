@@ -14,9 +14,13 @@
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import ScrollButton from "src/svelte/shared/components/scroll-button.svelte";
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import { getIconIdForFile } from "../services/utils/file-icon-utils";
 
-	export let name: string;
+	export let displayName: string;
 	export let path: string;
+	export let baseName: string;
+	export let extension: string;
 	export let url: string | null;
 	export let tags: string[] | null;
 	export let custom1: string | null;
@@ -26,6 +30,7 @@
 	let tagContainerRef: HTMLDivElement | null;
 	let wordBreak: WordBreak = "normal";
 
+	let enableFileIcons: boolean = false;
 	let enableScrollButtons: boolean = false;
 	let renderScrollLeftButton = false;
 	let renderScrollRightButton = false;
@@ -35,6 +40,24 @@
 		plugin = p;
 		wordBreak = plugin.settings.titleWrapping;
 		enableScrollButtons = plugin.settings.enableScrollButtons;
+		enableFileIcons = plugin.settings.enableFileIcons;
+	});
+
+	onMount(() => {
+		function handleFileIconsChange() {
+			enableFileIcons = plugin.settings.enableFileIcons;
+		}
+
+		EventManager.getInstance().on(
+			"file-icons-setting-change",
+			handleFileIconsChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"file-icons-setting-change",
+				handleFileIconsChange,
+			);
+		};
 	});
 
 	onMount(() => {
@@ -185,7 +208,12 @@
 				});
 			}}
 		>
-			{name}
+			<Stack spacing="xs">
+				{#if enableFileIcons}
+					<Icon iconId={getIconIdForFile(baseName, extension)} />
+				{/if}
+				<span>{displayName}</span>
+			</Stack>
 		</div>
 		{#if url !== null}
 			<IconButton iconId="external-link" on:click={handleUrlClick} />

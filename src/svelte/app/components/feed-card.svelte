@@ -10,19 +10,42 @@
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Tag from "src/svelte/shared/components/tag.svelte";
 	import { removeFrontmatterBlock } from "../services/utils/frontmatter-utils";
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import { getIconIdForFile } from "../services/utils/file-icon-utils";
 
-	export let name: string;
+	export let displayName: string;
+	export let baseName: string;
+	export let extension: string;
 	export let path: string;
 	export let tags: string[] | null;
 	export let createdMillis: number;
 	export let content: string | null;
 
 	let wordBreak: WordBreak = "normal";
+	let enableFileIcons = false;
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((value) => {
 		plugin = value;
 		wordBreak = plugin.settings.titleWrapping;
+		enableFileIcons = plugin.settings.enableFileIcons;
+	});
+
+	onMount(() => {
+		function handleFileIconsChange() {
+			enableFileIcons = plugin.settings.enableFileIcons;
+		}
+
+		EventManager.getInstance().on(
+			"file-icons-setting-change",
+			handleFileIconsChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"file-icons-setting-change",
+				handleFileIconsChange,
+			);
+		};
 	});
 
 	onMount(() => {
@@ -93,7 +116,12 @@
 				});
 			}}
 		>
-			{name}
+			<Stack spacing="xs">
+				{#if enableFileIcons}
+					<Icon iconId={getIconIdForFile(baseName, extension)} />
+				{/if}
+				<span>{displayName}</span>
+			</Stack>
 		</div>
 		{#if displayContent != null && displayContent.length > 0}
 			<div class="vault-explorer-feed-card__content">

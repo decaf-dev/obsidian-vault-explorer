@@ -24,6 +24,12 @@
 
 <div class="vault-explorer-list-view">
 	{#each displayedItems as file (file.path)}
-		<ListItem name={file.name} path={file.path} tags={file.tags} />
+		<ListItem
+			displayName={file.displayName}
+			extension={file.extension}
+			baseName={file.baseName}
+			path={file.path}
+			tags={file.tags}
+		/>
 	{/each}
 </div>

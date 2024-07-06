@@ -4,12 +4,17 @@
 	import { FileRenderData } from "../types";
 	import License from "src/svelte/shared/services/license";
 	import FeedCard from "./feed-card.svelte";
+	import { onMount } from "svelte";
+	import EventManager from "src/event/event-manager";
+	import VaultExplorerPlugin from "src/main";
+	import store from "src/svelte/shared/services/store";
 
 	export let enablePremiumFeatures = false;
 	export let data: FileRenderData[] = [];
 	export let startIndex;
 	export let pageLength;
 
+	let enableFileIcons = false;
 	let displayedItems: FileRenderData[] = [];
 
 	License.getInstance()
@@ -42,7 +47,9 @@
 	{#if enablePremiumFeatures}
 		{#each displayedItems as fileData (fileData.path)}
 			<FeedCard
-				name={fileData.name}
+				displayName={fileData.displayName}
+				extension={fileData.extension}
+				baseName={fileData.baseName}
 				path={fileData.path}
 				tags={fileData.tags}
 				content={fileData.content}
