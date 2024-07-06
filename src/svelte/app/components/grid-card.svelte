@@ -9,7 +9,7 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { onMount } from "svelte";
-	import { getScrollAmount } from "../services/scroll-utils";
+	import { getScrollAmount } from "../services/utils/scroll-utils";
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";

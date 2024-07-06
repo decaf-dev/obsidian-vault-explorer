@@ -31,17 +31,17 @@
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
-	import { formatFileDataForRender } from "./services/render-utils";
+	import { formatFileDataForRender } from "./services/utils/render-utils";
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
-	import { getDisplayNameForView } from "./services/display-name";
+	import { getDisplayNameForView } from "./services/utils/display-name-utils";
 	import {
 		getStartOfLastWeekMillis,
 		getStartOfTodayMillis,
 		getStartOfThisWeekMillis,
 	} from "../shared/services/time-utils";
-	import { FileContent, FileRenderData } from "./types";
+	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
 	import SearchFilter from "./components/search-filter.svelte";
 	import TimestampFilter from "./components/timestamp-filter.svelte";
@@ -51,6 +51,8 @@
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
+	import { randomFileSortStore } from "./services/random-file-sort-store";
+	import { fileContentStore } from "./services/file-content-store";
 
 	// ============================================
 	// Variables
@@ -91,7 +93,9 @@
 
 	let files: TFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
-	let contentForFiles: FileContent[] = [];
+
+	let contentCache: Record<string, string | null> = {};
+	let randomSortCache: Record<string, number> = {};
 
 	let dashboardView: TDashboardView = {
 		isEnabled: false,
@@ -151,7 +155,16 @@
 			setTimeValuesUpdateInterval();
 		}
 
-		contentForFiles = await loadContentForFiles(files);
+		fileContentStore.load(app);
+		randomFileSortStore.load(files);
+	});
+
+	randomFileSortStore.subscribe((value) => {
+		randomSortCache = value;
+	});
+
+	fileContentStore.subscribe((value) => {
+		contentCache = value;
 	});
 
 	onMount(() => {
@@ -249,6 +262,9 @@
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
 				files = [...files, newFile];
+
+				randomFileSortStore.onFileCreate(newFile.path);
+				fileContentStore.onFileCreate(plugin.app, newFile);
 			}
 		};
 
@@ -267,7 +283,12 @@
 			});
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
+
+				//Remove the file from the files array
 				files = files.filter((file) => file.path !== path);
+
+				randomFileSortStore.onFileDelete(path);
+				fileContentStore.onFileDelete(path);
 			}
 		};
 
@@ -288,12 +309,16 @@
 			if (typeof data[0] === "string" && data[1] instanceof TFile) {
 				const oldPath = data[0] as string;
 				const updatedFile = data[1] as TFile;
+
 				files = files.map((file) => {
 					if (file.path === oldPath) {
 						return updatedFile;
 					}
 					return file;
 				});
+
+				randomFileSortStore.onFileRename(oldPath, updatedFile.path);
+				fileContentStore.onFileRename(oldPath, updatedFile.path);
 			}
 		};
 
@@ -314,16 +339,7 @@
 				const file = data[0] as TFile;
 				const content = await plugin.app.vault.cachedRead(file);
 
-				const updatedContentForFiles = contentForFiles.map((entry) => {
-					if (entry.path === file.path) {
-						return {
-							path: file.path,
-							content,
-						};
-					}
-					return entry;
-				});
-				contentForFiles = updatedContentForFiles;
+				fileContentStore.onFileModify(file.path, content);
 			}
 		};
 
@@ -450,32 +466,6 @@
 	function setTimeValuesUpdateInterval() {
 		const MILLIS_MINUTE = 60000;
 		timeValuesUpdateInterval = setInterval(updateTimeValues, MILLIS_MINUTE);
-	}
-
-	async function loadContentForFiles(files: TFile[]): Promise<FileContent[]> {
-		const promises: Promise<FileContent>[] = [];
-
-		for (let file of files) {
-			promises.push(
-				(async () => {
-					const { extension } = file;
-					if (extension === "md") {
-						const content = await plugin.app.vault.cachedRead(file);
-						return {
-							path: file.path,
-							content,
-						};
-					}
-					return {
-						path: file.path,
-						content: null,
-					};
-				})(),
-			);
-		}
-
-		const results = await Promise.all(promises);
-		return results;
 	}
 
 	function updateFrontmatterCacheTime() {
@@ -664,9 +654,7 @@
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
-			let content =
-				contentForFiles.find((content) => content.path === path)
-					?.content ?? "";
+			const content = contentCache[path];
 
 			return filterByGroups(
 				name,
@@ -683,9 +671,8 @@
 		formatted = filteredCustom.map((file) => {
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-			const content =
-				contentForFiles.find((content) => content.path === file.path)
-					?.content ?? null;
+
+			const content = contentCache[file.path];
 			return formatFileDataForRender(
 				plugin.settings,
 				file,
@@ -724,14 +711,19 @@
 	});
 
 	$: renderData = [...filteredTimestamp].sort((a, b) => {
-		if (sortFilter.value === "file-name-asc") {
+		const { value } = sortFilter;
+		if (value === "file-name-asc") {
 			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-		} else if (sortFilter.value === "file-name-desc") {
+		} else if (value === "file-name-desc") {
 			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
-		} else if (sortFilter.value === "modified-asc") {
+		} else if (value === "modified-asc") {
 			return a.modifiedMillis - b.modifiedMillis;
-		} else if (sortFilter.value === "modified-desc") {
+		} else if (value === "modified-desc") {
 			return b.modifiedMillis - a.modifiedMillis;
+		} else if (value === "random") {
+			const sortKeyA = randomSortCache[a.path];
+			const sortKeyB = randomSortCache[b.path];
+			return sortKeyA - sortKeyB;
 		}
 		return 0;
 	});
