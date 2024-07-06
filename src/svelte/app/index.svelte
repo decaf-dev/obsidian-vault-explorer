@@ -170,7 +170,7 @@
 	onMount(() => {
 		function handleFilterToggleSettingChange() {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handleFilterToggleSettingChange",
 				message: "called",
 			});
@@ -198,7 +198,7 @@
 	onMount(() => {
 		function handleClockUpdatesSettingChange() {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handleClockUpdatesSettingChange",
 				message: "called",
 			});
@@ -233,7 +233,7 @@
 	onMount(() => {
 		function handlePropertiesFilterUpdate() {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handlePropertiesFilterUpdate",
 				message: "called",
 			});
@@ -255,7 +255,7 @@
 	onMount(() => {
 		const handleCreateFile = (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handleCreateFile",
 				message: "called",
 			});
@@ -277,7 +277,7 @@
 	onMount(() => {
 		const handleDeleteFile = (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handleDeleteFile",
 				message: "called",
 			});
@@ -301,7 +301,7 @@
 	onMount(() => {
 		const handleFileRename = (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handleFileRename",
 				message: "called",
 			});
@@ -331,7 +331,7 @@
 	onMount(() => {
 		const handleFileModify = async (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handleFileModify",
 				message: "called",
 			});
@@ -352,7 +352,7 @@
 	onMount(() => {
 		const handleMetadataChange = (...data: unknown[]) => {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handleMetadataChange",
 				message: "called",
 			});
@@ -374,7 +374,7 @@
 	onMount(() => {
 		function handleViewToggleSettingChange() {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handleViewToggleSettingChange",
 				message: "called",
 			});
@@ -398,7 +398,7 @@
 	onMount(() => {
 		function handlePageSizeSettingChange() {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handlePageSizeSettingChange",
 				message: "called",
 			});
@@ -421,7 +421,7 @@
 	onMount(() => {
 		function handlePropertySettingChange() {
 			Logger.trace({
-				fileName: "app/index.svelte",
+				fileName: "app/index.ts",
 				functionName: "handlePropertySettingChange",
 				message: "called",
 			});
@@ -454,7 +454,7 @@
 
 	function updateTimeValues() {
 		Logger.trace({
-			fileName: "app/index.svelte",
+			fileName: "app/index.ts",
 			functionName: "updateTimeValues",
 			message: "called",
 		});
@@ -470,7 +470,7 @@
 
 	function updateFrontmatterCacheTime() {
 		Logger.trace({
-			fileName: "app/index.svelte",
+			fileName: "app/index.ts",
 			functionName: "updateFrontmatterCacheTime",
 			message: "called",
 		});

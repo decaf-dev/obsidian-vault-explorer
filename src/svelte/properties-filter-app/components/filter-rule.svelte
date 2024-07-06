@@ -23,7 +23,6 @@
 	import { createEventDispatcher } from "svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import License from "src/svelte/shared/services/license";
-	import { Menu } from "obsidian";
 
 	export let index: number;
 	export let id: string;
@@ -42,27 +41,6 @@
 		.subscribe((isRegistered) => {
 			enablePremiumFeatures = isRegistered;
 		});
-
-	function handleActionsClick(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent as MouseEvent;
-
-		const menu = new Menu();
-		menu.setUseNativeMenu(true);
-
-		menu.addItem((item) => {
-			item.setTitle("Duplicate");
-			item.onClick(() => handleDuplicateClick());
-		});
-		menu.addItem((item) => {
-			item.setTitle("Delete");
-			item.onClick(() => handleDeleteClick());
-		});
-		menu.showAtMouseEvent(nativeEvent);
-	}
-
-	function handleDuplicateClick() {
-		dispatch("ruleDuplicateClick", { id });
-	}
 
 	function handleDeleteClick() {
 		dispatch("ruleDeleteClick", { id });
@@ -156,9 +134,9 @@
 		<Stack spacing="sm" align="center">
 			<Switch value={isEnabled} on:change={() => handleToggle()} />
 			<IconButton
-				ariaLabel="Rule actions"
-				iconId="ellipsis-vertical"
-				on:click={handleActionsClick}
+				ariaLabel="Delete filter rule"
+				iconId="trash"
+				on:click={() => handleDeleteClick()}
 			/>
 			<slot name="after-toggle"></slot>
 		</Stack>

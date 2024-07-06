@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TFilterGroup } from "src/types";
+	import { FilterGroup } from "src/types";
 	import GroupTag from "./group-tag.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import ScrollButton from "src/svelte/shared/components/scroll-button.svelte";
@@ -9,7 +9,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import EventManager from "src/event/event-manager";
 
-	export let groups: TFilterGroup[] = [];
+	export let groups: FilterGroup[] = [];
 	let plugin: VaultExplorerPlugin;
 	let tagContainerRef: HTMLDivElement | null;
 	let enableScrollButtons = false;

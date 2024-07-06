@@ -8,6 +8,7 @@
 		DateFilterCondition,
 		ListFilterCondition,
 		NumberFilterCondition,
+		FilterGroup,
 		TextFilterCondition,
 		DatePropertyFilterValue,
 		PropertyType,
@@ -15,8 +16,6 @@
 		ContentFilterCondition,
 		FolderFilterCondition,
 		FileNameFilterCondition,
-		TFilterRule,
-		TFilterGroup,
 	} from "src/types";
 	import { generateRandomId } from "../shared/services/random";
 	import GroupEditView from "./components/group-edit-view.svelte";
@@ -24,10 +23,9 @@
 	import GroupList from "./components/group-list.svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import Divider from "../shared/components/divider.svelte";
-	import Logger from "js-logger";
 
 	let selectedGroupId: string = "";
-	let groups: TFilterGroup[] = [];
+	let groups: FilterGroup[] = [];
 	let plugin: VaultExplorerPlugin;
 
 	$: selectedGroup = groups.find((group) => group.id === selectedGroupId);
@@ -59,7 +57,7 @@
 	}
 
 	function handleGroupAddClick() {
-		const newGroup: TFilterGroup = {
+		const newGroup: FilterGroup = {
 			id: generateRandomId(),
 			name: `Group ${groups.length + 1}`,
 			rules: [createPropertyFilter()],
@@ -116,7 +114,7 @@
 	function handleRuleConditionChange(e: CustomEvent) {
 		const { id, condition } = e.detail;
 
-		const newGroups: TFilterGroup[] = groups.map((group) =>
+		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
@@ -168,76 +166,15 @@
 
 	function handleRuleDeleteClick(e: CustomEvent) {
 		const { id } = e.detail;
-		Logger.trace({
-			fileName: "custom-filter-app/index.svelte",
-			functionName: "handleRuleDeleteClick",
-			message: "called",
-		});
-		Logger.debug(
-			{
-				fileName: "custom-filter-app/index.svelte",
-				functionName: "handleRuleDeleteClick",
-				message: "deleting rule",
-			},
-			{ id },
+
+		const newGroups = groups.map((group) =>
+			group.id === selectedGroupId
+				? {
+						...group,
+						rules: group.rules.filter((rule) => rule.id !== id),
+					}
+				: group,
 		);
-
-		const newGroups: TFilterGroup[] = groups.map((group) => {
-			if (group.id === selectedGroupId) {
-				const newRules: TFilterRule[] = group.rules.filter(
-					(rule) => rule.id !== id,
-				);
-				return {
-					...group,
-					rules: newRules,
-				};
-			}
-			return group;
-		});
-
-		groups = newGroups;
-	}
-
-	function handleRuleDuplicateClick(e: CustomEvent) {
-		const { id } = e.detail;
-
-		Logger.trace({
-			fileName: "custom-filter-app/index.svelte",
-			functionName: "handleRuleDuplicateClick",
-			message: "called",
-		});
-		Logger.debug(
-			{
-				fileName: "custom-filter-app/index.svelte",
-				functionName: "handleRuleDuplicateClick",
-				message: "duplicating rule",
-			},
-			{ id },
-		);
-
-		const newGroups: TFilterGroup[] = groups.map((group) => {
-			if (group.id === selectedGroupId) {
-				const rule = group.rules.find((rule) => rule.id === id);
-				if (!rule) {
-					throw new Error(`Rule with id ${id} not found`);
-				}
-
-				const newRules: TFilterRule[] = [
-					...group.rules,
-					{
-						...rule,
-						id: generateRandomId(),
-					},
-				];
-
-				return {
-					...group,
-					rules: newRules,
-				};
-			}
-
-			return group;
-		});
 
 		groups = newGroups;
 	}
@@ -313,7 +250,7 @@
 			throw new Error(`Unhandled filter type: ${type}`);
 		}
 
-		const newGroups: TFilterGroup[] = groups.map((group) => {
+		const newGroups: FilterGroup[] = groups.map((group) => {
 			if (group.id === selectedGroupId) {
 				const newRules = group.rules.map((rule) => {
 					if (rule.id === id) {
@@ -358,7 +295,7 @@
 			throw new Error(`Unhandled filter type: ${propertyType}`);
 		}
 
-		const newGroups: TFilterGroup[] = groups.map((group) =>
+		const newGroups: FilterGroup[] = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
@@ -388,7 +325,7 @@
 	function handleRuleValueChange(e: CustomEvent) {
 		const { id, value } = e.detail;
 
-		const newGroups: TFilterGroup[] = groups.map((group) => {
+		const newGroups: FilterGroup[] = groups.map((group) => {
 			const { rules } = group;
 			if (group.id === selectedGroupId) {
 				const newRules = rules.map((rule) => {
@@ -438,7 +375,7 @@
 	function handleFolderSubfoldersToggle(e: CustomEvent) {
 		const { id, includeSubfolders } = e.detail;
 
-		const newGroups: TFilterGroup[] = groups.map((group) =>
+		const newGroups: FilterGroup[] = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
@@ -461,7 +398,7 @@
 	function handlePropertyMatchWhenPropertyDNEChange(e: CustomEvent) {
 		const { id, matchWhenDNE } = e.detail;
 
-		const newGroups: TFilterGroup[] = groups.map((group) =>
+		const newGroups: FilterGroup[] = groups.map((group) =>
 			group.id === selectedGroupId
 				? {
 						...group,
@@ -501,7 +438,6 @@
 				on:ruleAddClick={handleRuleAddClick}
 				on:ruleConditionChange={handleRuleConditionChange}
 				on:ruleDeleteClick={handleRuleDeleteClick}
-				on:ruleDuplicateClick={handleRuleDuplicateClick}
 				on:ruleValueChange={handleRuleValueChange}
 				on:ruleOperatorChange={handleRuleOperatorChange}
 				on:ruleToggle={handleRuleToggle}
