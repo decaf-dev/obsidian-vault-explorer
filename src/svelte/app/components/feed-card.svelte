@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MarkdownView } from "obsidian";
+	import { Component, MarkdownRenderer, MarkdownView } from "obsidian";
 	import { onMount } from "svelte";
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
@@ -93,6 +93,15 @@
 	}
 
 	$: displayContent = getDisplayContent(content);
+
+	//TODO render actual content
+	// MarkdownRenderer.render(
+	// 	plugin.app,
+	// 	displayContent,
+	// 	el,
+	// 	path,
+	// 	new Component(),
+	// );
 </script>
 
 <div class="vault-explorer-feed-card">
@@ -168,6 +177,7 @@
 
 	.vault-explorer-feed-card__content {
 		color: var(--text-muted);
+		white-space: pre-wrap;
 	}
 
 	.vault-explorer-feed-card__creation-time {
