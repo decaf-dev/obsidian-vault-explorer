@@ -75,7 +75,7 @@ export interface TTimestampFilter extends BaseFilter {
 
 export interface TCustomFilter extends BaseFilter {
 	selectedGroupId: string;
-	groups: FilterGroup[];
+	groups: TFilterGroup[];
 }
 
 export type TimestampFilterOption =
@@ -277,11 +277,12 @@ export interface ContentFilterRule extends BaseFilterRule {
 	condition: ContentFilterCondition;
 }
 
-export type FilterRule =
+export type TFilterRule =
 	| PropertyFilterRule
 	| FolderFilterRule
 	| FileNameFilterRule
 	| ContentFilterRule;
+
 export type PropertyFilterRule =
 	| TextPropertyFilterRule
 	| NumberPropertyFilterRule
@@ -289,10 +290,10 @@ export type PropertyFilterRule =
 	| CheckboxPropertyFilterRule
 	| DatePropertyFilterRule;
 
-export interface FilterGroup {
+export interface TFilterGroup {
 	id: string;
 	name: string;
-	rules: FilterRule[];
+	rules: TFilterRule[];
 	isEnabled: boolean;
 	isSticky: boolean;
 }
