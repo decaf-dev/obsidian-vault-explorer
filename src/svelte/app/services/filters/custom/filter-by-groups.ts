@@ -28,7 +28,7 @@ export const filterByGroups = (
 	fileName: string,
 	filePath: string,
 	fileFrontmatter: FrontMatterCache | undefined,
-	fileContent: string,
+	fileContent: string | null,
 	groups: FilterGroup[]
 ) => {
 	return groups.every((group) => {
@@ -47,7 +47,7 @@ const filterByGroup = (
 	fileName: string,
 	filePath: string,
 	fileFrontmatter: FrontMatterCache | undefined,
-	fileContent: string,
+	fileContent: string | null,
 	group: FilterGroup
 ) => {
 	let result: boolean | null = null;
@@ -80,7 +80,7 @@ const filterByRule = (
 	fileName: string,
 	filePath: string,
 	frontmatter: FrontMatterCache | undefined,
-	fileContent: string,
+	fileContent: string | null,
 	filter: FilterRule
 ) => {
 	const { type } = filter;
@@ -266,9 +266,14 @@ const filterByFolder = (
 };
 
 const filterByContent = (
-	fileContent: string,
+	fileContent: string | null,
 	filter: ContentFilterRule
 ): boolean => {
+	//If the file content is null, that means that the file is not a markdown file
+	if (fileContent === null) {
+		return true;
+	}
+
 	let value = removeFrontmatterBlock(fileContent);
 	value = value.toLowerCase().trim();
 

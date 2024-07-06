@@ -11,8 +11,3 @@ export interface FileRenderData {
 	custom2: string | null;
 	custom3: string | null;
 }
-
-export interface FileContent {
-	path: string;
-	content: string | null;
-}

@@ -1,4 +1,4 @@
-import { App, TFile } from "obsidian";
+import { TFile } from "obsidian";
 import { writable } from "svelte/store";
 
 type RandomFileSortStore = Record<string, number>;
