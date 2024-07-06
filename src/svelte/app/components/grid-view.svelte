@@ -25,8 +25,10 @@
 	<div class="vault-explorer-grid-view__container">
 		{#each displayedItems as file (file.path)}
 			<GridCard
-				name={file.name}
+				displayName={file.displayName}
 				path={file.path}
+				baseName={file.baseName}
+				extension={file.extension}
 				url={file.url}
 				tags={file.tags}
 				custom1={file.custom1}

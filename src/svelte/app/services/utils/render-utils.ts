@@ -95,8 +95,10 @@ export const formatFileDataForRender = (
 	const displayName = extension === "md" ? basename : name;
 
 	return {
-		name: displayName,
+		displayName,
+		baseName: basename,
 		path,
+		extension,
 		url,
 		content,
 		tags,

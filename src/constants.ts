@@ -19,15 +19,15 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	filters: {
 		search: {
 			isEnabled: true,
-			value: ""
+			value: "",
 		},
 		favorites: {
 			isEnabled: true,
-			value: false
+			value: false,
 		},
 		timestamp: {
 			isEnabled: true,
-			value: "all"
+			value: "all",
 		},
 		sort: {
 			isEnabled: true,
@@ -36,8 +36,8 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		custom: {
 			isEnabled: true,
 			selectedGroupId: "",
-			groups: []
-		}
+			groups: [],
+		},
 	},
 	views: {
 		dashboard: {
@@ -60,13 +60,14 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		related: {
 			isEnabled: false,
-		}
+		},
 	},
 	currentView: TExplorerView.GRID,
 	titleWrapping: "normal",
 	enableClockUpdates: true,
+	enableFileIcons: false,
 	enableScrollButtons: true,
 	pageSize: 50,
 	viewOrder: [TExplorerView.GRID, TExplorerView.LIST, TExplorerView.FEED],
-	pluginVersion: null
-}
+	pluginVersion: null,
+};

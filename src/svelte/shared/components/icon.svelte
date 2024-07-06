@@ -1,30 +1,37 @@
 <script lang="ts">
 	import { setIcon } from "obsidian";
 	import { onMount } from "svelte";
+	import { getSvgData } from "../services/get-svg-data";
 
 	export let ariaLabel = "";
 	export let iconId = "";
 	export let xs = false;
 
-	let ref: HTMLElement;
+	let ref: HTMLElement | null = null;
 
 	// Use onMount to ensure the element is available in the DOM
 	onMount(() => {
+		if (!ref) return;
 		if (iconId === "ellipsis-vertical") return;
+		if (iconId === "file-pdf") return;
 		setIcon(ref, iconId);
 
-		const icon = ref.querySelector("svg");
+		// const icon = ref.querySelector("svg");
 
-		if (xs && icon) {
-			icon.style.setProperty("width", "var(--icon-xs)");
-			icon.style.setProperty("height", "var(--icon-xs)");
-		}
+		// if (xs && icon) {
+		// 	icon.style.setProperty("width", "var(--icon-xs)");
+		// 	icon.style.setProperty("height", "var(--icon-xs)");
+		// }
 	});
 
-	$: className = `vault-explorer-icon ${xs ? "vault-explorer-icon--xs" : ""}`;
+	$: svgData = getSvgData(iconId);
+
+	$: className = `vault-explorer-icon ${xs ? "vault-explorer-icon--xs" : "vault-explorer-icon--md"}`;
 </script>
 
-<div class={className} aria-label={ariaLabel} bind:this={ref}></div>
+<div class={className} aria-label={ariaLabel} bind:this={ref}>
+	{@html svgData}
+</div>
 
 <style>
 	.vault-explorer-icon {
@@ -33,7 +40,13 @@
 		opacity: var(--icon-opacity);
 	}
 
+	.vault-explorer-icon--md {
+		width: var(--icon-m);
+		height: var(--icon-m);
+	}
+
 	.vault-explorer-icon--xs {
+		width: var(--icon-xs);
 		height: var(--icon-xs);
 	}
 </style>

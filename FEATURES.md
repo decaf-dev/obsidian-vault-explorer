@@ -51,6 +51,8 @@ Features are what the software should do.
 | Left/right buttons to allow a user to scroll between groups      | #accessibility           |
 | Duplicate a filter rule                                          | #filter                  |
 | Random sort                                                      | #filter                  |
+| Add file icons                                                   | #filter                  |
+| Add file icon setting                                            | #setting                 |
 
 ## Event callbacks
 

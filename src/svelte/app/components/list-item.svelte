@@ -5,14 +5,40 @@
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import Tag from "src/svelte/shared/components/tag.svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import Stack from "src/svelte/shared/components/stack.svelte";
+	import { getIconIdForFile } from "../services/utils/file-icon-utils";
+	import { onMount } from "svelte";
+	import EventManager from "src/event/event-manager";
 
-	export let name: string;
+	export let displayName: string;
+	export let baseName: string;
+	export let extension: string;
 	export let path: string;
 	export let tags: string[] | null;
 
+	let enableFileIcons: boolean = false;
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
 		plugin = p;
+		enableFileIcons = plugin.settings.enableFileIcons;
+	});
+
+	onMount(() => {
+		function handleFileIconsChange() {
+			enableFileIcons = plugin.settings.enableFileIcons;
+		}
+
+		EventManager.getInstance().on(
+			"file-icons-setting-change",
+			handleFileIconsChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"file-icons-setting-change",
+				handleFileIconsChange,
+			);
+		};
 	});
 
 	function handleTitleClick() {
@@ -49,7 +75,12 @@
 				});
 			}}
 		>
-			{name}
+			<Stack spacing="xs">
+				{#if enableFileIcons}
+					<Icon iconId={getIconIdForFile(baseName, extension)} />
+				{/if}
+				<span>{displayName}</span>
+			</Stack>
 		</div>
 		{#if tags != null}
 			<div class="vault-explorer-list-item__tags">

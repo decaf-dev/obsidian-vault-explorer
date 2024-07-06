@@ -8,9 +8,9 @@ export const filterBySearch = (file: FileRenderData, value: string) => {
 
 	const compare = value.toLowerCase().trim();
 
-	const { name, path, content, } = file;
+	const { displayName, path, content } = file;
 
-	if (name.toLowerCase().includes(compare)) {
+	if (displayName.toLowerCase().includes(compare)) {
 		return true;
 	}
 
@@ -23,4 +23,4 @@ export const filterBySearch = (file: FileRenderData, value: string) => {
 	}
 
 	return false;
-}
+};
