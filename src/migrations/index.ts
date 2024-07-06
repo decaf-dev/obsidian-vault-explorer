@@ -13,6 +13,7 @@ import Migrate_1_17_0 from "./migrate_1_17_0";
 import Migrate_1_13_0 from "./migrate_1_13_0";
 import Migrate_1_10_0 from "./migrate_1_10_0";
 import { isVersionLessThan } from "src/utils";
+import Migrate_1_21_0 from "./migrate_1_21_0";
 
 const migrations: TMigration[] = [
 	{
@@ -80,9 +81,17 @@ const migrations: TMigration[] = [
 		to: "1.17.0",
 		migrate: Migrate_1_17_0,
 	},
+	{
+		from: "1.20.0",
+		to: "1.21.0",
+		migrate: Migrate_1_21_0,
+	},
 ];
 
-export const preformMigrations = (settingsVersion: string, data: Record<string, unknown>) => {
+export const preformMigrations = (
+	settingsVersion: string,
+	data: Record<string, unknown>
+) => {
 	let updatedData = structuredClone(data);
 
 	for (const migration of migrations) {
@@ -96,4 +105,4 @@ export const preformMigrations = (settingsVersion: string, data: Record<string, 
 	}
 
 	return updatedData;
-}
+};

@@ -40,7 +40,8 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
         (typedObj["filters"]["sort"]["value"] === "file-name-asc" ||
             typedObj["filters"]["sort"]["value"] === "file-name-desc" ||
             typedObj["filters"]["sort"]["value"] === "modified-asc" ||
-            typedObj["filters"]["sort"]["value"] === "modified-desc") &&
+            typedObj["filters"]["sort"]["value"] === "modified-desc" ||
+            typedObj["filters"]["sort"]["value"] === "random") &&
         (typedObj["filters"]["timestamp"] !== null &&
             typeof typedObj["filters"]["timestamp"] === "object" ||
             typeof typedObj["filters"]["timestamp"] === "function") &&
@@ -616,6 +617,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
         (typedObj["titleWrapping"] === "normal" ||
             typedObj["titleWrapping"] === "break-word") &&
         typeof typedObj["enableClockUpdates"] === "boolean" &&
+        typeof typedObj["enableFileIcons"] === "boolean" &&
         (typedObj["currentView"] === null ||
             typedObj["currentView"] === TExplorerView.DASHBOARD ||
             typedObj["currentView"] === TExplorerView.GRID ||

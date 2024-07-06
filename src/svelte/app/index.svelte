@@ -710,9 +710,13 @@
 	$: renderData = [...filteredTimestamp].sort((a, b) => {
 		const { value } = sortFilter;
 		if (value === "file-name-asc") {
-			return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+			return a.displayName
+				.toLowerCase()
+				.localeCompare(b.displayName.toLowerCase());
 		} else if (value === "file-name-desc") {
-			return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+			return b.displayName
+				.toLowerCase()
+				.localeCompare(a.displayName.toLowerCase());
 		} else if (value === "modified-asc") {
 			return a.modifiedMillis - b.modifiedMillis;
 		} else if (value === "modified-desc") {

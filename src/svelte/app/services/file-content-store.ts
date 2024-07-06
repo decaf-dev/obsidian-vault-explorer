@@ -18,8 +18,11 @@ function createFileContentStore() {
 		for (let file of files) {
 			promises.push(
 				(async () => {
-					const { extension } = file;
-					if (extension === "md") {
+					const { basename, extension } = file;
+					if (
+						extension === "md" &&
+						!basename.endsWith(".excalidraw")
+					) {
 						const content = await app.vault.cachedRead(file);
 						return {
 							path: file.path,
