@@ -6,10 +6,10 @@
 	import EventManager from "src/event/event-manager";
 	import VaultExplorerPlugin from "src/main";
 	import store from "src/svelte/shared/services/store";
-	import { formatBearTime } from "../services/time-utils";
+	import { formatBearTime } from "../services/utils/time-utils";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Tag from "src/svelte/shared/components/tag.svelte";
-	import { removeFrontmatterBlock } from "../services/frontmatter-utils";
+	import { removeFrontmatterBlock } from "../services/utils/frontmatter-utils";
 
 	export let name: string;
 	export let path: string;

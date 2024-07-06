@@ -1,31 +1,67 @@
 import { FrontMatterCache } from "obsidian";
-import { FilterRule, FilterGroup, DatePropertyFilterValue, PropertyFilterRule, FilterRuleType, FileNameFilterRule, FolderFilterRule, ContentFilterRule } from "src/types";
+import {
+	FilterRule,
+	FilterGroup,
+	DatePropertyFilterValue,
+	PropertyFilterRule,
+	FilterRuleType,
+	FileNameFilterRule,
+	FolderFilterRule,
+	ContentFilterRule,
+} from "src/types";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 import { matchTextPropertyFilter } from "./match-text-property-filter";
 import { matchCheckboxPropertyFilter } from "./match-checkbox-property-filter";
 import { matchListPropertyFilter } from "./match-list-property-filter";
 import { matchDatePropertyFilter } from "./match-date-property-filter";
 import { matchNumberPropertyFilter } from "./match-number-property-filter";
-import { getDateDaysAgo, getDateDaysAhead } from "src/svelte/shared/services/time-utils";
+import {
+	getDateDaysAgo,
+	getDateDaysAhead,
+} from "src/svelte/shared/services/time-utils";
 import { matchFileNameFilter } from "./match-file-name-filter";
 import { matchContentFilter } from "./match-content-filter";
 import { matchFolderFilter } from "./match-folder-filter";
-import { removeFrontmatterBlock } from "../../frontmatter-utils";
+import { removeFrontmatterBlock } from "../../utils/frontmatter-utils";
 
-export const filterByGroups = (fileName: string, filePath: string, fileFrontmatter: FrontMatterCache | undefined, fileContent: string, groups: FilterGroup[]) => {
+export const filterByGroups = (
+	fileName: string,
+	filePath: string,
+	fileFrontmatter: FrontMatterCache | undefined,
+	fileContent: string,
+	groups: FilterGroup[]
+) => {
 	return groups.every((group) => {
 		if (!group.isEnabled) return true;
-		return filterByGroup(fileName, filePath, fileFrontmatter, fileContent, group);
+		return filterByGroup(
+			fileName,
+			filePath,
+			fileFrontmatter,
+			fileContent,
+			group
+		);
 	});
-}
+};
 
-const filterByGroup = (fileName: string, filePath: string, fileFrontmatter: FrontMatterCache | undefined, fileContent: string, group: FilterGroup) => {
+const filterByGroup = (
+	fileName: string,
+	filePath: string,
+	fileFrontmatter: FrontMatterCache | undefined,
+	fileContent: string,
+	group: FilterGroup
+) => {
 	let result: boolean | null = null;
 
 	group.rules.forEach((filter, i) => {
 		if (!filter.isEnabled) return;
 
-		const doesMatch = filterByRule(fileName, filePath, fileFrontmatter, fileContent, filter);
+		const doesMatch = filterByRule(
+			fileName,
+			filePath,
+			fileFrontmatter,
+			fileContent,
+			filter
+		);
 		if (result === null) {
 			result = doesMatch;
 		} else {
@@ -38,9 +74,15 @@ const filterByGroup = (fileName: string, filePath: string, fileFrontmatter: Fron
 	});
 
 	return result ?? true;
-}
+};
 
-const filterByRule = (fileName: string, filePath: string, frontmatter: FrontMatterCache | undefined, fileContent: string, filter: FilterRule) => {
+const filterByRule = (
+	fileName: string,
+	filePath: string,
+	frontmatter: FrontMatterCache | undefined,
+	fileContent: string,
+	filter: FilterRule
+) => {
 	const { type } = filter;
 
 	if (type === FilterRuleType.PROPERTY) {
@@ -54,11 +96,20 @@ const filterByRule = (fileName: string, filePath: string, frontmatter: FrontMatt
 	} else {
 		throw new Error(`FilterRuleType not supported: ${type}`);
 	}
-}
+};
 
-
-const filterByPropertyType = (frontmatter: FrontMatterCache | undefined, filter: PropertyFilterRule): boolean => {
-	const { condition, value, type, matchWhenPropertyDNE, propertyType, propertyName } = filter;
+const filterByPropertyType = (
+	frontmatter: FrontMatterCache | undefined,
+	filter: PropertyFilterRule
+): boolean => {
+	const {
+		condition,
+		value,
+		type,
+		matchWhenPropertyDNE,
+		propertyType,
+		propertyName,
+	} = filter;
 
 	///The property is empty when the user has not chosen a property.
 	//We should return true in this case because the filter should not be applied
@@ -68,24 +119,44 @@ const filterByPropertyType = (frontmatter: FrontMatterCache | undefined, filter:
 	}
 
 	if (propertyType === "text") {
-		let propertyValue = loadPropertyValue<string>(frontmatter, propertyName, propertyType);
+		let propertyValue = loadPropertyValue<string>(
+			frontmatter,
+			propertyName,
+			propertyType
+		);
 		if (propertyValue) {
 			propertyValue = propertyValue.toLowerCase().trim();
 		}
 		const compare = value.toLowerCase().trim();
 
-		const doesMatch = matchTextPropertyFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
+		const doesMatch = matchTextPropertyFilter(
+			propertyValue,
+			compare,
+			condition,
+			matchWhenPropertyDNE
+		);
 		return doesMatch;
-
 	} else if (propertyType === "number") {
-		const propertyValue = loadPropertyValue<number>(frontmatter, propertyName, propertyType);
+		const propertyValue = loadPropertyValue<number>(
+			frontmatter,
+			propertyName,
+			propertyType
+		);
 		const compare = parseFloat(value.trim());
 
-		const doesMatch = matchNumberPropertyFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
+		const doesMatch = matchNumberPropertyFilter(
+			propertyValue,
+			compare,
+			condition,
+			matchWhenPropertyDNE
+		);
 		return doesMatch;
-
 	} else if (propertyType === "checkbox") {
-		const propertyValue = loadPropertyValue<boolean>(frontmatter, propertyName, propertyType);
+		const propertyValue = loadPropertyValue<boolean>(
+			frontmatter,
+			propertyName,
+			propertyType
+		);
 
 		let compare = null;
 		if (value === "true") {
@@ -94,11 +165,19 @@ const filterByPropertyType = (frontmatter: FrontMatterCache | undefined, filter:
 			compare = false;
 		}
 
-		const doesMatch = matchCheckboxPropertyFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
+		const doesMatch = matchCheckboxPropertyFilter(
+			propertyValue,
+			compare,
+			condition,
+			matchWhenPropertyDNE
+		);
 		return doesMatch;
-
 	} else if (propertyType === "date" || propertyType === "datetime") {
-		const propertyValue = loadPropertyValue<string>(frontmatter, propertyName, propertyType);
+		const propertyValue = loadPropertyValue<string>(
+			frontmatter,
+			propertyName,
+			propertyType
+		);
 
 		const { valueData } = filter;
 		let compare = valueData;
@@ -118,33 +197,55 @@ const filterByPropertyType = (frontmatter: FrontMatterCache | undefined, filter:
 			compare = getDateDaysAhead(30);
 		}
 
-		const doesMatch = matchDatePropertyFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
+		const doesMatch = matchDatePropertyFilter(
+			propertyValue,
+			compare,
+			condition,
+			matchWhenPropertyDNE
+		);
 		return doesMatch;
-
 	} else if (propertyType === "list") {
-		let propertyValue = loadPropertyValue<string[]>(frontmatter, propertyName, propertyType);
+		let propertyValue = loadPropertyValue<string[]>(
+			frontmatter,
+			propertyName,
+			propertyType
+		);
 		if (propertyValue) {
 			propertyValue = propertyValue.map((v) => v.toLowerCase().trim());
 		}
-		const compare = value.trim().split(",").map((v) => v.trim()).filter((v) => v !== "");
+		const compare = value
+			.trim()
+			.split(",")
+			.map((v) => v.trim())
+			.filter((v) => v !== "");
 
-		const doesMatch = matchListPropertyFilter(propertyValue, compare, condition, matchWhenPropertyDNE);
+		const doesMatch = matchListPropertyFilter(
+			propertyValue,
+			compare,
+			condition,
+			matchWhenPropertyDNE
+		);
 		return doesMatch;
-
 	} else {
 		throw new Error(`PropertyFilterType not supported: ${type}`);
 	}
-}
+};
 
-const filterByFileName = (fileName: string, filter: FileNameFilterRule): boolean => {
+const filterByFileName = (
+	fileName: string,
+	filter: FileNameFilterRule
+): boolean => {
 	const value = fileName.toLowerCase();
 	const compare = filter.value.toLowerCase().trim();
 
 	const doesMatch = matchFileNameFilter(value, compare, filter.condition);
 	return doesMatch;
-}
+};
 
-const filterByFolder = (filePath: string, filter: FolderFilterRule): boolean => {
+const filterByFolder = (
+	filePath: string,
+	filter: FolderFilterRule
+): boolean => {
 	const { condition, includeSubfolders } = filter;
 
 	let value = filePath.toLowerCase();
@@ -158,11 +259,16 @@ const filterByFolder = (filePath: string, filter: FolderFilterRule): boolean => 
 
 	const compare = filter.value.toLowerCase().trim();
 
-	const doesMatch = matchFolderFilter(value, compare, condition, { includeSubfolders });
+	const doesMatch = matchFolderFilter(value, compare, condition, {
+		includeSubfolders,
+	});
 	return doesMatch;
-}
+};
 
-const filterByContent = (fileContent: string, filter: ContentFilterRule): boolean => {
+const filterByContent = (
+	fileContent: string,
+	filter: ContentFilterRule
+): boolean => {
 	let value = removeFrontmatterBlock(fileContent);
 	value = value.toLowerCase().trim();
 
@@ -170,4 +276,4 @@ const filterByContent = (fileContent: string, filter: ContentFilterRule): boolea
 
 	const doesMatch = matchContentFilter(value, compare, filter.condition);
 	return doesMatch;
-}
+};
