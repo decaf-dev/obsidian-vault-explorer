@@ -1,7 +1,7 @@
 import { FrontMatterCache } from "obsidian";
 import {
-	TFilterRule,
-	TFilterGroup,
+	FilterRule,
+	FilterGroup,
 	DatePropertyFilterValue,
 	PropertyFilterRule,
 	FilterRuleType,
@@ -29,7 +29,7 @@ export const filterByGroups = (
 	filePath: string,
 	fileFrontmatter: FrontMatterCache | undefined,
 	fileContent: string | null,
-	groups: TFilterGroup[]
+	groups: FilterGroup[]
 ) => {
 	return groups.every((group) => {
 		if (!group.isEnabled) return true;
@@ -48,7 +48,7 @@ const filterByGroup = (
 	filePath: string,
 	fileFrontmatter: FrontMatterCache | undefined,
 	fileContent: string | null,
-	group: TFilterGroup
+	group: FilterGroup
 ) => {
 	let result: boolean | null = null;
 
@@ -81,7 +81,7 @@ const filterByRule = (
 	filePath: string,
 	frontmatter: FrontMatterCache | undefined,
 	fileContent: string | null,
-	filter: TFilterRule
+	filter: FilterRule
 ) => {
 	const { type } = filter;
 
