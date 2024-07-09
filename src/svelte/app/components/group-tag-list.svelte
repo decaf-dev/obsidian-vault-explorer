@@ -10,6 +10,7 @@
 	import EventManager from "src/event/event-manager";
 
 	export let groups: TFilterGroup[] = [];
+
 	let plugin: VaultExplorerPlugin;
 	let tagContainerRef: HTMLDivElement | null;
 	let enableScrollButtons = false;
@@ -27,9 +28,11 @@
 		function handleScrollButtonSettingChange() {
 			const newValue = plugin.settings.enableScrollButtons;
 			enableScrollButtons = newValue;
+
 			if (newValue === false) {
 				showScrollLeftButton = false;
 				showScrollRightButton = false;
+				tagContainerRef?.removeEventListener("scroll", handleScroll);
 			}
 		}
 
@@ -100,15 +103,6 @@
 				left: scrollAmount,
 				behavior: "smooth",
 			});
-		}
-	}
-
-	$: if (tagContainerRef) {
-		if (enableScrollButtons) {
-			tagContainerRef.addEventListener("scroll", handleScroll);
-			handleScroll();
-		} else {
-			tagContainerRef.removeEventListener("scroll", handleScroll);
 		}
 	}
 </script>
