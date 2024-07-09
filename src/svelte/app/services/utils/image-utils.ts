@@ -16,7 +16,14 @@ export const isImageExtension = (extension: string) => {
 	}
 };
 
-export const fetchImageFromUrl = async (url: string) => {
+const getMetaTagContent = (document: Document, property: string) => {
+	const tag =
+		document.querySelector(`meta[property='${property}']`) ||
+		document.querySelector(`meta[name='${property}']`);
+	return tag ? tag.getAttribute("content") : "";
+};
+
+export const fetchSocialImageFromUrl = async (url: string) => {
 	try {
 		const response = await requestUrl({
 			url,
@@ -26,17 +33,10 @@ export const fetchImageFromUrl = async (url: string) => {
 
 		const html = response.text;
 		const parser = new DOMParser();
-		const doc = parser.parseFromString(html, "text/html");
+		const document = parser.parseFromString(html, "text/html");
 
-		const getMetaTagContent = (property: string) => {
-			const tag =
-				doc.querySelector(`meta[property='${property}']`) ||
-				doc.querySelector(`meta[name='${property}']`);
-			return tag ? tag.getAttribute("content") : "";
-		};
-
-		const ogImage = getMetaTagContent("og:image");
-		const twitterImage = getMetaTagContent("twitter:image");
+		const ogImage = getMetaTagContent(document, "og:image");
+		const twitterImage = getMetaTagContent(document, "twitter:image");
 
 		const imageUrl = ogImage || twitterImage;
 

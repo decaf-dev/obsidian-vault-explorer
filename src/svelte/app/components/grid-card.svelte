@@ -14,7 +14,7 @@
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/utils/file-icon-utils";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
-	import { fetchImageFromUrl } from "../services/utils/image-utils";
+	import { fetchSocialImageFromUrl } from "../services/utils/image-utils";
 
 	export let displayName: string;
 	export let path: string;
@@ -31,26 +31,50 @@
 	let wordBreak: WordBreak = "normal";
 
 	let enableFileIcons: boolean = false;
-	let enableScrollButtons: boolean = false;
-	let renderScrollLeftButton = false;
-	let renderScrollRightButton = false;
+	// let enableScrollButtons: boolean = false;
+	// let renderScrollLeftButton = false;
+	// let renderScrollRightButton = false;
+	let fetchSocialMediaImage = true;
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		wordBreak = plugin.settings.titleWrapping;
-		enableScrollButtons = plugin.settings.enableScrollButtons;
+		// enableScrollButtons = plugin.settings.enableScrollButtons;
 		enableFileIcons = plugin.settings.enableFileIcons;
+		fetchSocialMediaImage =
+			plugin.settings.views.grid.fetchSocialMediaImage;
 	});
 
+	async function getSocialImageUrl() {
+		if (!fetchSocialMediaImage) return;
+		if (imageUrl === null && url !== null) {
+			imageUrl = await fetchSocialImageFromUrl(url);
+		}
+	}
+
 	onMount(() => {
-		async function getImageUrl() {
-			if (imageUrl === null && url !== null) {
-				imageUrl = await fetchImageFromUrl(url);
-			}
+		getSocialImageUrl();
+	});
+
+	$: fetchSocialMediaImage, getSocialImageUrl();
+
+	onMount(() => {
+		function handleFetchSocialMediaImageForUrlChange() {
+			fetchSocialMediaImage =
+				plugin.settings.views.grid.fetchSocialMediaImage;
 		}
 
-		getImageUrl();
+		EventManager.getInstance().on(
+			"fetch-social-media-image-setting-change",
+			handleFetchSocialMediaImageForUrlChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"fetch-social-media-image-setting-change",
+				handleFetchSocialMediaImageForUrlChange,
+			);
+		};
 	});
 
 	onMount(() => {
@@ -87,46 +111,46 @@
 		};
 	});
 
-	onMount(() => {
-		function handleScrollButtonSettingChange() {
-			const newValue = plugin.settings.enableScrollButtons;
-			enableScrollButtons = newValue;
+	// onMount(() => {
+	// 	function handleScrollButtonSettingChange() {
+	// 		const newValue = plugin.settings.enableScrollButtons;
+	// 		enableScrollButtons = newValue;
 
-			if (newValue === false) {
-				renderScrollLeftButton = false;
-				renderScrollRightButton = false;
-			}
-		}
+	// 		if (newValue === false) {
+	// 			renderScrollLeftButton = false;
+	// 			renderScrollRightButton = false;
+	// 		}
+	// 	}
 
-		EventManager.getInstance().on(
-			"scroll-buttons-setting-change",
-			handleScrollButtonSettingChange,
-		);
+	// 	EventManager.getInstance().on(
+	// 		"scroll-buttons-setting-change",
+	// 		handleScrollButtonSettingChange,
+	// 	);
 
-		return () => {
-			EventManager.getInstance().off(
-				"scroll-buttons-setting-change",
-				handleScrollButtonSettingChange,
-			);
-		};
-	});
+	// 	return () => {
+	// 		EventManager.getInstance().off(
+	// 			"scroll-buttons-setting-change",
+	// 			handleScrollButtonSettingChange,
+	// 		);
+	// 	};
+	// });
 
-	onMount(() => {
-		function addScrollListener() {
-			if (tagContainerRef && enableScrollButtons) {
-				tagContainerRef.addEventListener("scroll", handleScroll);
-				requestAnimationFrame(handleScroll);
-			}
-		}
+	// onMount(() => {
+	// 	function addScrollListener() {
+	// 		if (tagContainerRef && enableScrollButtons) {
+	// 			tagContainerRef.addEventListener("scroll", handleScroll);
+	// 			requestAnimationFrame(handleScroll);
+	// 		}
+	// 	}
 
-		addScrollListener();
+	// 	addScrollListener();
 
-		return () => {
-			if (tagContainerRef && enableScrollButtons) {
-				tagContainerRef.removeEventListener("scroll", handleScroll);
-			}
-		};
-	});
+	// 	return () => {
+	// 		if (tagContainerRef && enableScrollButtons) {
+	// 			tagContainerRef.removeEventListener("scroll", handleScroll);
+	// 		}
+	// 	};
+	// });
 
 	function handleTitleClick() {
 		const leaves = plugin.app.workspace.getLeavesOfType("markdown");
@@ -175,26 +199,26 @@
 	// 	}
 	// }
 
-	function handleScroll() {
-		if (!tagContainerRef) return;
+	// function handleScroll() {
+	// 	if (!tagContainerRef) return;
 
-		const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
-		renderScrollLeftButton = scrollLeft > 0;
+	// 	const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
+	// 	renderScrollLeftButton = scrollLeft > 0;
 
-		// When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
-		// To account for minor discrepancies, we use Math.round to round the result
-		renderScrollRightButton =
-			Math.round(scrollLeft + clientWidth) < scrollWidth;
-	}
+	// 	// When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
+	// 	// To account for minor discrepancies, we use Math.round to round the result
+	// 	renderScrollRightButton =
+	// 		Math.round(scrollLeft + clientWidth) < scrollWidth;
+	// }
 
-	$: if (tagContainerRef) {
-		if (enableScrollButtons) {
-			tagContainerRef.addEventListener("scroll", handleScroll);
-			handleScroll();
-		} else {
-			tagContainerRef.removeEventListener("scroll", handleScroll);
-		}
-	}
+	// $: if (tagContainerRef) {
+	// 	if (enableScrollButtons) {
+	// 		tagContainerRef.addEventListener("scroll", handleScroll);
+	// 		handleScroll();
+	// 	} else {
+	// 		tagContainerRef.removeEventListener("scroll", handleScroll);
+	// 	}
+	// }
 </script>
 
 <div class="vault-explorer-grid-card">

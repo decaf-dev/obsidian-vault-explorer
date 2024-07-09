@@ -310,6 +310,28 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				})
 		);
 
+		new Setting(containerEl).setName("Grid view").setHeading();
+
+		new Setting(containerEl)
+			.setName("Load social media image for url")
+			.setDesc(
+				"When a note has a URL property and no image URL property, load the social media image of the URL and use it as the card image."
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(
+						this.plugin.settings.views.grid.fetchSocialMediaImage
+					)
+					.onChange(async (value) => {
+						this.plugin.settings.views.grid.fetchSocialMediaImage =
+							value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							"fetch-social-media-image-setting-change"
+						);
+					})
+			);
+
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
 		new Setting(containerEl)
