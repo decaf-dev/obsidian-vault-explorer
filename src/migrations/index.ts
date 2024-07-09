@@ -14,6 +14,7 @@ import Migrate_1_13_0 from "./migrate_1_13_0";
 import Migrate_1_10_0 from "./migrate_1_10_0";
 import { isVersionLessThan } from "src/utils";
 import Migrate_1_21_0 from "./migrate_1_21_0";
+import Migrate_1_22_0 from "./migrate_1_22_0";
 
 const migrations: TMigration[] = [
 	{
@@ -85,6 +86,11 @@ const migrations: TMigration[] = [
 		from: "1.20.0",
 		to: "1.21.0",
 		migrate: Migrate_1_21_0,
+	},
+	{
+		from: "1.21.2",
+		to: "1.22.0",
+		migrate: Migrate_1_22_0,
 	},
 ];
 

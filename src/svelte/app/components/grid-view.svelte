@@ -29,6 +29,7 @@
 				path={file.path}
 				baseName={file.baseName}
 				extension={file.extension}
+				imageUrl={file.imageUrl}
 				url={file.url}
 				tags={file.tags}
 				custom1={file.custom1}
@@ -41,9 +42,10 @@
 
 <style>
 	.vault-explorer-grid-view__container {
-		display: grid;
+		display: flex;
+		flex-wrap: wrap;
 		row-gap: 2rem;
 		column-gap: 2rem;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
+		/* grid-template-columns: repeat(auto-fit, minmax(200px, 300px)); */
 	}
 </style>

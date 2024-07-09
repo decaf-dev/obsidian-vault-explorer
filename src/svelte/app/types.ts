@@ -5,6 +5,7 @@ export interface FileRenderData {
 	baseName: string;
 	content: string | null;
 	url: string | null;
+	imageUrl: string | null;
 	tags: string[] | null;
 	favorite: boolean | null;
 	createdMillis: number;
