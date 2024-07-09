@@ -64,7 +64,7 @@ Click the compass button on the left-hand sidebar to open the vault explorer vie
 
 ## Premium
 
-Premium features are available to users who purchase a [Vault Explorer license](https://vaultexplorer.com/docs/premium).
+Premium features are available to users who purchase a [Vault Explorer license](https://vaultexplorer.com/docs/premium/).
 
 ## Network requests
 

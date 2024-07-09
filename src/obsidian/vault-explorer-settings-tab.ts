@@ -100,20 +100,21 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl)
-			.setName("Scroll buttons")
-			.setDesc("Display scroll buttons for scrollable content.")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.enableScrollButtons)
-					.onChange(async (value) => {
-						this.plugin.settings.enableScrollButtons = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							"scroll-buttons-setting-change"
-						);
-					})
-			);
+		// TODO remove?
+		// new Setting(containerEl)
+		// 	.setName("Scroll buttons")
+		// 	.setDesc("Display scroll buttons for scrollable content.")
+		// 	.addToggle((toggle) =>
+		// 		toggle
+		// 			.setValue(this.plugin.settings.enableScrollButtons)
+		// 			.onChange(async (value) => {
+		// 				this.plugin.settings.enableScrollButtons = value;
+		// 				await this.plugin.saveSettings();
+		// 				EventManager.getInstance().emit(
+		// 					"scroll-buttons-setting-change"
+		// 				);
+		// 			})
+		// 	);
 
 		new Setting(containerEl)
 			.setName("Page size")
@@ -309,6 +310,28 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				})
 		);
 
+		new Setting(containerEl).setName("Grid view").setHeading();
+
+		new Setting(containerEl)
+			.setName("Load social media image for url")
+			.setDesc(
+				"When a note has a URL property and no image URL property, load the social media image of the URL and use it as the card image."
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(
+						this.plugin.settings.views.grid.fetchSocialMediaImage
+					)
+					.onChange(async (value) => {
+						this.plugin.settings.views.grid.fetchSocialMediaImage =
+							value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							"fetch-social-media-image-setting-change"
+						);
+					})
+			);
+
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
 		new Setting(containerEl)
@@ -478,9 +501,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Updates").setHeading();
 
 		new Setting(containerEl)
-			.setName("Enable clock updates")
+			.setName("Clock updates")
 			.setDesc(
-				"When enabled, time values will update every minute, refreshing the Vault Explorer view. When disabled, time values will only update when the view is first opened."
+				"Update time values every minute. This will refresh the Vault Explorer view"
 			)
 			.addToggle((toggle) =>
 				toggle

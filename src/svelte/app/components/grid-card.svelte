@@ -8,13 +8,13 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { onMount } from "svelte";
-	import { getScrollAmount } from "../services/utils/scroll-utils";
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
-	import ScrollButton from "src/svelte/shared/components/scroll-button.svelte";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/utils/file-icon-utils";
+	import Spacer from "src/svelte/shared/components/spacer.svelte";
+	import { fetchSocialImageFromUrl } from "../services/utils/image-utils";
 
 	export let displayName: string;
 	export let path: string;
@@ -31,16 +31,50 @@
 	let wordBreak: WordBreak = "normal";
 
 	let enableFileIcons: boolean = false;
-	let enableScrollButtons: boolean = false;
-	let renderScrollLeftButton = false;
-	let renderScrollRightButton = false;
+	// let enableScrollButtons: boolean = false;
+	// let renderScrollLeftButton = false;
+	// let renderScrollRightButton = false;
+	let fetchSocialMediaImage = true;
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		wordBreak = plugin.settings.titleWrapping;
-		enableScrollButtons = plugin.settings.enableScrollButtons;
+		// enableScrollButtons = plugin.settings.enableScrollButtons;
 		enableFileIcons = plugin.settings.enableFileIcons;
+		fetchSocialMediaImage =
+			plugin.settings.views.grid.fetchSocialMediaImage;
+	});
+
+	async function getSocialImageUrl() {
+		if (!fetchSocialMediaImage) return;
+		if (imageUrl === null && url !== null) {
+			imageUrl = await fetchSocialImageFromUrl(url);
+		}
+	}
+
+	onMount(() => {
+		getSocialImageUrl();
+	});
+
+	$: fetchSocialMediaImage, getSocialImageUrl();
+
+	onMount(() => {
+		function handleFetchSocialMediaImageForUrlChange() {
+			fetchSocialMediaImage =
+				plugin.settings.views.grid.fetchSocialMediaImage;
+		}
+
+		EventManager.getInstance().on(
+			"fetch-social-media-image-setting-change",
+			handleFetchSocialMediaImageForUrlChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				"fetch-social-media-image-setting-change",
+				handleFetchSocialMediaImageForUrlChange,
+			);
+		};
 	});
 
 	onMount(() => {
@@ -77,46 +111,46 @@
 		};
 	});
 
-	onMount(() => {
-		function handleScrollButtonSettingChange() {
-			const newValue = plugin.settings.enableScrollButtons;
-			enableScrollButtons = newValue;
+	// onMount(() => {
+	// 	function handleScrollButtonSettingChange() {
+	// 		const newValue = plugin.settings.enableScrollButtons;
+	// 		enableScrollButtons = newValue;
 
-			if (newValue === false) {
-				renderScrollLeftButton = false;
-				renderScrollRightButton = false;
-			}
-		}
+	// 		if (newValue === false) {
+	// 			renderScrollLeftButton = false;
+	// 			renderScrollRightButton = false;
+	// 		}
+	// 	}
 
-		EventManager.getInstance().on(
-			"scroll-buttons-setting-change",
-			handleScrollButtonSettingChange,
-		);
+	// 	EventManager.getInstance().on(
+	// 		"scroll-buttons-setting-change",
+	// 		handleScrollButtonSettingChange,
+	// 	);
 
-		return () => {
-			EventManager.getInstance().off(
-				"scroll-buttons-setting-change",
-				handleScrollButtonSettingChange,
-			);
-		};
-	});
+	// 	return () => {
+	// 		EventManager.getInstance().off(
+	// 			"scroll-buttons-setting-change",
+	// 			handleScrollButtonSettingChange,
+	// 		);
+	// 	};
+	// });
 
-	onMount(() => {
-		function addScrollListener() {
-			if (tagContainerRef && enableScrollButtons) {
-				tagContainerRef.addEventListener("scroll", handleScroll);
-				requestAnimationFrame(handleScroll);
-			}
-		}
+	// onMount(() => {
+	// 	function addScrollListener() {
+	// 		if (tagContainerRef && enableScrollButtons) {
+	// 			tagContainerRef.addEventListener("scroll", handleScroll);
+	// 			requestAnimationFrame(handleScroll);
+	// 		}
+	// 	}
 
-		addScrollListener();
+	// 	addScrollListener();
 
-		return () => {
-			if (tagContainerRef && enableScrollButtons) {
-				tagContainerRef.removeEventListener("scroll", handleScroll);
-			}
-		};
-	});
+	// 	return () => {
+	// 		if (tagContainerRef && enableScrollButtons) {
+	// 			tagContainerRef.removeEventListener("scroll", handleScroll);
+	// 		}
+	// 	};
+	// });
 
 	function handleTitleClick() {
 		const leaves = plugin.app.workspace.getLeavesOfType("markdown");
@@ -137,54 +171,54 @@
 		}
 	}
 
-	function handleScrollLeftClick() {
-		if (tagContainerRef) {
-			const scrollAmount = getScrollAmount(
-				tagContainerRef,
-				".vault-explorer-tag",
-				"left",
-			);
-			tagContainerRef.scrollBy({
-				left: -scrollAmount,
-				behavior: "smooth",
-			});
-		}
-	}
+	// function handleScrollLeftClick() {
+	// 	if (tagContainerRef) {
+	// 		const scrollAmount = getScrollAmount(
+	// 			tagContainerRef,
+	// 			".vault-explorer-tag",
+	// 			"left",
+	// 		);
+	// 		tagContainerRef.scrollBy({
+	// 			left: -scrollAmount,
+	// 			behavior: "smooth",
+	// 		});
+	// 	}
+	// }
 
-	function handleScrollRightClick() {
-		if (tagContainerRef) {
-			const scrollAmount = getScrollAmount(
-				tagContainerRef,
-				".vault-explorer-tag",
-				"right",
-			);
-			tagContainerRef.scrollBy({
-				left: scrollAmount,
-				behavior: "smooth",
-			});
-		}
-	}
+	// function handleScrollRightClick() {
+	// 	if (tagContainerRef) {
+	// 		const scrollAmount = getScrollAmount(
+	// 			tagContainerRef,
+	// 			".vault-explorer-tag",
+	// 			"right",
+	// 		);
+	// 		tagContainerRef.scrollBy({
+	// 			left: scrollAmount,
+	// 			behavior: "smooth",
+	// 		});
+	// 	}
+	// }
 
-	function handleScroll() {
-		if (!tagContainerRef) return;
+	// function handleScroll() {
+	// 	if (!tagContainerRef) return;
 
-		const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
-		renderScrollLeftButton = scrollLeft > 0;
+	// 	const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
+	// 	renderScrollLeftButton = scrollLeft > 0;
 
-		// When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
-		// To account for minor discrepancies, we use Math.round to round the result
-		renderScrollRightButton =
-			Math.round(scrollLeft + clientWidth) < scrollWidth;
-	}
+	// 	// When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
+	// 	// To account for minor discrepancies, we use Math.round to round the result
+	// 	renderScrollRightButton =
+	// 		Math.round(scrollLeft + clientWidth) < scrollWidth;
+	// }
 
-	$: if (tagContainerRef) {
-		if (enableScrollButtons) {
-			tagContainerRef.addEventListener("scroll", handleScroll);
-			handleScroll();
-		} else {
-			tagContainerRef.removeEventListener("scroll", handleScroll);
-		}
-	}
+	// $: if (tagContainerRef) {
+	// 	if (enableScrollButtons) {
+	// 		tagContainerRef.addEventListener("scroll", handleScroll);
+	// 		handleScroll();
+	// 	} else {
+	// 		tagContainerRef.removeEventListener("scroll", handleScroll);
+	// 	}
+	// }
 </script>
 
 <div class="vault-explorer-grid-card">
@@ -231,34 +265,32 @@
 	</div>
 	<div class="vault-explorer-grid-card__content">
 		{#if tags !== null}
-			<Stack spacing="xs">
-				{#if renderScrollLeftButton}
+			<!-- {#if renderScrollLeftButton}
 					<ScrollButton
 						type="tag"
 						direction="left"
 						on:click={handleScrollLeftClick}
 					/>
-				{/if}
-				<div
-					class="vault-explorer-grid-card__tags"
-					bind:this={tagContainerRef}
-				>
-					{#each tags as tag}
-						<Tag name={tag} />
-					{/each}
-				</div>
-				{#if renderScrollRightButton}
+				{/if} -->
+			<div
+				class="vault-explorer-grid-card__tags"
+				bind:this={tagContainerRef}
+			>
+				{#each tags as tag}
+					<Tag name={tag} />
+				{/each}
+			</div>
+			<!-- {#if renderScrollRightButton}
 					<ScrollButton
 						type="tag"
 						direction="right"
 						on:click={handleScrollRightClick}
 					/>
-				{/if}
-			</Stack>
+				{/if} -->
 		{/if}
-		<!-- {#if custom1 !== null || custom2 !== null || custom3 !== null}
+		{#if custom1 !== null || custom2 !== null || custom3 !== null}
 			<Spacer size="sm" direction="vertical" />
-		{/if} -->
+		{/if}
 		<Wrap spacingX="xs" spacingY="xs"
 			>{#if custom1 !== null}<Property
 					name={plugin.settings.properties.custom1}

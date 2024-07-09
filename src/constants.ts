@@ -46,6 +46,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		grid: {
 			isEnabled: true,
+			fetchSocialMediaImage: true,
 		},
 		list: {
 			isEnabled: true,

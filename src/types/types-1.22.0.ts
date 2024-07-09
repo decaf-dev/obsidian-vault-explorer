@@ -1,7 +1,8 @@
-export interface VaultExplorerPluginSettings_1_20_0 {
+export interface VaultExplorerPluginSettings_1_22_0 {
 	properties: {
 		favorite: string;
 		url: string;
+		imageUrl: string;
 		createdDate: string;
 		modifiedDate: string;
 		custom1: string;
@@ -26,9 +27,12 @@ export interface VaultExplorerPluginSettings_1_20_0 {
 	};
 	titleWrapping: WordBreak;
 	enableClockUpdates: boolean;
+	enableFileIcons: boolean;
 	currentView: TExplorerView | null;
 	enableScrollButtons: boolean;
 	pageSize: number;
+	filterGroupsWidth: number;
+	filterGroupsWrapping: FlexWrap;
 	pluginVersion: string | null;
 	viewOrder: TExplorerView[];
 	logLevel: string;
@@ -94,6 +98,8 @@ type SortFilterOption =
 	| "random";
 
 type WordBreak = "normal" | "break-word";
+
+type FlexWrap = "wrap" | "nowrap";
 
 enum TExplorerView {
 	DASHBOARD = "dashboard",
