@@ -68,6 +68,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	enableClockUpdates: true,
 	enableFileIcons: false,
 	enableScrollButtons: true,
+	filtersWidth: 300,
 	pageSize: 50,
 	viewOrder: [TExplorerView.GRID, TExplorerView.LIST, TExplorerView.FEED],
 	pluginVersion: null,

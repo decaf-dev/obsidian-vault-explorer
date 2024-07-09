@@ -329,9 +329,11 @@
 
 	.vault-explorer-grid-card__tags {
 		display: flex;
-		column-gap: 0.25rem;
-		height: min-content;
-		overflow-x: auto;
+		flex-wrap: wrap;
+		column-gap: 5px;
+		row-gap: 5px;
+		/* height: min-content;
+		overflow-x: auto; */
 	}
 
 	.vault-explorer-grid-card__tags::-webkit-scrollbar {

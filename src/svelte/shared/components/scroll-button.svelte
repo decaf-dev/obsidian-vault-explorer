@@ -33,7 +33,8 @@
 		background-color: var(--background-primary);
 		z-index: 1;
 		top: 0;
-		width: 20px;
+		width: 30px;
+		height: 100%;
 	}
 
 	.vault-explorer-scroll-button--left {
@@ -45,12 +46,18 @@
 	}
 
 	.vault-explorer-scroll-button--group-tag {
-		height: 25px;
 		padding-top: 2px;
 	}
 
 	.vault-explorer-scroll-button--tag {
-		height: 20px;
 		padding-top: 1px;
+	}
+
+	.vault-explorer-scroll-button--group-tag.vault-explorer-scroll-button--left {
+		padding-left: 4px;
+	}
+
+	.vault-explorer-scroll-button--group-tag.vault-explorer-scroll-button--right {
+		padding-left: 10px;
 	}
 </style>

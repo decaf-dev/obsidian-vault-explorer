@@ -32,6 +32,7 @@ export interface VaultExplorerPluginSettings {
 	currentView: TExplorerView | null;
 	enableScrollButtons: boolean;
 	pageSize: number;
+	filtersWidth: number;
 	pluginVersion: string | null;
 	viewOrder: TExplorerView[];
 	logLevel: string;

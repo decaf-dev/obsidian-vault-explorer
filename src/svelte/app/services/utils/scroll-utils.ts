@@ -1,10 +1,10 @@
 /**'
  * Gets the amount for the container to scroll in a given direction
- * 
+ *
  * Alogrithm:
  * If the item is overflowing the container, then scroll to the right until the item is fully visible.
  * If the distance to scroll is less than the scroll threshold, then scroll to the right one more item
- * 
+ *
  * @param containerRef - The container element that contains the items to scroll
  * @param className - The class name of the items to scroll
  * @param direction - The direction to scroll. Either "left" or "right"
@@ -15,12 +15,12 @@
 export const getScrollAmount = (
 	containerRef: HTMLElement,
 	className: string,
-	direction: "left" | "right",
+	direction: "left" | "right"
 ) => {
 	/**
 	 * The width of the scroll buttons in pixels
 	 */
-	const BUTTON_WIDTH = 20;
+	const BUTTON_WIDTH = 30;
 
 	/**
 	 * The minimum amount to scroll in pixels
@@ -40,7 +40,10 @@ export const getScrollAmount = (
 			const item = items[i] as HTMLElement;
 			const itemRight = getItemRight(item);
 			const containerRight =
-				containerRef.scrollLeft + containerRef.clientWidth - BUTTON_WIDTH - BUTTON_DISTANCE;
+				containerRef.scrollLeft +
+				containerRef.clientWidth -
+				BUTTON_WIDTH -
+				BUTTON_DISTANCE;
 
 			if (itemRight > containerRight) {
 				let diff = itemRight - containerRight;
@@ -59,7 +62,8 @@ export const getScrollAmount = (
 		for (let i = items.length - 1; i >= 0; i--) {
 			const item = items[i] as HTMLElement;
 			const itemLeft = item.offsetLeft;
-			const containerLeft = containerRef.scrollLeft + BUTTON_WIDTH + BUTTON_DISTANCE;
+			const containerLeft =
+				containerRef.scrollLeft + BUTTON_WIDTH + BUTTON_DISTANCE;
 
 			if (itemLeft < containerLeft) {
 				let diff = containerLeft - itemLeft;
@@ -77,8 +81,9 @@ export const getScrollAmount = (
 	}
 
 	return scrollAmount;
-}
+};
 
 //Use getBoundingClientRect().width because clientWidth may not be accurate when using flexbox
-const getItemRight = (item: HTMLElement) => item.offsetLeft + item.getBoundingClientRect().width;
+const getItemRight = (item: HTMLElement) =>
+	item.offsetLeft + item.getBoundingClientRect().width;
 const getItemLeft = (item: HTMLElement) => item.offsetLeft;
