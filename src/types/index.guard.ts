@@ -595,6 +595,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["views"]["grid"] === "object" ||
             typeof typedObj["views"]["grid"] === "function") &&
         typeof typedObj["views"]["grid"]["isEnabled"] === "boolean" &&
+        typeof typedObj["views"]["grid"]["fetchSocialMediaImage"] === "boolean" &&
         (typedObj["views"]["list"] !== null &&
             typeof typedObj["views"]["list"] === "object" ||
             typeof typedObj["views"]["list"] === "function") &&
@@ -629,6 +630,9 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["currentView"] === TExplorerView.RELATED) &&
         typeof typedObj["enableScrollButtons"] === "boolean" &&
         typeof typedObj["pageSize"] === "number" &&
+        typeof typedObj["filterGroupsWidth"] === "number" &&
+        (typedObj["filterGroupsWrapping"] === "wrap" ||
+            typedObj["filterGroupsWrapping"] === "nowrap") &&
         (typedObj["pluginVersion"] === null ||
             typeof typedObj["pluginVersion"] === "string") &&
         Array.isArray(typedObj["viewOrder"]) &&
