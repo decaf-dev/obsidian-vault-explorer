@@ -90,7 +90,7 @@
 	let currentView: TExplorerView | null = TExplorerView.GRID;
 
 	let frontmatterCacheTime: number = Date.now();
-	let propertySettingTime: number = Date.now();
+	let propertySettingsTime: number = Date.now();
 
 	let files: TFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
@@ -475,7 +475,7 @@
 	}
 
 	function updatePropertySettingTime() {
-		propertySettingTime = Date.now();
+		propertySettingsTime = Date.now();
 	}
 
 	async function saveSettings() {
@@ -664,13 +664,14 @@
 	}
 
 	let formatted: FileRenderData[] = [];
-	$: if (propertySettingTime) {
+	$: if (propertySettingsTime) {
 		formatted = filteredCustom.map((file) => {
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
 			const content = contentCache[file.path] ?? null;
 			return formatFileDataForRender(
+				plugin.app,
 				plugin.settings,
 				file,
 				frontmatter,

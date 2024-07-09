@@ -2,7 +2,6 @@
 	import { MarkdownView } from "obsidian";
 	import IconButton from "../../shared/components/icon-button.svelte";
 	import Tag from "../../shared/components/tag.svelte";
-	import Spacer from "../../shared/components/spacer.svelte";
 	import Property from "../../shared/components/property.svelte";
 	import VaultExplorerPlugin from "src/main";
 	import store from "../../shared/services/store";
@@ -22,6 +21,7 @@
 	export let baseName: string;
 	export let extension: string;
 	export let url: string | null;
+	export let imageUrl: string | null;
 	export let tags: string[] | null;
 	export let custom1: string | null;
 	export let custom2: string | null;
@@ -188,6 +188,12 @@
 </script>
 
 <div class="vault-explorer-grid-card">
+	<div class="vault-explorer-grid-card__cover">
+		{#if imageUrl !== null}
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<img class="vault-explorer-grid-card__image" src={imageUrl} />
+		{/if}
+	</div>
 	<div class="vault-explorer-grid-card__header">
 		<div
 			tabindex="0"
@@ -216,10 +222,13 @@
 			</Stack>
 		</div>
 		{#if url !== null}
-			<IconButton iconId="external-link" on:click={handleUrlClick} />
+			<IconButton
+				iconId="external-link"
+				noPadding
+				on:click={handleUrlClick}
+			/>
 		{/if}
 	</div>
-	<Spacer size="md" direction="vertical" />
 	<div class="vault-explorer-grid-card__content">
 		{#if tags !== null}
 			<Stack spacing="xs">
@@ -269,9 +278,26 @@
 
 <style>
 	.vault-explorer-grid-card {
-		padding: 20px;
+		width: 425px;
 		box-shadow: var(--shadow-s);
-		border: 1px solid var(--background-modifier-border);
+		border-top-left-radius: var(--radius-m);
+		border-top-right-radius: var(--radius-m);
+	}
+
+	.vault-explorer-grid-card__cover {
+		width: 100%;
+		height: 150px;
+		background-color: var(--background-modifier-border-focus);
+		border-top-left-radius: var(--radius-m);
+		border-top-right-radius: var(--radius-m);
+	}
+
+	.vault-explorer-grid-card__image {
+		width: 100%;
+		height: 150px;
+		object-fit: cover;
+		border-top-left-radius: var(--radius-m);
+		border-top-right-radius: var(--radius-m);
 	}
 
 	.vault-explorer-grid-card__header {
@@ -279,13 +305,7 @@
 		justify-content: space-between;
 		align-items: flex-start;
 		column-gap: 0.5rem;
-	}
-
-	.vault-explorer-grid-card__content {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		row-gap: 0.5rem;
+		padding: 10px 15px 10px 15px;
 	}
 
 	.vault-explorer-grid-card__title {
@@ -297,6 +317,14 @@
 
 	.vault-explorer-grid-card__title:focus-visible {
 		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
+	.vault-explorer-grid-card__content {
+		padding: 0px 15px 20px 15px;
+		position: relative;
+		/* display: flex;
+		flex-direction: column;
+		row-gap: 0.5rem; */
 	}
 
 	.vault-explorer-grid-card__tags {

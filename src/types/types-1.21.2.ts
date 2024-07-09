@@ -1,9 +1,7 @@
-/** @see {isVaultExplorerPluginSettings} ts-auto-guard:type-guard */
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_21_2 {
 	properties: {
 		favorite: string;
 		url: string;
-		imageUrl: string;
 		createdDate: string;
 		modifiedDate: string;
 		custom1: string;
