@@ -13,7 +13,7 @@
 	let startX: number;
 	let startWidth: number;
 	let containerRef: HTMLDivElement | null = null;
-	let handleRef: HTMLDivElement | null = null;
+	let dragging: boolean = false;
 	let filterGroupsWrapping: FlexWrap = "nowrap";
 
 	let plugin: VaultExplorerPlugin;
@@ -48,7 +48,6 @@
 
 	function onMouseDown(event: MouseEvent) {
 		if (!containerRef) return;
-		if (!handleRef) return;
 
 		startX = event.clientX;
 		startWidth = plugin.settings.filterGroupsWidth;
@@ -60,7 +59,7 @@
 
 		// Prevent pointer events on draggable elements
 		containerRef.style.pointerEvents = "none";
-		handleRef.classList.add("vault-explorer-resize-handle--dragging");
+		dragging = true;
 	}
 
 	function onMouseMove(event: MouseEvent) {
@@ -73,18 +72,20 @@
 		document.documentElement.removeEventListener("mousemove", onMouseMove);
 		document.documentElement.removeEventListener("mouseup", onMouseUp);
 
-		if (containerRef && handleRef) {
+		if (containerRef) {
 			// Re-enable pointer events on draggable elements
 			containerRef.style.pointerEvents = "auto";
-			handleRef.classList.remove(
-				"vault-explorer-resize-handle--dragging",
-			);
+			dragging = false;
 			plugin.settings.filterGroupsWidth = parseInt(
 				containerRef.style.maxWidth.replace("px", ""),
 			);
 			await plugin.saveSettings();
 		}
 	}
+
+	$: className = dragging
+		? "vault-explorer-resize-handle vault-explorer-resize-handle--dragging"
+		: "vault-explorer-resize-handle";
 </script>
 
 <div class="vault-explorer-filter-group-list" bind:this={containerRef}>
@@ -110,11 +111,7 @@
 		{/if}
 	</div>
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div
-		class="vault-explorer-resize-handle"
-		bind:this={handleRef}
-		on:mousedown={onMouseDown}
-	></div>
+	<div class={className} on:mousedown={onMouseDown}></div>
 </div>
 
 <style>
@@ -152,12 +149,12 @@
 	.vault-explorer-resize-handle:hover {
 		background-color: var(--divider-color-hover);
 		border-color: var(--divider-color-hover);
+		min-height: 35px;
 	}
 
-	:global(
-			.vault-explorer-resize-handle.vault-explorer-resize-handle--dragging
-		) {
+	.vault-explorer-resize-handle--dragging {
 		background-color: var(--divider-color-hover);
 		border-color: var(--divider-color-hover);
+		min-height: 35px;
 	}
 </style>
