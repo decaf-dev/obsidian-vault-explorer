@@ -1,12 +1,12 @@
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import { ItemView, Vault, WorkspaceLeaf } from "obsidian";
 
 import { VAULT_EXPLORER_VIEW } from "src/constants";
-import Component from "../svelte/app/index.svelte";
+import VaultExplorerApp from "../svelte/app/index.svelte";
 import store from "../svelte/shared/services/store";
 import VaultExplorerPlugin from "src/main";
 
 export default class VaultExplorerView extends ItemView {
-	component: Component | null;
+	component: VaultExplorerApp | null;
 	plugin: VaultExplorerPlugin;
 
 	constructor(leaf: WorkspaceLeaf, plugin: VaultExplorerPlugin) {
@@ -36,7 +36,7 @@ export default class VaultExplorerView extends ItemView {
 		const containerEl = this.containerEl.children[1];
 
 		store.plugin.set(this.plugin);
-		this.component = new Component({
+		this.component = new VaultExplorerApp({
 			target: containerEl,
 		});
 	}

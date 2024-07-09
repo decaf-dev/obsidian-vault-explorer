@@ -16,11 +16,11 @@ import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
 import { FlexWrap, TExplorerView, WordBreak } from "src/types";
 import EventManager from "src/event/event-manager";
-import Component from "../svelte/license-key-app/index.svelte";
+import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
-	component: Component | null;
+	component: LicenseKeyApp | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
@@ -519,7 +519,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Premium").setHeading();
 
-		this.component = new Component({
+		this.component = new LicenseKeyApp({
 			target: containerEl,
 		});
 
