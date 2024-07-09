@@ -7,6 +7,7 @@ import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
+import { isImageExtension } from "./file-utils";
 
 export const formatFileDataForRender = (
 	app: App,
@@ -100,13 +101,16 @@ export const formatFileDataForRender = (
 		PropertyType.TEXT
 	);
 
+	const { name, basename, extension, path } = file;
+
 	if (imageUrl?.startsWith("[[") && imageUrl.endsWith("]]")) {
 		const link = imageUrl.substring(2, imageUrl.length - 2);
 		const resourcePath = app.vault.adapter.getResourcePath(link);
 		imageUrl = resourcePath;
+	} else if (isImageExtension(extension)) {
+		imageUrl = app.vault.getResourcePath(file);
 	}
 
-	const { name, basename, extension, path } = file;
 	const displayName = extension === "md" ? basename : name;
 
 	return {
