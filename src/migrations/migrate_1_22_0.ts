@@ -11,6 +11,7 @@ export default class Migrate_1_22_0 implements MigrationInterface {
 				...typedData.properties,
 				imageUrl: "",
 			},
+			filtersWidth: 300,
 		};
 		return newData as unknown as Record<string, unknown>;
 	}

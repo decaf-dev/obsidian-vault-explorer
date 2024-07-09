@@ -47,13 +47,15 @@
 	import TimestampFilter from "./components/timestamp-filter.svelte";
 	import SortFilter from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME } from "./constants";
-	import CustomFilter from "./components/custom-filter.svelte";
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
 	import { randomFileSortStore } from "./services/random-file-sort-store";
 	import { fileContentStore } from "./services/file-content-store";
 	import { fileStore } from "./services/file-store";
+	import IconButton from "../shared/components/icon-button.svelte";
+	import CustomFilterModal from "src/obsidian/custom-filter-modal";
+	import FilterGroupList from "./components/filter-group-list.svelte";
 
 	// ============================================
 	// Variables
@@ -639,6 +641,10 @@
 		debounceFavoriteFilterChange(value);
 	}
 
+	function handleCustomFilterClick() {
+		new CustomFilterModal(plugin).open();
+	}
+
 	// ============================================
 	// Reactive statements and computed data
 	// ============================================
@@ -797,11 +803,16 @@
 								on:change={handleSortChange}
 							/>
 						{/if}
+						<IconButton
+							ariaLabel="Change custom filter"
+							iconId="list-filter"
+							on:click={handleCustomFilterClick}
+						/>
 					</Flex>
 				</Stack>
 			</Flex>
 			{#if customFilter.isEnabled}
-				<CustomFilter
+				<FilterGroupList
 					groups={customFilter.groups}
 					on:groupClick={handleGroupClick}
 					on:groupDrop={handleGroupDrop}
