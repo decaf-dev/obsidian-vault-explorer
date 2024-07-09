@@ -10,6 +10,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	properties: {
 		favorite: "",
 		url: "",
+		imageUrl: "",
 		createdDate: "",
 		modifiedDate: "",
 		custom1: "",
@@ -67,6 +68,8 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	enableClockUpdates: true,
 	enableFileIcons: false,
 	enableScrollButtons: true,
+	filterGroupsWidth: 300,
+	filterGroupsWrapping: "nowrap",
 	pageSize: 50,
 	viewOrder: [TExplorerView.GRID, TExplorerView.LIST, TExplorerView.FEED],
 	pluginVersion: null,

@@ -1,4 +1,4 @@
-import { FrontMatterCache, TFile } from "obsidian";
+import { App, FrontMatterCache, TFile } from "obsidian";
 import { PropertyType, VaultExplorerPluginSettings } from "src/types";
 import { FileRenderData } from "../../types";
 import Logger from "js-logger";
@@ -9,6 +9,7 @@ import {
 } from "src/svelte/shared/services/time-utils";
 
 export const formatFileDataForRender = (
+	app: App,
 	settings: VaultExplorerPluginSettings,
 	file: TFile,
 	frontmatter: FrontMatterCache | undefined,
@@ -25,6 +26,7 @@ export const formatFileDataForRender = (
 		modifiedDate: modifiedDateProp,
 		url: urlProp,
 		favorite: favoriteProp,
+		imageUrl: imageUrlProp,
 		custom1: custom1Prop,
 		custom2: custom2Prop,
 		custom3: custom3Prop,
@@ -35,6 +37,7 @@ export const formatFileDataForRender = (
 		urlProp,
 		PropertyType.TEXT
 	);
+
 	const favorite: boolean | null = loadPropertyValue<boolean>(
 		frontmatter,
 		favoriteProp,
@@ -91,6 +94,18 @@ export const formatFileDataForRender = (
 		}
 	}
 
+	let imageUrl: string | null = loadPropertyValue<string>(
+		frontmatter,
+		imageUrlProp,
+		PropertyType.TEXT
+	);
+
+	if (imageUrl?.startsWith("[[") && imageUrl.endsWith("]]")) {
+		const link = imageUrl.substring(2, imageUrl.length - 2);
+		const resourcePath = app.vault.adapter.getResourcePath(link);
+		imageUrl = resourcePath;
+	}
+
 	const { name, basename, extension, path } = file;
 	const displayName = extension === "md" ? basename : name;
 
@@ -102,6 +117,7 @@ export const formatFileDataForRender = (
 		url,
 		content,
 		tags,
+		imageUrl,
 		favorite,
 		createdMillis,
 		modifiedMillis,

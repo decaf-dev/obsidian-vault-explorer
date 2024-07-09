@@ -47,13 +47,15 @@
 	import TimestampFilter from "./components/timestamp-filter.svelte";
 	import SortFilter from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME } from "./constants";
-	import CustomFilter from "./components/custom-filter.svelte";
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
 	import { randomFileSortStore } from "./services/random-file-sort-store";
 	import { fileContentStore } from "./services/file-content-store";
 	import { fileStore } from "./services/file-store";
+	import IconButton from "../shared/components/icon-button.svelte";
+	import CustomFilterModal from "src/obsidian/custom-filter-modal";
+	import FilterGroupList from "./components/filter-group-list.svelte";
 
 	// ============================================
 	// Variables
@@ -90,7 +92,7 @@
 	let currentView: TExplorerView | null = TExplorerView.GRID;
 
 	let frontmatterCacheTime: number = Date.now();
-	let propertySettingTime: number = Date.now();
+	let propertySettingsTime: number = Date.now();
 
 	let files: TFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
@@ -475,7 +477,7 @@
 	}
 
 	function updatePropertySettingTime() {
-		propertySettingTime = Date.now();
+		propertySettingsTime = Date.now();
 	}
 
 	async function saveSettings() {
@@ -639,6 +641,10 @@
 		debounceFavoriteFilterChange(value);
 	}
 
+	function handleCustomFilterClick() {
+		new CustomFilterModal(plugin).open();
+	}
+
 	// ============================================
 	// Reactive statements and computed data
 	// ============================================
@@ -664,13 +670,14 @@
 	}
 
 	let formatted: FileRenderData[] = [];
-	$: if (propertySettingTime) {
+	$: if (propertySettingsTime) {
 		formatted = filteredCustom.map((file) => {
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
 			const content = contentCache[file.path] ?? null;
 			return formatFileDataForRender(
+				plugin.app,
 				plugin.settings,
 				file,
 				frontmatter,
@@ -796,11 +803,16 @@
 								on:change={handleSortChange}
 							/>
 						{/if}
+						<IconButton
+							ariaLabel="Change custom filter"
+							iconId="list-filter"
+							on:click={handleCustomFilterClick}
+						/>
 					</Flex>
 				</Stack>
 			</Flex>
 			{#if customFilter.isEnabled}
-				<CustomFilter
+				<FilterGroupList
 					groups={customFilter.groups}
 					on:groupClick={handleGroupClick}
 					on:groupDrop={handleGroupDrop}

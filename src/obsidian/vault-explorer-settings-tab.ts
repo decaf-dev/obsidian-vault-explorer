@@ -14,7 +14,7 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { TExplorerView, WordBreak } from "src/types";
+import { FlexWrap, TExplorerView, WordBreak } from "src/types";
 import EventManager from "src/event/event-manager";
 import Component from "../svelte/license-key-app/index.svelte";
 
@@ -60,6 +60,26 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							"title-wrapping-setting-change"
+						);
+					}
+				);
+			});
+
+		new Setting(containerEl)
+			.setName("Filter groups wrapping")
+			.setDesc("Set the wrapping style for filter groups.")
+			.addDropdown((cb) => {
+				cb.addOptions({
+					wrap: "Wrap",
+					nowrap: "No Wrap",
+				});
+				cb.setValue(this.plugin.settings.filterGroupsWrapping).onChange(
+					async (value) => {
+						this.plugin.settings.filterGroupsWrapping =
+							value as FlexWrap;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							"filter-groups-wrapping-setting-change"
 						);
 					}
 				);
@@ -314,7 +334,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("URL property")
 			.setDesc(
-				"Property used to store the URL of the content. This must be a text property."
+				"Property used to store a URL. This must be a text property."
 			)
 			.addDropdown((dropdown) =>
 				dropdown
@@ -329,9 +349,27 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
+		new Setting(containerEl)
+			.setName("Image URL property")
+			.setDesc(
+				"Property used to store an image url. This must be a text property."
+			)
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.setValue(this.plugin.settings.properties.imageUrl)
+					.onChange(async (value) => {
+						this.plugin.settings.properties.imageUrl = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							"property-setting-change"
+						);
+					})
+			);
+
 		const creationDateDesc = new DocumentFragment();
 		creationDateDesc.createDiv({
-			text: "Property containing the creation date. This must be a date or datetime property.",
+			text: "Property used to store a creation date. This must be a date or datetime property.",
 		});
 		creationDateDesc.createDiv({
 			text: "If set to 'Select a property', the file's created at date will be used.",
@@ -360,7 +398,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		const modificationDateDesc = new DocumentFragment();
 		modificationDateDesc.createDiv({
-			text: "Property containing the modification date. This must be a date or datetime property.",
+			text: "Property used to store a modification date. This must be a date or datetime property.",
 		});
 		modificationDateDesc.createDiv({
 			text: "If set to 'Select a property', the file's modified at date will be used.",
