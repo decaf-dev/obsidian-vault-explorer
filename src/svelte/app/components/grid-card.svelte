@@ -36,7 +36,7 @@
 	// let renderScrollLeftButton = false;
 	// let renderScrollRightButton = false;
 	let fetchSocialMediaImage = true;
-	let enablePremiumFeatures = false;
+	let isDeviceRegistered = false;
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
@@ -51,11 +51,11 @@
 	License.getInstance()
 		.getIsDeviceRegisteredStore()
 		.subscribe((isRegistered) => {
-			enablePremiumFeatures = isRegistered;
+			isDeviceRegistered = isRegistered;
 		});
 
 	async function getSocialImageUrl() {
-		if (!enablePremiumFeatures) return;
+		if (!isDeviceRegistered) return;
 		if (!fetchSocialMediaImage) return;
 		if (imageUrl === null && url !== null) {
 			imageUrl = await fetchSocialImageFromUrl(url);
