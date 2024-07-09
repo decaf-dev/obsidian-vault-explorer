@@ -15,6 +15,7 @@
 	import { getIconIdForFile } from "../services/utils/file-icon-utils";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import { fetchSocialImageFromUrl } from "../services/utils/image-utils";
+	import License from "src/svelte/shared/services/license";
 
 	export let displayName: string;
 	export let path: string;
@@ -27,7 +28,7 @@
 	export let custom2: string | null;
 	export let custom3: string | null;
 
-	let tagContainerRef: HTMLDivElement | null;
+	// let tagContainerRef: HTMLDivElement | null;
 	let wordBreak: WordBreak = "normal";
 
 	let enableFileIcons: boolean = false;
@@ -35,6 +36,7 @@
 	// let renderScrollLeftButton = false;
 	// let renderScrollRightButton = false;
 	let fetchSocialMediaImage = true;
+	let isDeviceRegistered = false;
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
@@ -46,7 +48,14 @@
 			plugin.settings.views.grid.fetchSocialMediaImage;
 	});
 
+	License.getInstance()
+		.getIsDeviceRegisteredStore()
+		.subscribe((isRegistered) => {
+			isDeviceRegistered = isRegistered;
+		});
+
 	async function getSocialImageUrl() {
+		if (!isDeviceRegistered) return;
 		if (!fetchSocialMediaImage) return;
 		if (imageUrl === null && url !== null) {
 			imageUrl = await fetchSocialImageFromUrl(url);
@@ -272,10 +281,7 @@
 						on:click={handleScrollLeftClick}
 					/>
 				{/if} -->
-			<div
-				class="vault-explorer-grid-card__tags"
-				bind:this={tagContainerRef}
-			>
+			<div class="vault-explorer-grid-card__tags">
 				{#each tags as tag}
 					<Tag name={tag} />
 				{/each}

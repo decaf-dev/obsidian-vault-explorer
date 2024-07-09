@@ -5,7 +5,7 @@
 	import License from "src/svelte/shared/services/license";
 	import FeedCard from "./feed-card.svelte";
 
-	export let enablePremiumFeatures = false;
+	export let isDeviceRegistered = false;
 	export let data: FileRenderData[] = [];
 	export let startIndex;
 	export let pageLength;
@@ -15,7 +15,7 @@
 	License.getInstance()
 		.getIsDeviceRegisteredStore()
 		.subscribe((isRegistered) => {
-			enablePremiumFeatures = isRegistered;
+			isDeviceRegistered = isRegistered;
 		});
 
 	$: {
@@ -33,13 +33,13 @@
 </script>
 
 <div class="vault-explorer-feed-view">
-	{#if !enablePremiumFeatures}
+	{#if !isDeviceRegistered}
 		<div>
 			<PremiumMessage />
 			<PremiumLink />
 		</div>
 	{/if}
-	{#if enablePremiumFeatures}
+	{#if isDeviceRegistered}
 		{#each displayedItems as fileData (fileData.path)}
 			<FeedCard
 				displayName={fileData.displayName}

@@ -16,21 +16,26 @@ import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
 import { FlexWrap, TExplorerView, WordBreak } from "src/types";
 import EventManager from "src/event/event-manager";
-import Component from "../svelte/license-key-app/index.svelte";
+import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
+import License from "src/svelte/shared/services/license";
+import "./styles.css";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
-	component: Component | null;
+	component: LicenseKeyApp | null;
+	socialMediaImageSetting: Setting | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.component = null;
+		this.socialMediaImageSetting = null;
 	}
 
 	display(): void {
-		const { containerEl } = this;
+		this.setupEventListeners();
 
+		const { containerEl } = this;
 		containerEl.empty();
 
 		const textProperties = getObsidianPropertiesByType(this.app, "text");
@@ -312,25 +317,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
-		new Setting(containerEl)
-			.setName("Load social media image for url")
-			.setDesc(
-				"When a note has a URL property and no image URL property, load the social media image of the URL and use it as the card image."
-			)
-			.addToggle((toggle) =>
-				toggle
-					.setValue(
-						this.plugin.settings.views.grid.fetchSocialMediaImage
-					)
-					.onChange(async (value) => {
-						this.plugin.settings.views.grid.fetchSocialMediaImage =
-							value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							"fetch-social-media-image-setting-change"
-						);
-					})
-			);
+		//TODO refactor logic
+		this.socialMediaImageSetting = new Setting(containerEl);
+		this.renderLoadSocialMediaImageSetting(
+			License.getInstance().getIsDeviceRegistered()
+		);
 
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
@@ -519,7 +510,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Premium").setHeading();
 
-		this.component = new Component({
+		this.component = new LicenseKeyApp({
 			target: containerEl,
 		});
 
@@ -550,7 +541,59 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 	onClose() {
 		this.component?.$destroy();
+		EventManager.getInstance().off(
+			"device-registration-change",
+			this.renderLoadSocialMediaImageSetting
+		);
 	}
+
+	private setupEventListeners() {
+		EventManager.getInstance().on(
+			"device-registration-change",
+			this.renderLoadSocialMediaImageSetting
+		);
+	}
+
+	private renderLoadSocialMediaImageSetting = (...data: unknown[]) => {
+		const isDeviceRegistered = data[0];
+
+		if (!this.socialMediaImageSetting) {
+			throw new Error("socialMediaImageSetting is null");
+		}
+
+		this.socialMediaImageSetting.clear();
+
+		const loadSocialMediaDesc = new DocumentFragment();
+		loadSocialMediaDesc.createDiv({
+			text: "When a markdown file has a URL property and no image URL property, load the social media image of the URL and use it as the card image.",
+		});
+
+		if (!isDeviceRegistered) {
+			loadSocialMediaDesc.createDiv({
+				text: "This feature requires a premium license.",
+				cls: "vault-explorer-premium-setting",
+			});
+		}
+
+		this.socialMediaImageSetting
+			.setName("Load social media image for url")
+			.setDesc(loadSocialMediaDesc)
+			.addToggle((toggle) =>
+				toggle
+					.setDisabled(!isDeviceRegistered)
+					.setValue(
+						this.plugin.settings.views.grid.fetchSocialMediaImage
+					)
+					.onChange(async (value) => {
+						this.plugin.settings.views.grid.fetchSocialMediaImage =
+							value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							"fetch-social-media-image-setting-change"
+						);
+					})
+			);
+	};
 
 	private updateViewOrder(view: TExplorerView, value: boolean) {
 		if (value) {

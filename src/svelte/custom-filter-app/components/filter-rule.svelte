@@ -33,14 +33,14 @@
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
 
-	let enablePremiumFeatures = false;
+	let isDeviceRegistered = false;
 
 	const dispatch = createEventDispatcher();
 
 	License.getInstance()
 		.getIsDeviceRegisteredStore()
 		.subscribe((isRegistered) => {
-			enablePremiumFeatures = isRegistered;
+			isDeviceRegistered = isRegistered;
 		});
 
 	function handleActionsClick(e: CustomEvent) {
@@ -142,7 +142,7 @@
 		</select>
 		<slot name="before-condition"></slot>
 		<select
-			disabled={type === FilterRuleType.CONTENT && !enablePremiumFeatures}
+			disabled={type === FilterRuleType.CONTENT && !isDeviceRegistered}
 			value={condition}
 			on:change={handleConditionChange}
 		>
