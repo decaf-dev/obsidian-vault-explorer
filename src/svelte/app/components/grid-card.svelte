@@ -14,6 +14,7 @@
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/utils/file-icon-utils";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
+	import { fetchImageFromUrl } from "../services/utils/image-utils";
 
 	export let displayName: string;
 	export let path: string;
@@ -40,6 +41,16 @@
 		wordBreak = plugin.settings.titleWrapping;
 		enableScrollButtons = plugin.settings.enableScrollButtons;
 		enableFileIcons = plugin.settings.enableFileIcons;
+	});
+
+	onMount(() => {
+		async function getImageUrl() {
+			if (imageUrl === null && url !== null) {
+				imageUrl = await fetchImageFromUrl(url);
+			}
+		}
+
+		getImageUrl();
 	});
 
 	onMount(() => {

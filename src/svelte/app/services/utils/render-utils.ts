@@ -7,7 +7,7 @@ import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
-import { isImageExtension } from "./file-utils";
+import { isImageExtension } from "./image-utils";
 
 export const formatFileDataForRender = (
 	app: App,
