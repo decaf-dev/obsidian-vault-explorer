@@ -8,13 +8,12 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { onMount } from "svelte";
-	import { getScrollAmount } from "../services/utils/scroll-utils";
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
-	import ScrollButton from "src/svelte/shared/components/scroll-button.svelte";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/utils/file-icon-utils";
+	import Spacer from "src/svelte/shared/components/spacer.svelte";
 
 	export let displayName: string;
 	export let path: string;
@@ -137,33 +136,33 @@
 		}
 	}
 
-	function handleScrollLeftClick() {
-		if (tagContainerRef) {
-			const scrollAmount = getScrollAmount(
-				tagContainerRef,
-				".vault-explorer-tag",
-				"left",
-			);
-			tagContainerRef.scrollBy({
-				left: -scrollAmount,
-				behavior: "smooth",
-			});
-		}
-	}
+	// function handleScrollLeftClick() {
+	// 	if (tagContainerRef) {
+	// 		const scrollAmount = getScrollAmount(
+	// 			tagContainerRef,
+	// 			".vault-explorer-tag",
+	// 			"left",
+	// 		);
+	// 		tagContainerRef.scrollBy({
+	// 			left: -scrollAmount,
+	// 			behavior: "smooth",
+	// 		});
+	// 	}
+	// }
 
-	function handleScrollRightClick() {
-		if (tagContainerRef) {
-			const scrollAmount = getScrollAmount(
-				tagContainerRef,
-				".vault-explorer-tag",
-				"right",
-			);
-			tagContainerRef.scrollBy({
-				left: scrollAmount,
-				behavior: "smooth",
-			});
-		}
-	}
+	// function handleScrollRightClick() {
+	// 	if (tagContainerRef) {
+	// 		const scrollAmount = getScrollAmount(
+	// 			tagContainerRef,
+	// 			".vault-explorer-tag",
+	// 			"right",
+	// 		);
+	// 		tagContainerRef.scrollBy({
+	// 			left: scrollAmount,
+	// 			behavior: "smooth",
+	// 		});
+	// 	}
+	// }
 
 	function handleScroll() {
 		if (!tagContainerRef) return;
@@ -231,34 +230,32 @@
 	</div>
 	<div class="vault-explorer-grid-card__content">
 		{#if tags !== null}
-			<Stack spacing="xs">
-				{#if renderScrollLeftButton}
+			<!-- {#if renderScrollLeftButton}
 					<ScrollButton
 						type="tag"
 						direction="left"
 						on:click={handleScrollLeftClick}
 					/>
-				{/if}
-				<div
-					class="vault-explorer-grid-card__tags"
-					bind:this={tagContainerRef}
-				>
-					{#each tags as tag}
-						<Tag name={tag} />
-					{/each}
-				</div>
-				{#if renderScrollRightButton}
+				{/if} -->
+			<div
+				class="vault-explorer-grid-card__tags"
+				bind:this={tagContainerRef}
+			>
+				{#each tags as tag}
+					<Tag name={tag} />
+				{/each}
+			</div>
+			<!-- {#if renderScrollRightButton}
 					<ScrollButton
 						type="tag"
 						direction="right"
 						on:click={handleScrollRightClick}
 					/>
-				{/if}
-			</Stack>
+				{/if} -->
 		{/if}
-		<!-- {#if custom1 !== null || custom2 !== null || custom3 !== null}
+		{#if custom1 !== null || custom2 !== null || custom3 !== null}
 			<Spacer size="sm" direction="vertical" />
-		{/if} -->
+		{/if}
 		<Wrap spacingX="xs" spacingY="xs"
 			>{#if custom1 !== null}<Property
 					name={plugin.settings.properties.custom1}
