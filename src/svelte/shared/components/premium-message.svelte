@@ -1,5 +1,5 @@
 <div class="vault-explorer-premium-message">
-	You must have a premium license to use this feature
+	This feature requires a premium license
 </div>
 
 <style>
