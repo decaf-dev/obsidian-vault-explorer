@@ -100,20 +100,21 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl)
-			.setName("Scroll buttons")
-			.setDesc("Display scroll buttons for scrollable content.")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.enableScrollButtons)
-					.onChange(async (value) => {
-						this.plugin.settings.enableScrollButtons = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							"scroll-buttons-setting-change"
-						);
-					})
-			);
+		// TODO remove?
+		// new Setting(containerEl)
+		// 	.setName("Scroll buttons")
+		// 	.setDesc("Display scroll buttons for scrollable content.")
+		// 	.addToggle((toggle) =>
+		// 		toggle
+		// 			.setValue(this.plugin.settings.enableScrollButtons)
+		// 			.onChange(async (value) => {
+		// 				this.plugin.settings.enableScrollButtons = value;
+		// 				await this.plugin.saveSettings();
+		// 				EventManager.getInstance().emit(
+		// 					"scroll-buttons-setting-change"
+		// 				);
+		// 			})
+		// 	);
 
 		new Setting(containerEl)
 			.setName("Page size")
@@ -478,9 +479,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Updates").setHeading();
 
 		new Setting(containerEl)
-			.setName("Enable clock updates")
+			.setName("Clock updates")
 			.setDesc(
-				"When enabled, time values will update every minute, refreshing the Vault Explorer view. When disabled, time values will only update when the view is first opened."
+				"Update time values every minute. This will refresh the Vault Explorer view"
 			)
 			.addToggle((toggle) =>
 				toggle
