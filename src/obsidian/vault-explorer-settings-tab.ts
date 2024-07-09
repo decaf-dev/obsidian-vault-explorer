@@ -14,7 +14,7 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { TExplorerView, WordBreak } from "src/types";
+import { FlexWrap, TExplorerView, WordBreak } from "src/types";
 import EventManager from "src/event/event-manager";
 import Component from "../svelte/license-key-app/index.svelte";
 
@@ -60,6 +60,26 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							"title-wrapping-setting-change"
+						);
+					}
+				);
+			});
+
+		new Setting(containerEl)
+			.setName("Filter groups wrapping")
+			.setDesc("Set the wrapping style for filter groups.")
+			.addDropdown((cb) => {
+				cb.addOptions({
+					wrap: "Wrap",
+					nowrap: "No Wrap",
+				});
+				cb.setValue(this.plugin.settings.filterGroupsWrapping).onChange(
+					async (value) => {
+						this.plugin.settings.filterGroupsWrapping =
+							value as FlexWrap;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							"filter-groups-wrapping-setting-change"
 						);
 					}
 				);

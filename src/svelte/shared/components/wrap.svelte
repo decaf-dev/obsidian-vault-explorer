@@ -11,6 +11,7 @@
 	export let direction: "row" | "column" = "row";
 	export let width = "unset";
 	export let height = "unset";
+	export let wrap: "wrap" | "nowrap" = "wrap";
 
 	let xSpacingPx = 0;
 	let ySpacingPx = 0;
@@ -43,6 +44,8 @@
 <div
 	class="vault-explorer-wrap"
 	style="
+		display: flex;
+		flex-wrap: {wrap};
 		flex-direction: {direction};
 		justify-content: {justify};
 		align-items: {align};
@@ -54,10 +57,3 @@
 >
 	<slot />
 </div>
-
-<style>
-	.vault-explorer-wrap {
-		display: flex;
-		flex-wrap: wrap;
-	}
-</style>

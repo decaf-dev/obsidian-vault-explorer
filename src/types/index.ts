@@ -32,7 +32,8 @@ export interface VaultExplorerPluginSettings {
 	currentView: TExplorerView | null;
 	enableScrollButtons: boolean;
 	pageSize: number;
-	filtersWidth: number;
+	filterGroupsWidth: number;
+	filterGroupsWrapping: FlexWrap;
 	pluginVersion: string | null;
 	viewOrder: TExplorerView[];
 	logLevel: string;
@@ -98,6 +99,8 @@ export type SortFilterOption =
 	| "random";
 
 export type WordBreak = "normal" | "break-word";
+
+export type FlexWrap = "wrap" | "nowrap";
 
 export enum TExplorerView {
 	DASHBOARD = "dashboard",
