@@ -144,7 +144,6 @@ export enum CheckboxFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-//TODO: add is between
 export enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
@@ -162,7 +161,6 @@ export enum ContentFilterCondition {
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-//TODO add is child of and is parent of?
 export enum FolderFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",

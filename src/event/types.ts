@@ -17,6 +17,7 @@ export type PluginEvent =
 	| "scroll-buttons-setting-change"
 	| "view-toggle-setting-change"
 	| "file-icons-setting-change"
-	| "filter-groups-wrapping-setting-change";
+	| "filter-groups-wrapping-setting-change"
+	| "fetch-social-media-image-setting-change";
 
 export type EventCallback = (...data: unknown[]) => void;

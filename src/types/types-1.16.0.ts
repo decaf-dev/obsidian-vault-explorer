@@ -8,26 +8,26 @@ export interface VaultExplorerPluginSettings_1_16_0 {
 		custom1: string;
 		custom2: string;
 		custom3: string;
-	},
+	};
 	filters: {
 		search: SearchFilter;
 		favorites: FavoritesFilter;
 		sort: SortFilter;
 		timestamp: TimestampFilter;
 		custom: CustomFilter;
-	},
+	};
 	views: {
 		currentView: ViewType;
 		order: ViewType[];
 		titleWrapping: WordBreak;
 		enableClockUpdates: boolean;
-	}
+	};
 	enableScrollButtons: boolean;
 	pageSize: number;
 	pluginVersion: string | null;
 }
 
-export { ViewType as ViewType_1_16_0 }
+export { ViewType as ViewType_1_16_0 };
 
 interface SearchFilter {
 	isEnabled: boolean;
@@ -37,12 +37,12 @@ interface SearchFilter {
 interface FavoritesFilter {
 	isEnabled: boolean;
 	value: boolean;
-};
+}
 
 interface SortFilter {
 	isEnabled: boolean;
 	value: SortFilterOption;
-};
+}
 
 interface TimestampFilter {
 	isEnabled: boolean;
@@ -55,16 +55,27 @@ interface CustomFilter {
 	groups: FilterGroup[];
 }
 
-type TimestampFilterOption = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
+type TimestampFilterOption =
+	| "created-today"
+	| "modified-today"
+	| "created-this-week"
+	| "modified-this-week"
+	| "created-2-weeks"
+	| "modified-2-weeks"
+	| "all";
 
-type SortFilterOption = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
+type SortFilterOption =
+	| "file-name-asc"
+	| "file-name-desc"
+	| "modified-asc"
+	| "modified-desc";
 
 type WordBreak = "normal" | "break-word";
 
 enum ViewType {
 	GRID = "grid",
 	LIST = "list",
-	FEED = "feed"
+	FEED = "feed",
 }
 
 type FilterOperator = "and" | "or";
@@ -105,7 +116,6 @@ enum CheckboxFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-//TODO: add is between
 enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
@@ -123,7 +133,6 @@ enum ContentFilterCondition {
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-//TODO add is child of and is parent of?
 enum FolderFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
@@ -138,7 +147,15 @@ enum FileNameFilterCondition {
 	ENDS_WITH = "ends-with",
 }
 
-type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition | ContentFilterCondition | FolderFilterCondition | FileNameFilterCondition;
+type FilterCondition =
+	| TextFilterCondition
+	| NumberFilterCondition
+	| DateFilterCondition
+	| CheckboxFilterCondition
+	| ListFilterCondition
+	| ContentFilterCondition
+	| FolderFilterCondition
+	| FileNameFilterCondition;
 
 //This matches the Obsidian property types
 enum PropertyType {
@@ -165,7 +182,7 @@ enum DatePropertyFilterValue {
 	ONE_WEEK_AGO = "one-week-ago",
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
 	ONE_MONTH_AGO = "one-month-ago",
-	CUSTOM = "custom"
+	CUSTOM = "custom",
 }
 
 interface BaseFilterRule {
@@ -230,8 +247,17 @@ interface ContentFilterRule extends BaseFilterRule {
 	condition: ContentFilterCondition;
 }
 
-type FilterRule = PropertyFilterRule | FolderFilterRule | FileNameFilterRule | ContentFilterRule;
-type PropertyFilterRule = TextPropertyFilterRule | NumberPropertyFilterRule | ListPropertyFilterRule | CheckboxPropertyFilterRule | DatePropertyFilterRule;
+type FilterRule =
+	| PropertyFilterRule
+	| FolderFilterRule
+	| FileNameFilterRule
+	| ContentFilterRule;
+type PropertyFilterRule =
+	| TextPropertyFilterRule
+	| NumberPropertyFilterRule
+	| ListPropertyFilterRule
+	| CheckboxPropertyFilterRule
+	| DatePropertyFilterRule;
 
 interface FilterGroup {
 	id: string;
