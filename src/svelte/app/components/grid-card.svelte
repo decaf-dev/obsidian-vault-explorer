@@ -316,7 +316,8 @@
 
 <style>
 	.vault-explorer-grid-card {
-		width: 425px;
+		width: 100%;
+		max-width: 425px;
 		box-shadow: var(--shadow-s);
 		border-top-left-radius: var(--radius-m);
 		border-top-right-radius: var(--radius-m);
