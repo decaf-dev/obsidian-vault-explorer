@@ -595,7 +595,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["views"]["grid"] === "object" ||
             typeof typedObj["views"]["grid"] === "function") &&
         typeof typedObj["views"]["grid"]["isEnabled"] === "boolean" &&
-        typeof typedObj["views"]["grid"]["fetchSocialMediaImage"] === "boolean" &&
+        typeof typedObj["views"]["grid"]["loadSocialMediaImage"] === "boolean" &&
         (typedObj["views"]["list"] !== null &&
             typeof typedObj["views"]["list"] === "object" ||
             typeof typedObj["views"]["list"] === "function") &&

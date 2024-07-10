@@ -582,14 +582,14 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				toggle
 					.setDisabled(!isDeviceRegistered)
 					.setValue(
-						this.plugin.settings.views.grid.fetchSocialMediaImage
+						this.plugin.settings.views.grid.loadSocialMediaImage
 					)
 					.onChange(async (value) => {
-						this.plugin.settings.views.grid.fetchSocialMediaImage =
+						this.plugin.settings.views.grid.loadSocialMediaImage =
 							value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"fetch-social-media-image-setting-change"
+							"load-social-media-image-setting-change"
 						);
 					})
 			);

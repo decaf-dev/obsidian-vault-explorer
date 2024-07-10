@@ -15,7 +15,7 @@
 	import { getIconIdForFile } from "../services/file-icon";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import License from "src/svelte/shared/services/license";
-	import { fetchSocialImage } from "../services/social-media-image";
+	import { fetchSocialMediaImage } from "../services/social-media-image";
 
 	export let displayName: string;
 	export let path: string;
@@ -35,7 +35,7 @@
 	// let enableScrollButtons: boolean = false;
 	// let renderScrollLeftButton = false;
 	// let renderScrollRightButton = false;
-	let fetchSocialMediaImage = true;
+	let loadSocialMediaImage = true;
 	let isDeviceRegistered = false;
 
 	let plugin: VaultExplorerPlugin;
@@ -44,8 +44,7 @@
 		wordBreak = plugin.settings.titleWrapping;
 		// enableScrollButtons = plugin.settings.enableScrollButtons;
 		enableFileIcons = plugin.settings.enableFileIcons;
-		fetchSocialMediaImage =
-			plugin.settings.views.grid.fetchSocialMediaImage;
+		loadSocialMediaImage = plugin.settings.views.grid.loadSocialMediaImage;
 	});
 
 	License.getInstance()
@@ -56,9 +55,9 @@
 
 	async function getSocialImageUrl() {
 		if (!isDeviceRegistered) return;
-		if (!fetchSocialMediaImage) return;
+		if (!loadSocialMediaImage) return;
 		if (imageUrl === null && url !== null) {
-			imageUrl = await fetchSocialImage(url);
+			imageUrl = await fetchSocialMediaImage(url);
 		}
 	}
 
@@ -66,22 +65,22 @@
 		getSocialImageUrl();
 	});
 
-	$: fetchSocialMediaImage, getSocialImageUrl();
+	$: loadSocialMediaImage, getSocialImageUrl();
 
 	onMount(() => {
-		function handleFetchSocialMediaImageForUrlChange() {
-			fetchSocialMediaImage =
-				plugin.settings.views.grid.fetchSocialMediaImage;
+		function handleLoadSocialMediaImageChange() {
+			loadSocialMediaImage =
+				plugin.settings.views.grid.loadSocialMediaImage;
 		}
 
 		EventManager.getInstance().on(
-			"fetch-social-media-image-setting-change",
-			handleFetchSocialMediaImageForUrlChange,
+			"load-social-media-image-setting-change",
+			handleLoadSocialMediaImageChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"fetch-social-media-image-setting-change",
-				handleFetchSocialMediaImageForUrlChange,
+				"load-social-media-image-setting-change",
+				handleLoadSocialMediaImageChange,
 			);
 		};
 	});

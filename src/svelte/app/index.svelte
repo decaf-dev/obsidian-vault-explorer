@@ -109,7 +109,7 @@
 	};
 
 	let gridView: TGridView = {
-		fetchSocialMediaImage: false,
+		loadSocialMediaImage: false,
 		isEnabled: false,
 	};
 

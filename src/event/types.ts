@@ -18,6 +18,6 @@ export type PluginEvent =
 	| "view-toggle-setting-change"
 	| "file-icons-setting-change"
 	| "filter-groups-wrapping-setting-change"
-	| "fetch-social-media-image-setting-change";
+	| "load-social-media-image-setting-change";
 
 export type EventCallback = (...data: unknown[]) => void;
