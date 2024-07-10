@@ -27,17 +27,6 @@ function createRandomFileSortStore() {
 			{}
 		);
 
-		Logger.debug(
-			{
-				fileName: "random-file-sort-store.ts",
-				functionName: "load",
-				message: "loaded files with random sort keys",
-			},
-			{
-				randomSortFiles,
-			}
-		);
-
 		set(randomSortFiles);
 	}
 
