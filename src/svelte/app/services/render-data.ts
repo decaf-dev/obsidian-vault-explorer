@@ -1,13 +1,13 @@
 import { App, FrontMatterCache, TFile } from "obsidian";
 import { PropertyType, VaultExplorerPluginSettings } from "src/types";
-import { FileRenderData } from "../../types";
+import { FileRenderData } from "../types";
 import Logger from "js-logger";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
-import { isImageExtension } from "./image-utils";
+import { isImageExtension } from "./utils/image-utils";
 
 export const formatFileDataForRender = (
 	app: App,
