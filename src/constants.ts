@@ -56,6 +56,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		feed: {
 			isEnabled: true,
+			collapseContent: false,
 		},
 		recommended: {
 			isEnabled: false,

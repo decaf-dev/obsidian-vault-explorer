@@ -53,7 +53,9 @@ export interface TGridView extends BaseView {
 
 export interface TDashboardView extends BaseView {}
 
-export interface TFeedView extends BaseView {}
+export interface TFeedView extends BaseView {
+	collapseContent: boolean;
+}
 
 export interface TRecommendedView extends BaseView {}
 

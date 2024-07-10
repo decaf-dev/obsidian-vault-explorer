@@ -24,12 +24,14 @@
 
 	let wordBreak: WordBreak = "normal";
 	let enableFileIcons = false;
+	let collapseContent = false;
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((value) => {
 		plugin = value;
 		wordBreak = plugin.settings.titleWrapping;
 		enableFileIcons = plugin.settings.enableFileIcons;
+		collapseContent = plugin.settings.views.feed.collapseContent;
 	});
 
 	onMount(() => {
@@ -62,6 +64,23 @@
 			EventManager.getInstance().off(
 				PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
 				handleTitleWrappingSettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function handleCollapseFeedContentChange() {
+			collapseContent = plugin.settings.views.feed.collapseContent;
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE,
+			handleCollapseFeedContentChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE,
+				handleCollapseFeedContentChange,
 			);
 		};
 	});
@@ -103,6 +122,10 @@
 	// 	path,
 	// 	new Component(),
 	// );
+
+	$: contentClassName = `vault-explorer-feed-card__content ${
+		collapseContent ? "vault-explorer-feed-card__content--collapse" : ""
+	}`;
 </script>
 
 <div class="vault-explorer-feed-card">
@@ -134,7 +157,7 @@
 			</Stack>
 		</div>
 		{#if displayContent != null && displayContent.length > 0}
-			<div class="vault-explorer-feed-card__content">
+			<div class={contentClassName}>
 				{displayContent}
 			</div>
 		{/if}
@@ -179,6 +202,10 @@
 	.vault-explorer-feed-card__content {
 		color: var(--text-muted);
 		white-space: pre-wrap;
+	}
+
+	.vault-explorer-feed-card__content--collapse {
+		white-space: normal;
 	}
 
 	.vault-explorer-feed-card__creation-time {

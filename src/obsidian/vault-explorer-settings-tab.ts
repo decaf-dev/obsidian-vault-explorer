@@ -324,6 +324,23 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			License.getInstance().getIsDeviceRegistered()
 		);
 
+		new Setting(containerEl).setName("Feed view").setHeading();
+
+		new Setting(containerEl)
+			.setName("Collapse feed content")
+			.setDesc("Don't render new line characters in feed card content")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.views.feed.collapseContent)
+					.onChange(async (value) => {
+						this.plugin.settings.views.feed.collapseContent = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE
+						);
+					})
+			);
+
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
 		new Setting(containerEl)
