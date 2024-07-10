@@ -151,7 +151,6 @@
 					.map((line) => line.trim())
 					.filter((line) => line.length > 0)
 					.join("<br/>");
-				console.log(modifiedContent);
 			}
 			return modifiedContent;
 		}

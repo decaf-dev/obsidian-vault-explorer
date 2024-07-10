@@ -15,7 +15,6 @@
 	// Use onMount to ensure the element is available in the DOM
 	onMount(() => {
 		if (iconId === "ellipsis-vertical") return;
-		if (iconId === "file-pdf") return;
 		setIcon(ref, iconId);
 	});
 

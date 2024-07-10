@@ -45,7 +45,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 
 		return imageUrl ?? null;
 	} catch (error) {
-		Logger.warn(
+		Logger.error(
 			{
 				fileName: "social-media-image.ts",
 				functionName: "fetchSocialMediaImage",
