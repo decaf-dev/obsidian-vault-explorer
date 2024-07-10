@@ -1,6 +1,6 @@
 import { moment } from "obsidian";
 
-export const formatBearTime = (milliseconds: number) => {
+export const formatAsBearTimeString = (milliseconds: number) => {
 	const now = moment();
 	const time = moment(milliseconds);
 
