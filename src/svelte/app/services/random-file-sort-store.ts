@@ -1,3 +1,4 @@
+import Logger from "js-logger";
 import { TFile } from "obsidian";
 import { writable } from "svelte/store";
 
@@ -11,6 +12,12 @@ function createRandomFileSortStore() {
 	}
 
 	function load(files: TFile[]) {
+		Logger.trace({
+			fileName: "random-file-sort-store.ts",
+			functionName: "load",
+			message: "called",
+		});
+
 		const randomSortFiles = files.reduce(
 			(acc: Record<string, number>, file) => {
 				const { path } = file;
@@ -19,6 +26,7 @@ function createRandomFileSortStore() {
 			},
 			{}
 		);
+
 		set(randomSortFiles);
 	}
 

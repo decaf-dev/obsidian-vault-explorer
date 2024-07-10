@@ -135,6 +135,18 @@
 	// ============================================
 	// Lifecycle hooks
 	// ============================================
+	randomFileSortStore.subscribe((value) => {
+		randomSortCache = value;
+	});
+
+	fileContentStore.subscribe((value) => {
+		contentCache = value;
+	});
+
+	fileStore.subscribe((value) => {
+		files = value;
+	});
+
 	store.plugin.subscribe(async (p) => {
 		plugin = p;
 
@@ -163,19 +175,6 @@
 		fileContentStore.load(app);
 		randomFileSortStore.load(files);
 	});
-
-	randomFileSortStore.subscribe((value) => {
-		randomSortCache = value;
-	});
-
-	fileContentStore.subscribe((value) => {
-		contentCache = value;
-	});
-
-	fileStore.subscribe((value) => {
-		files = value;
-	});
-
 	onMount(() => {
 		function handleFilterToggleSettingChange() {
 			Logger.trace({
