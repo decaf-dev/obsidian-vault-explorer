@@ -109,6 +109,7 @@
 	};
 
 	let gridView: TGridView = {
+		fetchSocialMediaImage: false,
 		isEnabled: false,
 	};
 
@@ -450,6 +451,10 @@
 	const debounceFavoriteFilterChange = _.debounce((value) => {
 		favoritesFilter.value = value;
 	}, DEBOUNCE_INPUT_TIME);
+
+	function handleReshuffleClick() {
+		randomFileSortStore.load(files);
+	}
 
 	function updateTimeValues() {
 		Logger.trace({
@@ -801,6 +806,13 @@
 							<SortFilter
 								value={sortFilter.value}
 								on:change={handleSortChange}
+							/>
+						{/if}
+						{#if sortFilter.value == "random"}
+							<IconButton
+								iconId="shuffle"
+								ariaLabel="Reshuffle files"
+								on:click={handleReshuffleClick}
 							/>
 						{/if}
 						<IconButton
