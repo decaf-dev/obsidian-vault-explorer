@@ -10,6 +10,7 @@
 	import { getIconIdForFile } from "../services/file-icon";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
+	import { PluginEvent } from "src/event/types";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -19,6 +20,7 @@
 
 	let enableFileIcons: boolean = false;
 	let plugin: VaultExplorerPlugin;
+
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		enableFileIcons = plugin.settings.enableFileIcons;
@@ -30,12 +32,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"file-icons-setting-change",
+			PluginEvent.FILE_ICONS_SETTING_CHANGE,
 			handleFileIconsChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"file-icons-setting-change",
+				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
 			);
 		};

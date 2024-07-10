@@ -16,6 +16,7 @@
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import License from "src/svelte/shared/services/license";
 	import { fetchSocialMediaImage } from "../services/social-media-image";
+	import { PluginEvent } from "src/event/types";
 
 	export let displayName: string;
 	export let path: string;
@@ -74,12 +75,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"load-social-media-image-setting-change",
+			PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE,
 			handleLoadSocialMediaImageChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"load-social-media-image-setting-change",
+				PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE,
 				handleLoadSocialMediaImageChange,
 			);
 		};
@@ -91,12 +92,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"file-icons-setting-change",
+			PluginEvent.FILE_ICONS_SETTING_CHANGE,
 			handleFileIconsChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"file-icons-setting-change",
+				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
 			);
 		};
@@ -108,12 +109,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"title-wrapping-setting-change",
+			PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
 			handleTitleWrappingSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"title-wrapping-setting-change",
+				PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
 				handleTitleWrappingSettingChange,
 			);
 		};

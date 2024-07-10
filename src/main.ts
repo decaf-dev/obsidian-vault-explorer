@@ -17,6 +17,7 @@ import { formatMessageForLogger, stringToLogLevel } from "./logger";
 import { moveFocus } from "./focus-utils";
 import { loadDeviceId } from "./svelte/shared/services/device-id-utils";
 import License from "./svelte/shared/services/license";
+import { PluginEvent } from "./event/types";
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -67,13 +68,13 @@ export default class VaultExplorerPlugin extends Plugin {
 				(file: TAbstractFile, oldPath: string) => {
 					if (file instanceof TFolder) {
 						EventManager.getInstance().emit(
-							"folder-rename",
+							PluginEvent.FOLDER_RENAME,
 							oldPath,
 							file
 						);
 					} else if (file instanceof TFile) {
 						EventManager.getInstance().emit(
-							"file-rename",
+							PluginEvent.FILE_RENAME,
 							oldPath,
 							file
 						);
@@ -87,9 +88,15 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.registerEvent(
 			this.app.vault.on("delete", (file: TAbstractFile) => {
 				if (file instanceof TFolder) {
-					EventManager.getInstance().emit("folder-delete", file.path);
+					EventManager.getInstance().emit(
+						PluginEvent.FOLDER_DELETE,
+						file.path
+					);
 				} else if (file instanceof TFile) {
-					EventManager.getInstance().emit("file-delete", file.path);
+					EventManager.getInstance().emit(
+						PluginEvent.FILE_DELETE,
+						file.path
+					);
 				}
 			})
 		);
@@ -103,9 +110,15 @@ export default class VaultExplorerPlugin extends Plugin {
 				if (!this.layoutReady) return;
 
 				if (file instanceof TFolder) {
-					EventManager.getInstance().emit("folder-create", file);
+					EventManager.getInstance().emit(
+						PluginEvent.FOLDER_CREATE,
+						file
+					);
 				} else if (file instanceof TFile) {
-					EventManager.getInstance().emit("file-create", file);
+					EventManager.getInstance().emit(
+						PluginEvent.FILE_CREATE,
+						file
+					);
 				}
 			})
 		);
@@ -116,7 +129,10 @@ export default class VaultExplorerPlugin extends Plugin {
 			this.app.vault.on("modify", (file: TAbstractFile) => {
 				if (file instanceof TFile) {
 					if (file.extension !== "md") return;
-					EventManager.getInstance().emit("file-modify", file);
+					EventManager.getInstance().emit(
+						PluginEvent.FILE_MODIFY,
+						file
+					);
 				}
 			})
 		);
@@ -126,7 +142,10 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.registerEvent(
 			this.app.metadataCache.on("changed", (file) => {
 				if (file.extension !== "md") return;
-				EventManager.getInstance().emit("metadata-change", file);
+				EventManager.getInstance().emit(
+					PluginEvent.METADATA_CHANGE,
+					file
+				);
 			})
 		);
 

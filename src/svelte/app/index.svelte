@@ -56,6 +56,7 @@
 	import IconButton from "../shared/components/icon-button.svelte";
 	import CustomFilterModal from "src/obsidian/custom-filter-modal";
 	import FilterGroupList from "./components/filter-group-list.svelte";
+	import { PluginEvent } from "src/event/types";
 
 	// ============================================
 	// Variables
@@ -191,13 +192,13 @@
 		}
 
 		EventManager.getInstance().on(
-			"filter-toggle-setting-change",
+			PluginEvent.FILTER_TOGGLE_SETTING_CHANGE,
 			handleFilterToggleSettingChange,
 		);
 
 		return () => {
 			EventManager.getInstance().off(
-				"filter-toggle-setting-change",
+				PluginEvent.FILTER_TOGGLE_SETTING_CHANGE,
 				handleFilterToggleSettingChange,
 			);
 		};
@@ -223,7 +224,7 @@
 		updateTimeValues();
 
 		EventManager.getInstance().on(
-			"clock-updates-setting-change",
+			PluginEvent.CLOCK_UPDATES_SETTING_CHANGE,
 			handleClockUpdatesSettingChange,
 		);
 
@@ -232,7 +233,7 @@
 				clearInterval(timeValuesUpdateInterval);
 
 			EventManager.getInstance().off(
-				"clock-updates-setting-change",
+				PluginEvent.CLOCK_UPDATES_SETTING_CHANGE,
 				handleClockUpdatesSettingChange,
 			);
 		};
@@ -249,12 +250,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"properties-filter-update",
+			PluginEvent.PROPERTIES_FILTER_UPDATE,
 			handlePropertiesFilterUpdate,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"properties-filter-update",
+				PluginEvent.PROPERTIES_FILTER_UPDATE,
 				handlePropertiesFilterUpdate,
 			);
 		};
@@ -276,9 +277,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-create", handleCreateFile);
+		EventManager.getInstance().on(
+			PluginEvent.FILE_CREATE,
+			handleCreateFile,
+		);
 		return () => {
-			EventManager.getInstance().off("file-create", handleCreateFile);
+			EventManager.getInstance().off(
+				PluginEvent.FILE_CREATE,
+				handleCreateFile,
+			);
 		};
 	});
 
@@ -298,9 +305,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-delete", handleDeleteFile);
+		EventManager.getInstance().on(
+			PluginEvent.FILE_DELETE,
+			handleDeleteFile,
+		);
 		return () => {
-			EventManager.getInstance().off("file-delete", handleDeleteFile);
+			EventManager.getInstance().off(
+				PluginEvent.FILE_DELETE,
+				handleDeleteFile,
+			);
 		};
 	});
 
@@ -322,9 +335,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-rename", handleFileRename);
+		EventManager.getInstance().on(
+			PluginEvent.FILE_RENAME,
+			handleFileRename,
+		);
 		return () => {
-			EventManager.getInstance().off("file-rename", handleFileRename);
+			EventManager.getInstance().off(
+				PluginEvent.FILE_RENAME,
+				handleFileRename,
+			);
 		};
 	});
 
@@ -343,9 +362,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-modify", handleFileModify);
+		EventManager.getInstance().on(
+			PluginEvent.FILE_MODIFY,
+			handleFileModify,
+		);
 		return () => {
-			EventManager.getInstance().off("file-modify", handleFileModify);
+			EventManager.getInstance().off(
+				PluginEvent.FILE_MODIFY,
+				handleFileModify,
+			);
 		};
 	});
 
@@ -362,10 +387,13 @@
 			}
 		};
 
-		EventManager.getInstance().on("metadata-change", handleMetadataChange);
+		EventManager.getInstance().on(
+			PluginEvent.METADATA_CHANGE,
+			handleMetadataChange,
+		);
 		return () => {
 			EventManager.getInstance().off(
-				"metadata-change",
+				PluginEvent.METADATA_CHANGE,
 				handleMetadataChange,
 			);
 		};
@@ -384,12 +412,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"view-toggle-setting-change",
+			PluginEvent.VIEW_TOGGLE_SETTING_CHANGE,
 			handleViewToggleSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"view-toggle-setting-change",
+				PluginEvent.VIEW_TOGGLE_SETTING_CHANGE,
 				handleViewToggleSettingChange,
 			);
 		};
@@ -407,12 +435,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"page-size-setting-change",
+			PluginEvent.PAGE_SIZE_SETTING_CHANGE,
 			handlePageSizeSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"page-size-setting-change",
+				PluginEvent.PAGE_SIZE_SETTING_CHANGE,
 				handlePageSizeSettingChange,
 			);
 		};
@@ -429,12 +457,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"property-setting-change",
+			PluginEvent.PROPERTY_SETTING_CHANGE,
 			handlePropertySettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"property-setting-change",
+				PluginEvent.PROPERTY_SETTING_CHANGE,
 				handlePropertySettingChange,
 			);
 		};

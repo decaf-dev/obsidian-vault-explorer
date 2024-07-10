@@ -12,6 +12,7 @@
 	import { removeFrontmatterBlock } from "../services/utils/frontmatter-utils";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
+	import { PluginEvent } from "src/event/types";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -37,12 +38,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"file-icons-setting-change",
+			PluginEvent.FILE_ICONS_SETTING_CHANGE,
 			handleFileIconsChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"file-icons-setting-change",
+				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
 			);
 		};
@@ -54,12 +55,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"title-wrapping-setting-change",
+			PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
 			handleTitleWrappingSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"title-wrapping-setting-change",
+				PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
 				handleTitleWrappingSettingChange,
 			);
 		};
