@@ -7,7 +7,7 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { getIconIdForFile } from "../services/utils/file-icon-utils";
+	import { getIconIdForFile } from "../services/file-icon";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 

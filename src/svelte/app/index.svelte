@@ -31,11 +31,11 @@
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
-	import { formatFileDataForRender } from "./services/utils/render-utils";
+	import { formatFileDataForRender } from "./services/render-data";
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
-	import { getDisplayNameForView } from "./services/utils/display-name-utils";
+	import { getDisplayNameForView } from "./services/display-name";
 	import {
 		getStartOfLastWeekMillis,
 		getStartOfTodayMillis,

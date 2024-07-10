@@ -12,10 +12,10 @@
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
-	import { getIconIdForFile } from "../services/utils/file-icon-utils";
+	import { getIconIdForFile } from "../services/file-icon";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
-	import { fetchSocialImageFromUrl } from "../services/utils/image-utils";
 	import License from "src/svelte/shared/services/license";
+	import { fetchSocialImage } from "../services/social-media-image";
 
 	export let displayName: string;
 	export let path: string;
@@ -58,7 +58,7 @@
 		if (!isDeviceRegistered) return;
 		if (!fetchSocialMediaImage) return;
 		if (imageUrl === null && url !== null) {
-			imageUrl = await fetchSocialImageFromUrl(url);
+			imageUrl = await fetchSocialImage(url);
 		}
 	}
 

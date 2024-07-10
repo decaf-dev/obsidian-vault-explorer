@@ -6,12 +6,12 @@
 	import EventManager from "src/event/event-manager";
 	import VaultExplorerPlugin from "src/main";
 	import store from "src/svelte/shared/services/store";
-	import { formatAsBearTimeString } from "../services/utils/time-utils";
+	import { formatAsBearTimeString } from "../services/time-string";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Tag from "src/svelte/shared/components/tag.svelte";
 	import { removeFrontmatterBlock } from "../services/utils/frontmatter-utils";
 	import Icon from "src/svelte/shared/components/icon.svelte";
-	import { getIconIdForFile } from "../services/utils/file-icon-utils";
+	import { getIconIdForFile } from "../services/file-icon";
 
 	export let displayName: string;
 	export let baseName: string;
