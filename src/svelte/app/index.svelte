@@ -116,6 +116,7 @@
 
 	let feedView: TFeedView = {
 		isEnabled: false,
+		collapseContent: true,
 	};
 
 	let tableView: TTableView = {

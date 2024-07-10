@@ -14,6 +14,10 @@ export default class Migrate_1_24_0 implements MigrationInterface {
 					loadSocialMediaImage:
 						typedData.views.grid.fetchSocialMediaImage,
 				},
+				feed: {
+					...typedData.views.feed,
+					collapseContent: true,
+				},
 			},
 		};
 

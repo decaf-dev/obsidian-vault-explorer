@@ -10,6 +10,7 @@ export enum PluginEvent {
 	FOLDER_CREATE = "folder-create",
 	PAGE_SIZE_SETTING_CHANGE = "page-size-setting-change",
 	TITLE_WRAPPING_SETTING_CHANGE = "title-wrapping-setting-change",
+	COLLAPSE_FEED_CONTENT_CHANGE = "collapse-feed-content-change",
 	PROPERTY_SETTING_CHANGE = "property-setting-change",
 	DEVICE_REGISTRATION_CHANGE = "device-registration-change",
 	CLOCK_UPDATES_SETTING_CHANGE = "clock-updates-setting-change",
