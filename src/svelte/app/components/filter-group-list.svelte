@@ -42,17 +42,19 @@
 
 	onMount(() => {
 		if (containerRef != null)
-			containerRef.style.maxWidth =
-				plugin.settings.filterGroupsWidth + "px";
+			containerRef.style.maxWidth = plugin.settings.filterGroupsWidth;
 	});
 
 	function onMouseDown(event: MouseEvent) {
 		if (!containerRef) return;
 
 		startX = event.clientX;
-		startWidth = plugin.settings.filterGroupsWidth;
+		// startWidth = plugin.settings.filterGroupsWidth;
 
-		// startWidth = parseInt(window.getComputedStyle(containerRef).width, 10);
+		startWidth = parseInt(
+			window.getComputedStyle(containerRef).maxWidth,
+			10,
+		);
 
 		document.documentElement.addEventListener("mousemove", onMouseMove);
 		document.documentElement.addEventListener("mouseup", onMouseUp);
@@ -76,9 +78,7 @@
 			// Re-enable pointer events on draggable elements
 			containerRef.style.pointerEvents = "auto";
 			dragging = false;
-			plugin.settings.filterGroupsWidth = parseInt(
-				containerRef.style.maxWidth.replace("px", ""),
-			);
+			plugin.settings.filterGroupsWidth = containerRef.style.maxWidth;
 			await plugin.saveSettings();
 		}
 	}
