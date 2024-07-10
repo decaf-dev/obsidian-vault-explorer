@@ -71,7 +71,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	enableScrollButtons: true,
 	filterGroupsWidth: 300,
 	filterGroupsWrapping: "nowrap",
-	pageSize: 50,
+	pageSize: 25,
 	viewOrder: [TExplorerView.GRID, TExplorerView.LIST, TExplorerView.FEED],
 	pluginVersion: null,
 };
