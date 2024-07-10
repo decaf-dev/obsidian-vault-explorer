@@ -1,6 +1,6 @@
 import { requestUrl } from "obsidian";
 
-export const fetchSocialImage = async (url: string) => {
+export const fetchSocialMediaImage = async (url: string) => {
 	try {
 		const response = await requestUrl({
 			url,
