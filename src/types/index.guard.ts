@@ -630,7 +630,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["currentView"] === TExplorerView.RELATED) &&
         typeof typedObj["enableScrollButtons"] === "boolean" &&
         typeof typedObj["pageSize"] === "number" &&
-        typeof typedObj["filterGroupsWidth"] === "number" &&
+        typeof typedObj["filterGroupsWidth"] === "string" &&
         (typedObj["filterGroupsWrapping"] === "wrap" ||
             typedObj["filterGroupsWrapping"] === "nowrap") &&
         (typedObj["pluginVersion"] === null ||
