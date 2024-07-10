@@ -15,7 +15,7 @@
 	import { getIconIdForFile } from "../services/file-icon";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import License from "src/svelte/shared/services/license";
-	import { fetchSocialImage } from "../services/social-media-image";
+	import { fetchSocialMediaImage } from "../services/social-media-image";
 
 	export let displayName: string;
 	export let path: string;
@@ -57,7 +57,7 @@
 		if (!isDeviceRegistered) return;
 		if (!loadSocialMediaImage) return;
 		if (imageUrl === null && url !== null) {
-			imageUrl = await fetchSocialImage(url);
+			imageUrl = await fetchSocialMediaImage(url);
 		}
 	}
 
