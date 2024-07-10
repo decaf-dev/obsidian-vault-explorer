@@ -1,17 +1,19 @@
 <script lang="ts">
-	import { Component, MarkdownRenderer, MarkdownView } from "obsidian";
+	import { MarkdownView } from "obsidian";
 	import { onMount } from "svelte";
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import VaultExplorerPlugin from "src/main";
 	import store from "src/svelte/shared/services/store";
-	import { formatBearTime } from "../services/utils/time-utils";
+	import { formatAsBearTimeString } from "../services/time-string";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Tag from "src/svelte/shared/components/tag.svelte";
 	import { removeFrontmatterBlock } from "../services/utils/frontmatter-utils";
 	import Icon from "src/svelte/shared/components/icon.svelte";
-	import { getIconIdForFile } from "../services/utils/file-icon-utils";
+	import { getIconIdForFile } from "../services/file-icon";
+	import { PluginEvent } from "src/event/types";
+	import Wrap from "src/svelte/shared/components/wrap.svelte";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -21,14 +23,18 @@
 	export let createdMillis: number;
 	export let content: string | null;
 
+	let ref: HTMLElement | null = null;
 	let wordBreak: WordBreak = "normal";
 	let enableFileIcons = false;
+	let collapseContent = false;
+	let contentModifierClassName = "";
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((value) => {
 		plugin = value;
 		wordBreak = plugin.settings.titleWrapping;
 		enableFileIcons = plugin.settings.enableFileIcons;
+		collapseContent = plugin.settings.views.feed.collapseContent;
 	});
 
 	onMount(() => {
@@ -37,12 +43,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"file-icons-setting-change",
+			PluginEvent.FILE_ICONS_SETTING_CHANGE,
 			handleFileIconsChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"file-icons-setting-change",
+				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
 			);
 		};
@@ -54,14 +60,67 @@
 		}
 
 		EventManager.getInstance().on(
-			"title-wrapping-setting-change",
+			PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
 			handleTitleWrappingSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"title-wrapping-setting-change",
+				PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
 				handleTitleWrappingSettingChange,
 			);
+		};
+	});
+
+	onMount(() => {
+		function handleCollapseFeedContentChange() {
+			collapseContent = plugin.settings.views.feed.collapseContent;
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE,
+			handleCollapseFeedContentChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE,
+				handleCollapseFeedContentChange,
+			);
+		};
+	});
+
+	function checkLeafWidth(leafEl: HTMLElement) {
+		const SCREEN_SIZE_MD = 600;
+		const SCREEN_SIZE_LG = 1024;
+
+		const { clientWidth } = leafEl;
+		if (clientWidth < SCREEN_SIZE_MD) {
+			contentModifierClassName = "vault-explorer-feed-card__content--sm";
+		} else if (
+			clientWidth >= SCREEN_SIZE_MD &&
+			clientWidth < SCREEN_SIZE_LG
+		) {
+			contentModifierClassName = "vault-explorer-feed-card__content--md";
+		} else {
+			contentModifierClassName = "vault-explorer-feed-card__content--lg";
+		}
+	}
+	onMount(() => {
+		let resizeObserver: ResizeObserver;
+
+		const leafEl = ref?.closest(
+			".workspace-leaf-content",
+		) as HTMLElement | null;
+		if (leafEl) {
+			checkLeafWidth(leafEl);
+
+			resizeObserver = new ResizeObserver(() => {
+				checkLeafWidth(leafEl);
+			});
+			resizeObserver.observe(leafEl);
+		}
+
+		return () => {
+			resizeObserver?.disconnect();
 		};
 	});
 
@@ -78,33 +137,33 @@
 		}
 	}
 
-	const creationString = formatBearTime(createdMillis);
+	const creationString = formatAsBearTimeString(createdMillis);
 
-	function getDisplayContent(content: string | null) {
+	function getDisplayContent(
+		content: string | null,
+		collapseContent: boolean,
+	) {
 		if (content != null) {
-			const contentWithoutFrontmatter = removeFrontmatterBlock(content);
-			if (contentWithoutFrontmatter.length > 250) {
-				return contentWithoutFrontmatter.slice(0, 250) + "...";
-			} else {
-				return contentWithoutFrontmatter;
+			let modifiedContent = removeFrontmatterBlock(content);
+			if (collapseContent) {
+				modifiedContent = modifiedContent
+					.split("\n")
+					.map((line) => line.trim())
+					.filter((line) => line.length > 0)
+					.join("<br/>");
+				console.log(modifiedContent);
 			}
+			return modifiedContent;
 		}
 		return content;
 	}
 
-	$: displayContent = getDisplayContent(content);
+	$: displayContent = getDisplayContent(content, collapseContent);
 
-	//TODO render actual content
-	// MarkdownRenderer.render(
-	// 	plugin.app,
-	// 	displayContent,
-	// 	el,
-	// 	path,
-	// 	new Component(),
-	// );
+	$: contentClassName = `vault-explorer-feed-card__content ${contentModifierClassName}`;
 </script>
 
-<div class="vault-explorer-feed-card">
+<div class="vault-explorer-feed-card" bind:this={ref}>
 	<Stack spacing="sm" direction="column">
 		<div
 			tabindex="0"
@@ -133,15 +192,17 @@
 			</Stack>
 		</div>
 		{#if displayContent != null && displayContent.length > 0}
-			<div class="vault-explorer-feed-card__content">
-				{displayContent}
+			<div class={contentClassName}>
+				{@html displayContent}
 			</div>
 		{/if}
 		{#if tags != null}
 			<div class="vault-explorer-feed-card__tags">
-				{#each tags as tag}
-					<Tag name={tag} variant="unstyled" />
-				{/each}
+				<Wrap spacingX="sm" spacingY="sm">
+					{#each tags as tag}
+						<Tag name={tag} variant="unstyled" />
+					{/each}
+				</Wrap>
 			</div>
 		{/if}
 		<div class="vault-explorer-feed-card__creation-time">
@@ -164,20 +225,32 @@
 		text-overflow: ellipsis;
 	}
 
-	.vault-explorer-feed-card__tags {
-		display: flex;
-		flex-wrap: wrap;
-		row-gap: 5px;
-		column-gap: 5px;
-	}
-
 	.vault-explorer-feed-card__title:focus-visible {
 		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
 	}
 
 	.vault-explorer-feed-card__content {
+		/* these settings support unicode characters as well */
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		word-break: normal;
 		color: var(--text-muted);
 		white-space: pre-wrap;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: unset;
+	}
+
+	.vault-explorer-feed-card__content--lg {
+		-webkit-line-clamp: 5;
+	}
+
+	.vault-explorer-feed-card__content--md {
+		-webkit-line-clamp: 3;
+	}
+
+	.vault-explorer-feed-card__content--sm {
+		-webkit-line-clamp: 2;
 	}
 
 	.vault-explorer-feed-card__creation-time {

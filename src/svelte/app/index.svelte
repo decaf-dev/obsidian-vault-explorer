@@ -31,11 +31,11 @@
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
-	import { formatFileDataForRender } from "./services/utils/render-utils";
+	import { formatFileDataForRender } from "./services/render-data";
 	import _ from "lodash";
 	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
-	import { getDisplayNameForView } from "./services/utils/display-name-utils";
+	import { getDisplayNameForView } from "./services/display-name";
 	import {
 		getStartOfLastWeekMillis,
 		getStartOfTodayMillis,
@@ -56,6 +56,7 @@
 	import IconButton from "../shared/components/icon-button.svelte";
 	import CustomFilterModal from "src/obsidian/custom-filter-modal";
 	import FilterGroupList from "./components/filter-group-list.svelte";
+	import { PluginEvent } from "src/event/types";
 
 	// ============================================
 	// Variables
@@ -109,11 +110,13 @@
 	};
 
 	let gridView: TGridView = {
+		loadSocialMediaImage: false,
 		isEnabled: false,
 	};
 
 	let feedView: TFeedView = {
 		isEnabled: false,
+		collapseContent: true,
 	};
 
 	let tableView: TTableView = {
@@ -133,6 +136,18 @@
 	// ============================================
 	// Lifecycle hooks
 	// ============================================
+	randomFileSortStore.subscribe((value) => {
+		randomSortCache = value;
+	});
+
+	fileContentStore.subscribe((value) => {
+		contentCache = value;
+	});
+
+	fileStore.subscribe((value) => {
+		files = value;
+	});
+
 	store.plugin.subscribe(async (p) => {
 		plugin = p;
 
@@ -161,19 +176,6 @@
 		fileContentStore.load(app);
 		randomFileSortStore.load(files);
 	});
-
-	randomFileSortStore.subscribe((value) => {
-		randomSortCache = value;
-	});
-
-	fileContentStore.subscribe((value) => {
-		contentCache = value;
-	});
-
-	fileStore.subscribe((value) => {
-		files = value;
-	});
-
 	onMount(() => {
 		function handleFilterToggleSettingChange() {
 			Logger.trace({
@@ -190,13 +192,13 @@
 		}
 
 		EventManager.getInstance().on(
-			"filter-toggle-setting-change",
+			PluginEvent.FILTER_TOGGLE_SETTING_CHANGE,
 			handleFilterToggleSettingChange,
 		);
 
 		return () => {
 			EventManager.getInstance().off(
-				"filter-toggle-setting-change",
+				PluginEvent.FILTER_TOGGLE_SETTING_CHANGE,
 				handleFilterToggleSettingChange,
 			);
 		};
@@ -222,7 +224,7 @@
 		updateTimeValues();
 
 		EventManager.getInstance().on(
-			"clock-updates-setting-change",
+			PluginEvent.CLOCK_UPDATES_SETTING_CHANGE,
 			handleClockUpdatesSettingChange,
 		);
 
@@ -231,7 +233,7 @@
 				clearInterval(timeValuesUpdateInterval);
 
 			EventManager.getInstance().off(
-				"clock-updates-setting-change",
+				PluginEvent.CLOCK_UPDATES_SETTING_CHANGE,
 				handleClockUpdatesSettingChange,
 			);
 		};
@@ -248,12 +250,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"properties-filter-update",
+			PluginEvent.PROPERTIES_FILTER_UPDATE,
 			handlePropertiesFilterUpdate,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"properties-filter-update",
+				PluginEvent.PROPERTIES_FILTER_UPDATE,
 				handlePropertiesFilterUpdate,
 			);
 		};
@@ -275,9 +277,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-create", handleCreateFile);
+		EventManager.getInstance().on(
+			PluginEvent.FILE_CREATE,
+			handleCreateFile,
+		);
 		return () => {
-			EventManager.getInstance().off("file-create", handleCreateFile);
+			EventManager.getInstance().off(
+				PluginEvent.FILE_CREATE,
+				handleCreateFile,
+			);
 		};
 	});
 
@@ -297,9 +305,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-delete", handleDeleteFile);
+		EventManager.getInstance().on(
+			PluginEvent.FILE_DELETE,
+			handleDeleteFile,
+		);
 		return () => {
-			EventManager.getInstance().off("file-delete", handleDeleteFile);
+			EventManager.getInstance().off(
+				PluginEvent.FILE_DELETE,
+				handleDeleteFile,
+			);
 		};
 	});
 
@@ -321,9 +335,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-rename", handleFileRename);
+		EventManager.getInstance().on(
+			PluginEvent.FILE_RENAME,
+			handleFileRename,
+		);
 		return () => {
-			EventManager.getInstance().off("file-rename", handleFileRename);
+			EventManager.getInstance().off(
+				PluginEvent.FILE_RENAME,
+				handleFileRename,
+			);
 		};
 	});
 
@@ -342,9 +362,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("file-modify", handleFileModify);
+		EventManager.getInstance().on(
+			PluginEvent.FILE_MODIFY,
+			handleFileModify,
+		);
 		return () => {
-			EventManager.getInstance().off("file-modify", handleFileModify);
+			EventManager.getInstance().off(
+				PluginEvent.FILE_MODIFY,
+				handleFileModify,
+			);
 		};
 	});
 
@@ -361,10 +387,13 @@
 			}
 		};
 
-		EventManager.getInstance().on("metadata-change", handleMetadataChange);
+		EventManager.getInstance().on(
+			PluginEvent.METADATA_CHANGE,
+			handleMetadataChange,
+		);
 		return () => {
 			EventManager.getInstance().off(
-				"metadata-change",
+				PluginEvent.METADATA_CHANGE,
 				handleMetadataChange,
 			);
 		};
@@ -383,12 +412,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"view-toggle-setting-change",
+			PluginEvent.VIEW_TOGGLE_SETTING_CHANGE,
 			handleViewToggleSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"view-toggle-setting-change",
+				PluginEvent.VIEW_TOGGLE_SETTING_CHANGE,
 				handleViewToggleSettingChange,
 			);
 		};
@@ -406,12 +435,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"page-size-setting-change",
+			PluginEvent.PAGE_SIZE_SETTING_CHANGE,
 			handlePageSizeSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"page-size-setting-change",
+				PluginEvent.PAGE_SIZE_SETTING_CHANGE,
 				handlePageSizeSettingChange,
 			);
 		};
@@ -428,12 +457,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"property-setting-change",
+			PluginEvent.PROPERTY_SETTING_CHANGE,
 			handlePropertySettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"property-setting-change",
+				PluginEvent.PROPERTY_SETTING_CHANGE,
 				handlePropertySettingChange,
 			);
 		};
@@ -450,6 +479,10 @@
 	const debounceFavoriteFilterChange = _.debounce((value) => {
 		favoritesFilter.value = value;
 	}, DEBOUNCE_INPUT_TIME);
+
+	function handleReshuffleClick() {
+		randomFileSortStore.load(files);
+	}
 
 	function updateTimeValues() {
 		Logger.trace({
@@ -801,6 +834,13 @@
 							<SortFilter
 								value={sortFilter.value}
 								on:change={handleSortChange}
+							/>
+						{/if}
+						{#if sortFilter.value == "random"}
+							<IconButton
+								iconId="shuffle"
+								ariaLabel="Reshuffle files"
+								on:click={handleReshuffleClick}
 							/>
 						{/if}
 						<IconButton

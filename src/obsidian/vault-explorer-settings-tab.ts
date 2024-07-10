@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
 import VaultExplorerPlugin from "src/main";
 import {
 	getDropdownOptionsForProperties,
@@ -19,6 +19,7 @@ import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import License from "src/svelte/shared/services/license";
 import "./styles.css";
+import { PluginEvent } from "src/event/types";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -64,7 +65,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.titleWrapping = value as WordBreak;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"title-wrapping-setting-change"
+							PluginEvent.TITLE_WRAPPING_SETTING_CHANGE
 						);
 					}
 				);
@@ -84,7 +85,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 							value as FlexWrap;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"filter-groups-wrapping-setting-change"
+							PluginEvent.FILTER_GROUPS_WRAPPING_SETTING_CHANGE
 						);
 					}
 				);
@@ -100,7 +101,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.enableFileIcons = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"file-icons-setting-change"
+							PluginEvent.FILE_ICONS_SETTING_CHANGE
 						);
 					})
 			);
@@ -139,7 +140,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.pageSize = parseInt(value);
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"page-size-setting-change"
+							PluginEvent.PAGE_SIZE_SETTING_CHANGE
 						);
 					})
 			);
@@ -153,7 +154,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.plugin.settings.filters.search.isEnabled = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"filter-toggle-setting-change"
+						PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -168,7 +169,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 							value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"filter-toggle-setting-change"
+							PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
 						);
 					})
 			);
@@ -183,7 +184,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 							value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"filter-toggle-setting-change"
+							PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
 						);
 					})
 			);
@@ -195,7 +196,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.plugin.settings.filters.sort.isEnabled = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"filter-toggle-setting-change"
+						PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -207,7 +208,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.plugin.settings.filters.custom.isEnabled = value;
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"filter-toggle-setting-change"
+						PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -223,7 +224,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.updateViewOrder(TExplorerView.DASHBOARD, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"view-toggle-setting-change"
+						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -236,7 +237,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.updateViewOrder(TExplorerView.GRID, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"view-toggle-setting-change"
+						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -249,7 +250,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.updateViewOrder(TExplorerView.LIST, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"view-toggle-setting-change"
+						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -262,7 +263,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.updateViewOrder(TExplorerView.FEED, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"view-toggle-setting-change"
+						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -277,7 +278,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.updateViewOrder(TExplorerView.TABLE, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"view-toggle-setting-change"
+						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -295,7 +296,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.updateViewOrder(TExplorerView.RECOMMENDED, value);
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"view-toggle-setting-change"
+							PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
 						);
 					})
 			);
@@ -310,7 +311,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					this.updateViewOrder(TExplorerView.RELATED, value);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
-						"view-toggle-setting-change"
+						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
@@ -322,6 +323,23 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		this.renderLoadSocialMediaImageSetting(
 			License.getInstance().getIsDeviceRegistered()
 		);
+
+		new Setting(containerEl).setName("Feed view").setHeading();
+
+		new Setting(containerEl)
+			.setName("Collapse feed content")
+			.setDesc("Replace new line characters with a single line break")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.views.feed.collapseContent)
+					.onChange(async (value) => {
+						this.plugin.settings.views.feed.collapseContent = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE
+						);
+					})
+			);
 
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
@@ -340,7 +358,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.properties.favorite = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"property-setting-change"
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
@@ -358,7 +376,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.properties.url = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"property-setting-change"
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
@@ -376,7 +394,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.properties.imageUrl = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"property-setting-change"
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
@@ -405,7 +423,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.properties.createdDate = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"property-setting-change"
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
@@ -434,7 +452,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.properties.modifiedDate = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"property-setting-change"
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
@@ -452,7 +470,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.properties.custom1 = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"property-setting-change"
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
@@ -468,7 +486,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.properties.custom2 = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"property-setting-change"
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
@@ -484,7 +502,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.properties.custom3 = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"property-setting-change"
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
@@ -503,7 +521,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						this.plugin.settings.enableClockUpdates = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"clock-updates-setting-change"
+							PluginEvent.CLOCK_UPDATES_SETTING_CHANGE
 						);
 					})
 			);
@@ -542,14 +560,14 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	onClose() {
 		this.component?.$destroy();
 		EventManager.getInstance().off(
-			"device-registration-change",
+			PluginEvent.DEVICE_REGISTRATION_CHANGE,
 			this.renderLoadSocialMediaImageSetting
 		);
 	}
 
 	private setupEventListeners() {
 		EventManager.getInstance().on(
-			"device-registration-change",
+			PluginEvent.DEVICE_REGISTRATION_CHANGE,
 			this.renderLoadSocialMediaImageSetting
 		);
 	}
@@ -582,14 +600,14 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				toggle
 					.setDisabled(!isDeviceRegistered)
 					.setValue(
-						this.plugin.settings.views.grid.fetchSocialMediaImage
+						this.plugin.settings.views.grid.loadSocialMediaImage
 					)
 					.onChange(async (value) => {
-						this.plugin.settings.views.grid.fetchSocialMediaImage =
+						this.plugin.settings.views.grid.loadSocialMediaImage =
 							value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							"fetch-social-media-image-setting-change"
+							PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE
 						);
 					})
 			);
