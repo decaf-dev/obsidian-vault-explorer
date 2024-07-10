@@ -1,6 +1,13 @@
+import Logger from "js-logger";
 import { requestUrl } from "obsidian";
 
 export const fetchSocialMediaImage = async (url: string) => {
+	Logger.trace({
+		fileName: "social-media-image.ts",
+		functionName: "fetchSocialMediaImage",
+		message: "called",
+	});
+
 	try {
 		const response = await requestUrl({
 			url,
@@ -16,9 +23,36 @@ export const fetchSocialMediaImage = async (url: string) => {
 
 		const imageUrl = ogImage || twitterImage;
 
+		if (imageUrl) {
+			Logger.debug(
+				{
+					fileName: "social-media-image.ts",
+					functionName: "fetchSocialMediaImage",
+					message: "found social media image",
+				},
+				{ imageUrl }
+			);
+		} else {
+			Logger.warn(
+				{
+					fileName: "social-media-image.ts",
+					functionName: "fetchSocialMediaImage",
+					message: "no social media image found for url",
+				},
+				{ url }
+			);
+		}
+
 		return imageUrl ?? null;
 	} catch (error) {
-		console.error("Failed to fetch image URL:", error);
+		Logger.warn(
+			{
+				fileName: "social-media-image.ts",
+				functionName: "fetchSocialMediaImage",
+				message: "failed to fetch",
+			},
+			{ error }
+		);
 		return null;
 	}
 };
