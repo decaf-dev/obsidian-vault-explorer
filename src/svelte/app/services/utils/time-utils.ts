@@ -1,13 +1,13 @@
-import { moment } from 'obsidian';
+import { moment } from "obsidian";
 
 export const formatBearTime = (milliseconds: number) => {
 	const now = moment();
 	const time = moment(milliseconds);
 
-	const diffInSeconds = now.diff(time, 'seconds');
-	const diffInMinutes = now.diff(time, 'minutes');
-	const diffInHours = now.diff(time, 'hours');
-	const diffInDays = now.diff(time, 'days');
+	const diffInSeconds = now.diff(time, "seconds");
+	const diffInMinutes = now.diff(time, "minutes");
+	const diffInHours = now.diff(time, "hours");
+	const diffInDays = now.diff(time, "days");
 
 	if (diffInSeconds < 60) {
 		return "Just now";
@@ -19,10 +19,10 @@ export const formatBearTime = (milliseconds: number) => {
 		return `${diffInHours} hours ago`;
 	}
 	if (diffInDays === 1) {
-		return `Yesterday at ${time.format('HH:mm')}`;
+		return `Yesterday at ${time.format("hh:mm A")}`;
 	}
 	if (time.year() === now.year()) {
-		return time.format('MMMM D');
+		return time.format("MMMM D");
 	}
-	return time.format('MMMM D, YYYY');
-}
+	return time.format("MMMM D, YYYY");
+};
