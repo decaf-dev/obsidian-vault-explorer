@@ -1,20 +1,14 @@
 # Contribute to Vault Explorer
 
-Thank you for considering contributing to Vault Explorer!
+## Issues
 
-## Testing
+Please open an [issue](https://github.com/decaf-dev/obsidian-vault-explorer/issues) for bugs or suggestions for improvement. All feedback is welcome.
 
-If you find a bug, please open an issue for it. If there's functionality that is annoying or you think that the UI can be improved, please open an issue for that as well. All feedback goes into making the plugin better.
-
-## Features
+## Pull requests
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-If you're completely new to contributing to open source projects, please reference this guide:
-
-https://www.freecodecamp.org/news/how-to-contribute-to-open-source-projects-beginners-guide/
-
-### Installation
+### Project installation
 
 Fork the Vault Explorer repository from GitHub
 
@@ -97,7 +91,7 @@ Make some code changes
 
 Restart your Obsidian application to see your code changes in action
 
-### Pull requests
+### Open a pull request
 
 Once you have commited your changes, push your code to GitHub and open a pull request.
 
