@@ -29,7 +29,6 @@ export const fetchSocialImageFromUrl = async (url: string) => {
 			url,
 			method: "GET",
 		});
-		console.log(response);
 
 		const html = response.text;
 		const parser = new DOMParser();
