@@ -325,7 +325,7 @@
 	.vault-explorer-grid-card__cover {
 		width: 100%;
 		height: 150px;
-		background-color: var(--background-modifier-border-focus);
+		background-color: var(--background-modifier-border);
 		border-top-left-radius: var(--radius-m);
 		border-top-right-radius: var(--radius-m);
 	}
