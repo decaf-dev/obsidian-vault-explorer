@@ -44,7 +44,7 @@
 >
 	{#if isSticky}
 		<Stack spacing="xs" align="center">
-			<Icon iconId="sticky-note" xs={true} />
+			<Icon iconId="pin" xs />
 			<div>{name}</div>
 		</Stack>
 	{/if}
