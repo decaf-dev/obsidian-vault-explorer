@@ -28,7 +28,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 				{
 					fileName: "social-media-image.ts",
 					functionName: "fetchSocialMediaImage",
-					message: "found social media image",
+					message: "found image",
 				},
 				{ imageUrl }
 			);
@@ -37,7 +37,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 				{
 					fileName: "social-media-image.ts",
 					functionName: "fetchSocialMediaImage",
-					message: "no social media image found for url",
+					message: "no image found",
 				},
 				{ url }
 			);
@@ -51,7 +51,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 				functionName: "fetchSocialMediaImage",
 				message: "failed to fetch",
 			},
-			{ error }
+			{ url, error }
 		);
 		return null;
 	}
