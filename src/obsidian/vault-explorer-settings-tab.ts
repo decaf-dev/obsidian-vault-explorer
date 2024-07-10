@@ -328,7 +328,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Collapse feed content")
-			.setDesc("Don't render new line characters in feed card content")
+			.setDesc("Replace new line characters with a single line break")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.views.feed.collapseContent)

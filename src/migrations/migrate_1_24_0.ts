@@ -16,7 +16,7 @@ export default class Migrate_1_24_0 implements MigrationInterface {
 				},
 				feed: {
 					...typedData.views.feed,
-					collapseContent: false,
+					collapseContent: true,
 				},
 			},
 		};
