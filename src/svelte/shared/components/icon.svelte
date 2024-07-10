@@ -13,15 +13,20 @@
 	onMount(() => {
 		if (!ref) return;
 		if (iconId === "ellipsis-vertical") return;
-		if (iconId === "file-pdf") return;
 		setIcon(ref, iconId);
 
-		// const icon = ref.querySelector("svg");
+		const icon = ref.querySelector("svg");
 
-		// if (xs && icon) {
-		// 	icon.style.setProperty("width", "var(--icon-xs)");
-		// 	icon.style.setProperty("height", "var(--icon-xs)");
-		// }
+		if (icon) {
+			icon.style.setProperty(
+				"width",
+				xs ? "var(--icon-xs)" : "var(--icon-m)",
+			);
+			icon.style.setProperty(
+				"height",
+				xs ? "var(--icon-xs)" : "var(--icon-m)",
+			);
+		}
 	});
 
 	$: svgData = getSvgData(iconId);
