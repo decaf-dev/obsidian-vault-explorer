@@ -2,7 +2,6 @@
 	class="vault-explorer-premium-link"
 	href="https://vaultexplorer.com/docs/premium/"
 	target="_blank"
-	referrerpolicy="strict-origin"
 	rel="noopener">Learn more</a
 >
 
