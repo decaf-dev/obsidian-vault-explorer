@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { FilterCondition, FilterOperator, FilterRuleType } from "src/types";
 	import FilterRule from "./filter-rule.svelte";
+	import { createEventDispatcher, onMount } from "svelte";
+	import store from "src/svelte/shared/services/store";
+	import { TFolder } from "obsidian";
+	import VaultExplorerPlugin from "src/main";
+	import EventManager from "src/event/event-manager";
+	import { PluginEvent } from "src/event/types";
 
 	export let index: number;
 	export let id: string;
@@ -13,6 +19,8 @@
 
 	let plugin: VaultExplorerPlugin;
 	let folders: string[] = [];
+
+	const dispatch = createEventDispatcher();
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
@@ -45,9 +53,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("folder-rename", handleFolderRename);
+		EventManager.getInstance().on(
+			PluginEvent.FOLDER_RENAME,
+			handleFolderRename,
+		);
 		return () => {
-			EventManager.getInstance().off("folder-rename", handleFolderRename);
+			EventManager.getInstance().off(
+				PluginEvent.FOLDER_RENAME,
+				handleFolderRename,
+			);
 		};
 	});
 
@@ -59,9 +73,15 @@
 			}
 		};
 
-		EventManager.getInstance().on("folder-create", handleFolderCreate);
+		EventManager.getInstance().on(
+			PluginEvent.FOLDER_CREATE,
+			handleFolderCreate,
+		);
 		return () => {
-			EventManager.getInstance().off("folder-create", handleFolderCreate);
+			EventManager.getInstance().off(
+				PluginEvent.FOLDER_CREATE,
+				handleFolderCreate,
+			);
 		};
 	});
 
@@ -75,18 +95,17 @@
 			}
 		};
 
-		EventManager.getInstance().on("folder-delete", handleDeleteFolder);
+		EventManager.getInstance().on(
+			PluginEvent.FOLDER_DELETE,
+			handleDeleteFolder,
+		);
 		return () => {
-			EventManager.getInstance().off("folder-delete", handleDeleteFolder);
+			EventManager.getInstance().off(
+				PluginEvent.FOLDER_DELETE,
+				handleDeleteFolder,
+			);
 		};
 	});
-
-	import { createEventDispatcher, onMount } from "svelte";
-	import store from "src/svelte/shared/services/store";
-	import { TFolder } from "obsidian";
-	import VaultExplorerPlugin from "src/main";
-	import EventManager from "src/event/event-manager";
-	const dispatch = createEventDispatcher();
 
 	function handleValueChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
