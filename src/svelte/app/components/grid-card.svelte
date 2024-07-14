@@ -279,7 +279,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		width: 100%;
 	}
 
 	.vault-explorer-grid-card__tags {

@@ -182,7 +182,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		width: 100%;
 	}
 
 	.vault-explorer-list-item__tags {

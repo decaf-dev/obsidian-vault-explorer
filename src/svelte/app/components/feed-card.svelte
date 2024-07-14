@@ -262,7 +262,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		width: 100%;
 	}
 
 	.vault-explorer-feed-card__content--lg {
