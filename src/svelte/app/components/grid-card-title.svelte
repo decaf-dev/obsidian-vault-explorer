@@ -11,6 +11,10 @@
 		dispatch("click");
 	}
 
+	function handleContextMenu(e: MouseEvent) {
+		dispatch("contextmenu", { nativeEvent: e });
+	}
+
 	$: className =
 		fileInteractionStyle === "content"
 			? "vault-explorer-grid-card__title"
@@ -27,6 +31,10 @@
 		on:click={(e) => {
 			e.preventDefault();
 			handleClick();
+		}}
+		on:contextmenu={(e) => {
+			e.preventDefault();
+			handleContextMenu(e);
 		}}
 		on:keydown={(e) => {
 			if (e.key === "Enter" || e.key === " ") {

@@ -19,6 +19,7 @@
 	import { PluginEvent } from "src/event/types";
 	import GridCardContainer from "./grid-card-container.svelte";
 	import GridCardTitle from "./grid-card-title.svelte";
+	import { openContextMenu } from "../services/context-menu";
 
 	export let displayName: string;
 	export let path: string;
@@ -133,6 +134,15 @@
 		}
 	}
 
+	async function getSocialImageUrl() {
+		if (!isDeviceRegistered) return;
+		if (!loadSocialMediaImage) return;
+
+		if (imageUrl === null && url !== null) {
+			imageUrl = await fetchSocialMediaImage(url);
+		}
+	}
+
 	function handleCardClick() {
 		const leaves = plugin.app.workspace.getLeavesOfType("markdown");
 		const leaf = leaves.find((leaf) => {
@@ -146,17 +156,17 @@
 		}
 	}
 
-	async function getSocialImageUrl() {
-		if (!isDeviceRegistered) return;
-		if (!loadSocialMediaImage) return;
-
-		if (imageUrl === null && url !== null) {
-			imageUrl = await fetchSocialMediaImage(url);
-		}
+	function handleCardContextMenu(e: CustomEvent) {
+		const { nativeEvent } = e.detail;
+		openContextMenu(plugin, nativeEvent, path);
 	}
 
 	function handleTitleClick() {
 		handleCardClick();
+	}
+
+	function handleTitleContextMenu(e: CustomEvent) {
+		handleCardContextMenu(e);
 	}
 
 	function handleTitleMouseOver(e: MouseEvent) {
@@ -173,7 +183,11 @@
 	$: loadSocialMediaImage, getSocialImageUrl();
 </script>
 
-<GridCardContainer {fileInteractionStyle} on:click={handleCardClick}>
+<GridCardContainer
+	{fileInteractionStyle}
+	on:click={handleCardClick}
+	on:contextmenu={handleCardContextMenu}
+>
 	<div class="vault-explorer-grid-card__cover">
 		{#if imageUrl !== null}
 			<!-- svelte-ignore a11y-missing-attribute -->
@@ -185,6 +199,7 @@
 			{fileInteractionStyle}
 			{wordBreak}
 			on:click={handleTitleClick}
+			on:contextmenu={handleTitleContextMenu}
 			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">

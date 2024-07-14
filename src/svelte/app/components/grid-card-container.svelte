@@ -9,6 +9,10 @@
 	function handleClick() {
 		dispatch("click");
 	}
+
+	function handleContextMenu(e: MouseEvent) {
+		dispatch("contextmenu", { nativeEvent: e });
+	}
 </script>
 
 {#if fileInteractionStyle === "content"}
@@ -21,6 +25,10 @@
 			if (e.key === "Enter" || e.key === " ") {
 				handleClick();
 			}
+		}}
+		on:contextmenu={(e) => {
+			e.preventDefault();
+			handleContextMenu(e);
 		}}
 	>
 		<slot />
