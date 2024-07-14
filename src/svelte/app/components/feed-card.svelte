@@ -16,6 +16,7 @@
 	import FeedCardContainer from "./feed-card-container.svelte";
 	import { openContextMenu } from "../services/context-menu";
 	import FeedCardTitle from "./feed-card-title.svelte";
+	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -159,6 +160,25 @@
 		openContextMenu(plugin, nativeEvent, path);
 	}
 
+	function handleTitleMouseOver(e: MouseEvent) {
+		handleCardMouseOver(e);
+	}
+
+	function handleTitleContextMenu(e: CustomEvent) {
+		handleCardContextMenu(e);
+	}
+
+	function handleCardMouseOver(e: MouseEvent) {
+		const targetEl = e.currentTarget as HTMLElement;
+		plugin.app.workspace.trigger("hover-link", {
+			event: e,
+			linktext: path,
+			source: HOVER_LINK_SOURCE_ID,
+			targetEl,
+			hoverParent: targetEl.parentElement,
+		});
+	}
+
 	const creationString = formatAsBearTimeString(createdMillis);
 
 	function getDisplayContent(
@@ -189,12 +209,15 @@
 	bind:ref
 	on:click={handleCardClick}
 	on:contextmenu={handleCardContextMenu}
+	on:mouseover={handleCardMouseOver}
 >
 	<Stack spacing="sm" direction="column">
 		<FeedCardTitle
 			{fileInteractionStyle}
 			{wordBreak}
 			on:click={handleTitleClick}
+			on:contextmenu={handleTitleContextMenu}
+			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}

@@ -153,15 +153,7 @@
 		openContextMenu(plugin, nativeEvent, path);
 	}
 
-	function handleTitleClick() {
-		handleCardClick();
-	}
-
-	function handleTitleContextMenu(e: CustomEvent) {
-		handleCardContextMenu(e);
-	}
-
-	function handleTitleMouseOver(e: MouseEvent) {
+	function handleCardMouseOver(e: MouseEvent) {
 		const targetEl = e.currentTarget as HTMLElement;
 		plugin.app.workspace.trigger("hover-link", {
 			event: e,
@@ -172,6 +164,18 @@
 		});
 	}
 
+	function handleTitleClick() {
+		handleCardClick();
+	}
+
+	function handleTitleContextMenu(e: CustomEvent) {
+		handleCardContextMenu(e);
+	}
+
+	function handleTitleMouseOver(e: MouseEvent) {
+		handleCardMouseOver(e);
+	}
+
 	$: loadSocialMediaImage, getSocialImageUrl();
 </script>
 
@@ -179,6 +183,7 @@
 	{fileInteractionStyle}
 	on:click={handleCardClick}
 	on:contextmenu={handleCardContextMenu}
+	on:mouseover={handleCardMouseOver}
 >
 	<div class="vault-explorer-grid-card__cover">
 		{#if imageUrl !== null}

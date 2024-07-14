@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { FileInteractionStyle } from "src/types";
-	import { createEventDispatcher, onMount } from "svelte";
+	import { createEventDispatcher } from "svelte";
 
 	export let fileInteractionStyle: FileInteractionStyle;
 
@@ -32,6 +32,8 @@
 			e.preventDefault();
 			handleContextMenu(e);
 		}}
+		on:focus={() => {}}
+		on:mouseover
 	>
 		<slot />
 	</div>

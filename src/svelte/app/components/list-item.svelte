@@ -14,6 +14,7 @@
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
 	import ListItemTitle from "./list-item-title.svelte";
+	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -81,6 +82,21 @@
 		const { nativeEvent } = e.detail;
 		openContextMenu(plugin, nativeEvent, path);
 	}
+
+	function handleTitleMouseOver(e: MouseEvent) {
+		handleItemMouseOver(e);
+	}
+
+	function handleItemMouseOver(e: MouseEvent) {
+		const targetEl = e.currentTarget as HTMLElement;
+		plugin.app.workspace.trigger("hover-link", {
+			event: e,
+			linktext: path,
+			source: HOVER_LINK_SOURCE_ID,
+			targetEl,
+			hoverParent: targetEl.parentElement,
+		});
+	}
 </script>
 
 <ListItemContainer
@@ -93,6 +109,7 @@
 			{fileInteractionStyle}
 			on:click={handleTitleClick}
 			on:contextmenu={handleTitleContextMenu}
+			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}
