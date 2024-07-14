@@ -1,5 +1,10 @@
-import { FilterRuleType, PropertyType, TextFilterCondition, TextPropertyFilterRule } from "src/types";
-import { generateRandomId } from "../shared/services/random";
+import {
+	FilterRuleType,
+	PropertyType,
+	TextFilterCondition,
+	TextPropertyFilterRule,
+} from "src/types";
+import { generateRandomId } from "../../shared/services/random";
 
 export const createPropertyFilter = (): TextPropertyFilterRule => {
 	return {
@@ -13,4 +18,4 @@ export const createPropertyFilter = (): TextPropertyFilterRule => {
 		value: "",
 		matchWhenPropertyDNE: false,
 	};
-}
+};

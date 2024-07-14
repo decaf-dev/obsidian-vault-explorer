@@ -52,7 +52,7 @@
 	import Wrap from "../shared/components/wrap.svelte";
 	import { randomFileSortStore } from "./services/random-file-sort-store";
 	import { fileContentStore } from "./services/file-content-store";
-	import { fileStore } from "./services/file-store";
+	import { fileStore, LoadedFile } from "./services/file-store";
 	import IconButton from "../shared/components/icon-button.svelte";
 	import CustomFilterModal from "src/obsidian/custom-filter-modal";
 	import FilterGroupList from "./components/filter-group-list.svelte";
@@ -95,7 +95,7 @@
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingsTime: number = Date.now();
 
-	let files: TFile[] = [];
+	let loadedFiles: LoadedFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
 
 	let contentCache: Record<string, string | null> = {};
@@ -145,7 +145,7 @@
 	});
 
 	fileStore.subscribe((value) => {
-		files = value;
+		loadedFiles = value;
 	});
 
 	store.plugin.subscribe(async (p) => {
@@ -174,7 +174,7 @@
 
 		fileStore.load(app);
 		fileContentStore.load(app);
-		randomFileSortStore.load(files);
+		randomFileSortStore.load(app);
 	});
 	onMount(() => {
 		function handleFilterToggleSettingChange() {
@@ -481,7 +481,7 @@
 	}, DEBOUNCE_INPUT_TIME);
 
 	function handleReshuffleClick() {
-		randomFileSortStore.load(files);
+		randomFileSortStore.load(plugin.app);
 	}
 
 	function updateTimeValues() {
@@ -681,11 +681,12 @@
 	// ============================================
 	// Reactive statements and computed data
 	// ============================================
-	let filteredCustom: TFile[] = [];
+	let filteredCustom: LoadedFile[] = [];
 
 	$: if (frontmatterCacheTime && customFilter.groups) {
 		Logger.debug(`Frontmatter cache time: ${frontmatterCacheTime}`);
-		filteredCustom = files.filter((file) => {
+		filteredCustom = loadedFiles.filter((loadedFile) => {
+			const { file } = loadedFile;
 			const { name, path } = file;
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
@@ -704,7 +705,8 @@
 
 	let formatted: FileRenderData[] = [];
 	$: if (propertySettingsTime) {
-		formatted = filteredCustom.map((file) => {
+		formatted = filteredCustom.map((loadedFile) => {
+			const { id, file } = loadedFile;
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
@@ -712,6 +714,7 @@
 			return formatFileDataForRender(
 				plugin.app,
 				plugin.settings,
+				id,
 				file,
 				frontmatter,
 				content,

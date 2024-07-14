@@ -16,14 +16,14 @@
 		FileNameFilterCondition,
 		ContentFilterCondition,
 	} from "src/types";
-	import {
-		getDisplayNameForFilterCondition,
-		getDisplayNameForFilterRuleType,
-	} from "./display-name-utils";
 	import { createEventDispatcher } from "svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import License from "src/svelte/shared/services/license";
 	import { Menu } from "obsidian";
+	import {
+		getDisplayNameForFilterCondition,
+		getDisplayNameForFilterRuleType,
+	} from "../services/display-name-utils";
 
 	export let index: number;
 	export let id: string;

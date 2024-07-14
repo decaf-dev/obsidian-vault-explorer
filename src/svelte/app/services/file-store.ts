@@ -1,36 +1,57 @@
 import { App, TFile } from "obsidian";
+import { generateRandomId } from "src/svelte/shared/services/random";
 import { writable } from "svelte/store";
 
-type FileStore = TFile[];
+export interface LoadedFile {
+	id: string;
+	file: TFile;
+}
+
+type FileStore = LoadedFile[];
 
 function createFileStore() {
 	const { subscribe, set, update } = writable<FileStore>([]);
 
 	async function load(app: App) {
-		set(app.vault.getFiles());
+		const files = app.vault.getFiles();
+		const loadedFiles: LoadedFile[] = files.map((file) => ({
+			id: generateRandomId(),
+			file,
+		}));
+		set(loadedFiles);
 	}
 
 	async function handleFileCreate(file: TFile) {
-		update((files) => {
+		const newLoadedFile: LoadedFile = {
+			id: generateRandomId(),
+			file,
+		};
+
+		update((loadedFiles) => {
 			// Create a shallow copy of the files object to ensure reactivity
-			return [...files, file];
+			return [...loadedFiles, newLoadedFile];
 		});
 	}
 
 	function handleFileRename(oldPath: string, updatedFile: TFile) {
-		update((files) => {
-			return files.map((file) => {
-				if (file.path === oldPath) {
-					return updatedFile;
+		update((loadedFiles) => {
+			return loadedFiles.map((loadedFile) => {
+				if (loadedFile.file.path === oldPath) {
+					return {
+						...loadedFile,
+						file: updatedFile,
+					};
 				}
-				return file;
+				return loadedFile;
 			});
 		});
 	}
 
 	function handleFileDelete(path: string) {
-		update((files) => {
-			return files.filter((file) => file.path !== path);
+		update((loadedFiles) => {
+			return loadedFiles.filter(
+				(loadedFiles) => loadedFiles.file.path !== path
+			);
 		});
 	}
 

@@ -8,7 +8,7 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { onMount } from "svelte";
-	import { WordBreak } from "src/types";
+	import { FileInteractionStyle, WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
@@ -17,6 +17,10 @@
 	import License from "src/svelte/shared/services/license";
 	import { fetchSocialMediaImage } from "../services/social-media-image";
 	import { PluginEvent } from "src/event/types";
+	import GridCardContainer from "./grid-card-container.svelte";
+	import GridCardTitle from "./grid-card-title.svelte";
+	import { openContextMenu } from "../services/context-menu";
+	import { openInCurrentTab } from "../services/open-file";
 
 	export let displayName: string;
 	export let path: string;
@@ -29,21 +33,17 @@
 	export let custom2: string | null;
 	export let custom3: string | null;
 
-	// let tagContainerRef: HTMLDivElement | null;
-	let wordBreak: WordBreak = "normal";
-
-	let enableFileIcons: boolean = false;
-	// let enableScrollButtons: boolean = false;
-	// let renderScrollLeftButton = false;
-	// let renderScrollRightButton = false;
-	let loadSocialMediaImage = true;
-	let isDeviceRegistered = false;
-
 	let plugin: VaultExplorerPlugin;
+	let wordBreak: WordBreak = "normal";
+	let enableFileIcons: boolean = false;
+	let loadSocialMediaImage: boolean = true;
+	let isDeviceRegistered: boolean = false;
+	let fileInteractionStyle: FileInteractionStyle = "content";
+
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		wordBreak = plugin.settings.titleWrapping;
-		// enableScrollButtons = plugin.settings.enableScrollButtons;
+		fileInteractionStyle = plugin.settings.fileInteractionStyle;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		loadSocialMediaImage = plugin.settings.views.grid.loadSocialMediaImage;
 	});
@@ -54,19 +54,26 @@
 			isDeviceRegistered = isRegistered;
 		});
 
-	async function getSocialImageUrl() {
-		if (!isDeviceRegistered) return;
-		if (!loadSocialMediaImage) return;
-		if (imageUrl === null && url !== null) {
-			imageUrl = await fetchSocialMediaImage(url);
-		}
-	}
-
 	onMount(() => {
 		getSocialImageUrl();
 	});
 
-	$: loadSocialMediaImage, getSocialImageUrl();
+	onMount(() => {
+		function handleFileInteractionStyleChange() {
+			fileInteractionStyle = plugin.settings.fileInteractionStyle;
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.FILE_INTERACTION_STYLE,
+			handleFileInteractionStyleChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.FILE_INTERACTION_STYLE,
+				handleFileInteractionStyleChange,
+			);
+		};
+	});
 
 	onMount(() => {
 		function handleLoadSocialMediaImageChange() {
@@ -120,117 +127,64 @@
 		};
 	});
 
-	// onMount(() => {
-	// 	function handleScrollButtonSettingChange() {
-	// 		const newValue = plugin.settings.enableScrollButtons;
-	// 		enableScrollButtons = newValue;
-
-	// 		if (newValue === false) {
-	// 			renderScrollLeftButton = false;
-	// 			renderScrollRightButton = false;
-	// 		}
-	// 	}
-
-	// 	EventManager.getInstance().on(
-	// 		"scroll-buttons-setting-change",
-	// 		handleScrollButtonSettingChange,
-	// 	);
-
-	// 	return () => {
-	// 		EventManager.getInstance().off(
-	// 			"scroll-buttons-setting-change",
-	// 			handleScrollButtonSettingChange,
-	// 		);
-	// 	};
-	// });
-
-	// onMount(() => {
-	// 	function addScrollListener() {
-	// 		if (tagContainerRef && enableScrollButtons) {
-	// 			tagContainerRef.addEventListener("scroll", handleScroll);
-	// 			requestAnimationFrame(handleScroll);
-	// 		}
-	// 	}
-
-	// 	addScrollListener();
-
-	// 	return () => {
-	// 		if (tagContainerRef && enableScrollButtons) {
-	// 			tagContainerRef.removeEventListener("scroll", handleScroll);
-	// 		}
-	// 	};
-	// });
-
-	function handleTitleClick() {
-		const leaves = plugin.app.workspace.getLeavesOfType("markdown");
-		const leaf = leaves.find((leaf) => {
-			return ((leaf.view as MarkdownView).file?.path ?? "") === path;
-		});
-
-		if (leaf) {
-			plugin.app.workspace.setActiveLeaf(leaf);
-		} else {
-			plugin.app.workspace.openLinkText(path, "vault-explorer");
-		}
-	}
-
-	function handleUrlClick() {
+	function handleUrlClick(e: CustomEvent) {
+		const { nativeEvent } = e.detail;
+		nativeEvent.stopPropagation();
 		if (url != null) {
 			window.open(url, "_blank");
 		}
 	}
 
-	// function handleScrollLeftClick() {
-	// 	if (tagContainerRef) {
-	// 		const scrollAmount = getScrollAmount(
-	// 			tagContainerRef,
-	// 			".vault-explorer-tag",
-	// 			"left",
-	// 		);
-	// 		tagContainerRef.scrollBy({
-	// 			left: -scrollAmount,
-	// 			behavior: "smooth",
-	// 		});
-	// 	}
-	// }
+	async function getSocialImageUrl() {
+		if (!isDeviceRegistered) return;
+		if (!loadSocialMediaImage) return;
 
-	// function handleScrollRightClick() {
-	// 	if (tagContainerRef) {
-	// 		const scrollAmount = getScrollAmount(
-	// 			tagContainerRef,
-	// 			".vault-explorer-tag",
-	// 			"right",
-	// 		);
-	// 		tagContainerRef.scrollBy({
-	// 			left: scrollAmount,
-	// 			behavior: "smooth",
-	// 		});
-	// 	}
-	// }
+		if (imageUrl === null && url !== null) {
+			imageUrl = await fetchSocialMediaImage(url);
+		}
+	}
 
-	// function handleScroll() {
-	// 	if (!tagContainerRef) return;
+	function handleCardClick() {
+		openInCurrentTab(plugin, path);
+	}
 
-	// 	const { scrollLeft, clientWidth, scrollWidth } = tagContainerRef;
-	// 	renderScrollLeftButton = scrollLeft > 0;
+	function handleCardContextMenu(e: CustomEvent) {
+		const { nativeEvent } = e.detail;
+		openContextMenu(plugin, nativeEvent, path);
+	}
 
-	// 	// When the scroll box is at the end, the scrollLeft + clientWidth is equal to the scrollWidth
-	// 	// To account for minor discrepancies, we use Math.round to round the result
-	// 	renderScrollRightButton =
-	// 		Math.round(scrollLeft + clientWidth) < scrollWidth;
-	// }
+	function handleCardMouseOver(e: MouseEvent) {
+		const targetEl = e.currentTarget as HTMLElement;
+		plugin.app.workspace.trigger("hover-link", {
+			event: e,
+			linktext: path,
+			source: HOVER_LINK_SOURCE_ID,
+			targetEl,
+			hoverParent: targetEl.parentElement,
+		});
+	}
 
-	// $: if (tagContainerRef) {
-	// 	if (enableScrollButtons) {
-	// 		tagContainerRef.addEventListener("scroll", handleScroll);
-	// 		handleScroll();
-	// 	} else {
-	// 		tagContainerRef.removeEventListener("scroll", handleScroll);
-	// 	}
-	// }
+	function handleTitleClick() {
+		handleCardClick();
+	}
+
+	function handleTitleContextMenu(e: CustomEvent) {
+		handleCardContextMenu(e);
+	}
+
+	function handleTitleMouseOver(e: MouseEvent) {
+		handleCardMouseOver(e);
+	}
+
+	$: loadSocialMediaImage, getSocialImageUrl();
 </script>
 
-<div class="vault-explorer-grid-card">
+<GridCardContainer
+	{fileInteractionStyle}
+	on:click={handleCardClick}
+	on:contextmenu={handleCardContextMenu}
+	on:mouseover={handleCardMouseOver}
+>
 	<div class="vault-explorer-grid-card__cover">
 		{#if imageUrl !== null}
 			<!-- svelte-ignore a11y-missing-attribute -->
@@ -238,32 +192,21 @@
 		{/if}
 	</div>
 	<div class="vault-explorer-grid-card__header">
-		<div
-			tabindex="0"
-			role="link"
-			class="vault-explorer-grid-card__title"
-			style={`word-break: ${wordBreak};`}
-			on:focus={() => {}}
+		<GridCardTitle
+			{fileInteractionStyle}
 			on:click={handleTitleClick}
-			on:keydown={(e) =>
-				(e.key === "Enter" || e.key === " ") && handleTitleClick()}
-			on:mouseover={(event) => {
-				plugin.app.workspace.trigger("hover-link", {
-					event,
-					linktext: path,
-					source: HOVER_LINK_SOURCE_ID,
-					targetEl: event.currentTarget,
-					hoverParent: event.currentTarget.parentElement,
-				});
-			}}
+			on:contextmenu={handleTitleContextMenu}
+			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}
 					<Icon iconId={getIconIdForFile(baseName, extension)} />
 				{/if}
-				<span>{displayName}</span>
+				<div class="vault-explorer-grid-card__title-text">
+					{displayName}
+				</div>
 			</Stack>
-		</div>
+		</GridCardTitle>
 		{#if url !== null}
 			<IconButton
 				iconId="external-link"
@@ -274,25 +217,13 @@
 	</div>
 	<div class="vault-explorer-grid-card__content">
 		{#if tags !== null}
-			<!-- {#if renderScrollLeftButton}
-					<ScrollButton
-						type="tag"
-						direction="left"
-						on:click={handleScrollLeftClick}
-					/>
-				{/if} -->
 			<div class="vault-explorer-grid-card__tags">
-				{#each tags as tag}
-					<Tag name={tag} />
-				{/each}
+				<Wrap spacingX="sm" spacingY="sm">
+					{#each tags as tag}
+						<Tag name={tag} />
+					{/each}
+				</Wrap>
 			</div>
-			<!-- {#if renderScrollRightButton}
-					<ScrollButton
-						type="tag"
-						direction="right"
-						on:click={handleScrollRightClick}
-					/>
-				{/if} -->
 		{/if}
 		{#if custom1 !== null || custom2 !== null || custom3 !== null}
 			<Spacer size="sm" direction="vertical" />
@@ -312,17 +243,9 @@
 				/>{/if}
 		</Wrap>
 	</div>
-</div>
+</GridCardContainer>
 
 <style>
-	.vault-explorer-grid-card {
-		width: 100%;
-		max-width: 425px;
-		box-shadow: var(--shadow-s);
-		border-top-left-radius: var(--radius-m);
-		border-top-right-radius: var(--radius-m);
-	}
-
 	.vault-explorer-grid-card__cover {
 		width: 100%;
 		height: 150px;
@@ -344,45 +267,21 @@
 		justify-content: space-between;
 		align-items: flex-start;
 		column-gap: 0.5rem;
-		padding: 10px 15px 10px 15px;
-	}
-
-	.vault-explorer-grid-card__title {
-		cursor: pointer;
-		color: var(--text-accent);
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	.vault-explorer-grid-card__title:focus-visible {
-		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+		padding: 8px 16px;
 	}
 
 	.vault-explorer-grid-card__content {
-		padding: 0px 15px 20px 15px;
+		padding: 0px 16px;
 		position: relative;
-		/* display: flex;
-		flex-direction: column;
-		row-gap: 0.5rem; */
+	}
+
+	.vault-explorer-grid-card__title-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.vault-explorer-grid-card__tags {
-		display: flex;
-		flex-wrap: wrap;
-		column-gap: 5px;
-		row-gap: 5px;
-		/* height: min-content;
-		overflow-x: auto; */
+		margin-bottom: 16px;
 	}
-
-	.vault-explorer-grid-card__tags::-webkit-scrollbar {
-		display: none;
-	}
-
-	/**
-	.vault-explorer-property-label {
-		margin-left: 8px;
-		font-size: var(--font-smallest);
-		color: var(--text-muted);
-	} */
 </style>

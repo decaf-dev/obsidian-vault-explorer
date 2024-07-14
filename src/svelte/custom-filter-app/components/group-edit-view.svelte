@@ -7,7 +7,7 @@
 	import FilterRuleList from "./filter-rule-list.svelte";
 
 	import { createEventDispatcher } from "svelte";
-	import { createPropertyFilter } from "../utils";
+	import { createPropertyFilter } from "../services/utils";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	const dispatch = createEventDispatcher();
 

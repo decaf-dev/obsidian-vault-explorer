@@ -1,4 +1,5 @@
 export interface FileRenderData {
+	id: string;
 	displayName: string;
 	path: string;
 	extension: string;

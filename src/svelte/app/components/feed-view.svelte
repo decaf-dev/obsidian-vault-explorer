@@ -10,7 +10,7 @@
 	export let startIndex;
 	export let pageLength;
 
-	let displayedItems: FileRenderData[] = [];
+	let filteredItems: FileRenderData[] = [];
 
 	License.getInstance()
 		.getIsDeviceRegisteredStore()
@@ -20,16 +20,14 @@
 
 	$: {
 		if (startIndex < data.length) {
-			displayedItems = Array.from({ length: pageLength }, (_, i) => {
+			filteredItems = Array.from({ length: pageLength }, (_, i) => {
 				const index = startIndex + i;
 				return data[index];
 			});
 		} else {
-			displayedItems = [];
+			filteredItems = [];
 		}
 	}
-	//TODO replace file.path with a unique id that is generated when the
-	//file is added
 </script>
 
 <div class="vault-explorer-feed-view">
@@ -40,15 +38,15 @@
 		</div>
 	{/if}
 	{#if isDeviceRegistered}
-		{#each displayedItems as fileData (fileData.path)}
+		{#each filteredItems as fileRenderData (fileRenderData.id)}
 			<FeedCard
-				displayName={fileData.displayName}
-				extension={fileData.extension}
-				baseName={fileData.baseName}
-				path={fileData.path}
-				tags={fileData.tags}
-				content={fileData.content}
-				createdMillis={fileData.createdMillis}
+				displayName={fileRenderData.displayName}
+				extension={fileRenderData.extension}
+				baseName={fileRenderData.baseName}
+				path={fileRenderData.path}
+				tags={fileRenderData.tags}
+				content={fileRenderData.content}
+				createdMillis={fileRenderData.createdMillis}
 			/>
 		{/each}
 	{/if}

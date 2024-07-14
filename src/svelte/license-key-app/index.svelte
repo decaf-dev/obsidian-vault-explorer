@@ -3,6 +3,7 @@
 	import License, { LICENSE_KEY_LENGTH } from "../shared/services/license";
 	import EventManager from "src/event/event-manager";
 	import PremiumLink from "../shared/components/premium-link.svelte";
+	import { PluginEvent } from "src/event/types";
 
 	interface Message {
 		type: "success" | "failure" | "info";
@@ -42,7 +43,7 @@
 					text: responseMessage,
 				};
 				EventManager.getInstance().emit(
-					"device-registration-change",
+					PluginEvent.DEVICE_REGISTRATION_CHANGE,
 					true,
 				);
 			} else {
@@ -62,7 +63,7 @@
 			isDeviceRegistered = false;
 			message = null;
 			EventManager.getInstance().emit(
-				"device-registration-change",
+				PluginEvent.DEVICE_REGISTRATION_CHANGE,
 				false,
 			);
 		} else {

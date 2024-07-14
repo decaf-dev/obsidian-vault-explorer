@@ -14,7 +14,12 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { FlexWrap, TExplorerView, WordBreak } from "src/types";
+import {
+	FileInteractionStyle,
+	FlexWrap,
+	TExplorerView,
+	WordBreak,
+} from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import License from "src/svelte/shared/services/license";
@@ -53,23 +58,43 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("General").setHeading();
 
 		new Setting(containerEl)
-			.setName("Title wrapping")
-			.setDesc("Set the wrapping style for the title.")
+			.setName("File interaction")
+			.setDesc("Set how a file should be interacted with.")
 			.addDropdown((cb) => {
 				cb.addOptions({
-					normal: "Normal",
-					"break-word": "Break Word",
+					content: "Click on content",
+					title: "Click on title",
 				});
-				cb.setValue(this.plugin.settings.titleWrapping).onChange(
+				cb.setValue(this.plugin.settings.fileInteractionStyle).onChange(
 					async (value) => {
-						this.plugin.settings.titleWrapping = value as WordBreak;
+						this.plugin.settings.fileInteractionStyle =
+							value as FileInteractionStyle;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							PluginEvent.TITLE_WRAPPING_SETTING_CHANGE
+							PluginEvent.FILE_INTERACTION_STYLE
 						);
 					}
 				);
 			});
+
+		// new Setting(containerEl)
+		// 	.setName("Title wrapping")
+		// 	.setDesc("Set the wrapping style for the title.")
+		// 	.addDropdown((cb) => {
+		// 		cb.addOptions({
+		// 			normal: "Normal",
+		// 			"break-word": "Break Word",
+		// 		});
+		// 		cb.setValue(this.plugin.settings.titleWrapping).onChange(
+		// 			async (value) => {
+		// 				this.plugin.settings.titleWrapping = value as WordBreak;
+		// 				await this.plugin.saveSettings();
+		// 				EventManager.getInstance().emit(
+		// 					PluginEvent.TITLE_WRAPPING_SETTING_CHANGE
+		// 				);
+		// 			}
+		// 		);
+		// 	});
 
 		new Setting(containerEl)
 			.setName("Filter groups wrapping")
