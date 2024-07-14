@@ -9,7 +9,6 @@
 		PropertyType,
 		FilterRuleType,
 	} from "src/types";
-	import { getDisplayNameForDatePropertyFilterValue } from "./display-name-utils";
 	import { getAllObsidianProperties } from "src/obsidian/utils";
 
 	export let index: number;
@@ -37,6 +36,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import { ObsidianProperty } from "src/obsidian/types";
 	import FilterRule from "./filter-rule.svelte";
+	import { getDisplayNameForDatePropertyFilterValue } from "../services/display-name-utils";
 
 	const dispatch = createEventDispatcher();
 

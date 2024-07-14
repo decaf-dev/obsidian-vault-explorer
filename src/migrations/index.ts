@@ -18,6 +18,7 @@ import Migrate_1_22_0 from "./migrate_1_22_0";
 import Migrate_1_23_0 from "./migrate_1_23_0";
 import Migrate_1_23_1 from "./migrate_1_23_1";
 import Migrate_1_24_0 from "./migrate_1_24_0";
+import Migrate_1_25_0 from "./migrate_1_25_0";
 
 const migrations: TMigration[] = [
 	{
@@ -109,6 +110,11 @@ const migrations: TMigration[] = [
 		from: "1.23.2",
 		to: "1.24.0",
 		migrate: Migrate_1_24_0,
+	},
+	{
+		from: "1.24.2",
+		to: "1.25.0",
+		migrate: Migrate_1_25_0,
 	},
 ];
 

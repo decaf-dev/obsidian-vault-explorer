@@ -20,11 +20,12 @@
 	} from "src/types";
 	import { generateRandomId } from "../shared/services/random";
 	import GroupEditView from "./components/group-edit-view.svelte";
-	import { createPropertyFilter } from "./utils";
+	import { createPropertyFilter } from "./services/utils";
 	import GroupList from "./components/group-list.svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import Divider from "../shared/components/divider.svelte";
 	import Logger from "js-logger";
+	import { PluginEvent } from "src/event/types";
 
 	let selectedGroupId: string = "";
 	let groups: TFilterGroup[] = [];
@@ -49,7 +50,9 @@
 
 	onMount(() => {
 		return () => {
-			EventManager.getInstance().emit("properties-filter-update");
+			EventManager.getInstance().emit(
+				PluginEvent.PROPERTIES_FILTER_UPDATE,
+			);
 		};
 	});
 

@@ -1,5 +1,4 @@
-/** @see {isVaultExplorerPluginSettings} ts-auto-guard:type-guard */
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_24_2 {
 	properties: {
 		favorite: string;
 		url: string;
@@ -29,7 +28,6 @@ export interface VaultExplorerPluginSettings {
 	titleWrapping: WordBreak;
 	enableClockUpdates: boolean;
 	enableFileIcons: boolean;
-	fileInteractionStyle: FileInteractionStyle;
 	currentView: TExplorerView | null;
 	enableScrollButtons: boolean;
 	pageSize: number;
@@ -39,8 +37,6 @@ export interface VaultExplorerPluginSettings {
 	viewOrder: TExplorerView[];
 	logLevel: string;
 }
-
-export type FileInteractionStyle = "title" | "content";
 
 interface BaseView {
 	isEnabled: boolean;

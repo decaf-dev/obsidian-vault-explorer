@@ -10,7 +10,9 @@
 		plugin = p;
 	});
 
-	function handleClick() {
+	function handleClick(e: MouseEvent) {
+		e.stopPropagation();
+
 		const searchPlugin = (plugin.app as any).internalPlugins.plugins[
 			"global-search"
 		];
