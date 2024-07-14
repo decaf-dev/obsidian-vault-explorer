@@ -12,6 +12,7 @@ import { isImageExtension } from "./utils/image-utils";
 export const formatFileDataForRender = (
 	app: App,
 	settings: VaultExplorerPluginSettings,
+	id: string,
 	file: TFile,
 	frontmatter: FrontMatterCache | undefined,
 	content: string | null
@@ -114,6 +115,7 @@ export const formatFileDataForRender = (
 	const displayName = extension === "md" ? basename : name;
 
 	return {
+		id,
 		displayName,
 		baseName: basename,
 		path,
