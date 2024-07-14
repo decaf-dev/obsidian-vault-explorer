@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-vault-explorer",
-	"version": "1.24.2",
+	"version": "1.25.0",
 	"description": "Explore your vault in visual format",
 	"main": "main.js",
 	"scripts": {
