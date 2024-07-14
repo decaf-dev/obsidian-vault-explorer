@@ -7,29 +7,28 @@
 	export let startIndex: number;
 	export let pageLength: number;
 
-	let displayedItems: FileRenderData[] = [];
+	let filteredItems: FileRenderData[] = [];
 
 	$: {
 		if (startIndex < data.length) {
-			displayedItems = Array.from({ length: pageLength }, (_, i) => {
+			filteredItems = Array.from({ length: pageLength }, (_, i) => {
 				const index = startIndex + i;
 				return data[index];
 			});
 		} else {
-			displayedItems = [];
+			filteredItems = [];
 		}
 	}
-	//TODO replace file.path with a unique id that is generated when the file is added
 </script>
 
 <div class="vault-explorer-list-view">
-	{#each displayedItems as file (file.path)}
+	{#each filteredItems as fileRenderData (fileRenderData.id)}
 		<ListItem
-			displayName={file.displayName}
-			extension={file.extension}
-			baseName={file.baseName}
-			path={file.path}
-			tags={file.tags}
+			displayName={fileRenderData.displayName}
+			extension={fileRenderData.extension}
+			baseName={fileRenderData.baseName}
+			path={fileRenderData.path}
+			tags={fileRenderData.tags}
 		/>
 	{/each}
 </div>

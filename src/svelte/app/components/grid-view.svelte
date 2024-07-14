@@ -6,35 +6,34 @@
 	export let startIndex: number;
 	export let pageLength: number;
 
-	let displayedItems: FileRenderData[] = [];
+	let filteredItems: FileRenderData[] = [];
 
 	$: {
 		if (startIndex < data.length) {
-			displayedItems = Array.from({ length: pageLength }, (_, i) => {
+			filteredItems = Array.from({ length: pageLength }, (_, i) => {
 				const index = startIndex + i;
 				return data[index];
 			});
 		} else {
-			displayedItems = [];
+			filteredItems = [];
 		}
 	}
-	//TODO replace file.path with a unique id that is generated when the file is added
 </script>
 
 <div class="vault-explorer-grid-view">
 	<div class="vault-explorer-grid-view__container">
-		{#each displayedItems as file (file.path)}
+		{#each filteredItems as fileRenderData (fileRenderData.id)}
 			<GridCard
-				displayName={file.displayName}
-				path={file.path}
-				baseName={file.baseName}
-				extension={file.extension}
-				imageUrl={file.imageUrl}
-				url={file.url}
-				tags={file.tags}
-				custom1={file.custom1}
-				custom2={file.custom2}
-				custom3={file.custom3}
+				displayName={fileRenderData.displayName}
+				path={fileRenderData.path}
+				baseName={fileRenderData.baseName}
+				extension={fileRenderData.extension}
+				imageUrl={fileRenderData.imageUrl}
+				url={fileRenderData.url}
+				tags={fileRenderData.tags}
+				custom1={fileRenderData.custom1}
+				custom2={fileRenderData.custom2}
+				custom3={fileRenderData.custom3}
 			/>
 		{/each}
 	</div>
