@@ -158,10 +158,6 @@
 		openContextMenu(plugin, nativeEvent, path);
 	}
 
-	function handleTitleMouseOver(e: MouseEvent) {
-		handleCardMouseOver(e);
-	}
-
 	function handleTitleContextMenu(e: CustomEvent) {
 		handleCardContextMenu(e);
 	}
@@ -175,6 +171,10 @@
 			targetEl,
 			hoverParent: targetEl.parentElement,
 		});
+	}
+
+	function handleTitleMouseOver(e: MouseEvent) {
+		handleCardMouseOver(e);
 	}
 
 	const creationString = formatAsBearTimeString(createdMillis);
