@@ -7,6 +7,7 @@
 	import { onMount } from "svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import EventManager from "src/event/event-manager";
+	import { PluginEvent } from "src/event/types";
 
 	export let groups: TFilterGroup[] = [];
 
@@ -29,12 +30,12 @@
 		}
 
 		EventManager.getInstance().on(
-			"filter-groups-wrapping-setting-change",
+			PluginEvent.FILTER_GROUPS_WRAPPING_SETTING_CHANGE,
 			handleFilterGroupsWrappingSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				"filter-groups-wrapping-setting-change",
+				PluginEvent.FILTER_GROUPS_WRAPPING_SETTING_CHANGE,
 				handleFilterGroupsWrappingSettingChange,
 			);
 		};
