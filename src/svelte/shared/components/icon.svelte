@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { setIcon } from "obsidian";
-	import { onMount } from "svelte";
+	import { afterUpdate, onMount } from "svelte";
 	import { getSvgData } from "../services/get-svg-data";
 
 	export let ariaLabel = "";
@@ -9,8 +9,15 @@
 
 	let ref: HTMLElement | null = null;
 
-	// Use onMount to ensure the element is available in the DOM
 	onMount(() => {
+		updateIcon();
+	});
+
+	afterUpdate(() => {
+		updateIcon();
+	});
+
+	function updateIcon() {
 		if (!ref) return;
 		if (iconId === "ellipsis-vertical") return;
 		setIcon(ref, iconId);
@@ -27,7 +34,7 @@
 				xs ? "var(--icon-xs)" : "var(--icon-m)",
 			);
 		}
-	});
+	}
 
 	$: svgData = getSvgData(iconId);
 
