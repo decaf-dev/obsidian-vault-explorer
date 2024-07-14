@@ -32,6 +32,8 @@
 			e.preventDefault();
 			handleContextMenu(e);
 		}}
+		on:focus={() => {}}
+		on:mouseover
 	>
 		<slot />
 	</div>
