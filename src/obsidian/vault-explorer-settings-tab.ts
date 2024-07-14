@@ -62,8 +62,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.setDesc("Set how a file should be styled and interacted with.")
 			.addDropdown((cb) => {
 				cb.addOptions({
-					content: "Content as link",
-					title: "Title as link",
+					content: "Content area",
+					title: "Title",
 				});
 				cb.setValue(this.plugin.settings.fileInteractionStyle).onChange(
 					async (value) => {
