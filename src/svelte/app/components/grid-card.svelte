@@ -20,6 +20,7 @@
 	import GridCardContainer from "./grid-card-container.svelte";
 	import GridCardTitle from "./grid-card-title.svelte";
 	import { openContextMenu } from "../services/context-menu";
+	import { openInCurrentTab } from "../services/open-file";
 
 	export let displayName: string;
 	export let path: string;
@@ -144,16 +145,7 @@
 	}
 
 	function handleCardClick() {
-		const leaves = plugin.app.workspace.getLeavesOfType("markdown");
-		const leaf = leaves.find((leaf) => {
-			return ((leaf.view as MarkdownView).file?.path ?? "") === path;
-		});
-
-		if (leaf) {
-			plugin.app.workspace.setActiveLeaf(leaf);
-		} else {
-			plugin.app.workspace.openLinkText(path, "vault-explorer");
-		}
+		openInCurrentTab(plugin, path);
 	}
 
 	function handleCardContextMenu(e: CustomEvent) {
@@ -269,11 +261,11 @@
 		justify-content: space-between;
 		align-items: flex-start;
 		column-gap: 0.5rem;
-		padding: 8px 16px 8px 16px;
+		padding: 8px 16px;
 	}
 
 	.vault-explorer-grid-card__content {
-		padding: 0px 16px 8px 16px;
+		padding: 0px 16px;
 		position: relative;
 	}
 
