@@ -3,6 +3,7 @@
 	import { createEventDispatcher } from "svelte";
 
 	export let fileInteractionStyle: FileInteractionStyle;
+	export let ref: HTMLElement | null = null;
 
 	const dispatch = createEventDispatcher();
 
@@ -17,6 +18,7 @@
 
 {#if fileInteractionStyle === "content"}
 	<div
+		bind:this={ref}
 		tabindex="0"
 		role="button"
 		class="vault-explorer-list-item vault-explorer-list-item--interactive"
@@ -36,7 +38,7 @@
 {/if}
 
 {#if fileInteractionStyle === "title"}
-	<div class="vault-explorer-list-item">
+	<div bind:this={ref} class="vault-explorer-list-item">
 		<slot />
 	</div>
 {/if}

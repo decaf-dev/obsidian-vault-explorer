@@ -15,6 +15,7 @@
 	import { openInCurrentTab } from "../services/open-file";
 	import ListItemTitle from "./list-item-title.svelte";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
+	import { SCREEN_SIZE_MD } from "../constants";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -24,6 +25,8 @@
 
 	let enableFileIcons: boolean = false;
 	let fileInteractionStyle: FileInteractionStyle = "content";
+	let isSmallScreenSize: boolean = false;
+	let ref: HTMLElement | null = null;
 	let plugin: VaultExplorerPlugin;
 
 	store.plugin.subscribe((p) => {
@@ -66,6 +69,35 @@
 		};
 	});
 
+	onMount(() => {
+		let resizeObserver: ResizeObserver;
+
+		const leafEl = ref?.closest(
+			".workspace-leaf-content",
+		) as HTMLElement | null;
+		if (leafEl) {
+			checkLeafWidth(leafEl);
+
+			resizeObserver = new ResizeObserver(() => {
+				checkLeafWidth(leafEl);
+			});
+			resizeObserver.observe(leafEl);
+		}
+
+		return () => {
+			resizeObserver?.disconnect();
+		};
+	});
+
+	function checkLeafWidth(leafEl: HTMLElement) {
+		const { clientWidth } = leafEl;
+		if (clientWidth < SCREEN_SIZE_MD) {
+			isSmallScreenSize = true;
+		} else {
+			isSmallScreenSize = false;
+		}
+	}
+
 	function handleTitleClick() {
 		handleItemClick();
 	}
@@ -97,15 +129,24 @@
 			hoverParent: targetEl.parentElement,
 		});
 	}
+
+	$: tagsClassName = `vault-explorer-list-item__tags ${isSmallScreenSize ? "vault-explorer-list-item__tags--screen-size-sm" : ""}`;
 </script>
 
 <ListItemContainer
 	{fileInteractionStyle}
+	bind:ref
 	on:click={handleItemClick}
 	on:contextmenu={handleItemContextMenu}
 >
-	<Wrap justify="space-between" spacingX="xl" spacingY="sm">
+	<Wrap
+		spacingX="lg"
+		spacingY="sm"
+		align="center"
+		wrap={isSmallScreenSize ? "wrap" : "nowrap"}
+	>
 		<ListItemTitle
+			{isSmallScreenSize}
 			{fileInteractionStyle}
 			on:click={handleTitleClick}
 			on:contextmenu={handleTitleContextMenu}
@@ -115,24 +156,40 @@
 				{#if enableFileIcons}
 					<Icon iconId={getIconIdForFile(baseName, extension)} />
 				{/if}
-				<span>{displayName}</span>
+				<div class="vault-explorer-list-item__title-text">
+					{displayName}
+				</div>
 			</Stack>
 		</ListItemTitle>
-		{#if tags != null}
-			<div class="vault-explorer-list-item__tags">
-				{#each tags as tag}
-					<Tag name={tag} variant="unstyled" />
-				{/each}
-			</div>
-		{/if}
+		<div class={tagsClassName}>
+			{#if tags !== null}
+				<Wrap
+					spacingX="xs"
+					spacingY="xs"
+					justify={isSmallScreenSize ? "flex-start" : "flex-end"}
+				>
+					{#each tags as tag}
+						<Tag name={tag} variant="unstyled" />
+					{/each}
+				</Wrap>
+			{/if}
+		</div>
 	</Wrap>
 </ListItemContainer>
 
 <style>
+	.vault-explorer-list-item__title-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		width: 100%;
+	}
+
 	.vault-explorer-list-item__tags {
-		display: flex;
-		flex-wrap: wrap;
-		row-gap: 5px;
-		column-gap: 5px;
+		width: 50%;
+	}
+
+	.vault-explorer-list-item__tags--screen-size-sm {
+		width: 100%;
 	}
 </style>

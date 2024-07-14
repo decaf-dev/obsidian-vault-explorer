@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { FileInteractionStyle, WordBreak } from "src/types";
+	import { FileInteractionStyle } from "src/types";
 	import { createEventDispatcher } from "svelte";
 
 	export let fileInteractionStyle: FileInteractionStyle;
-	export let wordBreak: WordBreak;
 
 	const dispatch = createEventDispatcher();
 
@@ -15,10 +14,7 @@
 		dispatch("contextmenu", { nativeEvent: e });
 	}
 
-	$: className =
-		fileInteractionStyle === "content"
-			? "vault-explorer-grid-card__title"
-			: "vault-explorer-grid-card__title--interactive";
+	$: className = `vault-explorer-grid-card__title ${fileInteractionStyle === "content" ? "" : "vault-explorer-grid-card__title--interactive"}`;
 </script>
 
 {#if fileInteractionStyle === "title"}
@@ -26,7 +22,6 @@
 		tabindex="0"
 		role="link"
 		class={className}
-		style={`word-break: ${wordBreak};`}
 		on:focus={() => {}}
 		on:click={(e) => {
 			e.preventDefault();
@@ -49,15 +44,14 @@
 {/if}
 
 {#if fileInteractionStyle === "content"}
-	<div class="vault-explorer-grid-card__title">
+	<div class={className}>
 		<slot />
 	</div>
 {/if}
 
 <style>
 	.vault-explorer-grid-card__title {
-		overflow: hidden;
-		text-overflow: ellipsis;
+		width: 100%;
 	}
 
 	.vault-explorer-grid-card__title--interactive {

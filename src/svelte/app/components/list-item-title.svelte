@@ -3,6 +3,7 @@
 	import { createEventDispatcher } from "svelte";
 
 	export let fileInteractionStyle: FileInteractionStyle;
+	export let isSmallScreenSize: boolean;
 
 	const dispatch = createEventDispatcher();
 
@@ -14,10 +15,7 @@
 		dispatch("contextmenu", { nativeEvent: e });
 	}
 
-	$: className =
-		fileInteractionStyle === "content"
-			? "vault-explorer-list-item__title"
-			: "vault-explorer-list-item__title--interactive";
+	$: className = `vault-explorer-list-item__title ${fileInteractionStyle === "content" ? "" : "vault-explorer-list-item__title--interactive"} ${isSmallScreenSize ? "vault-explorer-list-item__title--screen-size-sm" : ""}`;
 </script>
 
 {#if fileInteractionStyle === "title"}
@@ -47,16 +45,18 @@
 {/if}
 
 {#if fileInteractionStyle === "content"}
-	<div class="vault-explorer-list-item__title">
+	<div class={className}>
 		<slot />
 	</div>
 {/if}
 
 <style>
 	.vault-explorer-list-item__title {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		/* font-weight: var(--font-medium); */
+		width: 50%;
+	}
+
+	.vault-explorer-list-item__title--screen-size-sm {
+		width: 100%;
 	}
 
 	.vault-explorer-list-item__title--interactive {

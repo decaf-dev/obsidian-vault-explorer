@@ -17,6 +17,7 @@
 	import { openContextMenu } from "../services/context-menu";
 	import FeedCardTitle from "./feed-card-title.svelte";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
+	import { SCREEN_SIZE_LG, SCREEN_SIZE_MD } from "../constants";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -131,9 +132,6 @@
 	});
 
 	function checkLeafWidth(leafEl: HTMLElement) {
-		const SCREEN_SIZE_MD = 600;
-		const SCREEN_SIZE_LG = 1024;
-
 		const { clientWidth } = leafEl;
 		if (clientWidth < SCREEN_SIZE_MD) {
 			contentModifierClassName = "vault-explorer-feed-card__content--sm";
@@ -214,7 +212,6 @@
 	<Stack spacing="sm" direction="column">
 		<FeedCardTitle
 			{fileInteractionStyle}
-			{wordBreak}
 			on:click={handleTitleClick}
 			on:contextmenu={handleTitleContextMenu}
 			on:mouseover={handleTitleMouseOver}
@@ -223,7 +220,9 @@
 				{#if enableFileIcons}
 					<Icon iconId={getIconIdForFile(baseName, extension)} />
 				{/if}
-				<span>{displayName}</span>
+				<div class="vault-explorer-feed-card__title-text">
+					{displayName}
+				</div>
 			</Stack>
 		</FeedCardTitle>
 		{#if displayContent != null && displayContent.length > 0}
@@ -233,7 +232,7 @@
 		{/if}
 		{#if tags != null}
 			<div class="vault-explorer-feed-card__tags">
-				<Wrap spacingX="sm" spacingY="sm">
+				<Wrap spacingX="xs" spacingY="xs">
 					{#each tags as tag}
 						<Tag name={tag} variant="unstyled" />
 					{/each}
@@ -257,6 +256,13 @@
 		white-space: pre-wrap;
 		text-overflow: ellipsis;
 		-webkit-line-clamp: unset;
+	}
+
+	.vault-explorer-feed-card__title-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		width: 100%;
 	}
 
 	.vault-explorer-feed-card__content--lg {

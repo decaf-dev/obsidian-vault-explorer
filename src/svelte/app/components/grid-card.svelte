@@ -194,7 +194,6 @@
 	<div class="vault-explorer-grid-card__header">
 		<GridCardTitle
 			{fileInteractionStyle}
-			{wordBreak}
 			on:click={handleTitleClick}
 			on:contextmenu={handleTitleContextMenu}
 			on:mouseover={handleTitleMouseOver}
@@ -203,7 +202,9 @@
 				{#if enableFileIcons}
 					<Icon iconId={getIconIdForFile(baseName, extension)} />
 				{/if}
-				<span>{displayName}</span>
+				<div class="vault-explorer-grid-card__title-text">
+					{displayName}
+				</div>
 			</Stack>
 		</GridCardTitle>
 		{#if url !== null}
@@ -272,6 +273,13 @@
 	.vault-explorer-grid-card__content {
 		padding: 0px 16px;
 		position: relative;
+	}
+
+	.vault-explorer-grid-card__title-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		width: 100%;
 	}
 
 	.vault-explorer-grid-card__tags {
