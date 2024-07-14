@@ -138,6 +138,7 @@
 	bind:ref
 	on:click={handleItemClick}
 	on:contextmenu={handleItemContextMenu}
+	on:mouseover={handleItemMouseOver}
 >
 	<Wrap
 		spacingX="lg"
