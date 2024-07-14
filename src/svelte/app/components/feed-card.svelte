@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { MarkdownView } from "obsidian";
 	import { onMount } from "svelte";
-	import { WordBreak } from "src/types";
-	import { HOVER_LINK_SOURCE_ID } from "src/constants";
+	import { FileInteractionStyle, WordBreak } from "src/types";
 	import EventManager from "src/event/event-manager";
 	import VaultExplorerPlugin from "src/main";
 	import store from "src/svelte/shared/services/store";
@@ -14,6 +12,10 @@
 	import { getIconIdForFile } from "../services/file-icon";
 	import { PluginEvent } from "src/event/types";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
+	import { openInCurrentTab } from "../services/open-file";
+	import FeedCardContainer from "./feed-card-container.svelte";
+	import { openContextMenu } from "../services/context-menu";
+	import FeedCardTitle from "./feed-card-title.svelte";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -28,6 +30,7 @@
 	let enableFileIcons = false;
 	let collapseContent = false;
 	let contentModifierClassName = "";
+	let fileInteractionStyle: FileInteractionStyle = "content";
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((value) => {
@@ -35,6 +38,7 @@
 		wordBreak = plugin.settings.titleWrapping;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		collapseContent = plugin.settings.views.feed.collapseContent;
+		fileInteractionStyle = plugin.settings.fileInteractionStyle;
 	});
 
 	onMount(() => {
@@ -50,6 +54,23 @@
 			EventManager.getInstance().off(
 				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function handleFileInteractionStyleChange() {
+			fileInteractionStyle = plugin.settings.fileInteractionStyle;
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.FILE_INTERACTION_STYLE,
+			handleFileInteractionStyleChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.FILE_INTERACTION_STYLE,
+				handleFileInteractionStyleChange,
 			);
 		};
 	});
@@ -88,22 +109,6 @@
 		};
 	});
 
-	function checkLeafWidth(leafEl: HTMLElement) {
-		const SCREEN_SIZE_MD = 600;
-		const SCREEN_SIZE_LG = 1024;
-
-		const { clientWidth } = leafEl;
-		if (clientWidth < SCREEN_SIZE_MD) {
-			contentModifierClassName = "vault-explorer-feed-card__content--sm";
-		} else if (
-			clientWidth >= SCREEN_SIZE_MD &&
-			clientWidth < SCREEN_SIZE_LG
-		) {
-			contentModifierClassName = "vault-explorer-feed-card__content--md";
-		} else {
-			contentModifierClassName = "vault-explorer-feed-card__content--lg";
-		}
-	}
 	onMount(() => {
 		let resizeObserver: ResizeObserver;
 
@@ -124,17 +129,34 @@
 		};
 	});
 
-	function handleTitleClick() {
-		const leaves = plugin.app.workspace.getLeavesOfType("markdown");
-		const leaf = leaves.find((leaf) => {
-			return ((leaf.view as MarkdownView).file?.path ?? "") === path;
-		});
+	function checkLeafWidth(leafEl: HTMLElement) {
+		const SCREEN_SIZE_MD = 600;
+		const SCREEN_SIZE_LG = 1024;
 
-		if (leaf) {
-			plugin.app.workspace.setActiveLeaf(leaf);
+		const { clientWidth } = leafEl;
+		if (clientWidth < SCREEN_SIZE_MD) {
+			contentModifierClassName = "vault-explorer-feed-card__content--sm";
+		} else if (
+			clientWidth >= SCREEN_SIZE_MD &&
+			clientWidth < SCREEN_SIZE_LG
+		) {
+			contentModifierClassName = "vault-explorer-feed-card__content--md";
 		} else {
-			plugin.app.workspace.openLinkText(path, "vault-explorer");
+			contentModifierClassName = "vault-explorer-feed-card__content--lg";
 		}
+	}
+
+	function handleTitleClick() {
+		handleCardClick();
+	}
+
+	function handleCardClick() {
+		openInCurrentTab(plugin, path);
+	}
+
+	function handleCardContextMenu(e: CustomEvent) {
+		const { nativeEvent } = e.detail;
+		openContextMenu(plugin, nativeEvent, path);
 	}
 
 	const creationString = formatAsBearTimeString(createdMillis);
@@ -162,26 +184,17 @@
 	$: contentClassName = `vault-explorer-feed-card__content ${contentModifierClassName}`;
 </script>
 
-<div class="vault-explorer-feed-card" bind:this={ref}>
+<FeedCardContainer
+	{fileInteractionStyle}
+	bind:ref
+	on:click={handleCardClick}
+	on:contextmenu={handleCardContextMenu}
+>
 	<Stack spacing="sm" direction="column">
-		<div
-			tabindex="0"
-			role="link"
-			class="vault-explorer-feed-card__title"
-			style={`word-break: ${wordBreak};`}
-			on:focus={() => {}}
+		<FeedCardTitle
+			{fileInteractionStyle}
+			{wordBreak}
 			on:click={handleTitleClick}
-			on:keydown={(e) =>
-				(e.key === "Enter" || e.key === " ") && handleTitleClick()}
-			on:mouseover={(event) => {
-				plugin.app.workspace.trigger("hover-link", {
-					event,
-					linktext: path,
-					source: HOVER_LINK_SOURCE_ID,
-					targetEl: event.currentTarget,
-					hoverParent: event.currentTarget.parentElement,
-				});
-			}}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}
@@ -189,7 +202,7 @@
 				{/if}
 				<span>{displayName}</span>
 			</Stack>
-		</div>
+		</FeedCardTitle>
 		{#if displayContent != null && displayContent.length > 0}
 			<div class={contentClassName}>
 				{@html displayContent}
@@ -208,26 +221,9 @@
 			{creationString}
 		</div>
 	</Stack>
-</div>
+</FeedCardContainer>
 
 <style>
-	.vault-explorer-feed-card {
-		padding-bottom: 10px;
-		border-bottom: 1px solid var(--background-modifier-border);
-		margin-bottom: 10px;
-	}
-
-	.vault-explorer-feed-card__title {
-		cursor: pointer;
-		color: var(--text-accent);
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	.vault-explorer-feed-card__title:focus-visible {
-		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
-	}
-
 	.vault-explorer-feed-card__content {
 		/* these settings support unicode characters as well */
 		display: -webkit-box;

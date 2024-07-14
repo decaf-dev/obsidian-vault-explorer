@@ -73,6 +73,10 @@
 		openInCurrentTab(plugin, path);
 	}
 
+	function handleTitleContextMenu(e: CustomEvent) {
+		handleItemContextMenu(e);
+	}
+
 	function handleItemContextMenu(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
 		openContextMenu(plugin, nativeEvent, path);
@@ -87,8 +91,8 @@
 	<Wrap justify="space-between" spacingX="xl" spacingY="sm">
 		<ListItemTitle
 			{fileInteractionStyle}
-			on:click={handleItemClick}
-			on:contextmenu={handleItemContextMenu}
+			on:click={handleTitleClick}
+			on:contextmenu={handleTitleContextMenu}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}

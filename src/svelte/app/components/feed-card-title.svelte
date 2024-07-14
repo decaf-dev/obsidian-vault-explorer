@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { FileInteractionStyle } from "src/types";
+	import { FileInteractionStyle, WordBreak } from "src/types";
 	import { createEventDispatcher } from "svelte";
 
 	export let fileInteractionStyle: FileInteractionStyle;
+	export let wordBreak: WordBreak;
 
 	const dispatch = createEventDispatcher();
 
@@ -16,8 +17,8 @@
 
 	$: className =
 		fileInteractionStyle === "content"
-			? "vault-explorer-list-item__title"
-			: "vault-explorer-list-item__title--interactive";
+			? "vault-explorer-feed-card__title"
+			: "vault-explorer-feed-card__title--interactive";
 </script>
 
 {#if fileInteractionStyle === "title"}
@@ -25,6 +26,7 @@
 		tabindex="0"
 		role="link"
 		class={className}
+		style={`word-break: ${wordBreak};`}
 		on:focus={() => {}}
 		on:click={(e) => {
 			e.preventDefault();
@@ -47,24 +49,23 @@
 {/if}
 
 {#if fileInteractionStyle === "content"}
-	<div class="vault-explorer-list-item__title">
+	<div class="vault-explorer-feed-card__title">
 		<slot />
 	</div>
 {/if}
 
 <style>
-	.vault-explorer-list-item__title {
+	.vault-explorer-feed-card__title {
 		overflow: hidden;
 		text-overflow: ellipsis;
-		/* font-weight: var(--font-medium); */
 	}
 
-	.vault-explorer-list-item__title--interactive {
+	.vault-explorer-feed-card__title--interactive {
 		cursor: pointer;
 		color: var(--text-accent);
 	}
 
-	.vault-explorer-list-item__title--interactive:focus-visible {
+	.vault-explorer-feed-card__title--interactive:focus-visible {
 		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
 	}
 </style>
