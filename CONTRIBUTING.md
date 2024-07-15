@@ -38,29 +38,27 @@ Build the project. This will create a `dist` folder
 bun run build
 ```
 
-> [!TIP]  
-> I recommend creating a new Obsidian vault just for development. This way, you won't accidentally modify any of your files.
+The repository that you cloned contains a folder called `test-vault`. This is what will be used for development.
 
-Create a symbolic link from the `dist` folder to your Obsidan vault.
+The `test-vault` contains a `.obsidian/plugins/vault-explorer` folder with a `data.json` file but it is missing the `main.js`, `manifest.json` and `styles.css`.
 
-```shell
-ln -s <repository-path>/dist <development-vault-path>/.obsidian/plugins/vault-explorer-dev
-```
-
-For example
+We need to create symbolic links for each of these folders
 
 ```shell
-ln -s /users/decaf-dev/desktop/obsidian-vault-explorer/dist /users/decaf-dev/desktop/dev-vault/.obsidian/plugins/vault-explorer-dev
+cd test-vault/.obsidian/plugins/vault-explorer
 ```
 
-Open your Obsidian vault
+```shell
+ln -s ../../../../dist/main.js .
+```
 
-Go to **Community plugins**
+```shell
+ln -s ../../../../dist/manifest.json .
+```
 
-Find **Vault Explorer** and then enable the plugin by switching the toggle.
-
-> [!NOTE]  
-> You may need to click the **Reload plugins** button for the plugin to appear in the list
+```shell
+ln -s ../../../../dist/styles.css .
+```
 
 ### Development
 

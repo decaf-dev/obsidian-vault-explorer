@@ -1,0 +1,3 @@
+---
+favorite: true
+---
