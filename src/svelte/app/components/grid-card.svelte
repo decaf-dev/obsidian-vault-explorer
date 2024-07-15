@@ -242,6 +242,9 @@
 					value={custom3}
 				/>{/if}
 		</Wrap>
+		{#if tags != null || custom1 !== null || custom2 !== null || custom3 !== null}
+			<Spacer size="sm" direction="vertical" />
+		{/if}
 	</div>
 </GridCardContainer>
 
@@ -279,9 +282,5 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-	}
-
-	.vault-explorer-grid-card__tags {
-		margin-bottom: 16px;
 	}
 </style>
