@@ -711,6 +711,7 @@
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
 			const content = contentCache[file.path] ?? null;
+
 			return formatFileDataForRender(
 				plugin.app,
 				plugin.settings,

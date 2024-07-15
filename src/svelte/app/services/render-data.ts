@@ -9,6 +9,16 @@ import {
 } from "src/svelte/shared/services/time-utils";
 import { isImageExtension } from "./utils/image-utils";
 
+/**
+ * Formats the file's data for rendering
+ * @param app - The Obsidian app
+ * @param settings - The plugin's settings
+ * @param id - The file's id. This is a randomly generated identifier for the file
+ * @param file - The file to format
+ * @param frontmatter - The file's frontmatter
+ * @param content - The file's content
+ * @returns A FileRenderData object that contains the file's data formatted for rendering
+ */
 export const formatFileDataForRender = (
 	app: App,
 	settings: VaultExplorerPluginSettings,
@@ -17,11 +27,7 @@ export const formatFileDataForRender = (
 	frontmatter: FrontMatterCache | undefined,
 	content: string | null
 ): FileRenderData => {
-	const tags: string[] | null = loadPropertyValue<string[]>(
-		frontmatter,
-		"tags",
-		PropertyType.LIST
-	);
+	const { name, basename, extension, path } = file;
 
 	const {
 		createdDate: createdDateProp,
@@ -33,6 +39,12 @@ export const formatFileDataForRender = (
 		custom2: custom2Prop,
 		custom3: custom3Prop,
 	} = settings.properties;
+
+	const tags: string[] | null = loadPropertyValue<string[]>(
+		frontmatter,
+		"tags",
+		PropertyType.LIST
+	);
 
 	const url: string | null = loadPropertyValue<string>(
 		frontmatter,
@@ -102,12 +114,21 @@ export const formatFileDataForRender = (
 		PropertyType.TEXT
 	);
 
-	const { name, basename, extension, path } = file;
-
 	if (imageUrl?.startsWith("[[") && imageUrl.endsWith("]]")) {
 		const link = imageUrl.substring(2, imageUrl.length - 2);
-		const resourcePath = app.vault.adapter.getResourcePath(link);
-		imageUrl = resourcePath;
+
+		//Get the link file
+		//We use this function because a link can exclude folders when `New link format` is set to
+		//`shortest path when possible`.
+		const linkFile = app.metadataCache.getFirstLinkpathDest(link, path);
+
+		if (linkFile) {
+			const resourcePath = app.vault.getResourcePath(linkFile);
+			imageUrl = resourcePath;
+		} else {
+			Logger.error(`Link path for image url not found: ${link}`);
+			imageUrl = null;
+		}
 	} else if (isImageExtension(extension)) {
 		imageUrl = app.vault.getResourcePath(file);
 	}
