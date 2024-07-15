@@ -8,15 +8,19 @@
 # npm
 node_modules
 
-# Don't include the compiled main.js file in the repo.
-# They should be uploaded to GitHub releases instead.
 main.js
+
+# Ignore the symbolic links in the test-vault
+test-vault/.obsidian/plugins/vault-explorer/main.js
+test-vault/.obsidian/plugins/vault-explorer/manifest.json
+test-vault/.obsidian/plugins/vault-explorer/styles.css
+
+# Ignore the workspace. There was a initial workspace created in the test-vault
+# This file updates too frequently and is not useful for version control
+test-vault/.obsidian/workspace.json
 
 # Exclude sourcemaps
 *.map
-
-# obsidian
-data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
