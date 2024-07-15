@@ -1,0 +1,81 @@
+{
+  "logLevel": "trace",
+  "properties": {
+    "favorite": "favorite",
+    "url": "url",
+    "custom1": "category",
+    "custom2": "color",
+    "custom3": "size",
+    "creationDate": "creation",
+    "modifiedDate": "modification",
+    "createdDate": "creation",
+    "imageUrl": "image"
+  },
+  "filters": {
+    "search": {
+      "isEnabled": true,
+      "value": ""
+    },
+    "timestamp": {
+      "isEnabled": true,
+      "value": "all"
+    },
+    "sort": {
+      "isEnabled": true,
+      "value": "file-name-asc"
+    },
+    "custom": {
+      "isEnabled": true,
+      "selectedGroupId": "",
+      "groups": []
+    },
+    "favorites": {
+      "isEnabled": true,
+      "value": false
+    },
+    "properties": {
+      "groups": []
+    }
+  },
+  "views": {
+    "dashboard": {
+      "isEnabled": false
+    },
+    "grid": {
+      "isEnabled": true,
+      "loadSocialMediaImage": true
+    },
+    "list": {
+      "isEnabled": true
+    },
+    "table": {
+      "isEnabled": false
+    },
+    "feed": {
+      "isEnabled": true,
+      "renderNewLineCharacters": false,
+      "collapseContent": true
+    },
+    "recommended": {
+      "isEnabled": false
+    },
+    "related": {
+      "isEnabled": false
+    }
+  },
+  "currentView": "grid",
+  "titleWrapping": "normal",
+  "enableClockUpdates": true,
+  "enableFileIcons": true,
+  "enableScrollButtons": true,
+  "fileInteractionStyle": "content",
+  "filterGroupsWidth": "367px",
+  "filterGroupsWrapping": "nowrap",
+  "pageSize": 25,
+  "viewOrder": [
+    "grid",
+    "list",
+    "feed"
+  ],
+  "pluginVersion": "1.25.1"
+}
