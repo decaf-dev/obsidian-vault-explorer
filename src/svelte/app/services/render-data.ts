@@ -52,7 +52,7 @@ export const formatFileDataForRender = (
 		PropertyType.TEXT
 	);
 
-	const favorite: boolean | null = loadPropertyValue<boolean>(
+	const isFavorite: boolean | null = loadPropertyValue<boolean>(
 		frontmatter,
 		favoriteProp,
 		PropertyType.CHECKBOX
@@ -145,7 +145,7 @@ export const formatFileDataForRender = (
 		content,
 		tags,
 		imageUrl,
-		favorite,
+		isFavorite,
 		createdMillis,
 		modifiedMillis,
 		custom1,

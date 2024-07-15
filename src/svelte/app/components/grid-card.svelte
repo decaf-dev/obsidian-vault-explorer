@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { MarkdownView } from "obsidian";
 	import IconButton from "../../shared/components/icon-button.svelte";
 	import Tag from "../../shared/components/tag.svelte";
 	import Property from "../../shared/components/property.svelte";
@@ -7,7 +6,7 @@
 	import store from "../../shared/services/store";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { onMount } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import { FileInteractionStyle, WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
@@ -32,6 +31,7 @@
 	export let custom1: string | null;
 	export let custom2: string | null;
 	export let custom3: string | null;
+	export let isFavorite: boolean | null;
 
 	let plugin: VaultExplorerPlugin;
 	let wordBreak: WordBreak = "normal";
@@ -47,6 +47,8 @@
 		enableFileIcons = plugin.settings.enableFileIcons;
 		loadSocialMediaImage = plugin.settings.views.grid.loadSocialMediaImage;
 	});
+
+	const dispatch = createEventDispatcher();
 
 	License.getInstance()
 		.getIsDeviceRegisteredStore()
@@ -148,9 +150,17 @@
 		openInCurrentTab(plugin, path);
 	}
 
+	function handleFavoriteChange(filePath: string, value: boolean) {
+		console.log("favoritePropertyChange", { filePath, value });
+		dispatch("favoritePropertyChange", { filePath, value });
+	}
+
 	function handleCardContextMenu(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
-		openContextMenu(plugin, nativeEvent, path);
+		openContextMenu(plugin, path, nativeEvent, {
+			isFavorite,
+			onFavoriteChange: handleFavoriteChange,
+		});
 	}
 
 	function handleCardMouseOver(e: MouseEvent) {

@@ -3,8 +3,15 @@ import VaultExplorerPlugin from "src/main";
 
 export const openContextMenu = (
 	plugin: VaultExplorerPlugin,
+	filePath: string,
 	e: MouseEvent,
-	filePath: string
+	{
+		isFavorite,
+		onFavoriteChange,
+	}: {
+		isFavorite: boolean | null;
+		onFavoriteChange: (filePath: string, value: boolean) => void;
+	}
 ) => {
 	const menu = new Menu();
 	menu.setUseNativeMenu(true);
@@ -19,6 +26,16 @@ export const openContextMenu = (
 	menu.addItem((item) => {
 		item.setTitle("Open in new window");
 		item.onClick(() => openInNewWindow(plugin, filePath));
+	});
+	menu.addSeparator();
+	menu.addItem((item) => {
+		item.setTitle(
+			isFavorite ? "Remove from favorites" : "Add to favorites"
+		);
+		item.onClick(() => {
+			const newValue = isFavorite !== null ? !isFavorite : true;
+			onFavoriteChange(filePath, newValue);
+		});
 	});
 	menu.showAtMouseEvent(e);
 };

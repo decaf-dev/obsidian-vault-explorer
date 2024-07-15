@@ -674,6 +674,36 @@
 		debounceFavoriteFilterChange(value);
 	}
 
+	function handleFavoritePropertyChange(e: CustomEvent) {
+		const { filePath, value } = e.detail as {
+			filePath: string;
+			value: boolean;
+		};
+
+		const { properties } = plugin.settings;
+		const { favorite: favoritePropertyName } = properties;
+
+		//If the favorite property is not set, return
+		if (favoritePropertyName === "") {
+			return;
+		}
+
+		const file = plugin.app.vault.getFileByPath(filePath);
+		if (!file) {
+			Logger.error({
+				fileName: "app/index.svelte",
+				functionName: "handleFavoritePropertyChange",
+				message: "file not found. returning...",
+			});
+			return;
+		}
+
+		plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+			frontmatter[favoritePropertyName] = value;
+			return frontmatter;
+		});
+	}
+
 	function handleCustomFilterClick() {
 		new CustomFilterModal(plugin).open();
 	}
@@ -894,11 +924,26 @@
 			/>
 		</Wrap>
 		{#if currentView === "grid"}
-			<GridView data={renderData} {startIndex} {pageLength} />
+			<GridView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{:else if currentView === "list"}
-			<ListView data={renderData} {startIndex} {pageLength} />
+			<ListView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{:else if currentView === "feed"}
-			<FeedView data={renderData} {startIndex} {pageLength} />
+			<FeedView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{/if}
 	</div>
 </div>
