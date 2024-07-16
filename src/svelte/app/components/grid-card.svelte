@@ -231,6 +231,7 @@
 				{#if url !== null}
 					<IconButton
 						iconId="external-link"
+						ariaLabel="Open in browser"
 						noPadding
 						on:click={handleUrlClick}
 					/>
