@@ -7,7 +7,7 @@
 	import FavoritesFilter from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { TFile } from "obsidian";
+	import { Notice, TFile } from "obsidian";
 	import {
 		TCustomFilter,
 		TDashboardView,
@@ -703,6 +703,9 @@
 
 		//If the favorite property is not set, return
 		if (favoritePropertyName === "") {
+			new Notice(
+				"Please select a favorite property in the Vault Explorer settings to use this feature",
+			);
 			return;
 		}
 
