@@ -103,10 +103,11 @@ class FavoritesStore {
 			message: "called",
 		});
 
-		this.store.update((store) => {
-			store.set(filePath, isFavorite);
-			this.debounceSave(store);
-			return store;
+		this.store.update((currentCache) => {
+			const newCache = new Map(currentCache);
+			newCache.set(filePath, isFavorite);
+			this.debounceSave(newCache);
+			return newCache;
 		});
 	}
 
@@ -117,13 +118,15 @@ class FavoritesStore {
 			message: "called",
 		});
 
-		this.store.update((store) => {
-			if (store.get(oldPath)) {
-				store.set(newPath, true);
-				store.delete(oldPath);
-				this.debounceSave(store);
+		this.store.update((currentCache) => {
+			const isFavorite = currentCache.get(oldPath);
+			if (isFavorite !== undefined) {
+				const newCache = new Map(currentCache);
+				newCache.set(newPath, isFavorite);
+				newCache.delete(oldPath);
+				this.debounceSave(newCache);
 			}
-			return store;
+			return currentCache;
 		});
 	}
 
@@ -134,10 +137,11 @@ class FavoritesStore {
 			message: "called",
 		});
 
-		this.store.update((store) => {
-			store.delete(path);
-			this.debounceSave(store);
-			return store;
+		this.store.update((currentCache) => {
+			const newCache = new Map(currentCache);
+			newCache.delete(path);
+			this.debounceSave(newCache);
+			return newCache;
 		});
 	}
 

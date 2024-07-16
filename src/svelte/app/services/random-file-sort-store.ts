@@ -1,15 +1,11 @@
 import Logger from "js-logger";
-import { App, TFile } from "obsidian";
+import { App } from "obsidian";
 import { writable } from "svelte/store";
 
-type RandomFileSortStore = Record<string, number>;
+export type RandomFileSortCache = Map<string, number>;
 
 function createRandomFileSortStore() {
-	const { subscribe, set, update } = writable<RandomFileSortStore>({});
-
-	function randomSortKey() {
-		return Math.random();
-	}
+	const { subscribe, set, update } = writable<RandomFileSortCache>(new Map());
 
 	function load(app: App) {
 		Logger.trace({
@@ -19,44 +15,43 @@ function createRandomFileSortStore() {
 		});
 
 		const files = app.vault.getFiles();
-		const randomSortFiles = files.reduce(
-			(acc: Record<string, number>, file) => {
-				const { path } = file;
-				acc[path] = randomSortKey();
-				return acc;
-			},
-			{}
+		const randomSortFiles = new Map<string, number>(
+			files.map((file) => [file.path, randomSortKey()])
 		);
-
 		set(randomSortFiles);
 	}
 
 	function handleFileCreate(path: string) {
-		update((files) => {
-			// Create a shallow copy of the files object to ensure reactivity
-			return { ...files, [path]: randomSortKey() };
+		update((currentCache) => {
+			const newCache = new Map(currentCache);
+			newCache.set(path, randomSortKey());
+			return newCache;
 		});
 	}
 
 	function handleFileRename(oldPath: string, newPath: string) {
-		update((files) => {
-			if (files.hasOwnProperty(oldPath)) {
-				// Create a shallow copy of the files object
-				const { [oldPath]: value, ...newFiles } = files;
-				newFiles[newPath] = value;
-				return newFiles;
+		update((currentCache) => {
+			const sortKey = currentCache.get(oldPath);
+			if (sortKey !== undefined) {
+				const newCache = new Map(currentCache);
+				newCache.set(newPath, sortKey);
+				newCache.delete(oldPath);
+				return newCache;
 			}
-			// No change if the old path does not exist
-			return files;
+			return currentCache;
 		});
 	}
 
 	function handleFileDelete(path: string) {
-		update((files) => {
-			// Create a shallow copy and delete the property
-			const { [path]: _, ...newFiles } = files;
-			return newFiles;
+		update((currentCache) => {
+			const newCache = new Map(currentCache);
+			newCache.delete(path);
+			return newCache;
 		});
+	}
+
+	function randomSortKey() {
+		return Math.random();
 	}
 
 	return {
