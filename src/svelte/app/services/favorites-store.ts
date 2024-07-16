@@ -3,6 +3,7 @@ import _ from "lodash";
 import { App, normalizePath, Notice } from "obsidian";
 import { VaultExplorerPluginSettings } from "src/types";
 import { Writable, writable } from "svelte/store";
+import { parseItems, stringifyItems } from "./utils/json-utils";
 
 interface FavoritesItem {
 	filePath: string;
@@ -65,7 +66,7 @@ class FavoritesStore {
 			const cache = new Map<string, boolean>();
 			const rawData = await app.vault.adapter.read(filePath);
 
-			const items = this.parseItems<FavoritesItem>(rawData);
+			const items = parseItems<FavoritesItem>(rawData);
 			items.forEach((item) => {
 				const { filePath, isFavorite } = item;
 				cache.set(filePath, isFavorite);
@@ -162,7 +163,14 @@ class FavoritesStore {
 
 		try {
 			const path = this.getFavoritesFilePath(this.settings.configDir);
-			const rawData = this.stringifyCache(cache);
+			const items = Array.from(cache.entries()).map(
+				([filePath, isFavorite]) => ({
+					filePath,
+					isFavorite,
+				})
+			);
+
+			const rawData = stringifyItems(items);
 			await this.app.vault.adapter.write(path, rawData);
 		} catch (err) {
 			const error = err as Error;
@@ -210,8 +218,8 @@ class FavoritesStore {
 				functionName: "load",
 				message: "creating new file...",
 			});
-			const data = this.stringifyCache(new Map<string, boolean>());
-			await app.vault.create(filePath, data);
+			const rawData = stringifyItems([]);
+			await app.vault.create(filePath, rawData);
 			return true;
 		} catch (err) {
 			const error = err as Error;
@@ -230,29 +238,6 @@ class FavoritesStore {
 
 	private getFavoritesFilePath(configDir: string) {
 		return normalizePath(configDir + "/" + FAVORITES_FILE);
-	}
-
-	private parseItems<T>(rawData: string): T[] {
-		const json = JSON.parse(rawData);
-		if (!json.items) return [];
-		return json.items;
-	}
-
-	private stringifyCache(cache: TFavoritesCache) {
-		const items = Array.from(cache.entries()).map(
-			([filePath, isFavorite]) => ({
-				filePath,
-				isFavorite,
-			})
-		);
-
-		return JSON.stringify(
-			{
-				items,
-			},
-			null,
-			2
-		);
 	}
 }
 
