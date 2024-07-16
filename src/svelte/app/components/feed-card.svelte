@@ -7,7 +7,19 @@
 	import { formatAsBearTimeString } from "../services/time-string";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Tag from "src/svelte/shared/components/tag.svelte";
-	import { removeFrontmatterBlock } from "../services/utils/frontmatter-utils";
+	import {
+		removeBoldMarkdown,
+		removeCodeBlocks,
+		removeEmptyLines,
+		removeFrontmatter,
+		removeItalicsMarkdown,
+		removeLevel1Headers,
+		removeMarkdownHashes,
+		removeMarkdownHighlight,
+		removeMarkdownTables,
+		removeNewLineCharacters,
+		removeWikiLinks,
+	} from "../services/utils/content-utils";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
 	import { PluginEvent } from "src/event/types";
@@ -189,25 +201,26 @@
 
 	const creationString = formatAsBearTimeString(createdMillis);
 
-	function getDisplayContent(
-		content: string | null,
-		collapseContent: boolean,
-	) {
+	function getDisplayContent(content: string | null) {
 		if (content != null) {
-			let modifiedContent = removeFrontmatterBlock(content);
-			if (collapseContent) {
-				modifiedContent = modifiedContent
-					.split("\n")
-					.map((line) => line.trim())
-					.filter((line) => line.length > 0)
-					.join("<br/>");
-			}
-			return modifiedContent;
+			let displayContent = content;
+			displayContent = removeFrontmatter(displayContent);
+			displayContent = removeLevel1Headers(displayContent);
+			displayContent = removeMarkdownHashes(displayContent);
+			displayContent = removeMarkdownTables(displayContent);
+			displayContent = removeBoldMarkdown(displayContent);
+			displayContent = removeItalicsMarkdown(displayContent);
+			displayContent = removeMarkdownHighlight(displayContent);
+			displayContent = removeCodeBlocks(displayContent);
+			displayContent = removeWikiLinks(displayContent);
+			displayContent = removeEmptyLines(displayContent);
+			displayContent = removeNewLineCharacters(displayContent);
+			return displayContent;
 		}
 		return content;
 	}
 
-	$: displayContent = getDisplayContent(content, collapseContent);
+	$: displayContent = getDisplayContent(content);
 
 	$: contentClassName = `vault-explorer-feed-card__content ${contentModifierClassName}`;
 </script>

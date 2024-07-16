@@ -22,7 +22,7 @@ import {
 import { matchFileNameFilter } from "./match-file-name-filter";
 import { matchContentFilter } from "./match-content-filter";
 import { matchFolderFilter } from "./match-folder-filter";
-import { removeFrontmatterBlock } from "../../utils/frontmatter-utils";
+import { removeFrontmatter } from "../../utils/content-utils";
 
 export const filterByGroups = (
 	fileName: string,
@@ -274,7 +274,7 @@ const filterByContent = (
 		return true;
 	}
 
-	let value = removeFrontmatterBlock(fileContent);
+	let value = removeFrontmatter(fileContent);
 	value = value.toLowerCase().trim();
 
 	const compare = filter.value.toLocaleLowerCase().trim();
