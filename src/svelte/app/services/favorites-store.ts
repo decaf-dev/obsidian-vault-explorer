@@ -118,8 +118,9 @@ class FavoritesStore {
 		});
 
 		this.store.update((store) => {
-			if (store.get(oldPath)) {
-				store.set(newPath, true);
+			const isFavorite = store.get(oldPath);
+			if (isFavorite !== undefined) {
+				store.set(newPath, isFavorite);
 				store.delete(oldPath);
 				this.debounceSave(store);
 			}
