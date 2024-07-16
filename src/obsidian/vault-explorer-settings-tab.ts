@@ -14,17 +14,13 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import {
-	FileInteractionStyle,
-	FlexWrap,
-	TExplorerView,
-	WordBreak,
-} from "src/types";
+import { FileInteractionStyle, FlexWrap, TExplorerView } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import License from "src/svelte/shared/services/license";
 import "./styles.css";
 import { PluginEvent } from "src/event/types";
+import { favoritesStore } from "src/svelte/app/services/favorites-store";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -556,6 +552,29 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		this.component = new LicenseKeyApp({
 			target: containerEl,
 		});
+
+		new Setting(containerEl).setName("Storage").setHeading();
+
+		const configFolderDesc = new DocumentFragment();
+		configFolderDesc.createDiv({
+			text: "Set the plugin configuration folder.",
+		});
+		configFolderDesc.createDiv({
+			text: "Restart Obsidian after changing this setting.",
+			cls: "mod-warning",
+		});
+
+		new Setting(containerEl)
+			.setName("Config folder")
+			.setDesc(configFolderDesc)
+			.addText((component) =>
+				component
+					.setValue(this.plugin.settings.configDir)
+					.onChange(async (value) => {
+						this.plugin.settings.configDir = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
