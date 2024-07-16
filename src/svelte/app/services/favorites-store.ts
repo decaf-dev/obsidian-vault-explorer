@@ -57,7 +57,7 @@ class FavoritesStore {
 		const fileExists = await app.vault.adapter.exists(filePath);
 
 		if (!fileExists) {
-			const result = this.createFavoritesFile(app, filePath);
+			const result = await this.createFavoritesFile(app, filePath);
 			if (!result) return;
 		}
 
@@ -93,7 +93,7 @@ class FavoritesStore {
 				},
 				error.message
 			);
-			new Notice("Vault Explorer: error loading favorites cache");
+			new Notice("Vault Explorer: error loading favorites");
 		}
 	}
 
