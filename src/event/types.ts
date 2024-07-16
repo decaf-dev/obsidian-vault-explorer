@@ -11,7 +11,7 @@ export enum PluginEvent {
 	PAGE_SIZE_SETTING_CHANGE = "page-size-setting-change",
 	TITLE_WRAPPING_SETTING_CHANGE = "title-wrapping-setting-change",
 	FILE_INTERACTION_STYLE = "file-interaction-style-setting-change",
-	COLLAPSE_FEED_CONTENT_CHANGE = "collapse-feed-content-change",
+	FEED_CONTENT_SETTING_CHANGE = "feed-content-setting-change",
 	PROPERTY_SETTING_CHANGE = "property-setting-change",
 	DEVICE_REGISTRATION_CHANGE = "device-registration-change",
 	CLOCK_UPDATES_SETTING_CHANGE = "clock-updates-setting-change",

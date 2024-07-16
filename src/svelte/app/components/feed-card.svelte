@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from "svelte";
-	import { FileInteractionStyle, WordBreak } from "src/types";
+	import { CollapseStyle, FileInteractionStyle, WordBreak } from "src/types";
 	import EventManager from "src/event/event-manager";
 	import VaultExplorerPlugin from "src/main";
 	import store from "src/svelte/shared/services/store";
@@ -11,13 +11,14 @@
 		removeBoldMarkdown,
 		removeCodeBlocks,
 		removeEmptyLines,
+		removeExtraNewLines,
 		removeFrontmatter,
 		removeItalicsMarkdown,
 		removeLevel1Headers,
 		removeMarkdownHashes,
 		removeMarkdownHighlight,
 		removeMarkdownTables,
-		removeNewLineCharacters,
+		removeNewLines,
 		removeWikiLinks,
 	} from "../services/utils/content-utils";
 	import Icon from "src/svelte/shared/components/icon.svelte";
@@ -43,8 +44,12 @@
 	let ref: HTMLElement | null = null;
 	let wordBreak: WordBreak = "normal";
 	let enableFileIcons = false;
-	let collapseContent = false;
-	let contentModifierClassName = "";
+	let removeH1: boolean = true;
+	let lineClampSmall: number = 2;
+	let lineClampMedium: number = 3;
+	let lineClampLarge: number = 5;
+	let collapseStyle: CollapseStyle = "no-new-lines";
+	let currentLineClamp: number = lineClampLarge;
 	let fileInteractionStyle: FileInteractionStyle = "content";
 
 	const dispatch = createEventDispatcher();
@@ -54,7 +59,11 @@
 		plugin = value;
 		wordBreak = plugin.settings.titleWrapping;
 		enableFileIcons = plugin.settings.enableFileIcons;
-		collapseContent = plugin.settings.views.feed.collapseContent;
+		removeH1 = plugin.settings.views.feed.removeH1;
+		collapseStyle = plugin.settings.views.feed.collapseStyle;
+		lineClampLarge = plugin.settings.views.feed.lineClampLarge;
+		lineClampMedium = plugin.settings.views.feed.lineClampMedium;
+		lineClampSmall = plugin.settings.views.feed.lineClampSmall;
 		fileInteractionStyle = plugin.settings.fileInteractionStyle;
 	});
 
@@ -111,16 +120,27 @@
 
 	onMount(() => {
 		function handleCollapseFeedContentChange() {
-			collapseContent = plugin.settings.views.feed.collapseContent;
+			removeH1 = plugin.settings.views.feed.removeH1;
+			collapseStyle = plugin.settings.views.feed.collapseStyle;
+			lineClampLarge = plugin.settings.views.feed.lineClampLarge;
+			lineClampMedium = plugin.settings.views.feed.lineClampMedium;
+			lineClampSmall = plugin.settings.views.feed.lineClampSmall;
+
+			const leafEl = ref?.closest(
+				".workspace-leaf-content",
+			) as HTMLElement | null;
+			if (leafEl) {
+				checkLeafWidth(leafEl);
+			}
 		}
 
 		EventManager.getInstance().on(
-			PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE,
+			PluginEvent.FEED_CONTENT_SETTING_CHANGE,
 			handleCollapseFeedContentChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE,
+				PluginEvent.FEED_CONTENT_SETTING_CHANGE,
 				handleCollapseFeedContentChange,
 			);
 		};
@@ -149,14 +169,14 @@
 	function checkLeafWidth(leafEl: HTMLElement) {
 		const { clientWidth } = leafEl;
 		if (clientWidth < SCREEN_SIZE_MD) {
-			contentModifierClassName = "vault-explorer-feed-card__content--sm";
+			currentLineClamp = lineClampSmall;
 		} else if (
 			clientWidth >= SCREEN_SIZE_MD &&
 			clientWidth < SCREEN_SIZE_LG
 		) {
-			contentModifierClassName = "vault-explorer-feed-card__content--md";
+			currentLineClamp = lineClampMedium;
 		} else {
-			contentModifierClassName = "vault-explorer-feed-card__content--lg";
+			currentLineClamp = lineClampLarge;
 		}
 	}
 
@@ -201,11 +221,19 @@
 
 	const creationString = formatAsBearTimeString(createdMillis);
 
-	function getDisplayContent(content: string | null) {
+	function getDisplayContent(
+		content: string | null,
+		removeH1: boolean,
+		collapseStyle: CollapseStyle,
+	) {
 		if (content != null) {
 			let displayContent = content;
 			displayContent = removeFrontmatter(displayContent);
-			displayContent = removeLevel1Headers(displayContent);
+
+			if (removeH1) {
+				displayContent = removeLevel1Headers(displayContent);
+			}
+
 			displayContent = removeMarkdownHashes(displayContent);
 			displayContent = removeMarkdownTables(displayContent);
 			displayContent = removeBoldMarkdown(displayContent);
@@ -214,15 +242,18 @@
 			displayContent = removeCodeBlocks(displayContent);
 			displayContent = removeWikiLinks(displayContent);
 			displayContent = removeEmptyLines(displayContent);
-			displayContent = removeNewLineCharacters(displayContent);
+
+			if (collapseStyle === "no-new-lines") {
+				displayContent = removeNewLines(displayContent);
+			} else {
+				displayContent = removeExtraNewLines(displayContent);
+			}
 			return displayContent;
 		}
 		return content;
 	}
 
-	$: displayContent = getDisplayContent(content);
-
-	$: contentClassName = `vault-explorer-feed-card__content ${contentModifierClassName}`;
+	$: displayContent = getDisplayContent(content, removeH1, collapseStyle);
 </script>
 
 <FeedCardContainer
@@ -249,7 +280,10 @@
 			</Stack>
 		</FeedCardTitle>
 		{#if displayContent != null && displayContent.length > 0}
-			<div class={contentClassName}>
+			<div
+				class="vault-explorer-feed-card__content"
+				style="-webkit-line-clamp: {currentLineClamp};"
+			>
 				{@html displayContent}
 			</div>
 		{/if}
@@ -285,18 +319,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-	}
-
-	.vault-explorer-feed-card__content--lg {
-		-webkit-line-clamp: 5;
-	}
-
-	.vault-explorer-feed-card__content--md {
-		-webkit-line-clamp: 3;
-	}
-
-	.vault-explorer-feed-card__content--sm {
-		-webkit-line-clamp: 2;
 	}
 
 	.vault-explorer-feed-card__creation-time {

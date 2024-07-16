@@ -7,8 +7,15 @@ export const removeEmptyLines = (content: string) => {
 	return content.replace(emptyLineRegex, "");
 };
 
-export const removeNewLineCharacters = (content: string) => {
+export const removeNewLines = (content: string) => {
 	return content.replace(/\n/g, " ");
+};
+
+export const removeExtraNewLines = (content: string) => {
+	return content
+		.split("\n")
+		.filter((line) => line.trim() !== "")
+		.join("\n");
 };
 
 export const removeMarkdownHashes = (content: string) => {
