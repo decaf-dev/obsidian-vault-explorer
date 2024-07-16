@@ -204,11 +204,7 @@
 		{/if}
 		{#if isFavorite === true}
 			<div class="vault-explorer-grid-card__favorite">
-				<Icon
-					iconId="star"
-					ariaLabel="Favorite"
-					color="var(--color-yellow)"
-				/>
+				<Icon iconId="star" ariaLabel="Favorite" />
 			</div>
 		{/if}
 	</div>
