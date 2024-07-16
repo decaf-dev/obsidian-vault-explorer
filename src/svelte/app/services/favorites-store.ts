@@ -174,7 +174,7 @@ class FavoritesStore {
 				},
 				error.message
 			);
-			new Notice("Vault Explorer: error saving favorites cache");
+			new Notice("Vault Explorer: error saving favorites");
 		}
 	}
 
@@ -194,13 +194,11 @@ class FavoritesStore {
 				{
 					fileName: "favorites-store.ts",
 					functionName: "load",
-					message: "error creating vault explorer directory",
+					message: "error creating config directory",
 				},
 				error.message
 			);
-			new Notice(
-				"Vault Explorer: error creating vault explorer directory"
-			);
+			new Notice("Vault Explorer: error creating config directory");
 			return false;
 		}
 	}
