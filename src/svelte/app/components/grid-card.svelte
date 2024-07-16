@@ -150,7 +150,6 @@
 	}
 
 	function handleFavoriteChange(filePath: string, value: boolean) {
-		console.log("favoritePropertyChange", { filePath, value });
 		dispatch("favoritePropertyChange", { filePath, value });
 	}
 
