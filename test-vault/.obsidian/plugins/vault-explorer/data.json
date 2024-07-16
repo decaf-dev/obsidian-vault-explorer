@@ -53,7 +53,13 @@
     "feed": {
       "isEnabled": true,
       "renderNewLineCharacters": false,
-      "collapseContent": true
+      "collapseContent": true,
+      "removeLevel1Headers": true,
+      "collapseStyle": "no-new-lines",
+      "lineClampLarge": 5,
+      "lineClampMedium": 3,
+      "lineClampSmall": 2,
+      "removeH1": true
     },
     "recommended": {
       "isEnabled": false
@@ -62,7 +68,7 @@
       "isEnabled": false
     }
   },
-  "currentView": "grid",
+  "currentView": "feed",
   "titleWrapping": "normal",
   "enableClockUpdates": true,
   "enableFileIcons": true,
@@ -77,6 +83,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.26.3",
+  "pluginVersion": "1.27.0",
   "logLevel": "trace"
 }

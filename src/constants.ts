@@ -55,7 +55,11 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		feed: {
 			isEnabled: true,
-			collapseContent: true,
+			removeH1: true,
+			collapseStyle: "no-new-lines",
+			lineClampLarge: 5,
+			lineClampMedium: 3,
+			lineClampSmall: 2,
 		},
 		recommended: {
 			isEnabled: false,

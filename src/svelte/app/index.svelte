@@ -125,9 +125,14 @@
 		isEnabled: false,
 	};
 
+	//TODO use just isEnabled
 	let feedView: TFeedView = {
 		isEnabled: false,
-		collapseContent: true,
+		removeH1: true,
+		lineClampSmall: 2,
+		lineClampMedium: 3,
+		lineClampLarge: 5,
+		collapseStyle: "no-new-lines",
 	};
 
 	let tableView: TTableView = {

@@ -15,16 +15,17 @@ import {
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
 import {
+	CollapseStyle,
 	FileInteractionStyle,
 	FlexWrap,
 	TExplorerView,
-	WordBreak,
 } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import License from "src/svelte/shared/services/license";
 import "./styles.css";
 import { PluginEvent } from "src/event/types";
+import { favoritesStore } from "src/svelte/app/services/favorites-store";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -352,16 +353,90 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Feed view").setHeading();
 
 		new Setting(containerEl)
-			.setName("Collapse feed content")
-			.setDesc("Replace new line characters with a single line break")
+			.setName("Remove H1")
+			.setDesc("Remove level 1 headers from feed content")
 			.addToggle((toggle) =>
 				toggle
-					.setValue(this.plugin.settings.views.feed.collapseContent)
+					.setValue(this.plugin.settings.views.feed.removeH1)
 					.onChange(async (value) => {
-						this.plugin.settings.views.feed.collapseContent = value;
+						this.plugin.settings.views.feed.removeH1 = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							PluginEvent.COLLAPSE_FEED_CONTENT_CHANGE
+							PluginEvent.FEED_CONTENT_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Collapse style")
+			.setDesc("Set the collapse style for feed content")
+			.addDropdown((cb) =>
+				cb
+					.addOptions({
+						"no-new-lines": "No new lines",
+						"no-extra-new-lines": "No extra new lines",
+					})
+					.setValue(this.plugin.settings.views.feed.collapseStyle)
+					.onChange(async (value) => {
+						this.plugin.settings.views.feed.collapseStyle =
+							value as CollapseStyle;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.FEED_CONTENT_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Large screen line clamp")
+			.setDesc(
+				"Number of lines to clamp on large screens (>= 1024px). (2-8, default 5)"
+			)
+			.addSlider((component) =>
+				component
+					.setValue(this.plugin.settings.views.feed.lineClampLarge)
+					.setLimits(2, 8, 1)
+					.onChange(async (value) => {
+						this.plugin.settings.views.feed.lineClampLarge = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.FEED_CONTENT_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Medium screen line clamp")
+			.setDesc(
+				"Number of lines to clamp on medium screens (>= 600px and < 1024px). (2-8, default 3)"
+			)
+			.addSlider((component) =>
+				component
+					.setValue(this.plugin.settings.views.feed.lineClampMedium)
+					.setLimits(2, 8, 1)
+					.onChange(async (value) => {
+						this.plugin.settings.views.feed.lineClampMedium = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.FEED_CONTENT_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Small screen line clamp")
+			.setDesc(
+				"Number of lines to clamp on small screens (< 600px). (2-8, default 2)"
+			)
+			.addSlider((component) =>
+				component
+					.setValue(this.plugin.settings.views.feed.lineClampSmall)
+					.setLimits(2, 8, 1)
+					.onChange(async (value) => {
+						this.plugin.settings.views.feed.lineClampSmall = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.FEED_CONTENT_SETTING_CHANGE
 						);
 					})
 			);
@@ -556,6 +631,29 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		this.component = new LicenseKeyApp({
 			target: containerEl,
 		});
+
+		new Setting(containerEl).setName("Storage").setHeading();
+
+		const configFolderDesc = new DocumentFragment();
+		configFolderDesc.createDiv({
+			text: "Set the plugin configuration folder.",
+		});
+		configFolderDesc.createDiv({
+			text: "Restart Obsidian after changing this setting.",
+			cls: "mod-warning",
+		});
+
+		new Setting(containerEl)
+			.setName("Config folder")
+			.setDesc(configFolderDesc)
+			.addText((component) =>
+				component
+					.setValue(this.plugin.settings.configDir)
+					.onChange(async (value) => {
+						this.plugin.settings.configDir = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
