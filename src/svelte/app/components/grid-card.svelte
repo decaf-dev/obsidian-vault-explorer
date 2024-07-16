@@ -187,6 +187,9 @@
 	}
 
 	$: loadSocialMediaImage, getSocialImageUrl();
+
+	$: hasBodyContent =
+		tags != null || custom1 != null || custom2 != null || custom3 != null;
 </script>
 
 <GridCardContainer
@@ -201,60 +204,62 @@
 			<img class="vault-explorer-grid-card__image" src={imageUrl} />
 		{/if}
 	</div>
-	<div class="vault-explorer-grid-card__header">
-		<GridCardTitle
-			{fileInteractionStyle}
-			on:click={handleTitleClick}
-			on:contextmenu={handleTitleContextMenu}
-			on:mouseover={handleTitleMouseOver}
-		>
-			<Stack spacing="xs">
-				{#if enableFileIcons}
-					<Icon iconId={getIconIdForFile(baseName, extension)} />
-				{/if}
-				<div class="vault-explorer-grid-card__title-text">
-					{displayName}
-				</div>
-			</Stack>
-		</GridCardTitle>
-		{#if url !== null}
-			<IconButton
-				iconId="external-link"
-				noPadding
-				on:click={handleUrlClick}
-			/>
-		{/if}
-	</div>
 	<div class="vault-explorer-grid-card__content">
-		{#if tags !== null}
-			<div class="vault-explorer-grid-card__tags">
-				<Wrap spacingX="sm" spacingY="sm">
-					{#each tags as tag}
-						<Tag name={tag} />
-					{/each}
-				</Wrap>
+		<Stack spacing={hasBodyContent ? "sm" : "none"} direction="column">
+			<div class="vault-explorer-grid-card__head">
+				<GridCardTitle
+					{fileInteractionStyle}
+					on:click={handleTitleClick}
+					on:contextmenu={handleTitleContextMenu}
+					on:mouseover={handleTitleMouseOver}
+				>
+					<Stack spacing="xs">
+						{#if enableFileIcons}
+							<Icon
+								iconId={getIconIdForFile(baseName, extension)}
+							/>
+						{/if}
+						<div class="vault-explorer-grid-card__title-text">
+							{displayName}
+						</div>
+					</Stack>
+				</GridCardTitle>
+				{#if url !== null}
+					<IconButton
+						iconId="external-link"
+						noPadding
+						on:click={handleUrlClick}
+					/>
+				{/if}
 			</div>
-		{/if}
-		{#if custom1 !== null || custom2 !== null || custom3 !== null}
-			<Spacer size="sm" direction="vertical" />
-		{/if}
-		<Wrap spacingX="xs" spacingY="xs"
-			>{#if custom1 !== null}<Property
-					name={plugin.settings.properties.custom1}
-					value={custom1}
-				/>{/if}
-			{#if custom2 !== null}<Property
-					name={plugin.settings.properties.custom2}
-					value={custom2}
-				/>{/if}
-			{#if custom3 !== null}<Property
-					name={plugin.settings.properties.custom3}
-					value={custom3}
-				/>{/if}
-		</Wrap>
-		{#if tags != null || custom1 !== null || custom2 !== null || custom3 !== null}
-			<Spacer size="sm" direction="vertical" />
-		{/if}
+			{#if tags !== null}
+				<div class="vault-explorer-grid-card__tags">
+					<Wrap spacingX="sm" spacingY="sm">
+						{#each tags as tag}
+							<Tag name={tag} />
+						{/each}
+					</Wrap>
+				</div>
+			{/if}
+			{#if custom1 !== null || custom2 !== null || custom3 !== null}
+				<div class="vault-explorer-grid-card__properties">
+					<Wrap spacingX="xs" spacingY="xs"
+						>{#if custom1 !== null}<Property
+								name={plugin.settings.properties.custom1}
+								value={custom1}
+							/>{/if}
+						{#if custom2 !== null}<Property
+								name={plugin.settings.properties.custom2}
+								value={custom2}
+							/>{/if}
+						{#if custom3 !== null}<Property
+								name={plugin.settings.properties.custom3}
+								value={custom3}
+							/>{/if}
+					</Wrap>
+				</div>
+			{/if}
+		</Stack>
 	</div>
 </GridCardContainer>
 
@@ -275,17 +280,15 @@
 		border-top-right-radius: var(--radius-m);
 	}
 
-	.vault-explorer-grid-card__header {
+	.vault-explorer-grid-card__content {
+		padding: 8px 16px;
+	}
+
+	.vault-explorer-grid-card__head {
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-start;
 		column-gap: 0.5rem;
-		padding: 8px 16px;
-	}
-
-	.vault-explorer-grid-card__content {
-		padding: 0px 16px;
-		position: relative;
 	}
 
 	.vault-explorer-grid-card__title-text {

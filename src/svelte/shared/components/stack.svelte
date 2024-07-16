@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let spacing: "xs" | "sm" | "md" | "lg" | "xl" = "md";
+	export let spacing: "none" | "xs" | "sm" | "md" | "lg" | "xl" = "md";
 	export let justify:
 		| "flex-start"
 		| "center"
@@ -14,6 +14,9 @@
 
 	let spacingPx = 0;
 	switch (spacing) {
+		case "none":
+			spacingPx = 0;
+			break;
 		case "xs":
 			spacingPx = 4;
 			break;
