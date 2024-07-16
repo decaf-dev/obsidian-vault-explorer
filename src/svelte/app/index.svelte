@@ -50,8 +50,14 @@
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
-	import { randomFileSortStore } from "./services/random-file-sort-store";
-	import { fileContentStore } from "./services/file-content-store";
+	import {
+		RandomFileSortCache,
+		randomFileSortStore,
+	} from "./services/random-file-sort-store";
+	import {
+		FileContentCache,
+		fileContentStore,
+	} from "./services/file-content-store";
 	import { fileStore, LoadedFile } from "./services/file-store";
 	import IconButton from "../shared/components/icon-button.svelte";
 	import CustomFilterModal from "src/obsidian/custom-filter-modal";
@@ -103,9 +109,8 @@
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
 
 	let favoritesCache: TFavoritesCache = new Map();
-
-	let contentCache: Record<string, string | null> = {};
-	let randomSortCache: Record<string, number> = {};
+	let contentCache: FileContentCache = new Map();
+	let randomSortCache: RandomFileSortCache = new Map();
 
 	let dashboardView: TDashboardView = {
 		isEnabled: false,
@@ -735,10 +740,11 @@
 		filteredCustom = loadedFiles.filter((loadedFile) => {
 			const { file } = loadedFile;
 			const { name, path } = file;
+
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
-			const content = contentCache[path] ?? null;
+			const content = contentCache.get(path) ?? null;
 
 			return filterByGroups(
 				name,
@@ -759,7 +765,7 @@
 
 			const isFavorite = favoritesCache.get(file.path) ?? null;
 
-			const content = contentCache[file.path] ?? null;
+			const content = contentCache.get(file.path) ?? null;
 
 			return formatFileDataForRender({
 				app: plugin.app,
@@ -816,8 +822,8 @@
 		} else if (value === "modified-desc") {
 			return b.modifiedMillis - a.modifiedMillis;
 		} else if (value === "random") {
-			const sortKeyA = randomSortCache[a.path] ?? 0;
-			const sortKeyB = randomSortCache[b.path] ?? 0;
+			const sortKeyA = randomSortCache.get(a.path) ?? 0;
+			const sortKeyB = randomSortCache.get(b.path) ?? 0;
 			return sortKeyA - sortKeyB;
 		}
 		return 0;

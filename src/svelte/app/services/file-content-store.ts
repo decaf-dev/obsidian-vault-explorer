@@ -1,7 +1,7 @@
 import { App, TFile } from "obsidian";
 import { writable } from "svelte/store";
 
-type FileContentStore = Record<string, string | null>;
+export type FileContentCache = Map<string, string | null>;
 
 interface FileContent {
 	path: string;
@@ -9,7 +9,7 @@ interface FileContent {
 }
 
 function createFileContentStore() {
-	const { subscribe, set, update } = writable<FileContentStore>({});
+	const { subscribe, set, update } = writable<FileContentCache>(new Map());
 
 	async function load(app: App) {
 		const promises: Promise<FileContent>[] = [];
@@ -39,13 +39,8 @@ function createFileContentStore() {
 
 		const results = await Promise.all(promises);
 
-		const contentForFiles = results.reduce(
-			(acc: Record<string, string | null>, file) => {
-				const { path, content } = file;
-				acc[path] = content;
-				return acc;
-			},
-			{}
+		const contentForFiles = new Map<string, string | null>(
+			results.map((file) => [file.path, file.content])
 		);
 		set(contentForFiles);
 	}
@@ -56,39 +51,39 @@ function createFileContentStore() {
 			content = await app.vault.cachedRead(file);
 		}
 
-		update((files) => {
-			// Create a shallow copy of the files object to ensure reactivity
-			return { ...files, [file.path]: content };
+		update((currentCache) => {
+			const newCache = new Map(currentCache);
+			newCache.set(file.path, content);
+			return newCache;
 		});
 	}
 
 	function handleFileRename(oldPath: string, newPath: string) {
-		update((files) => {
-			if (files.hasOwnProperty(oldPath)) {
-				// Create a shallow copy of the files object
-				const { [oldPath]: value, ...newFiles } = files;
-				newFiles[newPath] = value;
-				return newFiles;
+		update((currentCache) => {
+			const content = currentCache.get(oldPath);
+			if (content !== undefined) {
+				const newCache = new Map(currentCache);
+				newCache.set(newPath, content);
+				newCache.delete(oldPath);
+				return newCache;
 			}
-			// No change if the old path does not exist
-			return files;
+			return currentCache;
 		});
 	}
 
 	function handleFileModify(path: string, newContent: string | null) {
-		update((store) => {
-			return {
-				...store,
-				[path]: newContent,
-			};
+		update((currentCache) => {
+			const newCache = new Map(currentCache);
+			newCache.set(path, newContent);
+			return newCache;
 		});
 	}
 
 	function handleFileDelete(path: string) {
-		update((files) => {
-			// Create a shallow copy and delete the property
-			const { [path]: _, ...newFiles } = files;
-			return newFiles;
+		update((currentCache) => {
+			const newCache = new Map(currentCache);
+			newCache.delete(path);
+			return newCache;
 		});
 	}
 
