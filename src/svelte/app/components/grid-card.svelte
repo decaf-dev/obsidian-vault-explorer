@@ -204,11 +204,7 @@
 		{/if}
 		{#if isFavorite === true}
 			<div class="vault-explorer-grid-card__favorite">
-				<Icon
-					iconId="star"
-					ariaLabel="Favorite"
-					color="var(--color-yellow)"
-				/>
+				<Icon iconId="star" ariaLabel="Favorite" />
 			</div>
 		{/if}
 	</div>
@@ -235,6 +231,7 @@
 				{#if url !== null}
 					<IconButton
 						iconId="external-link"
+						ariaLabel="Open in browser"
 						noPadding
 						on:click={handleUrlClick}
 					/>
