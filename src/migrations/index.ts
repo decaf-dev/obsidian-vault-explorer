@@ -1,4 +1,3 @@
-import { TMigration } from "./types";
 import Migrate_0_4_0 from "./migrate_0_4_0";
 import Migrate_1_1_0 from "./migrate_1_1_0";
 import Migrate_1_0_0 from "./migrate_1_0_0";
@@ -12,13 +11,16 @@ import Migrate_1_15_0 from "./migrate_1_15_0";
 import Migrate_1_17_0 from "./migrate_1_17_0";
 import Migrate_1_13_0 from "./migrate_1_13_0";
 import Migrate_1_10_0 from "./migrate_1_10_0";
-import { isVersionLessThan } from "src/utils";
 import Migrate_1_21_0 from "./migrate_1_21_0";
 import Migrate_1_22_0 from "./migrate_1_22_0";
 import Migrate_1_23_0 from "./migrate_1_23_0";
 import Migrate_1_23_1 from "./migrate_1_23_1";
 import Migrate_1_24_0 from "./migrate_1_24_0";
 import Migrate_1_25_0 from "./migrate_1_25_0";
+import Migrate_1_26_0 from "./migrate_1_26_0";
+
+import { TMigration } from "./types";
+import { isVersionLessThan } from "src/utils";
 
 const migrations: TMigration[] = [
 	{
@@ -115,6 +117,11 @@ const migrations: TMigration[] = [
 		from: "1.24.2",
 		to: "1.25.0",
 		migrate: Migrate_1_25_0,
+	},
+	{
+		from: "1.25.2",
+		to: "1.26.0",
+		migrate: Migrate_1_26_0,
 	},
 ];
 

@@ -57,6 +57,10 @@
 	import CustomFilterModal from "src/obsidian/custom-filter-modal";
 	import FilterGroupList from "./components/filter-group-list.svelte";
 	import { PluginEvent } from "src/event/types";
+	import {
+		favoritesStore,
+		TFavoritesCache,
+	} from "./services/favorites-store";
 
 	// ============================================
 	// Variables
@@ -97,6 +101,8 @@
 
 	let loadedFiles: LoadedFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
+
+	let favoritesCache: TFavoritesCache = new Map();
 
 	let contentCache: Record<string, string | null> = {};
 	let randomSortCache: Record<string, number> = {};
@@ -140,6 +146,10 @@
 		randomSortCache = value;
 	});
 
+	favoritesStore.store.subscribe((value) => {
+		favoritesCache = value;
+	});
+
 	fileContentStore.subscribe((value) => {
 		contentCache = value;
 	});
@@ -172,6 +182,7 @@
 			setTimeValuesUpdateInterval();
 		}
 
+		favoritesStore.load(app, settings);
 		fileStore.load(app);
 		fileContentStore.load(app);
 		randomFileSortStore.load(app);
@@ -302,6 +313,7 @@
 				fileStore.onFileDelete(path);
 				randomFileSortStore.onFileDelete(path);
 				fileContentStore.onFileDelete(path);
+				favoritesStore.onFileDelete(path);
 			}
 		};
 
@@ -332,6 +344,7 @@
 				fileStore.onFileRename(oldPath, updatedFile);
 				randomFileSortStore.onFileRename(oldPath, updatedFile.path);
 				fileContentStore.onFileRename(oldPath, updatedFile.path);
+				favoritesStore.onFileRename(oldPath, updatedFile.path);
 			}
 		};
 
@@ -698,10 +711,14 @@
 			return;
 		}
 
-		plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
-			frontmatter[favoritePropertyName] = value;
-			return frontmatter;
-		});
+		if (file.extension === "md") {
+			plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+				frontmatter[favoritePropertyName] = value;
+				return frontmatter;
+			});
+		} else {
+			favoritesStore.setFavorite(filePath, value);
+		}
 	}
 
 	function handleCustomFilterClick() {

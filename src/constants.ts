@@ -6,7 +6,6 @@ export const VAULT_EXPLORER_VIEW = "vault-explorer";
 export const HOVER_LINK_SOURCE_ID = "vault-explorer-preview";
 
 export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
-	logLevel: LOG_LEVEL_WARN,
 	properties: {
 		favorite: "",
 		url: "",
@@ -75,5 +74,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	filterGroupsWrapping: "nowrap",
 	pageSize: 25,
 	viewOrder: [TExplorerView.GRID, TExplorerView.LIST, TExplorerView.FEED],
+	configDir: ".vaultexplorer",
 	pluginVersion: null,
+	logLevel: LOG_LEVEL_WARN,
 };

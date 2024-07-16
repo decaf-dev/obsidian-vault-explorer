@@ -1,5 +1,4 @@
 {
-  "logLevel": "trace",
   "properties": {
     "favorite": "favorite",
     "url": "url",
@@ -77,5 +76,7 @@
     "list",
     "feed"
   ],
-  "pluginVersion": "1.25.2"
+  "configDir": ".vaultexplorer",
+  "pluginVersion": "1.26.0",
+  "logLevel": "trace"
 }
