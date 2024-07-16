@@ -44,7 +44,7 @@
 >
 	{#if isSticky}
 		<Stack spacing="xs" align="center">
-			<Icon iconId="pin" xs />
+			<Icon iconId="pin" size="xs" />
 			<div>{name}</div>
 		</Stack>
 	{/if}

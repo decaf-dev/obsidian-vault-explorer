@@ -6,7 +6,7 @@
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
-	import { onMount } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
 	import ListItemContainer from "./list-item-container.svelte";
@@ -22,12 +22,15 @@
 	export let extension: string;
 	export let path: string;
 	export let tags: string[] | null;
+	export let isFavorite: boolean | null;
 
 	let enableFileIcons: boolean = false;
 	let fileInteractionStyle: FileInteractionStyle = "content";
 	let isSmallScreenSize: boolean = false;
 	let ref: HTMLElement | null = null;
 	let plugin: VaultExplorerPlugin;
+
+	const dispatch = createEventDispatcher();
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
@@ -110,9 +113,16 @@
 		handleItemContextMenu(e);
 	}
 
+	function handleFavoriteChange(filePath: string, value: boolean) {
+		dispatch("favoritePropertyChange", { filePath, value });
+	}
+
 	function handleItemContextMenu(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
-		openContextMenu(plugin, nativeEvent, path);
+		openContextMenu(plugin, path, nativeEvent, {
+			isFavorite,
+			onFavoriteChange: handleFavoriteChange,
+		});
 	}
 
 	function handleTitleMouseOver(e: MouseEvent) {

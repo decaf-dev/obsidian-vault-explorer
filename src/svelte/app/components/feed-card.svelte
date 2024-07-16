@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import { FileInteractionStyle, WordBreak } from "src/types";
 	import EventManager from "src/event/event-manager";
 	import VaultExplorerPlugin from "src/main";
@@ -26,6 +26,7 @@
 	export let tags: string[] | null;
 	export let createdMillis: number;
 	export let content: string | null;
+	export let isFavorite: boolean | null;
 
 	let ref: HTMLElement | null = null;
 	let wordBreak: WordBreak = "normal";
@@ -33,6 +34,8 @@
 	let collapseContent = false;
 	let contentModifierClassName = "";
 	let fileInteractionStyle: FileInteractionStyle = "content";
+
+	const dispatch = createEventDispatcher();
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((value) => {
@@ -153,9 +156,16 @@
 		openInCurrentTab(plugin, path);
 	}
 
+	function handleFavoriteChange(filePath: string, value: boolean) {
+		dispatch("favoritePropertyChange", { filePath, value });
+	}
+
 	function handleCardContextMenu(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
-		openContextMenu(plugin, nativeEvent, path);
+		openContextMenu(plugin, path, nativeEvent, {
+			isFavorite,
+			onFavoriteChange: handleFavoriteChange,
+		});
 	}
 
 	function handleTitleContextMenu(e: CustomEvent) {

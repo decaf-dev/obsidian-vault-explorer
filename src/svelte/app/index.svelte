@@ -7,7 +7,7 @@
 	import FavoritesFilter from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { TFile } from "obsidian";
+	import { Notice, TFile } from "obsidian";
 	import {
 		TCustomFilter,
 		TDashboardView,
@@ -50,13 +50,23 @@
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
-	import { randomFileSortStore } from "./services/random-file-sort-store";
-	import { fileContentStore } from "./services/file-content-store";
+	import {
+		RandomFileSortCache,
+		randomFileSortStore,
+	} from "./services/random-file-sort-store";
+	import {
+		FileContentCache,
+		fileContentStore,
+	} from "./services/file-content-store";
 	import { fileStore, LoadedFile } from "./services/file-store";
 	import IconButton from "../shared/components/icon-button.svelte";
 	import CustomFilterModal from "src/obsidian/custom-filter-modal";
 	import FilterGroupList from "./components/filter-group-list.svelte";
 	import { PluginEvent } from "src/event/types";
+	import {
+		favoritesStore,
+		TFavoritesCache,
+	} from "./services/favorites-store";
 
 	// ============================================
 	// Variables
@@ -98,8 +108,9 @@
 	let loadedFiles: LoadedFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
 
-	let contentCache: Record<string, string | null> = {};
-	let randomSortCache: Record<string, number> = {};
+	let favoritesCache: TFavoritesCache = new Map();
+	let contentCache: FileContentCache = new Map();
+	let randomSortCache: RandomFileSortCache = new Map();
 
 	let dashboardView: TDashboardView = {
 		isEnabled: false,
@@ -140,6 +151,10 @@
 		randomSortCache = value;
 	});
 
+	favoritesStore.store.subscribe((value) => {
+		favoritesCache = value;
+	});
+
 	fileContentStore.subscribe((value) => {
 		contentCache = value;
 	});
@@ -172,6 +187,7 @@
 			setTimeValuesUpdateInterval();
 		}
 
+		favoritesStore.load(app, settings);
 		fileStore.load(app);
 		fileContentStore.load(app);
 		randomFileSortStore.load(app);
@@ -302,6 +318,7 @@
 				fileStore.onFileDelete(path);
 				randomFileSortStore.onFileDelete(path);
 				fileContentStore.onFileDelete(path);
+				favoritesStore.onFileDelete(path);
 			}
 		};
 
@@ -332,6 +349,7 @@
 				fileStore.onFileRename(oldPath, updatedFile);
 				randomFileSortStore.onFileRename(oldPath, updatedFile.path);
 				fileContentStore.onFileRename(oldPath, updatedFile.path);
+				favoritesStore.onFileRename(oldPath, updatedFile.path);
 			}
 		};
 
@@ -674,6 +692,43 @@
 		debounceFavoriteFilterChange(value);
 	}
 
+	function handleFavoritePropertyChange(e: CustomEvent) {
+		const { filePath, value } = e.detail as {
+			filePath: string;
+			value: boolean;
+		};
+
+		const { properties } = plugin.settings;
+		const { favorite: favoritePropertyName } = properties;
+
+		//If the favorite property is not set, return
+		if (favoritePropertyName === "") {
+			new Notice(
+				"Please select a favorite property in the Vault Explorer settings to use this feature",
+			);
+			return;
+		}
+
+		const file = plugin.app.vault.getFileByPath(filePath);
+		if (!file) {
+			Logger.error({
+				fileName: "app/index.svelte",
+				functionName: "handleFavoritePropertyChange",
+				message: "file not found. returning...",
+			});
+			return;
+		}
+
+		if (file.extension === "md") {
+			plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+				frontmatter[favoritePropertyName] = value;
+				return frontmatter;
+			});
+		} else {
+			favoritesStore.setFavorite(filePath, value);
+		}
+	}
+
 	function handleCustomFilterClick() {
 		new CustomFilterModal(plugin).open();
 	}
@@ -688,10 +743,11 @@
 		filteredCustom = loadedFiles.filter((loadedFile) => {
 			const { file } = loadedFile;
 			const { name, path } = file;
+
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
-			const content = contentCache[path] ?? null;
+			const content = contentCache.get(path) ?? null;
 
 			return filterByGroups(
 				name,
@@ -710,16 +766,19 @@
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
-			const content = contentCache[file.path] ?? null;
+			const isFavorite = favoritesCache.get(file.path) ?? null;
 
-			return formatFileDataForRender(
-				plugin.app,
-				plugin.settings,
-				id,
+			const content = contentCache.get(file.path) ?? null;
+
+			return formatFileDataForRender({
+				app: plugin.app,
+				settings: plugin.settings,
+				fileId: id,
 				file,
-				frontmatter,
-				content,
-			);
+				fileFrontmatter: frontmatter,
+				fileContent: content,
+				fileFavorite: isFavorite,
+			});
 		});
 	}
 
@@ -766,8 +825,8 @@
 		} else if (value === "modified-desc") {
 			return b.modifiedMillis - a.modifiedMillis;
 		} else if (value === "random") {
-			const sortKeyA = randomSortCache[a.path] ?? 0;
-			const sortKeyB = randomSortCache[b.path] ?? 0;
+			const sortKeyA = randomSortCache.get(a.path) ?? 0;
+			const sortKeyB = randomSortCache.get(b.path) ?? 0;
 			return sortKeyA - sortKeyB;
 		}
 		return 0;
@@ -894,11 +953,26 @@
 			/>
 		</Wrap>
 		{#if currentView === "grid"}
-			<GridView data={renderData} {startIndex} {pageLength} />
+			<GridView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{:else if currentView === "list"}
-			<ListView data={renderData} {startIndex} {pageLength} />
+			<ListView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{:else if currentView === "feed"}
-			<FeedView data={renderData} {startIndex} {pageLength} />
+			<FeedView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{/if}
 	</div>
 </div>

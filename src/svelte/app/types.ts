@@ -8,7 +8,7 @@ export interface FileRenderData {
 	url: string | null;
 	imageUrl: string | null;
 	tags: string[] | null;
-	favorite: boolean | null;
+	isFavorite: boolean | null;
 	createdMillis: number;
 	modifiedMillis: number;
 	custom1: string | null;

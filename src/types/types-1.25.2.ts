@@ -1,5 +1,4 @@
-/** @see {isVaultExplorerPluginSettings} ts-auto-guard:type-guard */
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_25_2 {
 	properties: {
 		favorite: string;
 		url: string;
@@ -35,9 +34,8 @@ export interface VaultExplorerPluginSettings {
 	pageSize: number;
 	filterGroupsWidth: string;
 	filterGroupsWrapping: FlexWrap;
-	viewOrder: TExplorerView[];
-	configDir: string;
 	pluginVersion: string | null;
+	viewOrder: TExplorerView[];
 	logLevel: string;
 }
 

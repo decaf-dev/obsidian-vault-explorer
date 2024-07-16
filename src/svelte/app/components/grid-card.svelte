@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { MarkdownView } from "obsidian";
 	import IconButton from "../../shared/components/icon-button.svelte";
 	import Tag from "../../shared/components/tag.svelte";
 	import Property from "../../shared/components/property.svelte";
@@ -7,13 +6,12 @@
 	import store from "../../shared/services/store";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { onMount } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import { FileInteractionStyle, WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
-	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import License from "src/svelte/shared/services/license";
 	import { fetchSocialMediaImage } from "../services/social-media-image";
 	import { PluginEvent } from "src/event/types";
@@ -32,6 +30,7 @@
 	export let custom1: string | null;
 	export let custom2: string | null;
 	export let custom3: string | null;
+	export let isFavorite: boolean | null;
 
 	let plugin: VaultExplorerPlugin;
 	let wordBreak: WordBreak = "normal";
@@ -47,6 +46,8 @@
 		enableFileIcons = plugin.settings.enableFileIcons;
 		loadSocialMediaImage = plugin.settings.views.grid.loadSocialMediaImage;
 	});
+
+	const dispatch = createEventDispatcher();
 
 	License.getInstance()
 		.getIsDeviceRegisteredStore()
@@ -148,9 +149,17 @@
 		openInCurrentTab(plugin, path);
 	}
 
+	function handleFavoriteChange(filePath: string, value: boolean) {
+		console.log("favoritePropertyChange", { filePath, value });
+		dispatch("favoritePropertyChange", { filePath, value });
+	}
+
 	function handleCardContextMenu(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
-		openContextMenu(plugin, nativeEvent, path);
+		openContextMenu(plugin, path, nativeEvent, {
+			isFavorite,
+			onFavoriteChange: handleFavoriteChange,
+		});
 	}
 
 	function handleCardMouseOver(e: MouseEvent) {
@@ -177,6 +186,9 @@
 	}
 
 	$: loadSocialMediaImage, getSocialImageUrl();
+
+	$: hasBodyContent =
+		tags != null || custom1 != null || custom2 != null || custom3 != null;
 </script>
 
 <GridCardContainer
@@ -190,61 +202,69 @@
 			<!-- svelte-ignore a11y-missing-attribute -->
 			<img class="vault-explorer-grid-card__image" src={imageUrl} />
 		{/if}
-	</div>
-	<div class="vault-explorer-grid-card__header">
-		<GridCardTitle
-			{fileInteractionStyle}
-			on:click={handleTitleClick}
-			on:contextmenu={handleTitleContextMenu}
-			on:mouseover={handleTitleMouseOver}
-		>
-			<Stack spacing="xs">
-				{#if enableFileIcons}
-					<Icon iconId={getIconIdForFile(baseName, extension)} />
-				{/if}
-				<div class="vault-explorer-grid-card__title-text">
-					{displayName}
-				</div>
-			</Stack>
-		</GridCardTitle>
-		{#if url !== null}
-			<IconButton
-				iconId="external-link"
-				noPadding
-				on:click={handleUrlClick}
-			/>
+		{#if isFavorite === true}
+			<div class="vault-explorer-grid-card__favorite">
+				<Icon iconId="star" ariaLabel="Favorite" />
+			</div>
 		{/if}
 	</div>
 	<div class="vault-explorer-grid-card__content">
-		{#if tags !== null}
-			<div class="vault-explorer-grid-card__tags">
-				<Wrap spacingX="sm" spacingY="sm">
-					{#each tags as tag}
-						<Tag name={tag} />
-					{/each}
-				</Wrap>
+		<Stack spacing={hasBodyContent ? "sm" : "none"} direction="column">
+			<div class="vault-explorer-grid-card__head">
+				<GridCardTitle
+					{fileInteractionStyle}
+					on:click={handleTitleClick}
+					on:contextmenu={handleTitleContextMenu}
+					on:mouseover={handleTitleMouseOver}
+				>
+					<Stack spacing="xs">
+						{#if enableFileIcons}
+							<Icon
+								iconId={getIconIdForFile(baseName, extension)}
+							/>
+						{/if}
+						<div class="vault-explorer-grid-card__title-text">
+							{displayName}
+						</div>
+					</Stack>
+				</GridCardTitle>
+				{#if url !== null}
+					<IconButton
+						iconId="external-link"
+						ariaLabel="Open in browser"
+						noPadding
+						on:click={handleUrlClick}
+					/>
+				{/if}
 			</div>
-		{/if}
-		{#if custom1 !== null || custom2 !== null || custom3 !== null}
-			<Spacer size="sm" direction="vertical" />
-		{/if}
-		<Wrap spacingX="xs" spacingY="xs"
-			>{#if custom1 !== null}<Property
-					name={plugin.settings.properties.custom1}
-					value={custom1}
-				/>{/if}
-			{#if custom2 !== null}<Property
-					name={plugin.settings.properties.custom2}
-					value={custom2}
-				/>{/if}
-			{#if custom3 !== null}<Property
-					name={plugin.settings.properties.custom3}
-					value={custom3}
-				/>{/if}
-		</Wrap>
-		{#if tags != null || custom1 !== null || custom2 !== null || custom3 !== null}
-			<Spacer size="sm" direction="vertical" />
-		{/if}
+			{#if tags !== null}
+				<div class="vault-explorer-grid-card__tags">
+					<Wrap spacingX="sm" spacingY="sm">
+						{#each tags as tag}
+							<Tag name={tag} />
+						{/each}
+					</Wrap>
+				</div>
+			{/if}
+			{#if custom1 !== null || custom2 !== null || custom3 !== null}
+				<div class="vault-explorer-grid-card__properties">
+					<Wrap spacingX="xs" spacingY="xs"
+						>{#if custom1 !== null}<Property
+								name={plugin.settings.properties.custom1}
+								value={custom1}
+							/>{/if}
+						{#if custom2 !== null}<Property
+								name={plugin.settings.properties.custom2}
+								value={custom2}
+							/>{/if}
+						{#if custom3 !== null}<Property
+								name={plugin.settings.properties.custom3}
+								value={custom3}
+							/>{/if}
+					</Wrap>
+				</div>
+			{/if}
+		</Stack>
 	</div>
 </GridCardContainer>
 
@@ -255,6 +275,13 @@
 		background-color: var(--background-modifier-border);
 		border-top-left-radius: var(--radius-m);
 		border-top-right-radius: var(--radius-m);
+		position: relative;
+	}
+
+	.vault-explorer-grid-card__favorite {
+		position: absolute;
+		top: 8px;
+		right: 8px;
 	}
 
 	.vault-explorer-grid-card__image {
@@ -265,17 +292,15 @@
 		border-top-right-radius: var(--radius-m);
 	}
 
-	.vault-explorer-grid-card__header {
+	.vault-explorer-grid-card__content {
+		padding: 8px 16px;
+	}
+
+	.vault-explorer-grid-card__head {
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-start;
 		column-gap: 0.5rem;
-		padding: 8px 16px;
-	}
-
-	.vault-explorer-grid-card__content {
-		padding: 0px 16px;
-		position: relative;
 	}
 
 	.vault-explorer-grid-card__title-text {

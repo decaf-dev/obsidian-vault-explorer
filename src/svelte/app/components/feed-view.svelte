@@ -47,6 +47,8 @@
 				tags={fileRenderData.tags}
 				content={fileRenderData.content}
 				createdMillis={fileRenderData.createdMillis}
+				isFavorite={fileRenderData.isFavorite}
+				on:favoritePropertyChange
 			/>
 		{/each}
 	{/if}
