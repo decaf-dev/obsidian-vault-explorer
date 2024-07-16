@@ -55,6 +55,7 @@ class FavoritesStore {
 
 		const filePath = this.getFavoritesFilePath(settings.configDir);
 		const fileExists = await app.vault.adapter.exists(filePath);
+
 		if (!fileExists) {
 			const result = this.createFavoritesFile(app, filePath);
 			if (!result) return;
@@ -205,10 +206,6 @@ class FavoritesStore {
 	}
 
 	private async createFavoritesFile(app: App, filePath: string) {
-		if (!this.app) {
-			throw new Error("App is null. Please call load() first.");
-		}
-
 		try {
 			Logger.debug({
 				fileName: "favorites-store.ts",
