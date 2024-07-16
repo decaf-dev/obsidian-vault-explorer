@@ -19,6 +19,7 @@
 	import GridCardTitle from "./grid-card-title.svelte";
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
+	import Flex from "src/svelte/shared/components/flex.svelte";
 
 	export let displayName: string;
 	export let path: string;
@@ -203,7 +204,14 @@
 		{/if}
 		{#if isFavorite === true}
 			<div class="vault-explorer-grid-card__favorite">
-				<Icon iconId="star" ariaLabel="Favorite" />
+				<Flex
+					justify="center"
+					align="center"
+					width="100%"
+					height="100%"
+				>
+					<Icon iconId="star" ariaLabel="Favorite" />
+				</Flex>
 			</div>
 		{/if}
 	</div>
@@ -281,6 +289,10 @@
 		position: absolute;
 		top: 8px;
 		right: 8px;
+		width: 20px;
+		height: 20px;
+		background-color: var(--background-primary);
+		border-radius: 50%;
 	}
 
 	.vault-explorer-grid-card__image {
