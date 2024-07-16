@@ -12,7 +12,6 @@
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
-	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import License from "src/svelte/shared/services/license";
 	import { fetchSocialMediaImage } from "../services/social-media-image";
 	import { PluginEvent } from "src/event/types";
@@ -203,6 +202,15 @@
 			<!-- svelte-ignore a11y-missing-attribute -->
 			<img class="vault-explorer-grid-card__image" src={imageUrl} />
 		{/if}
+		{#if isFavorite === true}
+			<div class="vault-explorer-grid-card__favorite">
+				<Icon
+					iconId="star"
+					ariaLabel="Favorite"
+					color="var(--color-yellow)"
+				/>
+			</div>
+		{/if}
 	</div>
 	<div class="vault-explorer-grid-card__content">
 		<Stack spacing={hasBodyContent ? "sm" : "none"} direction="column">
@@ -270,6 +278,13 @@
 		background-color: var(--background-modifier-border);
 		border-top-left-radius: var(--radius-m);
 		border-top-right-radius: var(--radius-m);
+		position: relative;
+	}
+
+	.vault-explorer-grid-card__favorite {
+		position: absolute;
+		top: 8px;
+		right: 8px;
 	}
 
 	.vault-explorer-grid-card__image {
