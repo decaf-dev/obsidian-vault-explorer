@@ -57,6 +57,10 @@
 	import CustomFilterModal from "src/obsidian/custom-filter-modal";
 	import FilterGroupList from "./components/filter-group-list.svelte";
 	import { PluginEvent } from "src/event/types";
+	import {
+		favoritesStore,
+		TFavoritesCache,
+	} from "./services/favorites-store";
 
 	// ============================================
 	// Variables
@@ -97,6 +101,8 @@
 
 	let loadedFiles: LoadedFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
+
+	let favoritesCache: TFavoritesCache = new Map();
 
 	let contentCache: Record<string, string | null> = {};
 	let randomSortCache: Record<string, number> = {};
@@ -140,6 +146,10 @@
 		randomSortCache = value;
 	});
 
+	favoritesStore.store.subscribe((value) => {
+		favoritesCache = value;
+	});
+
 	fileContentStore.subscribe((value) => {
 		contentCache = value;
 	});
@@ -172,6 +182,7 @@
 			setTimeValuesUpdateInterval();
 		}
 
+		favoritesStore.load(app, settings);
 		fileStore.load(app);
 		fileContentStore.load(app);
 		randomFileSortStore.load(app);
@@ -302,6 +313,7 @@
 				fileStore.onFileDelete(path);
 				randomFileSortStore.onFileDelete(path);
 				fileContentStore.onFileDelete(path);
+				favoritesStore.onFileDelete(path);
 			}
 		};
 
@@ -332,6 +344,7 @@
 				fileStore.onFileRename(oldPath, updatedFile);
 				randomFileSortStore.onFileRename(oldPath, updatedFile.path);
 				fileContentStore.onFileRename(oldPath, updatedFile.path);
+				favoritesStore.onFileRename(oldPath, updatedFile.path);
 			}
 		};
 
@@ -674,6 +687,40 @@
 		debounceFavoriteFilterChange(value);
 	}
 
+	function handleFavoritePropertyChange(e: CustomEvent) {
+		const { filePath, value } = e.detail as {
+			filePath: string;
+			value: boolean;
+		};
+
+		const { properties } = plugin.settings;
+		const { favorite: favoritePropertyName } = properties;
+
+		//If the favorite property is not set, return
+		if (favoritePropertyName === "") {
+			return;
+		}
+
+		const file = plugin.app.vault.getFileByPath(filePath);
+		if (!file) {
+			Logger.error({
+				fileName: "app/index.svelte",
+				functionName: "handleFavoritePropertyChange",
+				message: "file not found. returning...",
+			});
+			return;
+		}
+
+		if (file.extension === "md") {
+			plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+				frontmatter[favoritePropertyName] = value;
+				return frontmatter;
+			});
+		} else {
+			favoritesStore.setFavorite(filePath, value);
+		}
+	}
+
 	function handleCustomFilterClick() {
 		new CustomFilterModal(plugin).open();
 	}
@@ -710,16 +757,19 @@
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
+			const isFavorite = favoritesCache.get(file.path) ?? null;
+
 			const content = contentCache[file.path] ?? null;
 
-			return formatFileDataForRender(
-				plugin.app,
-				plugin.settings,
-				id,
+			return formatFileDataForRender({
+				app: plugin.app,
+				settings: plugin.settings,
+				fileId: id,
 				file,
-				frontmatter,
-				content,
-			);
+				fileFrontmatter: frontmatter,
+				fileContent: content,
+				fileFavorite: isFavorite,
+			});
 		});
 	}
 
@@ -894,11 +944,26 @@
 			/>
 		</Wrap>
 		{#if currentView === "grid"}
-			<GridView data={renderData} {startIndex} {pageLength} />
+			<GridView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{:else if currentView === "list"}
-			<ListView data={renderData} {startIndex} {pageLength} />
+			<ListView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{:else if currentView === "feed"}
-			<FeedView data={renderData} {startIndex} {pageLength} />
+			<FeedView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{/if}
 	</div>
 </div>

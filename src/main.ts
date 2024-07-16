@@ -170,6 +170,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			//This will be undefined if the settings are from a version before 0.3.0
 			const loadedVersion =
 				(loadedData["pluginVersion"] as string) ?? null;
+
 			if (loadedVersion !== null) {
 				const newData = preformMigrations(loadedVersion, loadedData);
 				currentData = newData;
