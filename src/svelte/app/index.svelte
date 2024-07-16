@@ -757,16 +757,19 @@
 			const frontmatter =
 				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
 
+			const isFavorite = favoritesCache.get(file.path) ?? null;
+
 			const content = contentCache[file.path] ?? null;
 
-			return formatFileDataForRender(
-				plugin.app,
-				plugin.settings,
-				id,
+			return formatFileDataForRender({
+				app: plugin.app,
+				settings: plugin.settings,
+				fileId: id,
 				file,
-				frontmatter,
-				content,
-			);
+				fileFrontmatter: frontmatter,
+				fileContent: content,
+				fileFavorite: isFavorite,
+			});
 		});
 	}
 

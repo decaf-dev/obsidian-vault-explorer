@@ -13,20 +13,30 @@ import { isImageExtension } from "./utils/image-utils";
  * Formats the file's data for rendering
  * @param app - The Obsidian app
  * @param settings - The plugin's settings
- * @param id - The file's id. This is a randomly generated identifier for the file
  * @param file - The file to format
- * @param frontmatter - The file's frontmatter
- * @param content - The file's content
+ * @param fileId - The file's id. This is a randomly generated identifier for the file
+ * @param fileFrontmatter - The file's frontmatter
+ * @param fileContent - The file's content
+ * @param fileFavorite - The file's favorite status. This will be null if the file is a markdown file
  * @returns A FileRenderData object that contains the file's data formatted for rendering
  */
-export const formatFileDataForRender = (
-	app: App,
-	settings: VaultExplorerPluginSettings,
-	id: string,
-	file: TFile,
-	frontmatter: FrontMatterCache | undefined,
-	content: string | null
-): FileRenderData => {
+export const formatFileDataForRender = ({
+	app,
+	settings,
+	file,
+	fileId,
+	fileFrontmatter,
+	fileContent,
+	fileFavorite,
+}: {
+	app: App;
+	settings: VaultExplorerPluginSettings;
+	file: TFile;
+	fileId: string;
+	fileFrontmatter: FrontMatterCache | undefined;
+	fileContent: string | null;
+	fileFavorite: boolean | null;
+}): FileRenderData => {
 	const { name, basename, extension, path } = file;
 
 	const {
@@ -41,45 +51,51 @@ export const formatFileDataForRender = (
 	} = settings.properties;
 
 	const tags: string[] | null = loadPropertyValue<string[]>(
-		frontmatter,
+		fileFrontmatter,
 		"tags",
 		PropertyType.LIST
 	);
 
 	const url: string | null = loadPropertyValue<string>(
-		frontmatter,
+		fileFrontmatter,
 		urlProp,
 		PropertyType.TEXT
 	);
 
-	const isFavorite: boolean | null = loadPropertyValue<boolean>(
-		frontmatter,
-		favoriteProp,
-		PropertyType.CHECKBOX
-	);
+	let isFavorite: boolean | null;
+	if (fileFavorite === null) {
+		isFavorite = loadPropertyValue<boolean>(
+			fileFrontmatter,
+			favoriteProp,
+			PropertyType.CHECKBOX
+		);
+	} else {
+		isFavorite = fileFavorite;
+	}
+
 	const creationDate: string | null = loadPropertyValue<string>(
-		frontmatter,
+		fileFrontmatter,
 		createdDateProp,
 		PropertyType.DATE || PropertyType.DATETIME
 	);
 	const modifiedDate: string | null = loadPropertyValue<string>(
-		frontmatter,
+		fileFrontmatter,
 		modifiedDateProp,
 		PropertyType.DATE || PropertyType.DATETIME
 	);
 
 	const custom1: string | null = loadPropertyValue<string>(
-		frontmatter,
+		fileFrontmatter,
 		custom1Prop,
 		PropertyType.TEXT
 	);
 	const custom2: string | null = loadPropertyValue<string>(
-		frontmatter,
+		fileFrontmatter,
 		custom2Prop,
 		PropertyType.TEXT
 	);
 	const custom3: string | null = loadPropertyValue<string>(
-		frontmatter,
+		fileFrontmatter,
 		custom3Prop,
 		PropertyType.TEXT
 	);
@@ -109,7 +125,7 @@ export const formatFileDataForRender = (
 	}
 
 	let imageUrl: string | null = loadPropertyValue<string>(
-		frontmatter,
+		fileFrontmatter,
 		imageUrlProp,
 		PropertyType.TEXT
 	);
@@ -136,13 +152,13 @@ export const formatFileDataForRender = (
 	const displayName = extension === "md" ? basename : name;
 
 	return {
-		id,
+		id: fileId,
 		displayName,
 		baseName: basename,
 		path,
 		extension,
 		url,
-		content,
+		content: fileContent,
 		tags,
 		imageUrl,
 		isFavorite,
