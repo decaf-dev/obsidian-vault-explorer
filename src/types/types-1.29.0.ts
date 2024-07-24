@@ -1,5 +1,4 @@
-/** @see {isVaultExplorerPluginSettings} ts-auto-guard:type-guard */
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_29_0 {
 	properties: {
 		favorite: string;
 		url: string;
@@ -54,11 +53,8 @@ export interface TListView extends BaseView {
 }
 
 export interface TGridView extends BaseView {
-	coverImageSource: CoverImageSource;
 	loadSocialMediaImage: boolean;
 }
-
-export type CoverImageSource = "frontmatter-only" | "frontmatter-and-body";
 
 export interface TDashboardView extends BaseView {}
 
