@@ -40,8 +40,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		this.setupEventListeners();
-
 		const { containerEl } = this;
 		containerEl.empty();
 
@@ -344,11 +342,28 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
-		//TODO refactor logic
-		this.socialMediaImageSetting = new Setting(containerEl);
-		this.renderLoadSocialMediaImageSetting(
-			License.getInstance().getIsDeviceRegistered()
-		);
+		const loadSocialMediaDesc = new DocumentFragment();
+		loadSocialMediaDesc.createDiv({
+			text: "When a markdown file has a URL property and no image URL property, load the social media image of the URL and use it as the card image.",
+		});
+
+		new Setting(containerEl)
+			.setName("Load social media image for url")
+			.setDesc(loadSocialMediaDesc)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(
+						this.plugin.settings.views.grid.loadSocialMediaImage
+					)
+					.onChange(async (value) => {
+						this.plugin.settings.views.grid.loadSocialMediaImage =
+							value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE
+						);
+					})
+			);
 
 		new Setting(containerEl).setName("Feed view").setHeading();
 
@@ -682,59 +697,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 	onClose() {
 		this.component?.$destroy();
-		EventManager.getInstance().off(
-			PluginEvent.DEVICE_REGISTRATION_CHANGE,
-			this.renderLoadSocialMediaImageSetting
-		);
 	}
-
-	private setupEventListeners() {
-		EventManager.getInstance().on(
-			PluginEvent.DEVICE_REGISTRATION_CHANGE,
-			this.renderLoadSocialMediaImageSetting
-		);
-	}
-
-	private renderLoadSocialMediaImageSetting = (...data: unknown[]) => {
-		const isDeviceRegistered = data[0];
-
-		if (!this.socialMediaImageSetting) {
-			throw new Error("socialMediaImageSetting is null");
-		}
-
-		this.socialMediaImageSetting.clear();
-
-		const loadSocialMediaDesc = new DocumentFragment();
-		loadSocialMediaDesc.createDiv({
-			text: "When a markdown file has a URL property and no image URL property, load the social media image of the URL and use it as the card image.",
-		});
-
-		if (!isDeviceRegistered) {
-			loadSocialMediaDesc.createDiv({
-				text: "This feature requires a premium license.",
-				cls: "vault-explorer-premium-setting",
-			});
-		}
-
-		this.socialMediaImageSetting
-			.setName("Load social media image for url")
-			.setDesc(loadSocialMediaDesc)
-			.addToggle((toggle) =>
-				toggle
-					.setDisabled(!isDeviceRegistered)
-					.setValue(
-						this.plugin.settings.views.grid.loadSocialMediaImage
-					)
-					.onChange(async (value) => {
-						this.plugin.settings.views.grid.loadSocialMediaImage =
-							value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE
-						);
-					})
-			);
-	};
 
 	private updateViewOrder(view: TExplorerView, value: boolean) {
 		if (value) {

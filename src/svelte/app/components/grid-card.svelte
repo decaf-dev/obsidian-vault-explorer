@@ -12,7 +12,6 @@
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
-	import License from "src/svelte/shared/services/license";
 	import { fetchSocialImage } from "../services/social-media-image";
 	import { PluginEvent } from "src/event/types";
 	import GridCardContainer from "./grid-card-container.svelte";
@@ -37,7 +36,6 @@
 	let wordBreak: WordBreak = "normal";
 	let enableFileIcons: boolean = false;
 	let loadSocialMediaImage: boolean = true;
-	let isDeviceRegistered: boolean = false;
 	let fileInteractionStyle: FileInteractionStyle = "content";
 	let imgSrc: string | null = null;
 
@@ -50,12 +48,6 @@
 	});
 
 	const dispatch = createEventDispatcher();
-
-	License.getInstance()
-		.getIsDeviceRegisteredStore()
-		.subscribe((isRegistered) => {
-			isDeviceRegistered = isRegistered;
-		});
 
 	onMount(() => {
 		imgSrc = imageUrl;
@@ -140,7 +132,6 @@
 	}
 
 	async function getSocialImageUrl() {
-		if (!isDeviceRegistered) return;
 		if (!loadSocialMediaImage) return;
 
 		if (imageUrl === null && url !== null) {
