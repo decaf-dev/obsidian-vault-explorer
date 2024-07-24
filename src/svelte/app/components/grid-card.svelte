@@ -58,6 +58,7 @@
 		});
 
 	onMount(() => {
+		imgSrc = imageUrl;
 		getSocialImageUrl();
 	});
 
