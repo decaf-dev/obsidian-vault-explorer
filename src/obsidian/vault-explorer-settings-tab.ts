@@ -16,6 +16,7 @@ import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
 import {
 	CollapseStyle,
+	CoverImageSource,
 	FileInteractionStyle,
 	FlexWrap,
 	TExplorerView,
@@ -339,14 +340,33 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
-		const loadSocialMediaDesc = new DocumentFragment();
-		loadSocialMediaDesc.createDiv({
-			text: "When a markdown file has a URL property and no image URL property, load the social media image of the URL and use it as the card image.",
-		});
+		new Setting(containerEl)
+			.setName("Cover image source")
+			.setDesc(
+				"Set the source for the cover image. The first image found will be used."
+			)
+			.addDropdown((cb) =>
+				cb
+					.addOptions({
+						"frontmatter-and-body": "Frontmatter and body",
+						"frontmatter-only": "Frontmatter only",
+					})
+					.setValue(this.plugin.settings.views.grid.coverImageSource)
+					.onChange(async (value) => {
+						this.plugin.settings.views.grid.coverImageSource =
+							value as CoverImageSource;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE
+						);
+					})
+			);
 
 		new Setting(containerEl)
-			.setName("Load social media image for url")
-			.setDesc(loadSocialMediaDesc)
+			.setName("Load social media image")
+			.setDesc(
+				"If a url is found, load the social media image for the url"
+			)
 			.addToggle((toggle) =>
 				toggle
 					.setValue(

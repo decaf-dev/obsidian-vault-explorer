@@ -12,6 +12,7 @@ export enum PluginEvent {
 	TITLE_WRAPPING_SETTING_CHANGE = "title-wrapping-setting-change",
 	FILE_INTERACTION_STYLE = "file-interaction-style-setting-change",
 	FEED_CONTENT_SETTING_CHANGE = "feed-content-setting-change",
+	COVER_IMAGE_SOURCE_SETTING_CHANGE = "cover-image-source-setting-change",
 	PROPERTY_SETTING_CHANGE = "property-setting-change",
 	DEVICE_REGISTRATION_CHANGE = "device-registration-change",
 	CLOCK_UPDATES_SETTING_CHANGE = "clock-updates-setting-change",
