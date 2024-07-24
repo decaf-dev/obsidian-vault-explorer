@@ -45,10 +45,11 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		grid: {
 			isEnabled: true,
-			loadSocialMediaImage: false,
+			loadSocialMediaImage: true,
 		},
 		list: {
 			isEnabled: true,
+			showTags: true,
 		},
 		table: {
 			isEnabled: false,
