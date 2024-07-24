@@ -13,7 +13,7 @@
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
 	import License from "src/svelte/shared/services/license";
-	import { fetchSocialMediaImage } from "../services/social-media-image";
+	import { fetchSocialImage } from "../services/social-media-image";
 	import { PluginEvent } from "src/event/types";
 	import GridCardContainer from "./grid-card-container.svelte";
 	import GridCardTitle from "./grid-card-title.svelte";
@@ -144,7 +144,7 @@
 		if (!loadSocialMediaImage) return;
 
 		if (imageUrl === null && url !== null) {
-			imgSrc = await fetchSocialMediaImage(url);
+			imgSrc = await fetchSocialImage(url);
 		}
 	}
 
