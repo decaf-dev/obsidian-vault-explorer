@@ -28,6 +28,7 @@
 	let fileInteractionStyle: FileInteractionStyle = "content";
 	let isSmallScreenSize: boolean = false;
 	let ref: HTMLElement | null = null;
+	let showTags: boolean = true;
 	let plugin: VaultExplorerPlugin;
 
 	const dispatch = createEventDispatcher();
@@ -36,6 +37,24 @@
 		plugin = p;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		fileInteractionStyle = plugin.settings.fileInteractionStyle;
+		showTags = plugin.settings.views.list.showTags;
+	});
+
+	onMount(() => {
+		function handleShowTagsChange() {
+			showTags = plugin.settings.views.list.showTags;
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.SHOW_TAGS_SETTING_CHANGE,
+			handleShowTagsChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.SHOW_TAGS_SETTING_CHANGE,
+				handleShowTagsChange,
+			);
+		};
 	});
 
 	onMount(() => {
@@ -172,19 +191,21 @@
 				</div>
 			</Stack>
 		</ListItemTitle>
-		<div class={tagsClassName}>
-			{#if tags !== null}
-				<Wrap
-					spacingX="xs"
-					spacingY="xs"
-					justify={isSmallScreenSize ? "flex-start" : "flex-end"}
-				>
-					{#each tags as tag}
-						<Tag name={tag} variant="unstyled" />
-					{/each}
-				</Wrap>
-			{/if}
-		</div>
+		{#if showTags}
+			<div class={tagsClassName}>
+				{#if tags !== null}
+					<Wrap
+						spacingX="xs"
+						spacingY="xs"
+						justify={isSmallScreenSize ? "flex-start" : "flex-end"}
+					>
+						{#each tags as tag}
+							<Tag name={tag} variant="unstyled" />
+						{/each}
+					</Wrap>
+				{/if}
+			</div>
+		{/if}
 	</Wrap>
 </ListItemContainer>
 

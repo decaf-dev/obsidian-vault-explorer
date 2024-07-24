@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting } from "obsidian";
 import VaultExplorerPlugin from "src/main";
 import {
 	getDropdownOptionsForProperties,
@@ -22,21 +22,18 @@ import {
 } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
-import License from "src/svelte/shared/services/license";
-import "./styles.css";
 import { PluginEvent } from "src/event/types";
-import { favoritesStore } from "src/svelte/app/services/favorites-store";
+
+import "./styles.css";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
 	component: LicenseKeyApp | null;
-	socialMediaImageSetting: Setting | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.component = null;
-		this.socialMediaImageSetting = null;
 	}
 
 	display(): void {
@@ -361,6 +358,23 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl).setName("List view").setHeading();
+
+		new Setting(containerEl)
+			.setName("Tags")
+			.setDesc("Display tags for vault file")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.views.list.showTags)
+					.onChange(async (value) => {
+						this.plugin.settings.views.list.showTags = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.SHOW_TAGS_SETTING_CHANGE
 						);
 					})
 			);
