@@ -39,6 +39,7 @@
 	let loadSocialMediaImage: boolean = true;
 	let isDeviceRegistered: boolean = false;
 	let fileInteractionStyle: FileInteractionStyle = "content";
+	let imgSrc: string | null = null;
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
@@ -142,7 +143,7 @@
 		if (!loadSocialMediaImage) return;
 
 		if (imageUrl === null && url !== null) {
-			imageUrl = await fetchSocialMediaImage(url);
+			imgSrc = await fetchSocialMediaImage(url);
 		}
 	}
 
@@ -198,9 +199,9 @@
 	on:mouseover={handleCardMouseOver}
 >
 	<div class="vault-explorer-grid-card__cover">
-		{#if imageUrl !== null}
+		{#if imgSrc !== null}
 			<!-- svelte-ignore a11y-missing-attribute -->
-			<img class="vault-explorer-grid-card__image" src={imageUrl} />
+			<img class="vault-explorer-grid-card__image" src={imgSrc} />
 		{/if}
 		{#if isFavorite === true}
 			<div class="vault-explorer-grid-card__favorite">
