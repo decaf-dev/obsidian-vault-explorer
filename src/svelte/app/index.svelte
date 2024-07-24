@@ -118,6 +118,7 @@
 
 	let listView: TListView = {
 		isEnabled: false,
+		showTags: true,
 	};
 
 	let gridView: TGridView = {

@@ -21,6 +21,7 @@ export enum PluginEvent {
 	FILE_ICONS_SETTING_CHANGE = "file-icons-setting-change",
 	FILTER_GROUPS_WRAPPING_SETTING_CHANGE = "filter-groups-wrapping-setting-change",
 	LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE = "load-social-media-image-setting-change",
+	SHOW_TAGS_SETTING_CHANGE = "show-tags-setting-change",
 }
 
 export type EventCallback = (...data: unknown[]) => void;

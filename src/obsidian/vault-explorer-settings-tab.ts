@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting } from "obsidian";
 import VaultExplorerPlugin from "src/main";
 import {
 	getDropdownOptionsForProperties,
@@ -22,26 +22,21 @@ import {
 } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
-import License from "src/svelte/shared/services/license";
-import "./styles.css";
 import { PluginEvent } from "src/event/types";
-import { favoritesStore } from "src/svelte/app/services/favorites-store";
+
+import "./styles.css";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
 	component: LicenseKeyApp | null;
-	socialMediaImageSetting: Setting | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.component = null;
-		this.socialMediaImageSetting = null;
 	}
 
 	display(): void {
-		this.setupEventListeners();
-
 		const { containerEl } = this;
 		containerEl.empty();
 
@@ -344,11 +339,45 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
-		//TODO refactor logic
-		this.socialMediaImageSetting = new Setting(containerEl);
-		this.renderLoadSocialMediaImageSetting(
-			License.getInstance().getIsDeviceRegistered()
-		);
+		const loadSocialMediaDesc = new DocumentFragment();
+		loadSocialMediaDesc.createDiv({
+			text: "When a markdown file has a URL property and no image URL property, load the social media image of the URL and use it as the card image.",
+		});
+
+		new Setting(containerEl)
+			.setName("Load social media image for url")
+			.setDesc(loadSocialMediaDesc)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(
+						this.plugin.settings.views.grid.loadSocialMediaImage
+					)
+					.onChange(async (value) => {
+						this.plugin.settings.views.grid.loadSocialMediaImage =
+							value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl).setName("List view").setHeading();
+
+		new Setting(containerEl)
+			.setName("Tags")
+			.setDesc("Display tags for vault file")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.views.list.showTags)
+					.onChange(async (value) => {
+						this.plugin.settings.views.list.showTags = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.SHOW_TAGS_SETTING_CHANGE
+						);
+					})
+			);
 
 		new Setting(containerEl).setName("Feed view").setHeading();
 
@@ -682,59 +711,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 	onClose() {
 		this.component?.$destroy();
-		EventManager.getInstance().off(
-			PluginEvent.DEVICE_REGISTRATION_CHANGE,
-			this.renderLoadSocialMediaImageSetting
-		);
 	}
-
-	private setupEventListeners() {
-		EventManager.getInstance().on(
-			PluginEvent.DEVICE_REGISTRATION_CHANGE,
-			this.renderLoadSocialMediaImageSetting
-		);
-	}
-
-	private renderLoadSocialMediaImageSetting = (...data: unknown[]) => {
-		const isDeviceRegistered = data[0];
-
-		if (!this.socialMediaImageSetting) {
-			throw new Error("socialMediaImageSetting is null");
-		}
-
-		this.socialMediaImageSetting.clear();
-
-		const loadSocialMediaDesc = new DocumentFragment();
-		loadSocialMediaDesc.createDiv({
-			text: "When a markdown file has a URL property and no image URL property, load the social media image of the URL and use it as the card image.",
-		});
-
-		if (!isDeviceRegistered) {
-			loadSocialMediaDesc.createDiv({
-				text: "This feature requires a premium license.",
-				cls: "vault-explorer-premium-setting",
-			});
-		}
-
-		this.socialMediaImageSetting
-			.setName("Load social media image for url")
-			.setDesc(loadSocialMediaDesc)
-			.addToggle((toggle) =>
-				toggle
-					.setDisabled(!isDeviceRegistered)
-					.setValue(
-						this.plugin.settings.views.grid.loadSocialMediaImage
-					)
-					.onChange(async (value) => {
-						this.plugin.settings.views.grid.loadSocialMediaImage =
-							value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE
-						);
-					})
-			);
-	};
 
 	private updateViewOrder(view: TExplorerView, value: boolean) {
 		if (value) {
