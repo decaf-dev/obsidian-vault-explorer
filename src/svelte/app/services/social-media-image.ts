@@ -1,7 +1,32 @@
+import { DBSchema, IDBPDatabase, openDB } from "idb";
 import Logger from "js-logger";
 import { requestUrl } from "obsidian";
 
-export const fetchSocialMediaImage = async (url: string) => {
+const DATABASE_NAME = "vaultexplorer";
+const STORE_NAME = "socialMediaImage";
+
+interface SocialImageDB extends DBSchema {
+	socialMediaImage: {
+		key: string;
+		value: {
+			url: string;
+			socialImageUrl: string;
+			timestamp: number;
+		};
+	};
+}
+
+export const clearSocialImageCache = async () => {
+	Logger.trace({
+		fileName: "social-media-image.ts",
+		functionName: "clearSocialMediaImageCache",
+		message: "called",
+	});
+	const db = await openDatabase();
+	await db.clear(STORE_NAME);
+};
+
+export const fetchSocialImage = async (url: string) => {
 	Logger.trace({
 		fileName: "social-media-image.ts",
 		functionName: "fetchSocialMediaImage",
@@ -9,6 +34,19 @@ export const fetchSocialMediaImage = async (url: string) => {
 	});
 
 	try {
+		const cachedUrl = await getCachedSocialImageUrl(url);
+		if (cachedUrl !== null) {
+			Logger.debug(
+				{
+					fileName: "social-media-image.ts",
+					functionName: "fetchSocialMediaImage",
+					message: "found cached url",
+				},
+				{ cachedUrl }
+			);
+			return cachedUrl;
+		}
+
 		const response = await requestUrl({
 			url,
 			method: "GET",
@@ -32,6 +70,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 				},
 				{ imageUrl }
 			);
+			await putSocialImageUrl(url, imageUrl);
 		} else {
 			Logger.warn(
 				{
@@ -51,7 +90,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 				functionName: "fetchSocialMediaImage",
 				message: "failed to fetch",
 			},
-			{ url, error }
+			error
 		);
 		return null;
 	}
@@ -62,4 +101,23 @@ const getMetaTagContent = (document: Document, property: string) => {
 		document.querySelector(`meta[property='${property}']`) ||
 		document.querySelector(`meta[name='${property}']`);
 	return tag ? tag.getAttribute("content") : "";
+};
+
+const putSocialImageUrl = async (url: string, socialImageUrl: string) => {
+	const db = await openDatabase();
+	db.put(STORE_NAME, { url, socialImageUrl, timestamp: Date.now() });
+};
+
+const getCachedSocialImageUrl = async (url: string) => {
+	const db = await openDatabase();
+	const cachedEntry = await db.get(STORE_NAME, url);
+	return cachedEntry ? cachedEntry.socialImageUrl : null;
+};
+
+const openDatabase = (): Promise<IDBPDatabase<SocialImageDB>> => {
+	return openDB<SocialImageDB>(DATABASE_NAME, 1, {
+		upgrade(db) {
+			db.createObjectStore(STORE_NAME, { keyPath: "url" });
+		},
+	});
 };
