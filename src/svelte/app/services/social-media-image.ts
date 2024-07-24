@@ -4,6 +4,7 @@ import { requestUrl } from "obsidian";
 
 const DATABASE_NAME = "vaultexplorer";
 const STORE_NAME = "socialMediaImage";
+const ENTRY_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; //1 week
 
 interface SocialImageDB extends DBSchema {
 	socialMediaImage: {
@@ -34,17 +35,26 @@ export const fetchSocialImage = async (url: string) => {
 	});
 
 	try {
-		const cachedUrl = await getCachedSocialImageUrl(url);
-		if (cachedUrl !== null) {
-			Logger.debug(
+		const entry = await getCachedSocialImageEntry(url);
+		if (entry !== null) {
+			Logger.trace(
 				{
 					fileName: "social-media-image.ts",
 					functionName: "fetchSocialMediaImage",
-					message: "found cached url",
+					message: "found cached entry",
 				},
-				{ cachedUrl }
+				entry
 			);
-			return cachedUrl;
+			if (Date.now() - entry.timestamp < ENTRY_EXPIRATION_TIME) {
+				const { socialImageUrl } = entry;
+				Logger.debug({
+					fileName: "social-media-image.ts",
+					functionName: "fetchSocialMediaImage",
+					message:
+						"timestamp is within expiration time. returning cached image url",
+				});
+				return socialImageUrl;
+			}
 		}
 
 		const response = await requestUrl({
@@ -108,10 +118,10 @@ const putSocialImageUrl = async (url: string, socialImageUrl: string) => {
 	db.put(STORE_NAME, { url, socialImageUrl, timestamp: Date.now() });
 };
 
-const getCachedSocialImageUrl = async (url: string) => {
+const getCachedSocialImageEntry = async (url: string) => {
 	const db = await openDatabase();
 	const cachedEntry = await db.get(STORE_NAME, url);
-	return cachedEntry ? cachedEntry.socialImageUrl : null;
+	return cachedEntry ?? null;
 };
 
 const openDatabase = (): Promise<IDBPDatabase<SocialImageDB>> => {
