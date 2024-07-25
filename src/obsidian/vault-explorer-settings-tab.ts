@@ -341,24 +341,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Grid view").setHeading();
 
 		new Setting(containerEl)
-			.setName("Preferred cover image property")
-			.setDesc(
-				"If set, the value of the selected property will be preferred for the cover image"
-			)
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
-					.setValue(this.plugin.settings.properties.imageUrl)
-					.onChange(async (value) => {
-						this.plugin.settings.properties.imageUrl = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.PROPERTY_SETTING_CHANGE
-						);
-					})
-			);
-
-		new Setting(containerEl)
 			.setName("Automatic cover image detection")
 			.setDesc("Set where cover images are automatically loaded from.")
 			.addDropdown((cb) =>
@@ -375,6 +357,24 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Preferred cover image property")
+			.setDesc(
+				"If set, the value of the selected property will be preferred for the cover image"
+			)
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.setValue(this.plugin.settings.properties.imageUrl)
+					.onChange(async (value) => {
+						this.plugin.settings.properties.imageUrl = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.PROPERTY_SETTING_CHANGE
 						);
 					})
 			);
