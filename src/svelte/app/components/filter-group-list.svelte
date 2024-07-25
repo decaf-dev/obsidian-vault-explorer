@@ -103,6 +103,7 @@
 						on:groupDrop
 						on:groupDragOver
 						on:groupDragStart
+						on:groupContextMenu
 					/>
 				{/each}
 			</Wrap>
