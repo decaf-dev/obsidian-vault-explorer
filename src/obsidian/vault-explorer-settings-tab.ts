@@ -359,7 +359,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Automatic cover image source")
+			.setName("Automatic cover image detection")
 			.setDesc(
 				"Choose where cover images are automatically loaded from. Set to 'Off' if you don't want automatic detection"
 			)
