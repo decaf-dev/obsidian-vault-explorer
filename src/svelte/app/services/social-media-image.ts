@@ -61,6 +61,9 @@ export const fetchSocialImage = async (url: string) => {
 		const response = await requestUrl({
 			url,
 			method: "GET",
+			headers: {
+				Cookie: "", // Clear any cookies
+			},
 		});
 
 		const html = response.text;
