@@ -530,24 +530,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl)
-			.setName("Image URL property")
-			.setDesc(
-				"Property used to store an image url. This must be a text property."
-			)
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
-					.setValue(this.plugin.settings.properties.imageUrl)
-					.onChange(async (value) => {
-						this.plugin.settings.properties.imageUrl = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.PROPERTY_SETTING_CHANGE
-						);
-					})
-			);
-
 		const creationDateDesc = new DocumentFragment();
 		creationDateDesc.createDiv({
 			text: "Property used to store a creation date. This must be a date or datetime property.",
