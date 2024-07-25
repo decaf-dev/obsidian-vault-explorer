@@ -25,8 +25,123 @@
     },
     "custom": {
       "isEnabled": true,
-      "selectedGroupId": "",
-      "groups": []
+      "selectedGroupId": "CeVtK4CAYLRE6dxC",
+      "groups": [
+        {
+          "id": "XZQKokeCyLL7ttHf",
+          "name": "Group 1",
+          "rules": [
+            {
+              "id": "bq5suCim42Rw7T9Z",
+              "type": "property",
+              "propertyType": "text",
+              "propertyName": "",
+              "operator": "and",
+              "isEnabled": true,
+              "condition": "is",
+              "value": "",
+              "matchWhenPropertyDNE": false
+            }
+          ],
+          "isEnabled": false,
+          "isSticky": false
+        },
+        {
+          "id": "kR9gwoxzKiKgrxtC",
+          "name": "Group 2",
+          "rules": [
+            {
+              "id": "PDTQia3dng7uhU55",
+              "type": "property",
+              "propertyType": "text",
+              "propertyName": "",
+              "operator": "and",
+              "isEnabled": true,
+              "condition": "is",
+              "value": "",
+              "matchWhenPropertyDNE": false
+            }
+          ],
+          "isEnabled": false,
+          "isSticky": false
+        },
+        {
+          "id": "3WFtjBw7zNivDkjD",
+          "name": "Group 3",
+          "rules": [
+            {
+              "id": "fCZ1NPYLFo2y9BdW",
+              "type": "property",
+              "propertyType": "text",
+              "propertyName": "",
+              "operator": "and",
+              "isEnabled": true,
+              "condition": "is",
+              "value": "",
+              "matchWhenPropertyDNE": false
+            }
+          ],
+          "isEnabled": false,
+          "isSticky": false
+        },
+        {
+          "id": "Y6r8HRfiM16JrLvd",
+          "name": "Group 4",
+          "rules": [
+            {
+              "id": "YzqnVV9H2THbUkWK",
+              "type": "property",
+              "propertyType": "text",
+              "propertyName": "",
+              "operator": "and",
+              "isEnabled": true,
+              "condition": "is",
+              "value": "",
+              "matchWhenPropertyDNE": false
+            }
+          ],
+          "isEnabled": false,
+          "isSticky": false
+        },
+        {
+          "id": "gEqbsv5w1RyXvAG4",
+          "name": "Group 5",
+          "rules": [
+            {
+              "id": "7iGiJD9HxpcnYD2M",
+              "type": "property",
+              "propertyType": "text",
+              "propertyName": "",
+              "operator": "and",
+              "isEnabled": true,
+              "condition": "is",
+              "value": "",
+              "matchWhenPropertyDNE": false
+            }
+          ],
+          "isEnabled": false,
+          "isSticky": false
+        },
+        {
+          "id": "CeVtK4CAYLRE6dxC",
+          "name": "Group 6",
+          "rules": [
+            {
+              "id": "txLAZECNC51yRxJe",
+              "type": "property",
+              "propertyType": "text",
+              "propertyName": "",
+              "operator": "and",
+              "isEnabled": true,
+              "condition": "is",
+              "value": "",
+              "matchWhenPropertyDNE": false
+            }
+          ],
+          "isEnabled": false,
+          "isSticky": false
+        }
+      ]
     },
     "favorites": {
       "isEnabled": true,
@@ -76,8 +191,8 @@
   "enableFileIcons": true,
   "enableScrollButtons": true,
   "fileInteractionStyle": "content",
-  "filterGroupsWidth": "367px",
-  "filterGroupsWrapping": "nowrap",
+  "filterGroupsWidth": "303px",
+  "shouldWrapFilterGroups": false,
   "pageSize": 25,
   "viewOrder": [
     "grid",
@@ -85,6 +200,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.30.4",
+  "pluginVersion": "1.30.5",
   "logLevel": "trace"
 }

@@ -1,5 +1,4 @@
-/** @see {isVaultExplorerPluginSettings} ts-auto-guard:type-guard */
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_30_5 {
 	properties: {
 		favorite: string;
 		url: string;
@@ -34,7 +33,7 @@ export interface VaultExplorerPluginSettings {
 	enableScrollButtons: boolean;
 	pageSize: number;
 	filterGroupsWidth: string;
-	shouldWrapFilterGroups: boolean;
+	filterGroupsWrapping: FlexWrap;
 	viewOrder: TExplorerView[];
 	configDir: string;
 	pluginVersion: string | null;
@@ -121,6 +120,8 @@ export type SortFilterOption =
 	| "random";
 
 export type WordBreak = "normal" | "break-word";
+
+export type FlexWrap = "wrap" | "nowrap";
 
 export enum TExplorerView {
 	DASHBOARD = "dashboard",

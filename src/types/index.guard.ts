@@ -595,11 +595,15 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["views"]["grid"] === "object" ||
             typeof typedObj["views"]["grid"] === "function") &&
         typeof typedObj["views"]["grid"]["isEnabled"] === "boolean" &&
+        (typedObj["views"]["grid"]["coverImageSource"] === "frontmatter-only" ||
+            typedObj["views"]["grid"]["coverImageSource"] === "frontmatter-and-body" ||
+            typedObj["views"]["grid"]["coverImageSource"] === "off") &&
         typeof typedObj["views"]["grid"]["loadSocialMediaImage"] === "boolean" &&
         (typedObj["views"]["list"] !== null &&
             typeof typedObj["views"]["list"] === "object" ||
             typeof typedObj["views"]["list"] === "function") &&
         typeof typedObj["views"]["list"]["isEnabled"] === "boolean" &&
+        typeof typedObj["views"]["list"]["showTags"] === "boolean" &&
         (typedObj["views"]["table"] !== null &&
             typeof typedObj["views"]["table"] === "object" ||
             typeof typedObj["views"]["table"] === "function") &&
@@ -639,8 +643,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
         typeof typedObj["enableScrollButtons"] === "boolean" &&
         typeof typedObj["pageSize"] === "number" &&
         typeof typedObj["filterGroupsWidth"] === "string" &&
-        (typedObj["filterGroupsWrapping"] === "wrap" ||
-            typedObj["filterGroupsWrapping"] === "nowrap") &&
+        typeof typedObj["shouldWrapFilterGroups"] === "boolean" &&
         Array.isArray(typedObj["viewOrder"]) &&
         typedObj["viewOrder"].every((e: any) =>
         (e === TExplorerView.DASHBOARD ||
