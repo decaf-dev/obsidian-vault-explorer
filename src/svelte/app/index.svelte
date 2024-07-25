@@ -124,6 +124,7 @@
 	let gridView: TGridView = {
 		loadSocialMediaImage: false,
 		isEnabled: false,
+		coverImageSource: "frontmatter-and-body",
 	};
 
 	//TODO use just isEnabled

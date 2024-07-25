@@ -26,6 +26,7 @@
 	export let extension: string;
 	export let url: string | null;
 	export let imageUrl: string | null;
+	export let isSocialMediaImageUrl: boolean;
 	export let tags: string[] | null;
 	export let custom1: string | null;
 	export let custom2: string | null;
@@ -132,11 +133,11 @@
 	}
 
 	async function getSocialImageUrl() {
+		if (imageUrl == null) return;
+		if (!isSocialMediaImageUrl) return;
 		if (!loadSocialMediaImage) return;
 
-		if (imageUrl === null && url !== null) {
-			imgSrc = await fetchSocialImage(url);
-		}
+		imgSrc = await fetchSocialImage(imageUrl);
 	}
 
 	function handleCardClick() {

@@ -30,6 +30,7 @@
 				extension={fileRenderData.extension}
 				imageUrl={fileRenderData.imageUrl}
 				url={fileRenderData.url}
+				isSocialMediaImageUrl={fileRenderData.isSocialMediaImageUrl}
 				tags={fileRenderData.tags}
 				custom1={fileRenderData.custom1}
 				custom2={fileRenderData.custom2}

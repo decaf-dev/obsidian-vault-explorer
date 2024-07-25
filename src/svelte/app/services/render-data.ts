@@ -2,12 +2,16 @@ import { App, FrontMatterCache, TFile } from "obsidian";
 import { PropertyType, VaultExplorerPluginSettings } from "src/types";
 import { FileRenderData } from "../types";
 import Logger from "js-logger";
-import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
+import {
+	FileTextProperties,
+	loadPropertyValue,
+	loadTextProperties,
+} from "src/svelte/shared/services/load-property-value";
 import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
-import { isImageExtension } from "./utils/image-utils";
+import { isImageExtension, isImageUrl } from "./utils/image-utils";
 
 /**
  * Formats the file's data for rendering
@@ -44,7 +48,6 @@ export const formatFileDataForRender = ({
 		modifiedDate: modifiedDateProp,
 		url: urlProp,
 		favorite: favoriteProp,
-		imageUrl: imageUrlProp,
 		custom1: custom1Prop,
 		custom2: custom2Prop,
 		custom3: custom3Prop,
@@ -124,29 +127,43 @@ export const formatFileDataForRender = ({
 		}
 	}
 
-	let imageUrl: string | null = loadPropertyValue<string>(
-		fileFrontmatter,
-		imageUrlProp,
-		PropertyType.TEXT
+	let textProperties: FileTextProperties = loadTextProperties(
+		app,
+		fileFrontmatter
 	);
 
-	if (imageUrl?.startsWith("[[") && imageUrl.endsWith("]]")) {
-		const link = imageUrl.substring(2, imageUrl.length - 2);
+	let imageUrl: string | null = null;
+	let isSocialMediaImageUrl = false;
 
-		//Get the link file
-		//We use this function because a link can exclude folders when `New link format` is set to
-		//`shortest path when possible`.
-		const linkFile = app.metadataCache.getFirstLinkpathDest(link, path);
-
-		if (linkFile) {
-			const resourcePath = app.vault.getResourcePath(linkFile);
-			imageUrl = resourcePath;
-		} else {
-			Logger.error(`Link path for image url not found: ${link}`);
-			imageUrl = null;
-		}
-	} else if (isImageExtension(extension)) {
+	if (isImageExtension(extension)) {
 		imageUrl = app.vault.getResourcePath(file);
+	} else {
+		for (const property of textProperties) {
+			const { value } = property;
+			if (value.startsWith("[[") && value.endsWith("]]")) {
+				const link = value.substring(2, value.length - 2);
+
+				//Get the link file
+				//We use this function because a link can exclude folders when the `New link format` setting
+				//is set to `shortest path when possible`.
+				const linkFile = app.metadataCache.getFirstLinkpathDest(
+					link,
+					path
+				);
+
+				if (linkFile) {
+					const resourcePath = app.vault.getResourcePath(linkFile);
+					imageUrl = resourcePath;
+					break;
+				}
+			} else if (value.startsWith("https://")) {
+				imageUrl = value;
+				if (!isImageUrl(imageUrl)) {
+					isSocialMediaImageUrl = true;
+				}
+				break;
+			}
+		}
 	}
 
 	const displayName = extension === "md" ? basename : name;
@@ -158,6 +175,7 @@ export const formatFileDataForRender = ({
 		path,
 		extension,
 		url,
+		isSocialMediaImageUrl,
 		content: fileContent,
 		tags,
 		imageUrl,
