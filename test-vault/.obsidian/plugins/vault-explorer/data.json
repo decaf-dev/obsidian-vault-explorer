@@ -25,7 +25,7 @@
     },
     "custom": {
       "isEnabled": true,
-      "selectedGroupId": "CeVtK4CAYLRE6dxC",
+      "selectedGroupId": "Y6r8HRfiM16JrLvd",
       "groups": [
         {
           "id": "XZQKokeCyLL7ttHf",
@@ -191,7 +191,7 @@
   "enableFileIcons": true,
   "enableScrollButtons": true,
   "fileInteractionStyle": "content",
-  "filterGroupsWidth": "303px",
+  "filterGroupsWidth": "302px",
   "shouldWrapFilterGroups": false,
   "pageSize": 25,
   "viewOrder": [
@@ -200,6 +200,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.30.5",
+  "pluginVersion": "1.31.0",
   "logLevel": "trace"
 }

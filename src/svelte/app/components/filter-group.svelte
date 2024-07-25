@@ -12,7 +12,11 @@
 	const dispatch = createEventDispatcher();
 
 	function handleClick(event: Event) {
-		dispatch("groupClick", { id, nativeEvent: event });
+		dispatch("groupClick", { id });
+	}
+
+	function handleContextMenu(event: Event) {
+		dispatch("groupContextMenu", { id, nativeEvent: event });
 	}
 
 	function handleDragStart(event: Event) {
@@ -50,6 +54,7 @@
 	on:dragover={handleDragOver}
 	on:drop={handleDrop}
 	on:click={handleClick}
+	on:contextmenu={handleContextMenu}
 	on:keydown={(e) => (e.key === "Enter" || e.key === " ") && handleClick(e)}
 >
 	{#if isSticky}
