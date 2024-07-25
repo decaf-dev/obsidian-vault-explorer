@@ -48,13 +48,13 @@ export const fetchSocialImage = async (url: string) => {
 			);
 			if (Date.now() - entry.timestamp < ENTRY_EXPIRATION_TIME) {
 				const { socialImageUrl } = entry;
+				return socialImageUrl;
+			} else {
 				Logger.debug({
 					fileName: "social-media-image.ts",
 					functionName: "fetchSocialMediaImage",
-					message:
-						"timestamp is within expiration time. returning cached image url",
+					message: "timestamp is past expiration time. refetching...",
 				});
-				return socialImageUrl;
 			}
 		}
 
@@ -83,7 +83,7 @@ export const fetchSocialImage = async (url: string) => {
 			);
 			await putSocialImageUrl(url, imageUrl);
 		} else {
-			Logger.warn(
+			Logger.debug(
 				{
 					fileName: "social-media-image.ts",
 					functionName: "fetchSocialMediaImage",
@@ -111,7 +111,7 @@ const getMetaTagContent = (document: Document, property: string) => {
 	const tag =
 		document.querySelector(`meta[property='${property}']`) ||
 		document.querySelector(`meta[name='${property}']`);
-	return tag ? tag.getAttribute("content") : "";
+	return tag ? tag.getAttribute("content") : null;
 };
 
 const putSocialImageUrl = async (url: string, socialImageUrl: string) => {
