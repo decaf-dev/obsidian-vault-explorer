@@ -46,6 +46,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		grid: {
 			isEnabled: true,
 			loadSocialMediaImage: true,
+			coverImageSource: "frontmatter-and-body",
 		},
 		list: {
 			isEnabled: true,
