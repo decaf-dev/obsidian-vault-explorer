@@ -95,6 +95,7 @@
 				{#each groups as group (group.id)}
 					<FilterGroup
 						id={group.id}
+						isHandleDragging={dragging}
 						name={group.name}
 						isSelected={group.isEnabled}
 						isSticky={group.isSticky}
