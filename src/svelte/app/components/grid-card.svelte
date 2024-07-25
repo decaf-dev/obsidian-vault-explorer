@@ -19,6 +19,7 @@
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
 	import Flex from "src/svelte/shared/components/flex.svelte";
+	import { isHttpsLink } from "../services/utils/url-utils";
 	import { isImageUrl } from "../services/utils/image-utils";
 
 	export let displayName: string;
@@ -49,13 +50,6 @@
 	});
 
 	const dispatch = createEventDispatcher();
-
-	onMount(() => {
-		imgSrc = imageUrl;
-		if (loadSocialMediaImage === true) {
-			getSocialImageUrl(imageUrl);
-		}
-	});
 
 	onMount(() => {
 		function handleFileInteractionStyleChange() {
@@ -134,15 +128,22 @@
 		}
 	}
 
-	async function getSocialImageUrl(imageUrl: string | null) {
+	async function loadSocialImage(imageUrl: string | null) {
 		if (imageUrl == null) return;
 
-		if (imageUrl) {
-			//If it's a link but not an image, it's a plain url
-			//in that case, we want to load the social media image
-			if (imageUrl.startsWith("https://") && !isImageUrl(imageUrl)) {
-				imgSrc = await fetchSocialImage(imageUrl);
-			}
+		//If it's a link but not an image, it's a plain url
+		//in that case, we want to load the social media image
+		if (isHttpsLink(imageUrl) && !isImageUrl(imageUrl)) {
+			imgSrc = await fetchSocialImage(imageUrl);
+		}
+	}
+
+	function clearSocialImage(imageUrl: string | null) {
+		if (imageUrl == null) return;
+		//If it's a link but not an image, it's a plain url
+		//in that case, we want to clear the social media image
+		if (isHttpsLink(imageUrl) && !isImageUrl(imageUrl)) {
+			imgSrc = null;
 		}
 	}
 
@@ -185,7 +186,10 @@
 		handleCardMouseOver(e);
 	}
 
-	$: loadSocialMediaImage === true, getSocialImageUrl(imageUrl);
+	//This is needed so that the property doesn't get removed
+	$: imageUrl !== null, (imgSrc = imageUrl);
+	$: loadSocialMediaImage && loadSocialImage(imageUrl);
+	$: !loadSocialMediaImage && clearSocialImage(imageUrl);
 
 	$: hasBodyContent =
 		tags != null || custom1 != null || custom2 != null || custom3 != null;
