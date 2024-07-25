@@ -24,8 +24,16 @@ export const loadTextProperties = (
 		if (value === undefined || value === null) {
 			continue;
 		}
+
 		const isTextProperty = allTextProperties.find((p) => p.name === key);
 		if (isTextProperty) {
+			if (typeof value !== "string") {
+				Logger.warn(
+					`Property value of type 'text' is not a string: ${value}`
+				);
+				continue;
+			}
+
 			textProperties.push({
 				name: key,
 				value: value as string,
