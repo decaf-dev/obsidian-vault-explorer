@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FlexWrap, TFilterGroup } from "src/types";
+	import { TFilterGroup } from "src/types";
 	import GroupTag from "./group-tag.svelte";
 	import _ from "lodash";
 	import VaultExplorerPlugin from "src/main";
@@ -15,28 +15,28 @@
 	let startWidth: number;
 	let containerRef: HTMLDivElement | null = null;
 	let dragging: boolean = false;
-	let filterGroupsWrapping: FlexWrap = "nowrap";
+	let shouldWrapFilterGroups: boolean = false;
 
 	let plugin: VaultExplorerPlugin;
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
-		filterGroupsWrapping = plugin.settings.filterGroupsWrapping;
+		shouldWrapFilterGroups = plugin.settings.shouldWrapFilterGroups;
 	});
 
 	onMount(() => {
-		function handleFilterGroupsWrappingSettingChange() {
-			filterGroupsWrapping = plugin.settings.filterGroupsWrapping;
+		function handleWrapFilterGroupsSettingChange() {
+			shouldWrapFilterGroups = plugin.settings.shouldWrapFilterGroups;
 		}
 
 		EventManager.getInstance().on(
-			PluginEvent.FILTER_GROUPS_WRAPPING_SETTING_CHANGE,
-			handleFilterGroupsWrappingSettingChange,
+			PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE,
+			handleWrapFilterGroupsSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				PluginEvent.FILTER_GROUPS_WRAPPING_SETTING_CHANGE,
-				handleFilterGroupsWrappingSettingChange,
+				PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE,
+				handleWrapFilterGroupsSettingChange,
 			);
 		};
 	});
@@ -84,7 +84,7 @@
 		}
 	}
 
-	$: className = dragging
+	$: resizeHandleClassName = dragging
 		? "vault-explorer-resize-handle vault-explorer-resize-handle--dragging"
 		: "vault-explorer-resize-handle";
 </script>
@@ -92,7 +92,11 @@
 <div class="vault-explorer-filter-group-list" bind:this={containerRef}>
 	<div class="vault-explorer-filter-group-list__container">
 		{#if groups.length > 0}
-			<Wrap spacingX="sm" spacingY="sm" wrap={filterGroupsWrapping}>
+			<Wrap
+				spacingX="sm"
+				spacingY="sm"
+				wrap={shouldWrapFilterGroups ? "wrap" : "nowrap"}
+			>
 				{#each groups as group (group.id)}
 					<GroupTag
 						id={group.id}
@@ -112,7 +116,7 @@
 		{/if}
 	</div>
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class={className} on:mousedown={onMouseDown}></div>
+	<div class={resizeHandleClassName} on:mousedown={onMouseDown}></div>
 </div>
 
 <style>
@@ -143,7 +147,6 @@
 		right: 0;
 		width: 3px;
 		border-right: var(--divider-width) solid var(--divider-color);
-		cursor: col-resize;
 		transition: border-color 200ms ease-in-out;
 	}
 
@@ -154,6 +157,7 @@
 	}
 
 	.vault-explorer-resize-handle--dragging {
+		cursor: col-resize;
 		background-color: var(--divider-color-hover);
 		border-color: var(--divider-color-hover);
 		min-height: 35px;
