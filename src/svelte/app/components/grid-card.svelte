@@ -52,6 +52,18 @@
 	const dispatch = createEventDispatcher();
 
 	onMount(() => {
+		if (imageUrl) {
+			if (!isHttpsLink(imageUrl) || isImageUrl(imageUrl)) {
+				imgSrc = imageUrl;
+			}
+		}
+
+		if (loadSocialMediaImage) {
+			loadSocialImage(imageUrl);
+		}
+	});
+
+	onMount(() => {
 		function handleFileInteractionStyleChange() {
 			fileInteractionStyle = plugin.settings.fileInteractionStyle;
 		}
@@ -70,8 +82,13 @@
 
 	onMount(() => {
 		function handleLoadSocialMediaImageChange() {
-			loadSocialMediaImage =
-				plugin.settings.views.grid.loadSocialMediaImage;
+			const newValue = plugin.settings.views.grid.loadSocialMediaImage;
+			loadSocialMediaImage = newValue;
+			if (newValue) {
+				loadSocialImage(imageUrl);
+			} else {
+				clearSocialImage(imageUrl);
+			}
 		}
 
 		EventManager.getInstance().on(
@@ -185,11 +202,6 @@
 	function handleTitleMouseOver(e: MouseEvent) {
 		handleCardMouseOver(e);
 	}
-
-	//This is needed so that the property doesn't get removed
-	$: imageUrl !== null, (imgSrc = imageUrl);
-	$: loadSocialMediaImage && loadSocialImage(imageUrl);
-	$: !loadSocialMediaImage && clearSocialImage(imageUrl);
 
 	$: hasBodyContent =
 		tags != null || custom1 != null || custom2 != null || custom3 != null;
