@@ -52,7 +52,9 @@
 
 	onMount(() => {
 		imgSrc = imageUrl;
-		getSocialImageUrl();
+		if (loadSocialMediaImage === true) {
+			getSocialImageUrl(imageUrl, isSocialMediaImageUrl);
+		}
 	});
 
 	onMount(() => {
@@ -132,10 +134,12 @@
 		}
 	}
 
-	async function getSocialImageUrl() {
+	async function getSocialImageUrl(
+		imageUrl: string | null,
+		isSocialMediaImageUrl: boolean,
+	) {
 		if (imageUrl == null) return;
 		if (!isSocialMediaImageUrl) return;
-		if (!loadSocialMediaImage) return;
 
 		imgSrc = await fetchSocialImage(imageUrl);
 	}
@@ -179,7 +183,8 @@
 		handleCardMouseOver(e);
 	}
 
-	$: loadSocialMediaImage, getSocialImageUrl();
+	$: loadSocialMediaImage === true,
+		getSocialImageUrl(imageUrl, isSocialMediaImageUrl);
 
 	$: hasBodyContent =
 		tags != null || custom1 != null || custom2 != null || custom3 != null;
