@@ -7,16 +7,15 @@
 	export let name: string;
 	export let isSelected: boolean;
 	export let isSticky: boolean;
-	export let isHandleDragging: boolean;
 
 	const dispatch = createEventDispatcher();
 
 	function handleClick(event: Event) {
-		dispatch("groupClick", { id });
+		dispatch("groupClick", { id, nativeEvent: event });
 	}
 
-	function handleContextMenu(event: Event) {
-		dispatch("groupContextMenu", { id, nativeEvent: event });
+	function handleContextMenu() {
+		dispatch("groupContextMenu", { id });
 	}
 
 	function handleDragStart(event: Event) {
@@ -31,18 +30,15 @@
 		dispatch("groupDrop", { nativeEvent: event, id });
 	}
 
-	function getClassName(isSelected: boolean, isContainerDragging: boolean) {
+	function getClassName(isSelected: boolean) {
 		let className = "vault-explorer-filter-group";
 		if (isSelected) {
 			className += " vault-explorer-filter-group--active";
 		}
-		if (isContainerDragging) {
-			className += " vault-explorer-filter-group--handle-dragging";
-		}
 		return className;
 	}
 
-	$: className = getClassName(isSelected, isHandleDragging);
+	$: className = getClassName(isSelected);
 </script>
 
 <div
@@ -92,9 +88,5 @@
 		background-color: var(--tag-background);
 		border: 1px solid var(--tag-border-color);
 		color: var(--tag-color);
-	}
-
-	.vault-explorer-filter-group--handle-dragging {
-		pointer-events: none;
 	}
 </style>

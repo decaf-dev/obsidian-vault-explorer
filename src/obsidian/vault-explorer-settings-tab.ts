@@ -396,7 +396,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Tags")
-			.setDesc("Display tags for vault file")
+			.setDesc("Display tags for each list item")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.views.list.showTags)
