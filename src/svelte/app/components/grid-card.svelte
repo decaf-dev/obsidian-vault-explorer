@@ -19,6 +19,7 @@
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
 	import Flex from "src/svelte/shared/components/flex.svelte";
+	import { isImageUrl } from "../services/utils/image-utils";
 
 	export let displayName: string;
 	export let path: string;
@@ -26,7 +27,6 @@
 	export let extension: string;
 	export let url: string | null;
 	export let imageUrl: string | null;
-	export let isSocialMediaImageUrl: boolean;
 	export let tags: string[] | null;
 	export let custom1: string | null;
 	export let custom2: string | null;
@@ -53,7 +53,7 @@
 	onMount(() => {
 		imgSrc = imageUrl;
 		if (loadSocialMediaImage === true) {
-			getSocialImageUrl(imageUrl, isSocialMediaImageUrl);
+			getSocialImageUrl(imageUrl);
 		}
 	});
 
@@ -134,14 +134,16 @@
 		}
 	}
 
-	async function getSocialImageUrl(
-		imageUrl: string | null,
-		isSocialMediaImageUrl: boolean,
-	) {
+	async function getSocialImageUrl(imageUrl: string | null) {
 		if (imageUrl == null) return;
-		if (!isSocialMediaImageUrl) return;
 
-		imgSrc = await fetchSocialImage(imageUrl);
+		if (imageUrl) {
+			//If it's a link but not an image, it's a plain url
+			//in that case, we want to load the social media image
+			if (imageUrl.startsWith("https://") && !isImageUrl(imageUrl)) {
+				imgSrc = await fetchSocialImage(imageUrl);
+			}
+		}
 	}
 
 	function handleCardClick() {
@@ -183,8 +185,7 @@
 		handleCardMouseOver(e);
 	}
 
-	$: loadSocialMediaImage === true,
-		getSocialImageUrl(imageUrl, isSocialMediaImageUrl);
+	$: loadSocialMediaImage === true, getSocialImageUrl(imageUrl);
 
 	$: hasBodyContent =
 		tags != null || custom1 != null || custom2 != null || custom3 != null;

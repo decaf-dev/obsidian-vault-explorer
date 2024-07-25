@@ -11,7 +11,8 @@ import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
-import { isImageExtension, isImageUrl } from "./utils/image-utils";
+import { findFirstImageEmbed, isImageExtension } from "./utils/image-utils";
+import { removeFrontmatter } from "./utils/content-utils";
 
 /**
  * Formats the file's data for rendering
@@ -43,6 +44,7 @@ export const formatFileDataForRender = ({
 }): FileRenderData => {
 	const { name, basename, extension, path } = file;
 
+	const { coverImageSource } = settings.views.grid;
 	const {
 		createdDate: createdDateProp,
 		modifiedDate: modifiedDateProp,
@@ -127,7 +129,7 @@ export const formatFileDataForRender = ({
 		}
 	}
 
-	let textProperties: FileTextProperties = loadTextProperties(
+	const textProperties: FileTextProperties = loadTextProperties(
 		app,
 		fileFrontmatter
 	);
@@ -135,9 +137,11 @@ export const formatFileDataForRender = ({
 	let imageUrl: string | null = null;
 	let isSocialMediaImageUrl = false;
 
+	//If it's an image file, get the Obsidian image url
 	if (isImageExtension(extension)) {
 		imageUrl = app.vault.getResourcePath(file);
 	} else {
+		//Otherwise, get the first link which could be a wiki link or a url
 		for (const property of textProperties) {
 			const { value } = property;
 			if (value.startsWith("[[") && value.endsWith("]]")) {
@@ -158,12 +162,35 @@ export const formatFileDataForRender = ({
 				}
 			} else if (value.startsWith("https://")) {
 				imageUrl = value;
-				if (!isImageUrl(imageUrl)) {
-					isSocialMediaImageUrl = true;
-				}
 				break;
 			}
 		}
+	}
+
+	if (coverImageSource === "frontmatter-and-body") {
+		if (fileContent !== null && imageUrl === null) {
+			const body = removeFrontmatter(fileContent);
+			const embedLink = findFirstImageEmbed(body);
+			if (embedLink) {
+				//Get the link file
+				//We use this function because a link can exclude folders when the `New link format` setting
+				//is set to `shortest path when possible`.
+				const linkFile = app.metadataCache.getFirstLinkpathDest(
+					embedLink,
+					path
+				);
+
+				if (linkFile) {
+					const resourcePath = app.vault.getResourcePath(linkFile);
+					imageUrl = resourcePath;
+				}
+			}
+		}
+
+		// if (imageUrl === null && fileContent !== null) {
+		// 	const body = removeFrontmatter(fileContent);
+		// 	imageUrl = findFirstHttpsLink(body);
+		// }
 	}
 
 	const displayName = extension === "md" ? basename : name;
@@ -175,7 +202,6 @@ export const formatFileDataForRender = ({
 		path,
 		extension,
 		url,
-		isSocialMediaImageUrl,
 		content: fileContent,
 		tags,
 		imageUrl,

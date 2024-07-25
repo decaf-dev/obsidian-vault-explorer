@@ -7,7 +7,6 @@ export interface FileRenderData {
 	content: string | null;
 	url: string | null;
 	imageUrl: string | null;
-	isSocialMediaImageUrl: boolean;
 	tags: string[] | null;
 	isFavorite: boolean | null;
 	createdMillis: number;

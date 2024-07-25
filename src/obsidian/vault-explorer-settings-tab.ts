@@ -343,7 +343,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Cover image source")
 			.setDesc(
-				"Set the source for the cover image. The first image found will be used."
+				"Set the source for the cover image. The first image or url found will be used."
 			)
 			.addDropdown((cb) =>
 				cb
@@ -364,9 +364,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Load social media image")
-			.setDesc(
-				"If a url is found, load the social media image for the url"
-			)
+			.setDesc("Load the social media image for the first found url")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(
