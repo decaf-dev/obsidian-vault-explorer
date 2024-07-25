@@ -580,6 +580,14 @@
 		await plugin.saveSettings();
 	}
 
+	//TODO refactor
+	async function handleGroupContextMenu(e: CustomEvent) {
+		const { id } = e.detail;
+		plugin.settings.filters.custom.selectedGroupId = id;
+		await plugin.saveSettings();
+		new CustomFilterModal(plugin).open();
+	}
+
 	function handleGroupClick(e: CustomEvent) {
 		const { id, nativeEvent } = e.detail;
 
@@ -949,6 +957,7 @@
 				<FilterGroupList
 					groups={customFilter.groups}
 					on:groupClick={handleGroupClick}
+					on:groupContextMenu={handleGroupContextMenu}
 					on:groupDrop={handleGroupDrop}
 					on:groupDragOver={handleGroupDragOver}
 					on:groupDragStart={handleGroupDragStart}

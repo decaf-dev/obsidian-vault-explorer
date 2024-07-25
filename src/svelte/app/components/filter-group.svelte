@@ -7,11 +7,16 @@
 	export let name: string;
 	export let isSelected: boolean;
 	export let isSticky: boolean;
+	export let isHandleDragging: boolean;
 
 	const dispatch = createEventDispatcher();
 
 	function handleClick(event: Event) {
-		dispatch("groupClick", { id, nativeEvent: event });
+		dispatch("groupClick", { id });
+	}
+
+	function handleContextMenu(event: Event) {
+		dispatch("groupContextMenu", { id, nativeEvent: event });
 	}
 
 	function handleDragStart(event: Event) {
@@ -26,9 +31,18 @@
 		dispatch("groupDrop", { nativeEvent: event, id });
 	}
 
-	$: className =
-		"vault-explorer-group-tag" +
-		(isSelected ? " vault-explorer-group-tag--active" : "");
+	function getClassName(isSelected: boolean, isContainerDragging: boolean) {
+		let className = "vault-explorer-filter-group";
+		if (isSelected) {
+			className += " vault-explorer-filter-group--active";
+		}
+		if (isContainerDragging) {
+			className += " vault-explorer-filter-group--handle-dragging";
+		}
+		return className;
+	}
+
+	$: className = getClassName(isSelected, isHandleDragging);
 </script>
 
 <div
@@ -40,6 +54,7 @@
 	on:dragover={handleDragOver}
 	on:drop={handleDrop}
 	on:click={handleClick}
+	on:contextmenu={handleContextMenu}
 	on:keydown={(e) => (e.key === "Enter" || e.key === " ") && handleClick(e)}
 >
 	{#if isSticky}
@@ -54,7 +69,7 @@
 </div>
 
 <style>
-	.vault-explorer-group-tag {
+	.vault-explorer-filter-group {
 		white-space: nowrap;
 		font-size: var(--tag-size);
 		font-weight: var(--tag-weight);
@@ -66,15 +81,20 @@
 		color: var(--text-faint);
 		border: 1px solid var(--background-modifier-border);
 		background-color: var(--background-primary);
+		pointer-events: auto;
 	}
 
-	.vault-explorer-group-tag:focus-visible {
+	.vault-explorer-filter-group:focus-visible {
 		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
 	}
 
-	.vault-explorer-group-tag--active {
+	.vault-explorer-filter-group--active {
 		background-color: var(--tag-background);
 		border: 1px solid var(--tag-border-color);
 		color: var(--tag-color);
+	}
+
+	.vault-explorer-filter-group--handle-dragging {
+		pointer-events: none;
 	}
 </style>

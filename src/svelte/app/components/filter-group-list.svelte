@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { FlexWrap, TFilterGroup } from "src/types";
-	import GroupTag from "./group-tag.svelte";
+	import { TFilterGroup } from "src/types";
 	import _ from "lodash";
 	import VaultExplorerPlugin from "src/main";
 	import store from "src/svelte/shared/services/store";
@@ -8,6 +7,7 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
+	import FilterGroup from "./filter-group.svelte";
 
 	export let groups: TFilterGroup[] = [];
 
@@ -15,28 +15,28 @@
 	let startWidth: number;
 	let containerRef: HTMLDivElement | null = null;
 	let dragging: boolean = false;
-	let filterGroupsWrapping: FlexWrap = "nowrap";
+	let shouldWrapFilterGroups: boolean = false;
 
 	let plugin: VaultExplorerPlugin;
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
-		filterGroupsWrapping = plugin.settings.filterGroupsWrapping;
+		shouldWrapFilterGroups = plugin.settings.shouldWrapFilterGroups;
 	});
 
 	onMount(() => {
-		function handleFilterGroupsWrappingSettingChange() {
-			filterGroupsWrapping = plugin.settings.filterGroupsWrapping;
+		function handleWrapFilterGroupsSettingChange() {
+			shouldWrapFilterGroups = plugin.settings.shouldWrapFilterGroups;
 		}
 
 		EventManager.getInstance().on(
-			PluginEvent.FILTER_GROUPS_WRAPPING_SETTING_CHANGE,
-			handleFilterGroupsWrappingSettingChange,
+			PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE,
+			handleWrapFilterGroupsSettingChange,
 		);
 		return () => {
 			EventManager.getInstance().off(
-				PluginEvent.FILTER_GROUPS_WRAPPING_SETTING_CHANGE,
-				handleFilterGroupsWrappingSettingChange,
+				PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE,
+				handleWrapFilterGroupsSettingChange,
 			);
 		};
 	});
@@ -59,9 +59,6 @@
 
 		document.documentElement.addEventListener("mousemove", onMouseMove);
 		document.documentElement.addEventListener("mouseup", onMouseUp);
-
-		// Prevent pointer events on draggable elements
-		containerRef.style.pointerEvents = "none";
 		dragging = true;
 	}
 
@@ -76,15 +73,13 @@
 		document.documentElement.removeEventListener("mouseup", onMouseUp);
 
 		if (containerRef) {
-			// Re-enable pointer events on draggable elements
-			containerRef.style.pointerEvents = "auto";
 			dragging = false;
 			plugin.settings.filterGroupsWidth = containerRef.style.maxWidth;
 			await plugin.saveSettings();
 		}
 	}
 
-	$: className = dragging
+	$: resizeHandleClassName = dragging
 		? "vault-explorer-resize-handle vault-explorer-resize-handle--dragging"
 		: "vault-explorer-resize-handle";
 </script>
@@ -92,10 +87,15 @@
 <div class="vault-explorer-filter-group-list" bind:this={containerRef}>
 	<div class="vault-explorer-filter-group-list__container">
 		{#if groups.length > 0}
-			<Wrap spacingX="sm" spacingY="sm" wrap={filterGroupsWrapping}>
+			<Wrap
+				spacingX="sm"
+				spacingY="sm"
+				wrap={shouldWrapFilterGroups ? "wrap" : "nowrap"}
+			>
 				{#each groups as group (group.id)}
-					<GroupTag
+					<FilterGroup
 						id={group.id}
+						isHandleDragging={dragging}
 						name={group.name}
 						isSelected={group.isEnabled}
 						isSticky={group.isSticky}
@@ -103,6 +103,7 @@
 						on:groupDrop
 						on:groupDragOver
 						on:groupDragStart
+						on:groupContextMenu
 					/>
 				{/each}
 			</Wrap>
@@ -112,7 +113,7 @@
 		{/if}
 	</div>
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class={className} on:mousedown={onMouseDown}></div>
+	<div class={resizeHandleClassName} on:mousedown={onMouseDown}></div>
 </div>
 
 <style>
@@ -122,12 +123,8 @@
 	}
 
 	.vault-explorer-filter-group-list__container {
-		margin-right: 3px;
-		overflow: scroll;
-	}
-
-	.vault-explorer-filter-group-list__container::-webkit-scrollbar {
-		display: none;
+		padding-bottom: 6px;
+		overflow-x: auto;
 	}
 
 	.vault-explorer-empty-label {
@@ -143,7 +140,6 @@
 		right: 0;
 		width: 3px;
 		border-right: var(--divider-width) solid var(--divider-color);
-		cursor: col-resize;
 		transition: border-color 200ms ease-in-out;
 	}
 
@@ -151,9 +147,11 @@
 		background-color: var(--divider-color-hover);
 		border-color: var(--divider-color-hover);
 		min-height: 35px;
+		cursor: col-resize;
 	}
 
 	.vault-explorer-resize-handle--dragging {
+		cursor: col-resize;
 		background-color: var(--divider-color-hover);
 		border-color: var(--divider-color-hover);
 		min-height: 35px;

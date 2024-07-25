@@ -18,7 +18,6 @@ import {
 	CollapseStyle,
 	CoverImageSource,
 	FileInteractionStyle,
-	FlexWrap,
 	TExplorerView,
 } from "src/types";
 import EventManager from "src/event/event-manager";
@@ -94,24 +93,18 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		// 	});
 
 		new Setting(containerEl)
-			.setName("Filter groups wrapping")
-			.setDesc("Set the wrapping style for filter groups.")
-			.addDropdown((cb) => {
-				cb.addOptions({
-					wrap: "Wrap",
-					nowrap: "No Wrap",
-				});
-				cb.setValue(this.plugin.settings.filterGroupsWrapping).onChange(
-					async (value) => {
-						this.plugin.settings.filterGroupsWrapping =
-							value as FlexWrap;
+			.setName("Wrap filter groups")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.shouldWrapFilterGroups)
+					.onChange(async (value) => {
+						this.plugin.settings.shouldWrapFilterGroups = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
-							PluginEvent.FILTER_GROUPS_WRAPPING_SETTING_CHANGE
+							PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE
 						);
-					}
-				);
-			});
+					})
+			);
 
 		new Setting(containerEl)
 			.setName("File icons")
