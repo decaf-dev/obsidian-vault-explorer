@@ -21,7 +21,7 @@
     },
     "sort": {
       "isEnabled": true,
-      "value": "file-name-asc"
+      "value": "modified-desc"
     },
     "custom": {
       "isEnabled": true,
@@ -42,10 +42,12 @@
     },
     "grid": {
       "isEnabled": true,
-      "loadSocialMediaImage": true
+      "loadSocialMediaImage": true,
+      "coverImageSource": "frontmatter-and-body"
     },
     "list": {
-      "isEnabled": true
+      "isEnabled": true,
+      "showTags": true
     },
     "table": {
       "isEnabled": false
@@ -68,7 +70,7 @@
       "isEnabled": false
     }
   },
-  "currentView": "feed",
+  "currentView": "grid",
   "titleWrapping": "normal",
   "enableClockUpdates": true,
   "enableFileIcons": true,
@@ -83,6 +85,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.27.0",
+  "pluginVersion": "1.30.0",
   "logLevel": "trace"
 }

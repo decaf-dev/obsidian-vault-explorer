@@ -2,12 +2,23 @@ import { App, FrontMatterCache, TFile } from "obsidian";
 import { PropertyType, VaultExplorerPluginSettings } from "src/types";
 import { FileRenderData } from "../types";
 import Logger from "js-logger";
-import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
+import {
+	FileTextProperties,
+	loadPropertyValue,
+	loadTextProperties,
+} from "src/svelte/shared/services/load-property-value";
 import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
-import { isImageExtension } from "./utils/image-utils";
+import {
+	findFirstImageEmbed,
+	isImageExtension,
+	isImageUrl,
+} from "./utils/image-utils";
+import { removeFrontmatter } from "./utils/content-utils";
+import { isHttpsLink } from "./utils/url-utils";
+import { getURIForEmbedLink, getURIForWikiLink } from "./utils/wiki-link-utils";
 
 /**
  * Formats the file's data for rendering
@@ -39,12 +50,13 @@ export const formatFileDataForRender = ({
 }): FileRenderData => {
 	const { name, basename, extension, path } = file;
 
+	const { coverImageSource } = settings.views.grid;
 	const {
 		createdDate: createdDateProp,
 		modifiedDate: modifiedDateProp,
 		url: urlProp,
-		favorite: favoriteProp,
 		imageUrl: imageUrlProp,
+		favorite: favoriteProp,
 		custom1: custom1Prop,
 		custom2: custom2Prop,
 		custom3: custom3Prop,
@@ -124,29 +136,65 @@ export const formatFileDataForRender = ({
 		}
 	}
 
-	let imageUrl: string | null = loadPropertyValue<string>(
-		fileFrontmatter,
-		imageUrlProp,
-		PropertyType.TEXT
+	const textProperties: FileTextProperties = loadTextProperties(
+		app,
+		fileFrontmatter
 	);
 
-	if (imageUrl?.startsWith("[[") && imageUrl.endsWith("]]")) {
-		const link = imageUrl.substring(2, imageUrl.length - 2);
+	let imageUrl: string | null = null;
 
-		//Get the link file
-		//We use this function because a link can exclude folders when `New link format` is set to
-		//`shortest path when possible`.
-		const linkFile = app.metadataCache.getFirstLinkpathDest(link, path);
-
-		if (linkFile) {
-			const resourcePath = app.vault.getResourcePath(linkFile);
-			imageUrl = resourcePath;
-		} else {
-			Logger.error(`Link path for image url not found: ${link}`);
-			imageUrl = null;
-		}
-	} else if (isImageExtension(extension)) {
+	//Handle image extension
+	if (isImageExtension(extension)) {
 		imageUrl = app.vault.getResourcePath(file);
+	}
+
+	//Handle image property
+	if (imageUrl === null) {
+		const loadedUrl = loadPropertyValue<string>(
+			fileFrontmatter,
+			imageUrlProp,
+			PropertyType.TEXT
+		);
+
+		if (loadedUrl !== null) {
+			const uri = getURIForWikiLink(app, loadedUrl, path);
+			if (uri && isImageUrl(uri)) {
+				imageUrl = uri;
+			} else if (isHttpsLink(loadedUrl)) {
+				imageUrl = loadedUrl;
+			}
+		}
+	}
+
+	//Handle image in frontmatter
+	if (imageUrl === null && coverImageSource !== "off") {
+		for (const property of textProperties) {
+			const { value } = property;
+			const uri = getURIForWikiLink(app, value, path);
+			if (uri && isImageUrl(uri)) {
+				imageUrl = uri;
+				break;
+			} else if (isHttpsLink(value)) {
+				imageUrl = value;
+				break;
+			}
+		}
+	}
+
+	if (imageUrl === null && coverImageSource === "frontmatter-and-body") {
+		if (fileContent !== null) {
+			const body = removeFrontmatter(fileContent);
+			const imageEmbed = findFirstImageEmbed(body);
+			if (imageEmbed) {
+				const uri = getURIForEmbedLink(app, imageEmbed, path);
+				imageUrl = uri;
+			}
+		}
+
+		// if (imageUrl === null && fileContent !== null) {
+		// 	const body = removeFrontmatter(fileContent);
+		// 	imageUrl = findFirstHttpsLink(body);
+		// }
 	}
 
 	const displayName = extension === "md" ? basename : name;

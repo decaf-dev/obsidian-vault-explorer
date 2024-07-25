@@ -4,7 +4,8 @@ import { requestUrl } from "obsidian";
 
 const DATABASE_NAME = "vaultexplorer";
 const STORE_NAME = "socialMediaImage";
-const ENTRY_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; //1 week
+const ONE_WEEK_MILLIS = 1000 * 60 * 60 * 24 * 7;
+const ENTRY_EXPIRATION_TIME = ONE_WEEK_MILLIS;
 
 interface SocialImageDB extends DBSchema {
 	socialMediaImage: {

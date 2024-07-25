@@ -16,6 +16,7 @@ import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
 import {
 	CollapseStyle,
+	CoverImageSource,
 	FileInteractionStyle,
 	FlexWrap,
 	TExplorerView,
@@ -339,14 +340,50 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
-		const loadSocialMediaDesc = new DocumentFragment();
-		loadSocialMediaDesc.createDiv({
-			text: "When a markdown file has a URL property and no image URL property, load the social media image of the URL and use it as the card image.",
-		});
+		new Setting(containerEl)
+			.setName("Preferred cover image property")
+			.setDesc(
+				"If set, the value of the selected property will be preferred for the cover image"
+			)
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.setValue(this.plugin.settings.properties.imageUrl)
+					.onChange(async (value) => {
+						this.plugin.settings.properties.imageUrl = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.PROPERTY_SETTING_CHANGE
+						);
+					})
+			);
 
 		new Setting(containerEl)
-			.setName("Load social media image for url")
-			.setDesc(loadSocialMediaDesc)
+			.setName("Automatic cover image detection")
+			.setDesc("Set where cover images are automatically loaded from.")
+			.addDropdown((cb) =>
+				cb
+					.addOptions({
+						"frontmatter-and-body": "Frontmatter and body",
+						"frontmatter-only": "Frontmatter only",
+						off: "Off",
+					})
+					.setValue(this.plugin.settings.views.grid.coverImageSource)
+					.onChange(async (value) => {
+						this.plugin.settings.views.grid.coverImageSource =
+							value as CoverImageSource;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Load social media image")
+			.setDesc(
+				"If a non-image url is found, try to load its social media image"
+			)
 			.addToggle((toggle) =>
 				toggle
 					.setValue(
@@ -503,24 +540,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.properties.url)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.url = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.PROPERTY_SETTING_CHANGE
-						);
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("Image URL property")
-			.setDesc(
-				"Property used to store an image url. This must be a text property."
-			)
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
-					.setValue(this.plugin.settings.properties.imageUrl)
-					.onChange(async (value) => {
-						this.plugin.settings.properties.imageUrl = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.PROPERTY_SETTING_CHANGE

@@ -124,6 +124,7 @@
 	let gridView: TGridView = {
 		loadSocialMediaImage: false,
 		isEnabled: false,
+		coverImageSource: "frontmatter-and-body",
 	};
 
 	//TODO use just isEnabled
@@ -488,6 +489,30 @@
 			EventManager.getInstance().off(
 				PluginEvent.PROPERTY_SETTING_CHANGE,
 				handlePropertySettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function handleCoverImageSourceSettingChange() {
+			Logger.trace({
+				fileName: "app/index.svelte",
+				functionName: "handleCoverImageSourceSettingChange",
+				message: "called",
+			});
+
+			//TODO update?
+			updateFrontmatterCacheTime();
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE,
+			handleCoverImageSourceSettingChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE,
+				handleCoverImageSourceSettingChange,
 			);
 		};
 	});
