@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { TFilterGroup } from "src/types";
-	import GroupTag from "./group-tag.svelte";
 	import _ from "lodash";
 	import VaultExplorerPlugin from "src/main";
 	import store from "src/svelte/shared/services/store";
@@ -8,6 +7,7 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
+	import FilterGroup from "./filter-group.svelte";
 
 	export let groups: TFilterGroup[] = [];
 
@@ -59,9 +59,6 @@
 
 		document.documentElement.addEventListener("mousemove", onMouseMove);
 		document.documentElement.addEventListener("mouseup", onMouseUp);
-
-		// Prevent pointer events on draggable elements
-		containerRef.style.pointerEvents = "none";
 		dragging = true;
 	}
 
@@ -76,8 +73,6 @@
 		document.documentElement.removeEventListener("mouseup", onMouseUp);
 
 		if (containerRef) {
-			// Re-enable pointer events on draggable elements
-			containerRef.style.pointerEvents = "auto";
 			dragging = false;
 			plugin.settings.filterGroupsWidth = containerRef.style.maxWidth;
 			await plugin.saveSettings();
@@ -98,7 +93,7 @@
 				wrap={shouldWrapFilterGroups ? "wrap" : "nowrap"}
 			>
 				{#each groups as group (group.id)}
-					<GroupTag
+					<FilterGroup
 						id={group.id}
 						name={group.name}
 						isSelected={group.isEnabled}
@@ -154,6 +149,7 @@
 		background-color: var(--divider-color-hover);
 		border-color: var(--divider-color-hover);
 		min-height: 35px;
+		cursor: col-resize;
 	}
 
 	.vault-explorer-resize-handle--dragging {

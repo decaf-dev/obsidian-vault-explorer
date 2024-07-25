@@ -27,8 +27,8 @@
 	}
 
 	$: className =
-		"vault-explorer-group-tag" +
-		(isSelected ? " vault-explorer-group-tag--active" : "");
+		"vault-explorer-filter-group" +
+		(isSelected ? " vault-explorer-filter-group--active" : "");
 </script>
 
 <div
@@ -54,7 +54,7 @@
 </div>
 
 <style>
-	.vault-explorer-group-tag {
+	.vault-explorer-filter-group {
 		white-space: nowrap;
 		font-size: var(--tag-size);
 		font-weight: var(--tag-weight);
@@ -68,13 +68,17 @@
 		background-color: var(--background-primary);
 	}
 
-	.vault-explorer-group-tag:focus-visible {
+	.vault-explorer-filter-group:focus-visible {
 		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
 	}
 
-	.vault-explorer-group-tag--active {
+	.vault-explorer-filter-group--active {
 		background-color: var(--tag-background);
 		border: 1px solid var(--tag-border-color);
 		color: var(--tag-color);
+	}
+
+	.vault-explorer-filter-group--container-dragging {
+		pointer-events: none;
 	}
 </style>
