@@ -11,11 +11,10 @@
 
 	export let groups: TFilterGroup[] = [];
 
-	let startX: number;
-	let startWidth: number;
 	let containerRef: HTMLDivElement | null = null;
-	let dragging: boolean = false;
 	let shouldWrapFilterGroups: boolean = false;
+
+	const debounceSaveContainerWidth = _.debounce(saveContainerWidth, 200);
 
 	let plugin: VaultExplorerPlugin;
 
@@ -42,50 +41,40 @@
 	});
 
 	onMount(() => {
-		if (containerRef != null)
-			containerRef.style.maxWidth = plugin.settings.filterGroupsWidth;
-	});
-
-	function onMouseDown(event: MouseEvent) {
-		if (!containerRef) return;
-
-		startX = event.clientX;
-		// startWidth = plugin.settings.filterGroupsWidth;
-
-		startWidth = parseInt(
-			window.getComputedStyle(containerRef).maxWidth,
-			10,
-		);
-
-		document.documentElement.addEventListener("mousemove", onMouseMove);
-		document.documentElement.addEventListener("mouseup", onMouseUp);
-		dragging = true;
-	}
-
-	function onMouseMove(event: MouseEvent) {
-		if (!containerRef) return;
-		containerRef.style.maxWidth =
-			startWidth + event.clientX - startX + "px";
-	}
-
-	async function onMouseUp() {
-		document.documentElement.removeEventListener("mousemove", onMouseMove);
-		document.documentElement.removeEventListener("mouseup", onMouseUp);
+		let resizeObserver: ResizeObserver;
 
 		if (containerRef) {
-			dragging = false;
-			plugin.settings.filterGroupsWidth = containerRef.style.maxWidth;
+			containerRef.style.width = plugin.settings.filterGroupsWidth;
+			console.log("containerRef.style.width", containerRef.style.width);
+			console.log(
+				"plugin.settings.filterGroupsWidth",
+				plugin.settings.filterGroupsWidth,
+			);
+
+			resizeObserver = new ResizeObserver(() => {
+				debounceSaveContainerWidth();
+			});
+			resizeObserver.observe(containerRef);
+		}
+
+		return () => {
+			resizeObserver?.disconnect();
+		};
+	});
+
+	async function saveContainerWidth() {
+		if (containerRef) {
+			plugin.settings.filterGroupsWidth = containerRef.style.width;
 			await plugin.saveSettings();
 		}
 	}
-
-	$: resizeHandleClassName = dragging
-		? "vault-explorer-resize-handle vault-explorer-resize-handle--dragging"
-		: "vault-explorer-resize-handle";
 </script>
 
-<div class="vault-explorer-filter-group-list" bind:this={containerRef}>
-	<div class="vault-explorer-filter-group-list__container">
+<div class="vault-explorer-filter-group-list">
+	<div
+		class="vault-explorer-filter-group-list__container"
+		bind:this={containerRef}
+	>
 		{#if groups.length > 0}
 			<Wrap
 				spacingX="sm"
@@ -95,7 +84,6 @@
 				{#each groups as group (group.id)}
 					<FilterGroup
 						id={group.id}
-						isHandleDragging={dragging}
 						name={group.name}
 						isSelected={group.isEnabled}
 						isSticky={group.isSticky}
@@ -112,8 +100,6 @@
 			<span class="vault-explorer-empty-label">No groups</span>
 		{/if}
 	</div>
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class={resizeHandleClassName} on:mousedown={onMouseDown}></div>
 </div>
 
 <style>
@@ -123,37 +109,13 @@
 	}
 
 	.vault-explorer-filter-group-list__container {
-		padding-bottom: 6px;
+		padding-bottom: 8px;
+		resize: horizontal;
 		overflow-x: auto;
 	}
 
 	.vault-explorer-empty-label {
 		color: var(--text-faint);
 		font-size: var(--font-smaller);
-	}
-
-	.vault-explorer-resize-handle {
-		position: absolute;
-		z-index: 1;
-		height: 100%;
-		top: 0;
-		right: 0;
-		width: 3px;
-		border-right: var(--divider-width) solid var(--divider-color);
-		transition: border-color 200ms ease-in-out;
-	}
-
-	.vault-explorer-resize-handle:hover {
-		background-color: var(--divider-color-hover);
-		border-color: var(--divider-color-hover);
-		min-height: 35px;
-		cursor: col-resize;
-	}
-
-	.vault-explorer-resize-handle--dragging {
-		cursor: col-resize;
-		background-color: var(--divider-color-hover);
-		border-color: var(--divider-color-hover);
-		min-height: 35px;
 	}
 </style>
