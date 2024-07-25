@@ -58,7 +58,10 @@ export interface TGridView extends BaseView {
 	loadSocialMediaImage: boolean;
 }
 
-export type CoverImageSource = "frontmatter-only" | "frontmatter-and-body";
+export type CoverImageSource =
+	| "frontmatter-only"
+	| "frontmatter-and-body"
+	| "off";
 
 export interface TDashboardView extends BaseView {}
 

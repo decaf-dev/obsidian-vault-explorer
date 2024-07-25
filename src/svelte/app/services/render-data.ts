@@ -11,8 +11,14 @@ import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
-import { findFirstImageEmbed, isImageExtension } from "./utils/image-utils";
+import {
+	findFirstImageEmbed,
+	isImageExtension,
+	isImageUrl,
+} from "./utils/image-utils";
 import { removeFrontmatter } from "./utils/content-utils";
+import { isHttpsLink } from "./utils/url-utils";
+import { getURIForEmbedLink, getURIForWikiLink } from "./utils/wiki-link-utils";
 
 /**
  * Formats the file's data for rendering
@@ -49,6 +55,7 @@ export const formatFileDataForRender = ({
 		createdDate: createdDateProp,
 		modifiedDate: modifiedDateProp,
 		url: urlProp,
+		imageUrl: imageUrlProp,
 		favorite: favoriteProp,
 		custom1: custom1Prop,
 		custom2: custom2Prop,
@@ -135,55 +142,52 @@ export const formatFileDataForRender = ({
 	);
 
 	let imageUrl: string | null = null;
-	let isSocialMediaImageUrl = false;
 
-	//If it's an image file, get the Obsidian image url
+	//Handle image extension
 	if (isImageExtension(extension)) {
 		imageUrl = app.vault.getResourcePath(file);
-	} else {
-		//Otherwise, get the first link which could be a wiki link or a url
+	}
+
+	//Handle image property
+	if (imageUrl === null) {
+		const loadedUrl = loadPropertyValue<string>(
+			fileFrontmatter,
+			imageUrlProp,
+			PropertyType.TEXT
+		);
+
+		if (loadedUrl !== null) {
+			const uri = getURIForWikiLink(app, loadedUrl, path);
+			if (uri && isImageUrl(uri)) {
+				imageUrl = uri;
+			} else if (isHttpsLink(loadedUrl)) {
+				imageUrl = loadedUrl;
+			}
+		}
+	}
+
+	//Handle image in frontmatter
+	if (imageUrl === null && coverImageSource !== "off") {
 		for (const property of textProperties) {
 			const { value } = property;
-			if (value.startsWith("[[") && value.endsWith("]]")) {
-				const link = value.substring(2, value.length - 2);
-
-				//Get the link file
-				//We use this function because a link can exclude folders when the `New link format` setting
-				//is set to `shortest path when possible`.
-				const linkFile = app.metadataCache.getFirstLinkpathDest(
-					link,
-					path
-				);
-
-				if (linkFile) {
-					const resourcePath = app.vault.getResourcePath(linkFile);
-					imageUrl = resourcePath;
-					break;
-				}
-			} else if (value.startsWith("https://")) {
+			const uri = getURIForWikiLink(app, value, path);
+			if (uri && isImageUrl(uri)) {
+				imageUrl = uri;
+				break;
+			} else if (isHttpsLink(value)) {
 				imageUrl = value;
 				break;
 			}
 		}
 	}
 
-	if (coverImageSource === "frontmatter-and-body") {
-		if (fileContent !== null && imageUrl === null) {
+	if (imageUrl === null && coverImageSource === "frontmatter-and-body") {
+		if (fileContent !== null) {
 			const body = removeFrontmatter(fileContent);
-			const embedLink = findFirstImageEmbed(body);
-			if (embedLink) {
-				//Get the link file
-				//We use this function because a link can exclude folders when the `New link format` setting
-				//is set to `shortest path when possible`.
-				const linkFile = app.metadataCache.getFirstLinkpathDest(
-					embedLink,
-					path
-				);
-
-				if (linkFile) {
-					const resourcePath = app.vault.getResourcePath(linkFile);
-					imageUrl = resourcePath;
-				}
+			const imageEmbed = findFirstImageEmbed(body);
+			if (imageEmbed) {
+				const uri = getURIForEmbedLink(app, imageEmbed, path);
+				imageUrl = uri;
 			}
 		}
 

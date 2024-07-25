@@ -341,15 +341,34 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Grid view").setHeading();
 
 		new Setting(containerEl)
-			.setName("Cover image source")
+			.setName("Cover image property")
 			.setDesc(
-				"Set the source for the cover image. The first image or url found will be used."
+				"If set, the selected property will be preferred for a cover image"
+			)
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.setValue(this.plugin.settings.properties.imageUrl)
+					.onChange(async (value) => {
+						this.plugin.settings.properties.imageUrl = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.PROPERTY_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Automatic cover image source")
+			.setDesc(
+				"Choose where cover images are automatically loaded from. Set to 'Off' if you don't want automatic detection"
 			)
 			.addDropdown((cb) =>
 				cb
 					.addOptions({
 						"frontmatter-and-body": "Frontmatter and body",
 						"frontmatter-only": "Frontmatter only",
+						off: "Off",
 					})
 					.setValue(this.plugin.settings.views.grid.coverImageSource)
 					.onChange(async (value) => {
@@ -364,7 +383,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Load social media image")
-			.setDesc("Load the social media image for the first found url")
+			.setDesc(
+				"If a non-image url is found, try to load a social media image"
+			)
 			.addToggle((toggle) =>
 				toggle
 					.setValue(

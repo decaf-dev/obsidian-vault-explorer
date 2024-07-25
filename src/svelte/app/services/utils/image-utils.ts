@@ -1,3 +1,5 @@
+import { App } from "obsidian";
+
 const IMAGE_EXTENSIONS = [
 	"png",
 	"jpg",
@@ -29,7 +31,7 @@ export const findFirstImageEmbed = (content: string) => {
 		const link = match[1];
 		for (const extension of IMAGE_EXTENSIONS) {
 			if (link.endsWith(extension)) {
-				return link;
+				return match[0];
 			}
 		}
 	}

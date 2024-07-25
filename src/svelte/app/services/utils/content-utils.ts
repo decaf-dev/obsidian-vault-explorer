@@ -64,9 +64,3 @@ export const removeWikiLinks = (content: string) => {
 	const wikiLinkRegex = /\[\[(.*?)\]\]/g;
 	return content.replace(wikiLinkRegex, "$1");
 };
-
-export const findFirstHttpsLink = (content: string) => {
-	const HTTPS_REGEX = /https:\/\/[^\s]+/;
-	const match = content.match(HTTPS_REGEX);
-	return match ? match[0] : null;
-};
