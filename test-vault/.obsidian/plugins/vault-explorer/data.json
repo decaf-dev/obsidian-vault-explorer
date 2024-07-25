@@ -85,6 +85,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.30.0",
+  "pluginVersion": "1.30.2",
   "logLevel": "trace"
 }
