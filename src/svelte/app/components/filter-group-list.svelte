@@ -122,12 +122,8 @@
 	}
 
 	.vault-explorer-filter-group-list__container {
-		margin-right: 3px;
-		overflow: scroll;
-	}
-
-	.vault-explorer-filter-group-list__container::-webkit-scrollbar {
-		display: none;
+		padding-bottom: 6px;
+		overflow-x: auto;
 	}
 
 	.vault-explorer-empty-label {
