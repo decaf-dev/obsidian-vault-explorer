@@ -136,11 +136,6 @@ export const formatFileDataForRender = ({
 		}
 	}
 
-	const textProperties: FileTextProperties = loadTextProperties(
-		app,
-		fileFrontmatter
-	);
-
 	let imageUrl: string | null = null;
 
 	//Handle image extension
@@ -168,6 +163,11 @@ export const formatFileDataForRender = ({
 
 	//Handle image in frontmatter
 	if (imageUrl === null && coverImageSource !== "off") {
+		const textProperties: FileTextProperties = loadTextProperties(
+			app,
+			fileFrontmatter
+		);
+
 		for (const property of textProperties) {
 			const { value } = property;
 			const uri = getURIForWikiLink(app, value, path);

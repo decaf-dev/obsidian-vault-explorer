@@ -21,7 +21,7 @@ export const loadTextProperties = (
 
 	for (const entry of Object.entries(frontmatter)) {
 		const [key, value] = entry;
-		if (value === null) {
+		if (value === undefined || value === null) {
 			continue;
 		}
 		const isTextProperty = allTextProperties.find((p) => p.name === key);
