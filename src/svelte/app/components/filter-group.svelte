@@ -12,11 +12,11 @@
 	const dispatch = createEventDispatcher();
 
 	function handleClick(event: Event) {
-		dispatch("groupClick", { id });
+		dispatch("groupClick", { id, nativeEvent: event });
 	}
 
-	function handleContextMenu(event: Event) {
-		dispatch("groupContextMenu", { id, nativeEvent: event });
+	function handleContextMenu() {
+		dispatch("groupContextMenu", { id });
 	}
 
 	function handleDragStart(event: Event) {
