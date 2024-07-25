@@ -83,7 +83,7 @@ export const fetchSocialImage = async (url: string) => {
 			);
 			await putSocialImageUrl(url, imageUrl);
 		} else {
-			Logger.warn(
+			Logger.debug(
 				{
 					fileName: "social-media-image.ts",
 					functionName: "fetchSocialMediaImage",
