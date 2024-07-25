@@ -341,9 +341,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Grid view").setHeading();
 
 		new Setting(containerEl)
-			.setName("Cover image property")
+			.setName("Preferred cover image property")
 			.setDesc(
-				"If set, the selected property will be preferred for a cover image"
+				"If set, the value of the selected property will be preferred for the cover image"
 			)
 			.addDropdown((dropdown) =>
 				dropdown
@@ -360,9 +360,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Automatic cover image detection")
-			.setDesc(
-				"Choose where cover images are automatically loaded from. Set to 'Off' if you don't want automatic detection"
-			)
+			.setDesc("Set where cover images are automatically loaded from.")
 			.addDropdown((cb) =>
 				cb
 					.addOptions({
@@ -384,7 +382,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Load social media image")
 			.setDesc(
-				"If a non-image url is found, try to load a social media image"
+				"If a non-image url is found, try to load its social media image"
 			)
 			.addToggle((toggle) =>
 				toggle
