@@ -229,7 +229,6 @@
 
 	.vault-explorer-list-item__title {
 		width: 50%;
-		cursor: pointer;
 		color: var(--text-accent);
 	}
 
@@ -245,6 +244,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		cursor: pointer;
 	}
 
 	.vault-explorer-list-item__tags {

@@ -323,7 +323,6 @@
 
 	.vault-explorer-feed-card__title {
 		width: 100%;
-		cursor: pointer;
 		color: var(--text-accent);
 	}
 
@@ -347,6 +346,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		cursor: pointer;
 	}
 
 	.vault-explorer-feed-card__creation-time {
