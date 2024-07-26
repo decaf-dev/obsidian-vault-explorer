@@ -20,7 +20,10 @@
 		plugin = p;
 	});
 
-	function handleClick() {
+	function handleClick(e: Event) {
+		//Don't click the card
+		e.stopPropagation();
+
 		const searchPlugin = (plugin.app as any).internalPlugins.plugins[
 			"global-search"
 		];
