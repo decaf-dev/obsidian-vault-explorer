@@ -25,14 +25,14 @@
     },
     "custom": {
       "isEnabled": true,
-      "selectedGroupId": "Y6r8HRfiM16JrLvd",
+      "selectedGroupId": "Hnx82uGqi5vmVMVn",
       "groups": [
         {
-          "id": "XZQKokeCyLL7ttHf",
+          "id": "C9gqoDMHJiYMNHYK",
           "name": "Group 1",
           "rules": [
             {
-              "id": "bq5suCim42Rw7T9Z",
+              "id": "FtNA5HnfPLZwktPE",
               "type": "property",
               "propertyType": "text",
               "propertyName": "",
@@ -47,11 +47,11 @@
           "isSticky": false
         },
         {
-          "id": "kR9gwoxzKiKgrxtC",
+          "id": "Hnx82uGqi5vmVMVn",
           "name": "Group 2",
           "rules": [
             {
-              "id": "PDTQia3dng7uhU55",
+              "id": "v7B5S39pTa6hWM4H",
               "type": "property",
               "propertyType": "text",
               "propertyName": "",
@@ -60,17 +60,9 @@
               "condition": "is",
               "value": "",
               "matchWhenPropertyDNE": false
-            }
-          ],
-          "isEnabled": false,
-          "isSticky": false
-        },
-        {
-          "id": "3WFtjBw7zNivDkjD",
-          "name": "Group 3",
-          "rules": [
+            },
             {
-              "id": "fCZ1NPYLFo2y9BdW",
+              "id": "1hVY6aEmZ6mVgRyW",
               "type": "property",
               "propertyType": "text",
               "propertyName": "",
@@ -79,55 +71,9 @@
               "condition": "is",
               "value": "",
               "matchWhenPropertyDNE": false
-            }
-          ],
-          "isEnabled": false,
-          "isSticky": false
-        },
-        {
-          "id": "Y6r8HRfiM16JrLvd",
-          "name": "Group 4",
-          "rules": [
+            },
             {
-              "id": "YzqnVV9H2THbUkWK",
-              "type": "property",
-              "propertyType": "text",
-              "propertyName": "",
-              "operator": "and",
-              "isEnabled": true,
-              "condition": "is",
-              "value": "",
-              "matchWhenPropertyDNE": false
-            }
-          ],
-          "isEnabled": false,
-          "isSticky": false
-        },
-        {
-          "id": "gEqbsv5w1RyXvAG4",
-          "name": "Group 5",
-          "rules": [
-            {
-              "id": "7iGiJD9HxpcnYD2M",
-              "type": "property",
-              "propertyType": "text",
-              "propertyName": "",
-              "operator": "and",
-              "isEnabled": true,
-              "condition": "is",
-              "value": "",
-              "matchWhenPropertyDNE": false
-            }
-          ],
-          "isEnabled": false,
-          "isSticky": false
-        },
-        {
-          "id": "CeVtK4CAYLRE6dxC",
-          "name": "Group 6",
-          "rules": [
-            {
-              "id": "txLAZECNC51yRxJe",
+              "id": "qBnvqUTVvULRL8y6",
               "type": "property",
               "propertyType": "text",
               "propertyName": "",
@@ -191,7 +137,7 @@
   "enableFileIcons": true,
   "enableScrollButtons": true,
   "fileInteractionStyle": "content",
-  "filterGroupsWidth": "302px",
+  "filterGroupsWidth": "305px",
   "shouldWrapFilterGroups": false,
   "pageSize": 25,
   "viewOrder": [
@@ -200,6 +146,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.31.0",
+  "pluginVersion": "1.31.1",
   "logLevel": "trace"
 }
