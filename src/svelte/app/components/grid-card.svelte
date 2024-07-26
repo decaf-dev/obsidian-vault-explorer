@@ -268,7 +268,7 @@
 			<div class="vault-explorer-grid-card__tags">
 				<Wrap spacingX="sm" spacingY="sm">
 					{#each tags as tag}
-						<Tag name={tag} />
+						<Tag name={tag} variant="unstyled" />
 					{/each}
 				</Wrap>
 			</div>
