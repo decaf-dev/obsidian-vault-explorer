@@ -49,8 +49,7 @@
 		max-width: 425px;
 		/* height: max-content; */
 		box-shadow: var(--shadow-s);
-		border-top-left-radius: var(--radius-m);
-		border-top-right-radius: var(--radius-m);
+		border-radius: var(--radius-m);
 	}
 
 	.vault-explorer-grid-card--interactive:hover {
