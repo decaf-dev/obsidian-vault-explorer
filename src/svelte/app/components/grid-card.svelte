@@ -7,15 +7,13 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { createEventDispatcher, onMount } from "svelte";
-	import { FileInteractionStyle, WordBreak } from "src/types";
+	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
 	import { fetchSocialImage } from "../services/social-media-image";
 	import { PluginEvent } from "src/event/types";
-	import GridCardContainer from "./grid-card-container.svelte";
-	import GridCardTitle from "./grid-card-title.svelte";
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
 	import Flex from "src/svelte/shared/components/flex.svelte";
@@ -39,13 +37,11 @@
 	let wordBreak: WordBreak = "normal";
 	let enableFileIcons: boolean = false;
 	let loadSocialMediaImage: boolean = true;
-	let fileInteractionStyle: FileInteractionStyle = "content";
 	let imgSrc: string | null = null;
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		wordBreak = plugin.settings.titleWrapping;
-		fileInteractionStyle = plugin.settings.fileInteractionStyle;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		loadSocialMediaImage = plugin.settings.views.grid.loadSocialMediaImage;
 	});
@@ -62,23 +58,6 @@
 		if (loadSocialMediaImage) {
 			loadSocialImage(imageUrl);
 		}
-	});
-
-	onMount(() => {
-		function handleFileInteractionStyleChange() {
-			fileInteractionStyle = plugin.settings.fileInteractionStyle;
-		}
-
-		EventManager.getInstance().on(
-			PluginEvent.FILE_INTERACTION_STYLE,
-			handleFileInteractionStyleChange,
-		);
-		return () => {
-			EventManager.getInstance().off(
-				PluginEvent.FILE_INTERACTION_STYLE,
-				handleFileInteractionStyleChange,
-			);
-		};
 	});
 
 	onMount(() => {
@@ -173,8 +152,8 @@
 		dispatch("favoritePropertyChange", { filePath, value });
 	}
 
-	function handleCardContextMenu(e: CustomEvent) {
-		const { nativeEvent } = e.detail;
+	function handleCardContextMenu(e: Event) {
+		const nativeEvent = e as MouseEvent;
 		openContextMenu(plugin, path, nativeEvent, {
 			isFavorite,
 			onFavoriteChange: handleFavoriteChange,
@@ -196,7 +175,7 @@
 		handleCardClick();
 	}
 
-	function handleTitleContextMenu(e: CustomEvent) {
+	function handleTitleContextMenu(e: Event) {
 		handleCardContextMenu(e);
 	}
 
@@ -208,11 +187,22 @@
 		tags != null || custom1 != null || custom2 != null || custom3 != null;
 </script>
 
-<GridCardContainer
-	{fileInteractionStyle}
+<div
+	tabindex="0"
+	role="button"
+	class="vault-explorer-grid-card vault-explorer-grid-card--interactive"
 	on:click={handleCardClick}
-	on:contextmenu={handleCardContextMenu}
-	on:mouseover={handleCardMouseOver}
+	on:keydown={(e) => {
+		if (e.key === "Enter" || e.key === " ") {
+			handleCardClick();
+		}
+	}}
+	on:contextmenu={(e) => {
+		e.preventDefault();
+		handleCardContextMenu(e);
+	}}
+	on:focus={() => {}}
+	on:mouseover
 >
 	<div class="vault-explorer-grid-card__cover">
 		{#if imgSrc !== null}
@@ -234,10 +224,25 @@
 	</div>
 	<div class="vault-explorer-grid-card__content">
 		<div class="vault-explorer-grid-card__head">
-			<GridCardTitle
-				{fileInteractionStyle}
-				on:click={handleTitleClick}
-				on:contextmenu={handleTitleContextMenu}
+			<div
+				tabindex="0"
+				role="link"
+				class="vault-explorer-grid-card__title"
+				on:focus={() => {}}
+				on:click={(e) => {
+					e.preventDefault();
+					handleTitleClick();
+				}}
+				on:contextmenu={(e) => {
+					e.preventDefault();
+					handleTitleContextMenu(e);
+				}}
+				on:keydown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						handleTitleClick();
+					}
+				}}
 				on:mouseover={handleTitleMouseOver}
 			>
 				<Stack spacing="xs">
@@ -248,7 +253,7 @@
 						{displayName}
 					</div>
 				</Stack>
-			</GridCardTitle>
+			</div>
 			{#if url !== null}
 				<IconButton
 					iconId="external-link"
@@ -288,9 +293,24 @@
 			</div>
 		{/if}
 	</div>
-</GridCardContainer>
+</div>
 
 <style>
+	.vault-explorer-grid-card {
+		width: 100%;
+		max-width: 425px;
+		box-shadow: var(--shadow-s);
+		border-radius: var(--radius-m);
+	}
+
+	.vault-explorer-grid-card:hover {
+		background-color: var(--background-modifier-hover);
+	}
+
+	.vault-explorer-grid-card:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
 	.vault-explorer-grid-card__cover {
 		width: 100%;
 		height: 150px;
@@ -333,5 +353,16 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.vault-explorer-grid-card__title {
+		flex-grow: 1;
+		min-width: 0;
+		cursor: pointer;
+		color: var(--text-accent);
+	}
+
+	.vault-explorer-grid-card__title:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
 	}
 </style>

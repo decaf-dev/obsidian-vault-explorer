@@ -21,7 +21,7 @@
 	<div
 		tabindex="0"
 		role="link"
-		class={className}
+		class="vault-explorer-feed-card__title"
 		on:focus={() => {}}
 		on:click={(e) => {
 			e.preventDefault();

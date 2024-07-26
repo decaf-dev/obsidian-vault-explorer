@@ -9,11 +9,8 @@
 	import { createEventDispatcher, onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
-	import ListItemContainer from "./list-item-container.svelte";
-	import { FileInteractionStyle } from "src/types";
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
-	import ListItemTitle from "./list-item-title.svelte";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import { SCREEN_SIZE_MD } from "../constants";
 
@@ -25,7 +22,6 @@
 	export let isFavorite: boolean | null;
 
 	let enableFileIcons: boolean = false;
-	let fileInteractionStyle: FileInteractionStyle = "content";
 	let isSmallScreenSize: boolean = false;
 	let ref: HTMLElement | null = null;
 	let showTags: boolean = true;
@@ -36,7 +32,6 @@
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		enableFileIcons = plugin.settings.enableFileIcons;
-		fileInteractionStyle = plugin.settings.fileInteractionStyle;
 		showTags = plugin.settings.views.list.showTags;
 	});
 
@@ -70,23 +65,6 @@
 			EventManager.getInstance().off(
 				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
-			);
-		};
-	});
-
-	onMount(() => {
-		function handleFileInteractionStyleChange() {
-			fileInteractionStyle = plugin.settings.fileInteractionStyle;
-		}
-
-		EventManager.getInstance().on(
-			PluginEvent.FILE_INTERACTION_STYLE,
-			handleFileInteractionStyleChange,
-		);
-		return () => {
-			EventManager.getInstance().off(
-				PluginEvent.FILE_INTERACTION_STYLE,
-				handleFileInteractionStyleChange,
 			);
 		};
 	});
@@ -128,7 +106,7 @@
 		openInCurrentTab(plugin, path);
 	}
 
-	function handleTitleContextMenu(e: CustomEvent) {
+	function handleTitleContextMenu(e: Event) {
 		handleItemContextMenu(e);
 	}
 
@@ -136,8 +114,8 @@
 		dispatch("favoritePropertyChange", { filePath, value });
 	}
 
-	function handleItemContextMenu(e: CustomEvent) {
-		const { nativeEvent } = e.detail;
+	function handleItemContextMenu(e: Event) {
+		const nativeEvent = e as MouseEvent;
 		openContextMenu(plugin, path, nativeEvent, {
 			isFavorite,
 			onFavoriteChange: handleFavoriteChange,
@@ -160,14 +138,26 @@
 	}
 
 	$: tagsClassName = `vault-explorer-list-item__tags ${isSmallScreenSize ? "vault-explorer-list-item__tags--screen-size-sm" : ""}`;
+	$: titleClassName = `vault-explorer-list-item__title ${isSmallScreenSize ? "vault-explorer-list-item__title--screen-size-sm" : ""}`;
 </script>
 
-<ListItemContainer
-	{fileInteractionStyle}
-	bind:ref
+<div
+	bind:this={ref}
+	tabindex="0"
+	role="button"
+	class="vault-explorer-list-item"
 	on:click={handleItemClick}
-	on:contextmenu={handleItemContextMenu}
-	on:mouseover={handleItemMouseOver}
+	on:keydown={(e) => {
+		if (e.key === "Enter" || e.key === " ") {
+			handleItemClick();
+		}
+	}}
+	on:contextmenu={(e) => {
+		e.preventDefault();
+		handleItemContextMenu(e);
+	}}
+	on:focus={() => {}}
+	on:mouseover
 >
 	<Wrap
 		spacingX="lg"
@@ -175,11 +165,25 @@
 		align="center"
 		wrap={isSmallScreenSize ? "wrap" : "nowrap"}
 	>
-		<ListItemTitle
-			{isSmallScreenSize}
-			{fileInteractionStyle}
-			on:click={handleTitleClick}
-			on:contextmenu={handleTitleContextMenu}
+		<div
+			tabindex="0"
+			role="link"
+			class={titleClassName}
+			on:focus={() => {}}
+			on:click={(e) => {
+				e.preventDefault();
+				handleTitleClick();
+			}}
+			on:contextmenu={(e) => {
+				e.preventDefault();
+				handleTitleContextMenu(e);
+			}}
+			on:keydown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					handleTitleClick();
+				}
+			}}
 			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
@@ -190,7 +194,7 @@
 					{displayName}
 				</div>
 			</Stack>
-		</ListItemTitle>
+		</div>
 		{#if showTags}
 			<div class={tagsClassName}>
 				{#if tags !== null}
@@ -207,9 +211,36 @@
 			</div>
 		{/if}
 	</Wrap>
-</ListItemContainer>
+</div>
 
 <style>
+	.vault-explorer-list-item {
+		padding: 8px;
+		border-bottom: 1px solid var(--background-modifier-border);
+	}
+
+	.vault-explorer-list-item:hover {
+		background-color: var(--background-modifier-hover);
+	}
+
+	.vault-explorer-list-item:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
+	.vault-explorer-list-item__title {
+		width: 50%;
+		cursor: pointer;
+		color: var(--text-accent);
+	}
+
+	.vault-explorer-list-item__title:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
+	.vault-explorer-list-item__title--screen-size-sm {
+		width: 100%;
+	}
+
 	.vault-explorer-list-item__title-text {
 		overflow: hidden;
 		text-overflow: ellipsis;
