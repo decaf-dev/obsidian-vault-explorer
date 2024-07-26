@@ -302,10 +302,10 @@
 		box-shadow: var(--shadow-s);
 		border-radius: var(--radius-m);
 	}
-
+	/* 
 	.vault-explorer-grid-card:hover {
 		background-color: var(--background-modifier-hover);
-	}
+	} */
 
 	.vault-explorer-grid-card:focus-visible {
 		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
