@@ -517,7 +517,7 @@
 			</Stack>
 		</Stack>
 		<Spacer size="lg" />
-		<Divider borderWidth="1px" />
+		<Divider />
 		<FilterRuleList
 			rules={selectedGroup?.rules ?? []}
 			on:ruleTypeChange={handleRuleTypeChange}
@@ -535,7 +535,7 @@
 			on:propertyMatchWhenPropertyDNEChange={handlePropertyMatchWhenPropertyDNEChange}
 			on:folderSubfoldersToggle={handleFolderSubfoldersToggle}
 		/>
-		<Divider borderWidth="1px" />
+		<Divider />
 		<Spacer size="md" />
 	{/if}
 	<div class="vault-explorer-filter-app__footer">
