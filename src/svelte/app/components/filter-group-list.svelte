@@ -45,11 +45,6 @@
 
 		if (containerRef) {
 			containerRef.style.width = plugin.settings.filterGroupsWidth;
-			console.log("containerRef.style.width", containerRef.style.width);
-			console.log(
-				"plugin.settings.filterGroupsWidth",
-				plugin.settings.filterGroupsWidth,
-			);
 
 			resizeObserver = new ResizeObserver(() => {
 				debounceSaveContainerWidth();

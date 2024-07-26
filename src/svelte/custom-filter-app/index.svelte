@@ -19,13 +19,15 @@
 		TFilterGroup,
 	} from "src/types";
 	import { generateRandomId } from "../shared/services/random";
-	import GroupEditView from "./components/group-edit-view.svelte";
 	import { createPropertyFilter } from "./services/utils";
 	import GroupList from "./components/group-list.svelte";
-	import Flex from "../shared/components/flex.svelte";
 	import Divider from "../shared/components/divider.svelte";
 	import Logger from "js-logger";
 	import { PluginEvent } from "src/event/types";
+	import IconButton from "../shared/components/icon-button.svelte";
+	import Stack from "../shared/components/stack.svelte";
+	import Spacer from "../shared/components/spacer.svelte";
+	import FilterRuleList from "./components/filter-rule-list.svelte";
 
 	let selectedGroupId: string = "";
 	let groups: TFilterGroup[] = [];
@@ -56,9 +58,9 @@
 		};
 	});
 
-	function handleGroupClick(e: CustomEvent) {
-		const { id } = e.detail;
-		selectedGroupId = id;
+	function handleGroupChange(e: Event) {
+		const { value } = e.target as HTMLSelectElement;
+		selectedGroupId = value;
 	}
 
 	function handleGroupAddClick() {
@@ -94,23 +96,23 @@
 		}
 	}
 
-	function handleRuleAddClick(e: CustomEvent) {
-		const { filter } = e.detail;
+	function handleRuleAddClick() {
+		const newFilter = createPropertyFilter();
 
 		const newGroups = groups.map((group) =>
 			group.id === selectedGroupId
-				? { ...group, rules: [...group.rules, filter] }
+				? { ...group, rules: [...group.rules, newFilter] }
 				: group,
 		);
 
 		groups = newGroups;
 	}
 
-	function handleGroupNameChange(e: CustomEvent) {
-		const { name } = e.detail;
+	function handleGroupNameChange(e: Event) {
+		const value = (e.target as HTMLInputElement).value;
 
 		const newGroups = groups.map((group) =>
-			group.id === selectedGroupId ? { ...group, name } : group,
+			group.id === selectedGroupId ? { ...group, name: value } : group,
 		);
 
 		groups = newGroups;
@@ -484,43 +486,74 @@
 	}
 </script>
 
-<div class="vault-explorer-property-filter-app">
-	<Flex align="stretch" height="100%">
-		<GroupList
-			{groups}
-			{selectedGroup}
-			on:itemClick={handleGroupClick}
-			on:itemDragStart={handleGroupDragStart}
-			on:itemDragOver={handleGroupDragOver}
-			on:itemDrop={handleGroupDrop}
-			on:groupAddClick={handleGroupAddClick}
+<div class="vault-explorer-filter-app">
+	<h3>Custom filter</h3>
+	{#if selectedGroup !== undefined}
+		<Stack spacing="md" align="flex-end">
+			<Stack direction="column" spacing="sm">
+				<label for="filter-group-select">Selected group</label>
+				<select
+					id="filter-group-select"
+					value={selectedGroup.id}
+					on:change={handleGroupChange}
+				>
+					{#each groups as group}
+						<option value={group.id}>{group.name}</option>
+					{/each}
+				</select>
+			</Stack>
+			<Stack spacing="xs" align="flex-end">
+				<input
+					id="filter-group-name"
+					type="text"
+					value={selectedGroup.name}
+					on:change={handleGroupNameChange}
+				/>
+				<IconButton
+					ariaLabel="Delete filter group"
+					iconId="trash"
+					on:click={() => handleGroupDeleteClick()}
+				/>
+			</Stack>
+		</Stack>
+		<Spacer direction="vertical" size="md" />
+		<Divider borderWidth="1px" />
+		<FilterRuleList
+			rules={selectedGroup?.rules ?? []}
+			on:ruleTypeChange={handleRuleTypeChange}
+			on:ruleConditionChange={handleRuleConditionChange}
+			on:ruleDeleteClick={handleRuleDeleteClick}
+			on:ruleDuplicateClick={handleRuleDuplicateClick}
+			on:ruleValueChange={handleRuleValueChange}
+			on:ruleOperatorChange={handleRuleOperatorChange}
+			on:ruleToggle={handleRuleToggle}
 			on:groupDeleteClick={handleGroupDeleteClick}
+			on:groupNameChange={handleGroupNameChange}
+			on:propertyTypeChange={handlePropertyTypeChange}
+			on:propertyNameChange={handlePropertyNameChange}
+			on:propertyValueDataChange={handlePropertyValueDataChange}
+			on:propertyMatchWhenPropertyDNEChange={handlePropertyMatchWhenPropertyDNEChange}
+			on:folderSubfoldersToggle={handleFolderSubfoldersToggle}
 		/>
-		<Divider direction="vertical" />
-		{#if selectedGroup !== undefined}
-			<GroupEditView
-				{selectedGroup}
-				on:ruleTypeChange={handleRuleTypeChange}
-				on:ruleAddClick={handleRuleAddClick}
-				on:ruleConditionChange={handleRuleConditionChange}
-				on:ruleDeleteClick={handleRuleDeleteClick}
-				on:ruleDuplicateClick={handleRuleDuplicateClick}
-				on:ruleValueChange={handleRuleValueChange}
-				on:ruleOperatorChange={handleRuleOperatorChange}
-				on:ruleToggle={handleRuleToggle}
-				on:groupNameChange={handleGroupNameChange}
-				on:propertyTypeChange={handlePropertyTypeChange}
-				on:propertyNameChange={handlePropertyNameChange}
-				on:propertyValueDataChange={handlePropertyValueDataChange}
-				on:propertyMatchWhenPropertyDNEChange={handlePropertyMatchWhenPropertyDNEChange}
-				on:folderSubfoldersToggle={handleFolderSubfoldersToggle}
-			/>
-		{/if}
-	</Flex>
+		<Divider borderWidth="1px" />
+		<Spacer direction="vertical" size="sm" />
+	{/if}
+	<div class="vault-explorer-filter-app__footer">
+		<Stack>
+			<IconButton iconId="plus" on:click={() => handleGroupAddClick()}
+				>Add group</IconButton
+			>
+			{#if groups.length > 0}
+				<IconButton iconId="plus" on:click={handleRuleAddClick}
+					>Add rule</IconButton
+				>
+			{/if}
+		</Stack>
+	</div>
 </div>
 
 <style>
-	.vault-explorer-property-filter-app {
-		height: 255px;
+	.vault-explorer-filter-app {
+		height: 410px;
 	}
 </style>
