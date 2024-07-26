@@ -245,7 +245,7 @@
 				}}
 				on:mouseover={handleTitleMouseOver}
 			>
-				<Stack spacing="xs" width="max-content">
+				<Stack spacing="xs">
 					{#if enableFileIcons}
 						<Icon iconId={getIconIdForFile(baseName, extension)} />
 					{/if}
