@@ -261,7 +261,7 @@
 		{#if tags !== null}
 			<Spacer size="md" />
 			<div class="vault-explorer-grid-card__tags">
-				<Wrap spacingX="xs" spacingY="xs">
+				<Wrap spacingX="sm" spacingY="sm">
 					{#each tags as tag}
 						<Tag name={tag} />
 					{/each}
@@ -270,8 +270,8 @@
 		{/if}
 		{#if custom1 !== null || custom2 !== null || custom3 !== null}
 			<div class="vault-explorer-grid-card__properties">
-				<Spacer size="sm" />
-				<Wrap spacingX="xs" spacingY="xs"
+				<Spacer size="md" />
+				<Wrap spacingX="sm" spacingY="sm"
 					>{#if custom1 !== null}<Property
 							name={plugin.settings.properties.custom1}
 							value={custom1}
