@@ -245,7 +245,7 @@
 				}}
 				on:mouseover={handleTitleMouseOver}
 			>
-				<Stack spacing="xs">
+				<Stack spacing="xs" width="max-content">
 					{#if enableFileIcons}
 						<Icon iconId={getIconIdForFile(baseName, extension)} />
 					{/if}
@@ -268,7 +268,7 @@
 			<div class="vault-explorer-grid-card__tags">
 				<Wrap spacingX="sm" spacingY="sm">
 					{#each tags as tag}
-						<Tag name={tag} variant="unstyled" />
+						<Tag name={tag} />
 					{/each}
 				</Wrap>
 			</div>
@@ -349,20 +349,20 @@
 		column-gap: 0.5rem;
 	}
 
-	.vault-explorer-grid-card__title-text {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
 	.vault-explorer-grid-card__title {
 		flex-grow: 1;
 		min-width: 0;
-		cursor: pointer;
 		color: var(--text-accent);
 	}
 
 	.vault-explorer-grid-card__title:focus-visible {
 		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
+	.vault-explorer-grid-card__title-text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		cursor: pointer;
 	}
 </style>
