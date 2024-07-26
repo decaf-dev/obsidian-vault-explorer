@@ -17,9 +17,10 @@
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
 	import Flex from "src/svelte/shared/components/flex.svelte";
-	import { isHttpsLink } from "../services/utils/url-utils";
+	import { getDomainFromUrl, isHttpsLink } from "../services/utils/url-utils";
 	import { isImageUrl } from "../services/utils/image-utils";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
+	import Divider from "src/svelte/shared/components/divider.svelte";
 
 	export let displayName: string;
 	export let path: string;
@@ -117,8 +118,8 @@
 		};
 	});
 
-	function handleUrlClick(e: CustomEvent) {
-		const { nativeEvent } = e.detail;
+	function handleUrlClick(e: Event) {
+		const nativeEvent = e as MouseEvent;
 		nativeEvent.stopPropagation();
 		if (url != null) {
 			window.open(url, "_blank");
@@ -183,7 +184,7 @@
 		handleCardMouseOver(e);
 	}
 
-	$: hasBodyContent =
+	$: hasFooterContent =
 		tags != null || custom1 != null || custom2 != null || custom3 != null;
 </script>
 
@@ -222,77 +223,81 @@
 			</div>
 		{/if}
 	</div>
-	<div class="vault-explorer-grid-card__content">
-		<div class="vault-explorer-grid-card__head">
-			<div
-				tabindex="0"
-				role="link"
-				class="vault-explorer-grid-card__title"
-				on:focus={() => {}}
-				on:click={(e) => {
+	<div class="vault-explorer-grid-card__body">
+		<div
+			tabindex="0"
+			role="link"
+			class="vault-explorer-grid-card__title"
+			on:focus={() => {}}
+			on:click={(e) => {
+				e.preventDefault();
+				handleTitleClick();
+			}}
+			on:contextmenu={(e) => {
+				e.preventDefault();
+				handleTitleContextMenu(e);
+			}}
+			on:keydown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
 					e.preventDefault();
 					handleTitleClick();
-				}}
-				on:contextmenu={(e) => {
-					e.preventDefault();
-					handleTitleContextMenu(e);
-				}}
-				on:keydown={(e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						handleTitleClick();
-					}
-				}}
-				on:mouseover={handleTitleMouseOver}
-			>
-				<Stack spacing="xs">
-					{#if enableFileIcons}
-						<Icon iconId={getIconIdForFile(baseName, extension)} />
-					{/if}
-					<div class="vault-explorer-grid-card__title-text">
-						{displayName}
-					</div>
-				</Stack>
-			</div>
-			{#if url !== null}
-				<IconButton
-					iconId="external-link"
-					ariaLabel="Open in browser"
-					noPadding
-					on:click={handleUrlClick}
-				/>
-			{/if}
+				}
+			}}
+			on:mouseover={handleTitleMouseOver}
+		>
+			<Stack spacing="xs">
+				{#if enableFileIcons}
+					<Icon iconId={getIconIdForFile(baseName, extension)} />
+				{/if}
+				<div class="vault-explorer-grid-card__title-text">
+					{displayName}
+				</div>
+			</Stack>
 		</div>
-		{#if tags !== null}
-			<Spacer size="md" />
-			<div class="vault-explorer-grid-card__tags">
-				<Wrap spacingX="sm" spacingY="sm">
-					{#each tags as tag}
-						<Tag name={tag} />
-					{/each}
-				</Wrap>
-			</div>
-		{/if}
-		{#if custom1 !== null || custom2 !== null || custom3 !== null}
-			<div class="vault-explorer-grid-card__properties">
-				<Spacer size="md" />
-				<Wrap spacingX="sm" spacingY="sm"
-					>{#if custom1 !== null}<Property
-							name={plugin.settings.properties.custom1}
-							value={custom1}
-						/>{/if}
-					{#if custom2 !== null}<Property
-							name={plugin.settings.properties.custom2}
-							value={custom2}
-						/>{/if}
-					{#if custom3 !== null}<Property
-							name={plugin.settings.properties.custom3}
-							value={custom3}
-						/>{/if}
-				</Wrap>
-			</div>
+		{#if url !== null}
+			<Spacer size="xs" />
+			<Stack spacing="xs" align="center"
+				><Icon iconId="link" size="xs" /><a
+					class="vault-explorer-grid-card__url"
+					href={url}
+					on:click={handleUrlClick}>{getDomainFromUrl(url)}</a
+				></Stack
+			>
 		{/if}
 	</div>
+	{#if hasFooterContent}<Divider />{/if}
+	{#if hasFooterContent}
+		<div class="vault-explorer-grid-card__footer">
+			{#if tags !== null}
+				<div class="vault-explorer-grid-card__tags">
+					<Wrap spacingX="sm" spacingY="sm">
+						{#each tags as tag}
+							<Tag name={tag} />
+						{/each}
+					</Wrap>
+				</div>
+			{/if}
+			{#if custom1 !== null || custom2 !== null || custom3 !== null}
+				<div class="vault-explorer-grid-card__properties">
+					<Spacer size="md" />
+					<Wrap spacingX="sm" spacingY="sm"
+						>{#if custom1 !== null}<Property
+								name={plugin.settings.properties.custom1}
+								value={custom1}
+							/>{/if}
+						{#if custom2 !== null}<Property
+								name={plugin.settings.properties.custom2}
+								value={custom2}
+							/>{/if}
+						{#if custom3 !== null}<Property
+								name={plugin.settings.properties.custom3}
+								value={custom3}
+							/>{/if}
+					</Wrap>
+				</div>
+			{/if}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -320,6 +325,14 @@
 		position: relative;
 	}
 
+	.vault-explorer-grid-card__image {
+		width: 100%;
+		height: 150px;
+		object-fit: cover;
+		border-top-left-radius: var(--radius-m);
+		border-top-right-radius: var(--radius-m);
+	}
+
 	.vault-explorer-grid-card__favorite {
 		position: absolute;
 		top: 8px;
@@ -330,23 +343,12 @@
 		border-radius: 50%;
 	}
 
-	.vault-explorer-grid-card__image {
-		width: 100%;
-		height: 150px;
-		object-fit: cover;
-		border-top-left-radius: var(--radius-m);
-		border-top-right-radius: var(--radius-m);
-	}
-
-	.vault-explorer-grid-card__content {
+	.vault-explorer-grid-card__body {
 		padding: 8px 16px;
 	}
 
-	.vault-explorer-grid-card__head {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		column-gap: 0.5rem;
+	.vault-explorer-grid-card__footer {
+		padding: 12px 16px;
 	}
 
 	.vault-explorer-grid-card__title {
@@ -364,5 +366,15 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		cursor: pointer;
+	}
+
+	.vault-explorer-grid-card__url {
+		color: var(--text-muted);
+		text-decoration: none;
+		font-size: var(--font-small);
+	}
+
+	.vault-explorer-grid-card__url:hover {
+		color: var(--color-base-50);
 	}
 </style>
