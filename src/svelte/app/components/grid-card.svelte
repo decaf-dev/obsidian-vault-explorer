@@ -259,7 +259,7 @@
 			{/if}
 		</div>
 		{#if tags !== null}
-			<Spacer size="lg" />
+			<Spacer size="md" />
 			<div class="vault-explorer-grid-card__tags">
 				<Wrap spacingX="xs" spacingY="xs">
 					{#each tags as tag}
