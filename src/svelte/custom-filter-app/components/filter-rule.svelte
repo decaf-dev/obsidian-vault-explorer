@@ -166,6 +166,11 @@
 </div>
 
 <style>
+	.vault-explorer-filter-rule {
+		padding: 8px 16px;
+		background-color: var(--background-secondary);
+	}
+
 	.vault-explorer-filter-rule__operator {
 		width: 58px;
 	}

@@ -2,6 +2,7 @@
 	import { setIcon } from "obsidian";
 	import { createEventDispatcher, onMount } from "svelte";
 	import { getSvgData } from "../services/get-svg-data";
+	import Stack from "./stack.svelte";
 
 	export let ariaLabel = "";
 	export let iconId = "";
@@ -16,6 +17,19 @@
 	onMount(() => {
 		if (iconId === "ellipsis-vertical") return;
 		setIcon(ref, iconId);
+
+		if (ref.childNodes.length == 2) {
+			const firstElement = ref.firstChild;
+			const secondElement = ref.lastChild;
+			if (firstElement && secondElement) {
+				ref.insertBefore(secondElement, firstElement);
+
+				const svg = ref.querySelector("svg");
+				if (svg) {
+					svg.style.marginRight = "4px";
+				}
+			}
+		}
 	});
 
 	function handleClick(event: Event) {
@@ -35,7 +49,7 @@
 	{disabled}
 	aria-label={ariaLabel}
 	bind:this={ref}
-	on:click={handleClick}>{@html svgData}</button
+	on:click={handleClick}>{@html svgData}<slot /></button
 >
 
 <style>
