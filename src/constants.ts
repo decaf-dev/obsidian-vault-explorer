@@ -75,7 +75,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	enableClockUpdates: true,
 	enableFileIcons: false,
 	enableScrollButtons: true,
-	fileInteractionStyle: "content",
 	filterGroupsWidth: "300px",
 	shouldWrapFilterGroups: false,
 	pageSize: 25,

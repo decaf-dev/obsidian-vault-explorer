@@ -57,6 +57,12 @@
 		line-height: 1;
 	}
 
+	.vault-explorer-tag--default:hover {
+		background-color: var(--tag-background-hover);
+		border: var(--tag-border-width) solid var(--tag-border-color-hover);
+		color: var(--tag-color-hover);
+	}
+
 	.vault-explorer-tag:focus-visible {
 		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
 	}

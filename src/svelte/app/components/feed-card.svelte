@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from "svelte";
-	import { CollapseStyle, FileInteractionStyle, WordBreak } from "src/types";
+	import { CollapseStyle, WordBreak } from "src/types";
 	import EventManager from "src/event/event-manager";
 	import VaultExplorerPlugin from "src/main";
 	import store from "src/svelte/shared/services/store";
@@ -26,9 +26,7 @@
 	import { PluginEvent } from "src/event/types";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import { openInCurrentTab } from "../services/open-file";
-	import FeedCardContainer from "./feed-card-container.svelte";
 	import { openContextMenu } from "../services/context-menu";
-	import FeedCardTitle from "./feed-card-title.svelte";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import { SCREEN_SIZE_LG, SCREEN_SIZE_MD } from "../constants";
 
@@ -50,7 +48,6 @@
 	let lineClampLarge: number = 5;
 	let collapseStyle: CollapseStyle = "no-new-lines";
 	let currentLineClamp: number = lineClampLarge;
-	let fileInteractionStyle: FileInteractionStyle = "content";
 
 	const dispatch = createEventDispatcher();
 
@@ -64,7 +61,6 @@
 		lineClampLarge = plugin.settings.views.feed.lineClampLarge;
 		lineClampMedium = plugin.settings.views.feed.lineClampMedium;
 		lineClampSmall = plugin.settings.views.feed.lineClampSmall;
-		fileInteractionStyle = plugin.settings.fileInteractionStyle;
 	});
 
 	onMount(() => {
@@ -80,23 +76,6 @@
 			EventManager.getInstance().off(
 				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
-			);
-		};
-	});
-
-	onMount(() => {
-		function handleFileInteractionStyleChange() {
-			fileInteractionStyle = plugin.settings.fileInteractionStyle;
-		}
-
-		EventManager.getInstance().on(
-			PluginEvent.FILE_INTERACTION_STYLE,
-			handleFileInteractionStyleChange,
-		);
-		return () => {
-			EventManager.getInstance().off(
-				PluginEvent.FILE_INTERACTION_STYLE,
-				handleFileInteractionStyleChange,
 			);
 		};
 	});
@@ -192,15 +171,15 @@
 		dispatch("favoritePropertyChange", { filePath, value });
 	}
 
-	function handleCardContextMenu(e: CustomEvent) {
-		const { nativeEvent } = e.detail;
+	function handleCardContextMenu(e: Event) {
+		const nativeEvent = e as MouseEvent;
 		openContextMenu(plugin, path, nativeEvent, {
 			isFavorite,
 			onFavoriteChange: handleFavoriteChange,
 		});
 	}
 
-	function handleTitleContextMenu(e: CustomEvent) {
+	function handleTitleContextMenu(e: Event) {
 		handleCardContextMenu(e);
 	}
 
@@ -256,18 +235,44 @@
 	$: displayContent = getDisplayContent(content, removeH1, collapseStyle);
 </script>
 
-<FeedCardContainer
-	{fileInteractionStyle}
-	bind:ref
+<div
+	bind:this={ref}
+	tabindex="0"
+	role="button"
+	class="vault-explorer-feed-card"
 	on:click={handleCardClick}
-	on:contextmenu={handleCardContextMenu}
-	on:mouseover={handleCardMouseOver}
+	on:keydown={(e) => {
+		if (e.key === "Enter" || e.key === " ") {
+			handleCardClick();
+		}
+	}}
+	on:contextmenu={(e) => {
+		e.preventDefault();
+		handleCardContextMenu(e);
+	}}
+	on:focus={() => {}}
+	on:mouseover
 >
 	<Stack spacing="sm" direction="column">
-		<FeedCardTitle
-			{fileInteractionStyle}
-			on:click={handleTitleClick}
-			on:contextmenu={handleTitleContextMenu}
+		<div
+			tabindex="0"
+			role="link"
+			class="vault-explorer-feed-card__title"
+			on:focus={() => {}}
+			on:click={(e) => {
+				e.preventDefault();
+				handleTitleClick();
+			}}
+			on:contextmenu={(e) => {
+				e.preventDefault();
+				handleTitleContextMenu(e);
+			}}
+			on:keydown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					handleTitleClick();
+				}
+			}}
 			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
@@ -278,7 +283,7 @@
 					{displayName}
 				</div>
 			</Stack>
-		</FeedCardTitle>
+		</div>
 		{#if displayContent != null && displayContent.length > 0}
 			<div
 				class="vault-explorer-feed-card__content"
@@ -300,9 +305,31 @@
 			{creationString}
 		</div>
 	</Stack>
-</FeedCardContainer>
+</div>
 
 <style>
+	.vault-explorer-feed-card {
+		padding: 8px;
+		border-bottom: 1px solid var(--background-modifier-border);
+	}
+
+	.vault-explorer-feed-card:hover {
+		background-color: var(--background-modifier-hover);
+	}
+
+	.vault-explorer-feed-card:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
+	.vault-explorer-feed-card__title {
+		width: 100%;
+		color: var(--text-accent);
+	}
+
+	.vault-explorer-feed-card__title:focus-visible {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+	}
+
 	.vault-explorer-feed-card__content {
 		/* these settings support unicode characters as well */
 		display: -webkit-box;
@@ -319,6 +346,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		cursor: pointer;
 	}
 
 	.vault-explorer-feed-card__creation-time {
