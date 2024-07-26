@@ -10,4 +10,6 @@ tags:
   - tag8
   - tag9
   - tag10
+color: Blue
+category: Vehicle
 ---

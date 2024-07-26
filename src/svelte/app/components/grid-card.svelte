@@ -21,6 +21,7 @@
 	import Flex from "src/svelte/shared/components/flex.svelte";
 	import { isHttpsLink } from "../services/utils/url-utils";
 	import { isImageUrl } from "../services/utils/image-utils";
+	import Spacer from "src/svelte/shared/components/spacer.svelte";
 
 	export let displayName: string;
 	export let path: string;
@@ -232,62 +233,60 @@
 		{/if}
 	</div>
 	<div class="vault-explorer-grid-card__content">
-		<Stack spacing={hasBodyContent ? "sm" : "none"} direction="column">
-			<div class="vault-explorer-grid-card__head">
-				<GridCardTitle
-					{fileInteractionStyle}
-					on:click={handleTitleClick}
-					on:contextmenu={handleTitleContextMenu}
-					on:mouseover={handleTitleMouseOver}
-				>
-					<Stack spacing="xs">
-						{#if enableFileIcons}
-							<Icon
-								iconId={getIconIdForFile(baseName, extension)}
-							/>
-						{/if}
-						<div class="vault-explorer-grid-card__title-text">
-							{displayName}
-						</div>
-					</Stack>
-				</GridCardTitle>
-				{#if url !== null}
-					<IconButton
-						iconId="external-link"
-						ariaLabel="Open in browser"
-						noPadding
-						on:click={handleUrlClick}
-					/>
-				{/if}
+		<div class="vault-explorer-grid-card__head">
+			<GridCardTitle
+				{fileInteractionStyle}
+				on:click={handleTitleClick}
+				on:contextmenu={handleTitleContextMenu}
+				on:mouseover={handleTitleMouseOver}
+			>
+				<Stack spacing="xs">
+					{#if enableFileIcons}
+						<Icon iconId={getIconIdForFile(baseName, extension)} />
+					{/if}
+					<div class="vault-explorer-grid-card__title-text">
+						{displayName}
+					</div>
+				</Stack>
+			</GridCardTitle>
+			{#if url !== null}
+				<IconButton
+					iconId="external-link"
+					ariaLabel="Open in browser"
+					noPadding
+					on:click={handleUrlClick}
+				/>
+			{/if}
+		</div>
+		{#if tags !== null}
+			<Spacer size="lg" />
+			<div class="vault-explorer-grid-card__tags">
+				<Wrap spacingX="xs" spacingY="xs">
+					{#each tags as tag}
+						<Tag name={tag} />
+					{/each}
+				</Wrap>
 			</div>
-			{#if tags !== null}
-				<div class="vault-explorer-grid-card__tags">
-					<Wrap spacingX="sm" spacingY="sm">
-						{#each tags as tag}
-							<Tag name={tag} />
-						{/each}
-					</Wrap>
-				</div>
-			{/if}
-			{#if custom1 !== null || custom2 !== null || custom3 !== null}
-				<div class="vault-explorer-grid-card__properties">
-					<Wrap spacingX="xs" spacingY="xs"
-						>{#if custom1 !== null}<Property
-								name={plugin.settings.properties.custom1}
-								value={custom1}
-							/>{/if}
-						{#if custom2 !== null}<Property
-								name={plugin.settings.properties.custom2}
-								value={custom2}
-							/>{/if}
-						{#if custom3 !== null}<Property
-								name={plugin.settings.properties.custom3}
-								value={custom3}
-							/>{/if}
-					</Wrap>
-				</div>
-			{/if}
-		</Stack>
+		{/if}
+		{#if custom1 !== null || custom2 !== null || custom3 !== null}
+			<div class="vault-explorer-grid-card__properties">
+				<Spacer size="sm" />
+				<Wrap spacingX="xs" spacingY="xs"
+					>{#if custom1 !== null}<Property
+							name={plugin.settings.properties.custom1}
+							value={custom1}
+						/>{/if}
+					{#if custom2 !== null}<Property
+							name={plugin.settings.properties.custom2}
+							value={custom2}
+						/>{/if}
+					{#if custom3 !== null}<Property
+							name={plugin.settings.properties.custom3}
+							value={custom3}
+						/>{/if}
+				</Wrap>
+			</div>
+		{/if}
 	</div>
 </GridCardContainer>
 
