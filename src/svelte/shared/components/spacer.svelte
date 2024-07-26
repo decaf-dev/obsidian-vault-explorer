@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let direction: "horizontal" | "vertical" = "horizontal";
+	export let direction: "horizontal" | "vertical" = "vertical";
 	export let size: "" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" = "";
 
 	$: size, direction, findDimesions();
@@ -18,20 +18,20 @@
 				if (direction == "vertical") height = 8;
 				break;
 			case "md":
+				if (direction == "horizontal") width = 12;
+				if (direction == "vertical") height = 12;
+				break;
+			case "lg":
 				if (direction == "horizontal") width = 16;
 				if (direction == "vertical") height = 16;
 				break;
-			case "lg":
+			case "xl":
 				if (direction == "horizontal") width = 24;
 				if (direction == "vertical") height = 24;
 				break;
-			case "xl":
+			case "2xl":
 				if (direction == "horizontal") width = 32;
 				if (direction == "vertical") height = 32;
-				break;
-			case "2xl":
-				if (direction == "horizontal") width = 48;
-				if (direction == "vertical") height = 48;
 				break;
 		}
 	}

@@ -43,9 +43,8 @@
 
 <style>
 	.vault-explorer-group-item {
-		display: flex;
-		width: calc(100% - 12px);
 		padding: 4px 6px;
+		text-wrap: nowrap;
 	}
 
 	.vault-explorer-group-item:focus-visible {
