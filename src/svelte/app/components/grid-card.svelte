@@ -119,11 +119,7 @@
 	});
 
 	function handleUrlClick(e: Event) {
-		const nativeEvent = e as MouseEvent;
-		nativeEvent.stopPropagation();
-		if (url != null) {
-			window.open(url, "_blank");
-		}
+		e.stopPropagation();
 	}
 
 	async function loadSocialImage(imageUrl: string | null) {
@@ -260,6 +256,8 @@
 				><Icon iconId="link" size="xs" /><a
 					class="vault-explorer-grid-card__url"
 					href={url}
+					target="_blank"
+					rel="noopener"
 					on:click={handleUrlClick}>{getDomainFromUrl(url)}</a
 				></Stack
 			>
