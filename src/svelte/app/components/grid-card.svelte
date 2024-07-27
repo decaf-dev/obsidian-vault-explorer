@@ -199,12 +199,20 @@
 		handleCardContextMenu(e);
 	}}
 	on:focus={() => {}}
-	on:mouseover
+	on:mouseover={handleCardMouseOver}
 >
 	<div class="vault-explorer-grid-card__cover">
 		{#if imgSrc !== null}
 			<!-- svelte-ignore a11y-missing-attribute -->
 			<img class="vault-explorer-grid-card__image" src={imgSrc} />
+		{/if}
+		{#if imgSrc === null}
+			<div class="vault-explorer-grid-card__cover-icon">
+				<Icon
+					iconId={getIconIdForFile(baseName, extension)}
+					size="lg"
+				/>
+			</div>
 		{/if}
 		{#if isFavorite === true}
 			<div class="vault-explorer-grid-card__favorite">
@@ -329,6 +337,13 @@
 		object-fit: cover;
 		border-top-left-radius: var(--radius-m);
 		border-top-right-radius: var(--radius-m);
+	}
+
+	.vault-explorer-grid-card__cover-icon {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 
 	.vault-explorer-grid-card__favorite {

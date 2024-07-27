@@ -251,7 +251,7 @@
 		handleCardContextMenu(e);
 	}}
 	on:focus={() => {}}
-	on:mouseover
+	on:mouseover={handleCardMouseOver}
 >
 	<Stack spacing="sm" direction="column">
 		<div
