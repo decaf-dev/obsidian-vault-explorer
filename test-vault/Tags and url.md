@@ -5,5 +5,4 @@ tags:
   - tag3
   - tag4
 url: https://vaultexplorer.com
-category: ok
 ---
