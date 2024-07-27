@@ -649,29 +649,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			target: containerEl,
 		});
 
-		new Setting(containerEl).setName("Storage").setHeading();
-
-		const configFolderDesc = new DocumentFragment();
-		configFolderDesc.createDiv({
-			text: "Set the plugin configuration folder.",
-		});
-		configFolderDesc.createDiv({
-			text: "Restart Obsidian after changing this setting.",
-			cls: "mod-warning",
-		});
-
-		new Setting(containerEl)
-			.setName("Config folder")
-			.setDesc(configFolderDesc)
-			.addText((component) =>
-				component
-					.setValue(this.plugin.settings.configDir)
-					.onChange(async (value) => {
-						this.plugin.settings.configDir = value;
-						await this.plugin.saveSettings();
-					})
-			);
-
 		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
 			.setName("Log level")
@@ -696,7 +673,28 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				);
 			});
 
-		new Setting(containerEl).setName("Cache").setHeading();
+		new Setting(containerEl).setName("Data").setHeading();
+
+		const configFolderDesc = new DocumentFragment();
+		configFolderDesc.createDiv({
+			text: "Set the plugin configuration folder.",
+		});
+		configFolderDesc.createDiv({
+			text: "Restart Obsidian after changing this setting.",
+			cls: "mod-warning vault-explorer-setting-description",
+		});
+
+		new Setting(containerEl)
+			.setName("Config folder")
+			.setDesc(configFolderDesc)
+			.addText((component) =>
+				component
+					.setValue(this.plugin.settings.configDir)
+					.onChange(async (value) => {
+						this.plugin.settings.configDir = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		new Setting(containerEl)
 			.setName("Social media image cache")
