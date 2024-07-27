@@ -107,6 +107,7 @@
 		padding-bottom: 8px;
 		resize: horizontal;
 		overflow-x: auto;
+		max-width: 100%;
 	}
 
 	.vault-explorer-empty-label {
