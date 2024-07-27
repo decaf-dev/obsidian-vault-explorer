@@ -45,6 +45,10 @@
 		font-size: var(--font-smallest);
 	}
 
+	.vault-explorer-tag--unstyled:hover {
+		color: var(--text-faint);
+	}
+
 	.vault-explorer-tag--default {
 		background-color: var(--tag-background);
 		border: var(--tag-border-width) solid var(--tag-border-color);
