@@ -176,10 +176,6 @@
 		handleCardContextMenu(e);
 	}
 
-	function handleTitleMouseOver(e: MouseEvent) {
-		handleCardMouseOver(e);
-	}
-
 	$: hasFooterContent =
 		tags != null || custom1 != null || custom2 != null || custom3 != null;
 </script>
@@ -247,7 +243,6 @@
 					handleTitleClick();
 				}
 			}}
-			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}
