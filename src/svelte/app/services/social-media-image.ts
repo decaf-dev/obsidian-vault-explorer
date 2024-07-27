@@ -73,9 +73,21 @@ export const fetchSocialImage = async (url: string) => {
 		const ogImage = getMetaTagContent(document, "og:image");
 		const twitterImage = getMetaTagContent(document, "twitter:image");
 
-		const imageUrl = ogImage || twitterImage;
+		let imageUrl = ogImage || twitterImage;
 
 		if (imageUrl) {
+			//Handle edge case where social media image URL has slashes at the beginning
+			//See issue #265
+			if (imageUrl.startsWith("//")) {
+				imageUrl = imageUrl.replace(/^\/+/, "");
+			}
+
+			//Handle edge case where the url doesn't start with https://
+			//See issue #265
+			if (!imageUrl.startsWith("https://")) {
+				imageUrl = `https://${imageUrl}`;
+			}
+
 			Logger.debug(
 				{
 					fileName: "social-media-image.ts",
