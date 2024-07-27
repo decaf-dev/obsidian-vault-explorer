@@ -287,7 +287,7 @@
 		</div>
 	{/if}
 	{#if displayContent != null}
-		<Spacer size="sm" />
+		<Spacer size="md" />
 	{/if}
 	<div class="vault-explorer-feed-card__creation-time">
 		{creationString}
