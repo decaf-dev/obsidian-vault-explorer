@@ -43,11 +43,11 @@ Vault Explorer is a work in progress. Please check the GitHub repository and doc
 
 ### Custom filter
 
-![](/readme/custom-filter.png)
+<img src="readme/custom-filter.png" width="500">
 
-![](/readme/custom-filter-options-1.png)
+<img src="readme/custom-filter-options-1.png" width="500">
 
-![](/readme/custom-filter-options-2.png)
+<img src="readme/custom-filter-options-2.png" width="500">
 
 ### Favorites
 
