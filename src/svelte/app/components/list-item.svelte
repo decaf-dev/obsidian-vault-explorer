@@ -122,10 +122,6 @@
 		});
 	}
 
-	function handleTitleMouseOver(e: MouseEvent) {
-		handleItemMouseOver(e);
-	}
-
 	function handleItemMouseOver(e: MouseEvent) {
 		const targetEl = e.currentTarget as HTMLElement;
 		plugin.app.workspace.trigger("hover-link", {
@@ -157,7 +153,7 @@
 		handleItemContextMenu(e);
 	}}
 	on:focus={() => {}}
-	on:mouseover
+	on:mouseover={handleItemMouseOver}
 >
 	<Wrap
 		spacingX="lg"
@@ -184,7 +180,6 @@
 					handleTitleClick();
 				}
 			}}
-			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}

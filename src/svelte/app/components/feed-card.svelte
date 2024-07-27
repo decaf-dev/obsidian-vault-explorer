@@ -194,10 +194,6 @@
 		});
 	}
 
-	function handleTitleMouseOver(e: MouseEvent) {
-		handleCardMouseOver(e);
-	}
-
 	const creationString = formatAsBearTimeString(createdMillis);
 
 	function getDisplayContent(
@@ -273,7 +269,6 @@
 					handleTitleClick();
 				}
 			}}
-			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}
