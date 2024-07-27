@@ -194,8 +194,8 @@
 			<div class={tagsClassName}>
 				{#if tags !== null}
 					<Wrap
-						spacingX="xs"
-						spacingY="xs"
+						spacingX="sm"
+						spacingY="sm"
 						justify={isSmallScreenSize ? "flex-start" : "flex-end"}
 					>
 						{#each tags as tag}
