@@ -102,6 +102,15 @@ export const fetchSocialImage = async (url: string) => {
 				imageUrl = `https://${imageUrl}`;
 			}
 
+			//Handle edge case where the url ends with @100w_100h_1c
+			//See issue #265
+			if (imageUrl.endsWith("@100w_100h_1c.png")) {
+				imageUrl = imageUrl.replace(
+					/@100w_100h_1c.png$/,
+					"@425w_150h_1c.png"
+				);
+			}
+
 			Logger.debug(
 				{
 					fileName: "social-media-image.ts",
