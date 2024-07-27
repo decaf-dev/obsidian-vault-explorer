@@ -31,29 +31,39 @@ Vault Explorer is a work in progress. Please check the GitHub repository and doc
 
 ### Grid view
 
-![](/readme/feature-grid.png)
+![](/readme/grid-view.png)
 
 ### List view
 
-![](/readme/feature-list.png)
+![](/readme/list-view.png)
 
-### Folder filter
+### List view
 
-<img src="readme/feature-folder-filter.png" width="300">
+![](/readme/feed-view.png)
 
-### Time filter
+### Custom filter
 
-<img src="readme/feature-time-filter.png" width="300">
+![](/readme/custom-filter.png)
+
+![](/readme/custom-filter-options-1.png)
+
+![](/readme/custom-filter-options-2.png)
+
+### Favorites
+
+![](/readme/favorites-filter.png)
+
+### Timestamp filter
+
+![](/readme/timestamp-filter.png)
 
 ### Sort filter
 
-<img src="readme/feature-sort-filter.png" width="300">
+![](/readme/sort-filter.png)
 
-### Property filter
+### Search filter
 
-![](/readme/feat-property-filter.png)
-
-![](/readme/feature-property-filter2.png)
+![](/readme/search-filter.png)
 
 ## Installation
 
