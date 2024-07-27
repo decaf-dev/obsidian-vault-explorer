@@ -24,17 +24,16 @@
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
 	import { PluginEvent } from "src/event/types";
-	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import { openInCurrentTab } from "../services/open-file";
 	import { openContextMenu } from "../services/context-menu";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import { SCREEN_SIZE_LG, SCREEN_SIZE_MD } from "../constants";
+	import Spacer from "src/svelte/shared/components/spacer.svelte";
 
 	export let displayName: string;
 	export let baseName: string;
 	export let extension: string;
 	export let path: string;
-	export let tags: string[] | null;
 	export let createdMillis: number;
 	export let content: string | null;
 	export let isFavorite: boolean | null;
@@ -249,57 +248,50 @@
 	on:focus={() => {}}
 	on:mouseover={handleCardMouseOver}
 >
-	<Stack spacing="sm" direction="column">
-		<div
-			tabindex="0"
-			role="link"
-			class="vault-explorer-feed-card__title"
-			on:focus={() => {}}
-			on:click={(e) => {
+	<div
+		tabindex="0"
+		role="link"
+		class="vault-explorer-feed-card__title"
+		on:focus={() => {}}
+		on:click={(e) => {
+			e.preventDefault();
+			handleTitleClick();
+		}}
+		on:contextmenu={(e) => {
+			e.preventDefault();
+			handleTitleContextMenu(e);
+		}}
+		on:keydown={(e) => {
+			if (e.key === "Enter" || e.key === " ") {
 				e.preventDefault();
 				handleTitleClick();
-			}}
-			on:contextmenu={(e) => {
-				e.preventDefault();
-				handleTitleContextMenu(e);
-			}}
-			on:keydown={(e) => {
-				if (e.key === "Enter" || e.key === " ") {
-					e.preventDefault();
-					handleTitleClick();
-				}
-			}}
+			}
+		}}
+	>
+		<Stack spacing="xs">
+			{#if enableFileIcons}
+				<Icon iconId={getIconIdForFile(baseName, extension)} />
+			{/if}
+			<div class="vault-explorer-feed-card__title-text">
+				{displayName}
+			</div>
+		</Stack>
+	</div>
+	{#if displayContent != null && displayContent.length > 0}
+		<Spacer size="sm" />
+		<div
+			class="vault-explorer-feed-card__content"
+			style="-webkit-line-clamp: {currentLineClamp};"
 		>
-			<Stack spacing="xs">
-				{#if enableFileIcons}
-					<Icon iconId={getIconIdForFile(baseName, extension)} />
-				{/if}
-				<div class="vault-explorer-feed-card__title-text">
-					{displayName}
-				</div>
-			</Stack>
+			{@html displayContent}
 		</div>
-		{#if displayContent != null && displayContent.length > 0}
-			<div
-				class="vault-explorer-feed-card__content"
-				style="-webkit-line-clamp: {currentLineClamp};"
-			>
-				{@html displayContent}
-			</div>
-		{/if}
-		{#if tags != null}
-			<div class="vault-explorer-feed-card__tags">
-				<Wrap spacingX="xs" spacingY="xs">
-					{#each tags as tag}
-						<Tag name={tag} variant="unstyled" />
-					{/each}
-				</Wrap>
-			</div>
-		{/if}
-		<div class="vault-explorer-feed-card__creation-time">
-			{creationString}
-		</div>
-	</Stack>
+	{/if}
+	{#if displayContent != null}
+		<Spacer size="sm" />
+	{/if}
+	<div class="vault-explorer-feed-card__creation-time">
+		{creationString}
+	</div>
 </div>
 
 <style>

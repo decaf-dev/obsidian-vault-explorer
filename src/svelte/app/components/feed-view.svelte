@@ -44,7 +44,6 @@
 				extension={fileRenderData.extension}
 				baseName={fileRenderData.baseName}
 				path={fileRenderData.path}
-				tags={fileRenderData.tags}
 				content={fileRenderData.content}
 				createdMillis={fileRenderData.createdMillis}
 				isFavorite={fileRenderData.isFavorite}
