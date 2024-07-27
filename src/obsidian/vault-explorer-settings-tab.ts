@@ -14,17 +14,13 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import {
-	CollapseStyle,
-	CoverImageSource,
-	FileInteractionStyle,
-	TExplorerView,
-} from "src/types";
+import { CollapseStyle, CoverImageSource, TExplorerView } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import { PluginEvent } from "src/event/types";
 
 import "./styles.css";
+import { clearSocialImageCache } from "src/svelte/app/services/social-media-image";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -653,29 +649,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			target: containerEl,
 		});
 
-		new Setting(containerEl).setName("Storage").setHeading();
-
-		const configFolderDesc = new DocumentFragment();
-		configFolderDesc.createDiv({
-			text: "Set the plugin configuration folder.",
-		});
-		configFolderDesc.createDiv({
-			text: "Restart Obsidian after changing this setting.",
-			cls: "mod-warning",
-		});
-
-		new Setting(containerEl)
-			.setName("Config folder")
-			.setDesc(configFolderDesc)
-			.addText((component) =>
-				component
-					.setValue(this.plugin.settings.configDir)
-					.onChange(async (value) => {
-						this.plugin.settings.configDir = value;
-						await this.plugin.saveSettings();
-					})
-			);
-
 		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
 			.setName("Log level")
@@ -699,6 +672,40 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+
+		new Setting(containerEl).setName("Data").setHeading();
+
+		const configFolderDesc = new DocumentFragment();
+		configFolderDesc.createDiv({
+			text: "Set the plugin configuration folder.",
+		});
+		configFolderDesc.createDiv({
+			text: "Restart Obsidian after changing this setting.",
+			cls: "mod-warning vault-explorer-setting-description",
+		});
+
+		new Setting(containerEl)
+			.setName("Config folder")
+			.setDesc(configFolderDesc)
+			.addText((component) =>
+				component
+					.setValue(this.plugin.settings.configDir)
+					.onChange(async (value) => {
+						this.plugin.settings.configDir = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Social media image cache")
+			.addButton((button) =>
+				button
+					.setClass("mod-destructive")
+					.setButtonText("Clear cache")
+					.onClick(async () => {
+						await clearSocialImageCache();
+					})
+			);
 	}
 
 	onClose() {

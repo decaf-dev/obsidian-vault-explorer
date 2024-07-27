@@ -1,4 +1,4 @@
-import { ItemView, Vault, WorkspaceLeaf } from "obsidian";
+import { ItemView, WorkspaceLeaf } from "obsidian";
 
 import { VAULT_EXPLORER_VIEW } from "src/constants";
 import VaultExplorerApp from "../svelte/app/index.svelte";
