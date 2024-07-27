@@ -199,7 +199,7 @@
 		handleCardContextMenu(e);
 	}}
 	on:focus={() => {}}
-	on:mouseover
+	on:mouseover={handleCardMouseOver}
 >
 	<div class="vault-explorer-grid-card__cover">
 		{#if imgSrc !== null}
