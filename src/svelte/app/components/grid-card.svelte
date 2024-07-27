@@ -269,18 +269,8 @@
 	{#if hasFooterContent}<Divider />{/if}
 	{#if hasFooterContent}
 		<div class="vault-explorer-grid-card__footer">
-			{#if tags !== null}
-				<div class="vault-explorer-grid-card__tags">
-					<Wrap spacingX="sm" spacingY="sm">
-						{#each tags as tag}
-							<Tag name={tag} />
-						{/each}
-					</Wrap>
-				</div>
-			{/if}
 			{#if custom1 !== null || custom2 !== null || custom3 !== null}
 				<div class="vault-explorer-grid-card__properties">
-					<Spacer size="md" />
 					<Wrap spacingX="sm" spacingY="sm"
 						>{#if custom1 !== null}<Property
 								name={plugin.settings.properties.custom1}
@@ -294,6 +284,16 @@
 								name={plugin.settings.properties.custom3}
 								value={custom3}
 							/>{/if}
+					</Wrap>
+				</div>
+			{/if}
+			{#if tags !== null}
+				<Spacer size="md" />
+				<div class="vault-explorer-grid-card__tags">
+					<Wrap spacingX="sm" spacingY="sm">
+						{#each tags as tag}
+							<Tag name={tag} variant="unstyled" />
+						{/each}
 					</Wrap>
 				</div>
 			{/if}
@@ -383,6 +383,6 @@
 	}
 
 	.vault-explorer-grid-card__url:hover {
-		color: var(--color-base-50);
+		color: var(--text-faint);
 	}
 </style>
