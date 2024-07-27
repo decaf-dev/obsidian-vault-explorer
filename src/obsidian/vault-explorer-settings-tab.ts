@@ -14,17 +14,13 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import {
-	CollapseStyle,
-	CoverImageSource,
-	FileInteractionStyle,
-	TExplorerView,
-} from "src/types";
+import { CollapseStyle, CoverImageSource, TExplorerView } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import { PluginEvent } from "src/event/types";
 
 import "./styles.css";
+import { clearSocialImageCache } from "src/svelte/app/services/social-media-image";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -699,6 +695,19 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					}
 				);
 			});
+
+		new Setting(containerEl).setName("Cache").setHeading();
+
+		new Setting(containerEl)
+			.setName("Social media image cache")
+			.addButton((button) =>
+				button
+					.setClass("mod-destructive")
+					.setButtonText("Clear cache")
+					.onClick(async () => {
+						await clearSocialImageCache();
+					})
+			);
 	}
 
 	onClose() {

@@ -1,6 +1,6 @@
 import { DBSchema, IDBPDatabase, openDB } from "idb";
 import Logger from "js-logger";
-import { requestUrl } from "obsidian";
+import { Notice, requestUrl } from "obsidian";
 
 const DATABASE_NAME = "vaultexplorer";
 const STORE_NAME = "socialMediaImage";
@@ -24,8 +24,22 @@ export const clearSocialImageCache = async () => {
 		functionName: "clearSocialMediaImageCache",
 		message: "called",
 	});
-	const db = await openDatabase();
-	await db.clear(STORE_NAME);
+	try {
+		const db = await openDatabase();
+		await db.clear(STORE_NAME);
+		new Notice("Vault Explorer: social media image cache cleared");
+	} catch (err) {
+		new Notice("Failed to clear social media image cache");
+		const error = err as Error;
+		Logger.error(
+			{
+				fileName: "social-media-image.ts",
+				functionName: "clearSocialMediaImageCache",
+				message: "failed to clear cache",
+			},
+			error.message
+		);
+	}
 };
 
 export const fetchSocialImage = async (url: string) => {
