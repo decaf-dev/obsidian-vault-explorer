@@ -287,8 +287,10 @@
 					</Wrap>
 				</div>
 			{/if}
+			{#if (custom1 !== null || custom2 !== null || custom3 !== null) && tags !== null}
+				<Spacer size="sm" />
+			{/if}
 			{#if tags !== null}
-				<Spacer size="md" />
 				<div class="vault-explorer-grid-card__tags">
 					<Wrap spacingX="sm" spacingY="sm">
 						{#each tags as tag}
