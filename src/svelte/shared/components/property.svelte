@@ -1,6 +1,8 @@
 <script lang="ts">
 	import VaultExplorerPlugin from "src/main";
 	import store from "../services/store";
+	import Icon from "./icon.svelte";
+	import Stack from "./stack.svelte";
 
 	export let name: string;
 	export let value: string;
@@ -35,29 +37,28 @@
 	}
 </script>
 
-<a
-	href="none"
-	class="tag vault-explorer-property"
-	target="_blank"
-	rel="noopener"
-	on:click={handleClick}
->
-	{formattedValue}
-</a>
+<div class="vault-explorer-property">
+	<Stack spacing="xs">
+		<Icon iconId="text" size="xs" />
+		<a href="none" target="_blank" rel="noopener" on:click={handleClick}>
+			{formattedValue}
+		</a>
+	</Stack>
+</div>
 
 <style>
-	.vault-explorer-property {
-		background-color: var(--color-base-20) !important;
-		color: var(--text-normal) !important;
+	.vault-explorer-property a {
 		width: max-content;
-		text-wrap: nowrap;
+		color: var(--text-muted);
+		text-decoration: none;
+		font-size: var(--font-smallest);
 	}
 
-	.vault-explorer-property:hover {
-		background-color: var(--color-base-30) !important;
+	.vault-explorer-property a:hover {
+		color: var(--text-faint);
 	}
 
-	.vault-explorer-property:focus-visible {
+	.vault-explorer-property a:focus-visible {
 		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
 	}
 </style>

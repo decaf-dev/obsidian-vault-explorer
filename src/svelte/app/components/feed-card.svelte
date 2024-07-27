@@ -194,10 +194,6 @@
 		});
 	}
 
-	function handleTitleMouseOver(e: MouseEvent) {
-		handleCardMouseOver(e);
-	}
-
 	const creationString = formatAsBearTimeString(createdMillis);
 
 	function getDisplayContent(
@@ -251,7 +247,7 @@
 		handleCardContextMenu(e);
 	}}
 	on:focus={() => {}}
-	on:mouseover
+	on:mouseover={handleCardMouseOver}
 >
 	<Stack spacing="sm" direction="column">
 		<div
@@ -273,7 +269,6 @@
 					handleTitleClick();
 				}
 			}}
-			on:mouseover={handleTitleMouseOver}
 		>
 			<Stack spacing="xs">
 				{#if enableFileIcons}

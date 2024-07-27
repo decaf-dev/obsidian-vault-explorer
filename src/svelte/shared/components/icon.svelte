@@ -3,7 +3,7 @@
 	import { afterUpdate, onMount } from "svelte";
 	import { getSvgData } from "../services/get-svg-data";
 
-	type IconSize = "xs" | "sm" | "md";
+	type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 	export let ariaLabel: string = "";
 	export let iconId: string;
@@ -42,6 +42,8 @@
 		if (size === "xs") return `var(--icon-xs)`;
 		if (size === "sm") return `var(--icon-sm)`;
 		if (size === "md") return `var(--icon-m)`;
+		if (size === "lg") return `24px`;
+		if (size === "xl") return `var(--icon-xl)`;
 		return "";
 	}
 
@@ -54,6 +56,10 @@
 			className += " vault-explorer-icon--sm";
 		} else if (size === "md") {
 			className += " vault-explorer-icon--md";
+		} else if (size === "lg") {
+			className += " vault-explorer-icon--lg";
+		} else if (size === "xl") {
+			className += " vault-explorer-icon--xl";
 		}
 		return className;
 	}
@@ -91,5 +97,16 @@
 	.vault-explorer-icon--md {
 		width: var(--icon-m);
 		height: var(--icon-m);
+	}
+
+	/* Obsidian has 18px instead of 24px. I think this a bug */
+	.vault-explorer-icon--lg {
+		width: 24px;
+		height: 24px;
+	}
+
+	.vault-explorer-icon--xl {
+		width: var(--icon-xl);
+		height: var(--icon-xl);
 	}
 </style>

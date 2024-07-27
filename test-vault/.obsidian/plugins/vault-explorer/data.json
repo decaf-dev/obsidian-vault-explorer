@@ -75,7 +75,7 @@
   "enableClockUpdates": true,
   "enableFileIcons": true,
   "enableScrollButtons": true,
-  "filterGroupsWidth": "149px",
+  "filterGroupsWidth": "201px",
   "shouldWrapFilterGroups": false,
   "pageSize": 25,
   "viewOrder": [
@@ -84,6 +84,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.33.0",
+  "pluginVersion": "1.33.1",
   "logLevel": "trace"
 }
