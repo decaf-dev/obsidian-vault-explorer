@@ -92,7 +92,7 @@ Premium features are available to users who purchase a [Vault Explorer license](
 | Name                                                              | Categories         | Documented |
 | ----------------------------------------------------------------- | ------------------ | ---------- |
 | Move focus with left and right arrows                             | Accessibility      | ✅         |
-| Image placeholder on grid card                                    | Cover image        |            |
+| See an image placeholder on the grid card                         | Cover image        |            |
 | Load an external image url                                        | Cover image        |            |
 | Load a social media image from url                                | Cover image        |            |
 | Load an wiki link image from the frontmatter                      | Cover image        |            |
