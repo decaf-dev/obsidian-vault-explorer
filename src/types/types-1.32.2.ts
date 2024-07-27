@@ -1,5 +1,4 @@
-/** @see {isVaultExplorerPluginSettings} ts-auto-guard:type-guard */
-export interface VaultExplorerPluginSettings {
+export interface VaultExplorerPluginSettings_1_32_2 {
 	properties: {
 		favorite: string;
 		url: string;
@@ -29,6 +28,7 @@ export interface VaultExplorerPluginSettings {
 	titleWrapping: WordBreak;
 	enableClockUpdates: boolean;
 	enableFileIcons: boolean;
+	fileInteractionStyle: FileInteractionStyle;
 	currentView: TExplorerView | null;
 	enableScrollButtons: boolean;
 	pageSize: number;
@@ -40,33 +40,30 @@ export interface VaultExplorerPluginSettings {
 	logLevel: string;
 }
 
-export type FileInteractionStyle = "title" | "content";
+type FileInteractionStyle = "title" | "content";
 
 interface BaseView {
 	isEnabled: boolean;
 }
 
-export interface TTableView extends BaseView {}
+interface TTableView extends BaseView {}
 
-export interface TListView extends BaseView {
+interface TListView extends BaseView {
 	showTags: boolean;
 }
 
-export interface TGridView extends BaseView {
+interface TGridView extends BaseView {
 	coverImageSource: CoverImageSource;
 	loadSocialMediaImage: boolean;
 }
 
-export type CoverImageSource =
-	| "frontmatter-only"
-	| "frontmatter-and-body"
-	| "off";
+type CoverImageSource = "frontmatter-only" | "frontmatter-and-body" | "off";
 
-export interface TDashboardView extends BaseView {}
+interface TDashboardView extends BaseView {}
 
-export type CollapseStyle = "no-new-lines" | "no-extra-new-lines";
+type CollapseStyle = "no-new-lines" | "no-extra-new-lines";
 
-export interface TFeedView extends BaseView {
+interface TFeedView extends BaseView {
 	collapseStyle: CollapseStyle;
 	removeH1: boolean;
 	lineClampSmall: number;
@@ -74,36 +71,36 @@ export interface TFeedView extends BaseView {
 	lineClampLarge: number;
 }
 
-export interface TRecommendedView extends BaseView {}
+interface TRecommendedView extends BaseView {}
 
-export interface TRelatedView extends BaseView {}
+interface TRelatedView extends BaseView {}
 
 interface BaseFilter {
 	isEnabled: boolean;
 }
 
-export interface TSearchFilter extends BaseFilter {
+interface TSearchFilter extends BaseFilter {
 	value: string;
 }
 
-export interface TFavoritesFilter extends BaseFilter {
+interface TFavoritesFilter extends BaseFilter {
 	value: boolean;
 }
 
-export interface TSortFilter extends BaseFilter {
+interface TSortFilter extends BaseFilter {
 	value: SortFilterOption;
 }
 
-export interface TTimestampFilter extends BaseFilter {
+interface TTimestampFilter extends BaseFilter {
 	value: TimestampFilterOption;
 }
 
-export interface TCustomFilter extends BaseFilter {
+interface TCustomFilter extends BaseFilter {
 	selectedGroupId: string;
 	groups: TFilterGroup[];
 }
 
-export type TimestampFilterOption =
+type TimestampFilterOption =
 	| "created-today"
 	| "modified-today"
 	| "created-this-week"
@@ -112,16 +109,16 @@ export type TimestampFilterOption =
 	| "modified-2-weeks"
 	| "all";
 
-export type SortFilterOption =
+type SortFilterOption =
 	| "file-name-asc"
 	| "file-name-desc"
 	| "modified-asc"
 	| "modified-desc"
 	| "random";
 
-export type WordBreak = "normal" | "break-word";
+type WordBreak = "normal" | "break-word";
 
-export enum TExplorerView {
+enum TExplorerView {
 	DASHBOARD = "dashboard",
 	GRID = "grid",
 	LIST = "list",
@@ -131,9 +128,9 @@ export enum TExplorerView {
 	RELATED = "related",
 }
 
-export type FilterOperator = "and" | "or";
+type FilterOperator = "and" | "or";
 
-export enum TextFilterCondition {
+enum TextFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	CONTAINS = "contains",
@@ -144,14 +141,14 @@ export enum TextFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export enum ListFilterCondition {
+enum ListFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export enum NumberFilterCondition {
+enum NumberFilterCondition {
 	IS_EQUAL = "is-equal",
 	IS_NOT_EQUAL = "is-not-equal",
 	IS_GREATER = "is-greater",
@@ -162,14 +159,14 @@ export enum NumberFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export enum CheckboxFilterCondition {
+enum CheckboxFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	EXISTS = "exists",
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export enum DateFilterCondition {
+enum DateFilterCondition {
 	IS = "is",
 	IS_BEFORE = "is-before",
 	IS_AFTER = "is-after",
@@ -179,19 +176,19 @@ export enum DateFilterCondition {
 	DOES_NOT_EXIST = "does-not-exist",
 }
 
-export enum ContentFilterCondition {
+enum ContentFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	IS_EMPTY = "is-empty",
 	IS_NOT_EMPTY = "is-not-empty",
 }
 
-export enum FolderFilterCondition {
+enum FolderFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 }
 
-export enum FileNameFilterCondition {
+enum FileNameFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	CONTAINS = "contains",
@@ -200,7 +197,7 @@ export enum FileNameFilterCondition {
 	ENDS_WITH = "ends-with",
 }
 
-export type FilterCondition =
+type FilterCondition =
 	| TextFilterCondition
 	| NumberFilterCondition
 	| DateFilterCondition
@@ -211,7 +208,7 @@ export type FilterCondition =
 	| FileNameFilterCondition;
 
 //This matches the Obsidian property types
-export enum PropertyType {
+enum PropertyType {
 	TEXT = "text",
 	NUMBER = "number",
 	LIST = "list",
@@ -220,14 +217,14 @@ export enum PropertyType {
 	DATETIME = "datetime",
 }
 
-export enum FilterRuleType {
+enum FilterRuleType {
 	PROPERTY = "property",
 	FOLDER = "folder",
 	FILE_NAME = "file-name",
 	CONTENT = "content",
 }
 
-export enum DatePropertyFilterValue {
+enum DatePropertyFilterValue {
 	TODAY = "today",
 	TOMORROW = "tomorrow",
 	YESTERDAY = "yesterday",
@@ -248,35 +245,35 @@ interface BaseFilterRule {
 	matchWhenPropertyDNE: boolean;
 }
 
-export interface TextPropertyFilterRule extends BaseFilterRule {
+interface TextPropertyFilterRule extends BaseFilterRule {
 	type: FilterRuleType.PROPERTY;
 	propertyType: PropertyType.TEXT;
 	propertyName: string;
 	condition: TextFilterCondition;
 }
 
-export interface NumberPropertyFilterRule extends BaseFilterRule {
+interface NumberPropertyFilterRule extends BaseFilterRule {
 	type: FilterRuleType.PROPERTY;
 	propertyType: PropertyType.NUMBER;
 	propertyName: string;
 	condition: NumberFilterCondition;
 }
 
-export interface ListPropertyFilterRule extends BaseFilterRule {
+interface ListPropertyFilterRule extends BaseFilterRule {
 	type: FilterRuleType.PROPERTY;
 	propertyType: PropertyType.LIST;
 	propertyName: string;
 	condition: ListFilterCondition;
 }
 
-export interface CheckboxPropertyFilterRule extends BaseFilterRule {
+interface CheckboxPropertyFilterRule extends BaseFilterRule {
 	type: FilterRuleType.PROPERTY;
 	propertyType: PropertyType.CHECKBOX;
 	propertyName: string;
 	condition: CheckboxFilterCondition;
 }
 
-export interface DatePropertyFilterRule extends BaseFilterRule {
+interface DatePropertyFilterRule extends BaseFilterRule {
 	type: FilterRuleType.PROPERTY;
 	propertyType: PropertyType.DATE | PropertyType.DATETIME;
 	propertyName: string;
@@ -284,36 +281,36 @@ export interface DatePropertyFilterRule extends BaseFilterRule {
 	valueData: string;
 }
 
-export interface FolderFilterRule extends BaseFilterRule {
+interface FolderFilterRule extends BaseFilterRule {
 	type: FilterRuleType.FOLDER;
 	condition: FolderFilterCondition;
 	includeSubfolders: boolean;
 }
 
-export interface FileNameFilterRule extends BaseFilterRule {
+interface FileNameFilterRule extends BaseFilterRule {
 	type: FilterRuleType.FILE_NAME;
 	condition: FileNameFilterCondition;
 }
 
-export interface ContentFilterRule extends BaseFilterRule {
+interface ContentFilterRule extends BaseFilterRule {
 	type: FilterRuleType.CONTENT;
 	condition: ContentFilterCondition;
 }
 
-export type TFilterRule =
+type TFilterRule =
 	| PropertyFilterRule
 	| FolderFilterRule
 	| FileNameFilterRule
 	| ContentFilterRule;
 
-export type PropertyFilterRule =
+type PropertyFilterRule =
 	| TextPropertyFilterRule
 	| NumberPropertyFilterRule
 	| ListPropertyFilterRule
 	| CheckboxPropertyFilterRule
 	| DatePropertyFilterRule;
 
-export interface TFilterGroup {
+interface TFilterGroup {
 	id: string;
 	name: string;
 	rules: TFilterRule[];

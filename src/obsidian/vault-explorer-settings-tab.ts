@@ -53,26 +53,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("General").setHeading();
 
-		new Setting(containerEl)
-			.setName("File interaction")
-			.setDesc("Set how a file should be interacted with.")
-			.addDropdown((cb) => {
-				cb.addOptions({
-					content: "Click on content",
-					title: "Click on title",
-				});
-				cb.setValue(this.plugin.settings.fileInteractionStyle).onChange(
-					async (value) => {
-						this.plugin.settings.fileInteractionStyle =
-							value as FileInteractionStyle;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.FILE_INTERACTION_STYLE
-						);
-					}
-				);
-			});
-
 		// new Setting(containerEl)
 		// 	.setName("Title wrapping")
 		// 	.setDesc("Set the wrapping style for the title.")
