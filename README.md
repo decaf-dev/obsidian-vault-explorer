@@ -38,7 +38,7 @@ Vault Explorer is a work in progress. Please check the GitHub repository and doc
 
 ![](/readme/list-view.png)
 
-### List view
+### Feed view
 
 ![](/readme/feed-view.png)
 
@@ -46,7 +46,11 @@ Vault Explorer is a work in progress. Please check the GitHub repository and doc
 
 <img src="readme/custom-filter.png" width="500">
 
+<br/>
+
 <img src="readme/custom-filter-options-1.png" width="500">
+
+<br/>
 
 <img src="readme/custom-filter-options-2.png" width="500">
 
