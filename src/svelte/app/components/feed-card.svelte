@@ -332,6 +332,7 @@
 		overflow: hidden;
 		word-break: normal;
 		color: var(--text-muted);
+		font-size: var(--font-smaller);
 		white-space: pre-wrap;
 		text-overflow: ellipsis;
 		-webkit-line-clamp: unset;
