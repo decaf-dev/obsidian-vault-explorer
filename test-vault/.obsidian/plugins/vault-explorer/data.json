@@ -75,7 +75,7 @@
   "enableClockUpdates": true,
   "enableFileIcons": true,
   "enableScrollButtons": true,
-  "filterGroupsWidth": "149px",
+  "filterGroupsWidth": "201px",
   "shouldWrapFilterGroups": false,
   "pageSize": 25,
   "viewOrder": [
