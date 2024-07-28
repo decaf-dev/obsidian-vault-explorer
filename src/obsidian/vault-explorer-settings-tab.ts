@@ -20,7 +20,7 @@ import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import { PluginEvent } from "src/event/types";
 
 import "./styles.css";
-import { clearSocialImageCache } from "src/svelte/app/services/social-media-image";
+import { clearSocialMediaImageCache } from "src/svelte/app/services/social-media-image-cache";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -697,13 +697,13 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Social media image cache")
+			.setName("Clear social media image cache")
 			.addButton((button) =>
 				button
 					.setClass("mod-destructive")
-					.setButtonText("Clear cache")
+					.setButtonText("Clear")
 					.onClick(async () => {
-						await clearSocialImageCache();
+						await clearSocialMediaImageCache();
 					})
 			);
 	}
