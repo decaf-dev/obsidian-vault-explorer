@@ -151,7 +151,7 @@ export const formatFileDataForRender = ({
 	}
 
 	//Handle image property
-	if (imageUrl === null) {
+	if (imageUrl === null && coverImageSource !== "off") {
 		const loadedUrl = loadPropertyValue<string>(
 			fileFrontmatter,
 			imageUrlProp,
