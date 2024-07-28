@@ -5,7 +5,7 @@ export const findFirstHttpsLink = (content: string) => {
 };
 
 export const isHttpsLink = (content: string) => {
-	const HTTPS_REGEX = /https:\/\/[^\s]+$/;
+	const HTTPS_REGEX = /^https:\/\/[^\s]+$/;
 	const match = content.match(HTTPS_REGEX);
 	return match ? true : false;
 };

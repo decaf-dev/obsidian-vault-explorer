@@ -1,5 +1,4 @@
 <script lang="ts">
-	import IconButton from "../../shared/components/icon-button.svelte";
 	import Tag from "../../shared/components/tag.svelte";
 	import Property from "../../shared/components/property.svelte";
 	import VaultExplorerPlugin from "src/main";
@@ -12,15 +11,19 @@
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
-	import { fetchSocialImage } from "../services/social-media-image";
 	import { PluginEvent } from "src/event/types";
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
 	import Flex from "src/svelte/shared/components/flex.svelte";
-	import { getDomainFromUrl, isHttpsLink } from "../services/utils/url-utils";
-	import { isImageUrl } from "../services/utils/image-utils";
+	import { getDomainFromUrl } from "../services/utils/url-utils";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import Divider from "src/svelte/shared/components/divider.svelte";
+	import { fetchSocialMediaImage } from "../services/fetch-social-media-image";
+	import {
+		getSocialMediaImageEntry,
+		isSocialMediaImageEntryExpired,
+		putSocialMediaImageUrl,
+	} from "../services/social-media-image-cache";
 
 	export let displayName: string;
 	export let path: string;
@@ -38,7 +41,9 @@
 	let wordBreak: WordBreak = "normal";
 	let enableFileIcons: boolean = false;
 	let loadSocialMediaImage: boolean = true;
-	let imgSrc: string | null = null;
+	let imgSrc: string | null;
+
+	let isCoverImageLoaded = false;
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
@@ -49,27 +54,32 @@
 
 	const dispatch = createEventDispatcher();
 
+	let renderKey = 0;
+
 	onMount(() => {
-		if (imageUrl) {
-			if (!isHttpsLink(imageUrl) || isImageUrl(imageUrl)) {
+		async function updateImgSrc() {
+			if (imageUrl !== null) {
+				const entry = await getSocialMediaImageEntry(imageUrl);
+				if (entry) {
+					const isExpired =
+						await isSocialMediaImageEntryExpired(entry);
+					if (!isExpired) {
+						imgSrc = entry.socialMediaImageUrl;
+						return;
+					}
+				}
 				imgSrc = imageUrl;
 			}
 		}
 
-		if (loadSocialMediaImage) {
-			loadSocialImage(imageUrl);
-		}
+		updateImgSrc();
 	});
 
 	onMount(() => {
 		function handleLoadSocialMediaImageChange() {
 			const newValue = plugin.settings.views.grid.loadSocialMediaImage;
 			loadSocialMediaImage = newValue;
-			if (newValue) {
-				loadSocialImage(imageUrl);
-			} else {
-				clearSocialImage(imageUrl);
-			}
+			renderKey++;
 		}
 
 		EventManager.getInstance().on(
@@ -122,25 +132,6 @@
 		e.stopPropagation();
 	}
 
-	async function loadSocialImage(imageUrl: string | null) {
-		if (imageUrl == null) return;
-
-		//If it's a link but not an image, it's a plain url
-		//in that case, we want to load the social media image
-		if (isHttpsLink(imageUrl) && !isImageUrl(imageUrl)) {
-			imgSrc = await fetchSocialImage(imageUrl);
-		}
-	}
-
-	function clearSocialImage(imageUrl: string | null) {
-		if (imageUrl == null) return;
-		//If it's a link but not an image, it's a plain url
-		//in that case, we want to clear the social media image
-		if (isHttpsLink(imageUrl) && !isImageUrl(imageUrl)) {
-			imgSrc = null;
-		}
-	}
-
 	function handleCardClick() {
 		openInCurrentTab(plugin, path);
 	}
@@ -178,6 +169,30 @@
 
 	$: hasFooterContent =
 		tags != null || custom1 != null || custom2 != null || custom3 != null;
+
+	async function handleImageError(event: Event) {
+		const target = event.target as HTMLImageElement;
+		target.onerror = null; // Prevent infinite loop
+
+		if (!imgSrc) return;
+
+		if (loadSocialMediaImage) {
+			const socialUrl = await fetchSocialMediaImage(imgSrc);
+			if (socialUrl) {
+				putSocialMediaImageUrl(imgSrc, socialUrl);
+				target.src = socialUrl;
+				return;
+			} else {
+				isError = true;
+			}
+		}
+	}
+
+	let isError = false;
+
+	function handleImageLoad() {
+		isCoverImageLoaded = true;
+	}
 </script>
 
 <div
@@ -198,11 +213,21 @@
 	on:mouseover={handleCardMouseOver}
 >
 	<div class="vault-explorer-grid-card__cover">
-		{#if imgSrc !== null}
-			<!-- svelte-ignore a11y-missing-attribute -->
-			<img class="vault-explorer-grid-card__image" src={imgSrc} />
-		{/if}
-		{#if imgSrc === null}
+		{#each [renderKey] as k (k)}
+			{#if imgSrc !== null}
+				<!-- svelte-ignore a11y-missing-attribute -->
+				<img
+					class="vault-explorer-grid-card__image"
+					src={imgSrc}
+					style="display: {isCoverImageLoaded || isError
+						? 'block'
+						: 'none'};"
+					on:load={handleImageLoad}
+					on:error={handleImageError}
+				/>
+			{/if}
+		{/each}
+		{#if imageUrl === null}
 			<div class="vault-explorer-grid-card__cover-icon">
 				<Icon
 					iconId={getIconIdForFile(baseName, extension)}
@@ -310,6 +335,7 @@
 		box-shadow: var(--shadow-s);
 		border-radius: var(--radius-m);
 	}
+
 	/* 
 	.vault-explorer-grid-card:hover {
 		background-color: var(--background-modifier-hover);

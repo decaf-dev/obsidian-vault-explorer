@@ -12,13 +12,20 @@ import {
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
 import {
-	findFirstImageEmbed,
+	findFirstImageEmbedTarget,
 	isImageExtension,
 	isImageUrl,
 } from "./utils/image-utils";
 import { removeFrontmatter } from "./utils/content-utils";
 import { isHttpsLink } from "./utils/url-utils";
-import { getURIForEmbedLink, getURIForWikiLink } from "./utils/wiki-link-utils";
+import {
+	getURIForWikiLink,
+	getURIForWikiLinkTarget,
+} from "./utils/wiki-link-utils";
+import {
+	getSocialMediaImageEntry,
+	isSocialMediaImageEntryExpired,
+} from "./social-media-image-cache";
 
 /**
  * Formats the file's data for rendering
@@ -184,10 +191,17 @@ export const formatFileDataForRender = ({
 	if (imageUrl === null && coverImageSource === "frontmatter-and-body") {
 		if (fileContent !== null) {
 			const body = removeFrontmatter(fileContent);
-			const imageEmbed = findFirstImageEmbed(body);
-			if (imageEmbed) {
-				const uri = getURIForEmbedLink(app, imageEmbed, path);
-				imageUrl = uri;
+			const target = findFirstImageEmbedTarget(body);
+
+			if (target) {
+				let loadedUrl = target;
+				if (!target.startsWith("https://")) {
+					const uri = getURIForWikiLinkTarget(app, target, path);
+					if (uri) {
+						loadedUrl = uri;
+					}
+				}
+				imageUrl = loadedUrl;
 			}
 		}
 
