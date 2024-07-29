@@ -1,23 +1,5 @@
 import { App } from "obsidian";
 
-export const getURIForWikiLink = (app: App, value: string, path: string) => {
-	//Make sure that it is a wiki link
-	if (value.startsWith("[[") && value.endsWith("]]")) {
-		const link = value.substring(2, value.length - 2);
-		return getURIForWikiLinkTarget(app, link, path);
-	}
-	return null;
-};
-
-export const getURIForEmbedLink = (app: App, value: string, path: string) => {
-	//Make sure that it is a wiki link
-	if (value.startsWith("![[") && value.endsWith("]]")) {
-		const link = value.substring(3, value.length - 2);
-		return getURIForWikiLinkTarget(app, link, path);
-	}
-	return null;
-};
-
 export const getURIForWikiLinkTarget = (
 	app: App,
 	target: string,
