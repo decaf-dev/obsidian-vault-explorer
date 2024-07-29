@@ -87,7 +87,7 @@ Click the compass button on the left-hand sidebar to open the vault explorer vie
 
 Premium features are available to users who purchase a [Vault Explorer license](https://vaultexplorer.com/docs/premium/).
 
-Please do not share your license key with anyone. License keys that are shared will be deactivated.
+Please do not share your license key with anyone. Shared license keys will be deactivated.
 
 ## Features
 
