@@ -15,9 +15,8 @@ import { preformMigrations } from "./migrations";
 import Logger from "js-logger";
 import { formatMessageForLogger, stringToLogLevel } from "./logger";
 import { moveFocus } from "./focus-utils";
-import { loadDeviceId } from "./svelte/shared/services/device-id-utils";
-import License from "./svelte/shared/services/license";
 import { PluginEvent } from "./event/types";
+import { isVersionLessThan } from "./utils";
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -54,9 +53,6 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.app.workspace.onLayoutReady(() => {
 			this.layoutReady = true;
 		});
-
-		await loadDeviceId();
-		await License.getInstance().verifyLicense();
 	}
 
 	private registerEvents() {
@@ -174,6 +170,15 @@ export default class VaultExplorerPlugin extends Plugin {
 			if (loadedVersion !== null) {
 				const newData = preformMigrations(loadedVersion, loadedData);
 				currentData = newData;
+				if (isVersionLessThan(loadedVersion, "1.36.0")) {
+					const LOCAL_STORAGE_DEVICE_REGISTERED =
+						"vault-explorer-device-registration";
+					localStorage.removeItem(LOCAL_STORAGE_DEVICE_REGISTERED);
+
+					//Clean up the old device id from the versioning system
+					const LOCAL_STORAGE_KEY = "vault-explorer-id";
+					localStorage.removeItem(LOCAL_STORAGE_KEY);
+				}
 			}
 		}
 

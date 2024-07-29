@@ -33,14 +33,14 @@
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
 
-	let isDeviceRegistered = false;
+	let hasValidLicenseKey = false;
 
 	const dispatch = createEventDispatcher();
 
 	License.getInstance()
-		.getIsDeviceRegisteredStore()
-		.subscribe((isRegistered) => {
-			isDeviceRegistered = isRegistered;
+		.getHasValidKeyStore()
+		.subscribe((hasValidKey) => {
+			hasValidLicenseKey = hasValidKey;
 		});
 
 	function handleActionsClick(e: CustomEvent) {
@@ -142,7 +142,7 @@
 		</select>
 		<slot name="before-condition"></slot>
 		<select
-			disabled={type === FilterRuleType.CONTENT && !isDeviceRegistered}
+			disabled={type === FilterRuleType.CONTENT && !hasValidLicenseKey}
 			value={condition}
 			on:change={handleConditionChange}
 		>
