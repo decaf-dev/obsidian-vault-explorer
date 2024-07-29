@@ -18,7 +18,7 @@
 		if (hasValidKey) {
 			message = {
 				type: "success",
-				text: "Premium features are active.",
+				text: "Premium features are enabled.",
 			};
 		}
 		hasValidLicenseKey = hasValidKey;
@@ -38,7 +38,7 @@
 			hasValidLicenseKey = true;
 			message = {
 				type: "success",
-				text: "Key validated successfully.",
+				text: "Premium features are enabled.",
 			};
 			EventManager.getInstance().emit(
 				PluginEvent.LICENSE_KEY_VALIDATION_CHANGE,
