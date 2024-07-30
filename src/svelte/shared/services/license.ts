@@ -67,11 +67,11 @@ export default class License {
 			const decodedString = decodedBuffer.toString("utf-8");
 			const split = decodedString.split("|");
 
-			const data = split[0];
-			const signatureBase64 = split[1];
+			const signatureBase64 = split[0];
+			const data = split[1];
 
-			const dataBuffer = Buffer.from(data);
 			const signatureBuffer = Buffer.from(signatureBase64, "base64");
+			const dataBuffer = Buffer.from(data);
 
 			const verify = crypto.createVerify("SHA256");
 			verify.update(data);
