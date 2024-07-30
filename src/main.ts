@@ -17,6 +17,7 @@ import { formatMessageForLogger, stringToLogLevel } from "./logger";
 import { moveFocus } from "./focus-utils";
 import { PluginEvent } from "./event/types";
 import { isVersionLessThan } from "./utils";
+import License from "./svelte/shared/services/license";
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -25,6 +26,8 @@ export default class VaultExplorerPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		this.setupLogger();
+
+		await License.getInstance().loadStoredKey();
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
@@ -176,8 +179,13 @@ export default class VaultExplorerPlugin extends Plugin {
 					localStorage.removeItem(LOCAL_STORAGE_DEVICE_REGISTERED);
 
 					//Clean up the old device id from the versioning system
-					const LOCAL_STORAGE_KEY = "vault-explorer-id";
-					localStorage.removeItem(LOCAL_STORAGE_KEY);
+					const LOCAL_STORAGE_ID = "vault-explorer-id";
+					localStorage.removeItem(LOCAL_STORAGE_ID);
+
+					//Clean up the old device id from the versioning system
+					const LOCAL_STORAGE_LICENSE_KEY =
+						"vault-explorer-license-key";
+					localStorage.removeItem(LOCAL_STORAGE_LICENSE_KEY);
 				}
 			}
 		}
