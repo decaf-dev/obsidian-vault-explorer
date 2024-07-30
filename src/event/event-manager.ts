@@ -26,10 +26,7 @@ export default class EventManager {
 	}
 
 	// Method to remove an event listener
-	public off(
-		eventName: PluginEvent,
-		callbackToRemove: EventCallback
-	): void {
+	public off(eventName: PluginEvent, callbackToRemove: EventCallback): void {
 		if (!this.eventListeners[eventName]) {
 			return;
 		}
@@ -40,14 +37,32 @@ export default class EventManager {
 
 	// Method to trigger all callbacks associated with an event
 	public emit(eventName: PluginEvent, ...data: unknown[]): void {
-		Logger.trace({ fileName: "event-manager.ts", functionName: "emit", message: "called" });
+		Logger.trace({
+			fileName: "event-manager.ts",
+			functionName: "emit",
+			message: "called",
+		});
 
 		if (!this.eventListeners[eventName]) {
-			Logger.debug({ fileName: "event-manager.ts", functionName: "emit", message: "no event listeners found for event. returning..." }, eventName);
+			Logger.debug(
+				{
+					fileName: "event-manager.ts",
+					functionName: "emit",
+					message: "no event listeners found for event. returning...",
+				},
+				{ eventName }
+			);
 			return;
 		}
 
-		Logger.debug({ fileName: "event-manager.ts", functionName: "emit", message: "emiting event" }, eventName);
+		Logger.debug(
+			{
+				fileName: "event-manager.ts",
+				functionName: "emit",
+				message: "emiting event",
+			},
+			{ eventName }
+		);
 
 		this.eventListeners[eventName].forEach((callback) => {
 			callback(...data);
