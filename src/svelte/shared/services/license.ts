@@ -68,7 +68,7 @@ export default class License {
 			const split = decodedString.split("|");
 
 			const signatureBase64 = split[0];
-			const data = split[1];
+			const data = split[1].trim();
 
 			const signatureBuffer = Buffer.from(signatureBase64, "base64");
 			const dataBuffer = Buffer.from(data);
