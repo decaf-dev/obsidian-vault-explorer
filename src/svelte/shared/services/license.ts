@@ -1,7 +1,14 @@
 import Logger from "js-logger";
 import { writable } from "svelte/store";
+import crypto from "crypto";
 
 const LOCAL_STORAGE_LICENSE_KEY = "vault-explorer-license-key";
+
+const PUBLIC_KEY_PEM = `
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAO539qAsgBzbukUNDuOtPZKXNj8MSXvt3zS1ci4plDBA=
+-----END PUBLIC KEY-----
+`;
 
 export default class License {
 	private licenseKey: string;
@@ -11,22 +18,19 @@ export default class License {
 	private static instance: License;
 
 	constructor() {
+		this.licenseKey = "";
+		this.hasValidKey = false;
+		this.hasValidKeyStore.set(false);
+	}
+
+	async loadStoredKey() {
 		const storedKey = this.getStoredLicenseKey();
-		const hasKey = storedKey !== null;
-
-		this.licenseKey = storedKey ?? "";
-		this.hasValidKey = hasKey;
-		this.hasValidKeyStore.set(hasKey);
-
 		if (storedKey) {
-			Logger.debug(
-				{
-					fileName: "license.ts",
-					functionName: "constructor",
-					message: "loaded stored license key",
-				},
-				storedKey
-			);
+			const isValid = await this.validateKey(storedKey);
+
+			this.licenseKey = storedKey;
+			this.hasValidKey = isValid;
+			this.hasValidKeyStore.set(isValid);
 		}
 	}
 
@@ -46,8 +50,46 @@ export default class License {
 		return result;
 	}
 
+	/**
+	 * Verify the licenseKey using the public key.
+	 * @param signature- The licenseKey to verify. This is created by signing a file with the private key.
+	 */
 	async validateKey(licenseKey: string) {
-		return true;
+		Logger.trace({
+			fileName: "license.ts",
+			functionName: "validateKey",
+			message: "called",
+		});
+
+		try {
+			// Decode Base64 to buffer
+			const decodedBuffer = Buffer.from(licenseKey, "base64");
+			const decodedString = decodedBuffer.toString("utf-8");
+			const split = decodedString.split("|");
+
+			const data = split[0];
+			const signatureBase64 = split[1];
+
+			const dataBuffer = Buffer.from(data);
+			const signatureBuffer = Buffer.from(signatureBase64, "base64");
+
+			const verify = crypto.createVerify("SHA256");
+			verify.update(data);
+			verify.end();
+
+			return crypto.verify(
+				null,
+				dataBuffer,
+				{
+					key: PUBLIC_KEY_PEM,
+					format: "pem",
+					type: "spki",
+				},
+				signatureBuffer
+			);
+		} catch (err) {
+			return false;
+		}
 	}
 
 	removeKey() {
@@ -57,18 +99,22 @@ export default class License {
 			message: "called",
 		});
 
-		this.setStoredKey("");
+		this.setStoredKey(null);
 		this.hasValidKeyStore.set(false);
 		this.hasValidKey = false;
 	}
 
-	private setStoredKey(value: string) {
+	private setStoredKey(value: string | null) {
 		Logger.trace({
 			fileName: "license.ts",
 			functionName: "setStoredKey",
 			message: "called",
 		});
-		localStorage.setItem(LOCAL_STORAGE_LICENSE_KEY, value);
+		if (value !== null) {
+			localStorage.setItem(LOCAL_STORAGE_LICENSE_KEY, value);
+		} else {
+			localStorage.removeItem(LOCAL_STORAGE_LICENSE_KEY);
+		}
 	}
 
 	private getStoredLicenseKey() {

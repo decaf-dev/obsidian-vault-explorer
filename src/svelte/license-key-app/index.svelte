@@ -13,6 +13,8 @@
 	let hasValidLicenseKey = false;
 	let message: Message | null = null;
 
+	const LICENSE_KEY_SIZE = 148;
+
 	onMount(() => {
 		const hasValidKey = License.getInstance().getHasValidKey();
 		if (hasValidKey) {
@@ -26,6 +28,8 @@
 
 	async function handleInputChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
+
+		if (value.length < LICENSE_KEY_SIZE) return;
 
 		message = {
 			type: "info",
@@ -96,7 +100,11 @@
 	</div>
 	<div class="setting-item-control">
 		{#if hasValidLicenseKey === false}
-			<input type="text" maxlength="8" on:input={handleInputChange} />
+			<input
+				type="text"
+				maxlength={LICENSE_KEY_SIZE}
+				on:input={handleInputChange}
+			/>
 		{/if}
 		{#if hasValidLicenseKey === true}
 			<button class="mod-destructive" on:click={handleRemoveButtonClick}
