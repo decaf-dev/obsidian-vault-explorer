@@ -21,12 +21,12 @@
 	import PremiumMessage from "src/svelte/shared/components/premium-message.svelte";
 	const dispatch = createEventDispatcher();
 
-	let isDeviceRegistered = false;
+	let hasValidLicenseKey = false;
 
 	License.getInstance()
-		.getIsDeviceRegisteredStore()
-		.subscribe((isRegistered) => {
-			isDeviceRegistered = isRegistered;
+		.getHasValidKeyStore()
+		.subscribe((hasValidKey) => {
+			hasValidLicenseKey = hasValidKey;
 		});
 
 	function handleValueChange(e: Event) {
@@ -54,7 +54,7 @@
 		{#if condition !== ContentFilterCondition.IS_EMPTY && condition !== ContentFilterCondition.IS_NOT_EMPTY}
 			<input
 				type="text"
-				disabled={!isDeviceRegistered}
+				disabled={!hasValidLicenseKey}
 				placeholder="value"
 				{value}
 				on:input={handleValueChange}
@@ -62,7 +62,7 @@
 		{/if}
 	</svelte:fragment>
 	<svelte:fragment slot="after-toggle">
-		{#if type === FilterRuleType.CONTENT && !isDeviceRegistered}
+		{#if type === FilterRuleType.CONTENT && !hasValidLicenseKey}
 			<div>
 				<PremiumMessage />
 				<PremiumLink />
