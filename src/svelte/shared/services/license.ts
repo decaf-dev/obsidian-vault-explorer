@@ -2,7 +2,7 @@ import Logger from "js-logger";
 import { writable } from "svelte/store";
 import crypto from "crypto";
 
-const LOCAL_STORAGE_LICENSE_KEY = "vault-explorer-license-key";
+const LOCAL_STORAGE_LICENSE_KEY = "vault-explorer-license";
 
 const PUBLIC_KEY_PEM = `
 -----BEGIN PUBLIC KEY-----
