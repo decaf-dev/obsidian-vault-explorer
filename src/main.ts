@@ -174,7 +174,7 @@ export default class VaultExplorerPlugin extends Plugin {
 				const newData = preformMigrations(loadedVersion, loadedData);
 				currentData = newData;
 				if (isVersionLessThan(loadedVersion, "1.36.0")) {
-					console.log("Cleaning up old data");
+					console.log("Cleaning up old keys from local storage");
 					const LOCAL_STORAGE_DEVICE_REGISTERED =
 						"vault-explorer-device-registration";
 					localStorage.removeItem(LOCAL_STORAGE_DEVICE_REGISTERED);
