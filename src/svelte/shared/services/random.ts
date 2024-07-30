@@ -3,7 +3,8 @@ import { customAlphabet } from "nanoid";
 //An alphabet that excludes characters that are easily confused with each other
 // Excludes: 0, O, I, l
 const nanoid = customAlphabet(
-	"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz");
+	"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+);
 
 /**
  * Generates a random id
@@ -13,14 +14,4 @@ const nanoid = customAlphabet(
  */
 export const generateRandomId = () => {
 	return nanoid(16);
-}
-
-/**
- * Generates a random vault id
- * base58: 58 characters
- * 12 characters: 58^12 = 1.4e+21
- * @returns A random string of length 12
- */
-export const generateRandomDeviceId = () => {
-	return nanoid(12);
-}
+};

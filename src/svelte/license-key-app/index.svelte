@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import License, { LICENSE_KEY_LENGTH } from "../shared/services/license";
+	import License from "../shared/services/license";
 	import EventManager from "src/event/event-manager";
 	import PremiumLink from "../shared/components/premium-link.svelte";
 	import { PluginEvent } from "src/event/types";
@@ -10,69 +10,61 @@
 		text: string;
 	}
 
-	let isDeviceRegistered = false;
+	let hasValidLicenseKey = false;
 	let message: Message | null = null;
 
+	const LICENSE_KEY_SIZE = 148;
+
 	onMount(() => {
-		const registered = License.getInstance().getIsDeviceRegistered();
-		if (registered) {
+		const hasValidKey = License.getInstance().getHasValidKey();
+		if (hasValidKey) {
 			message = {
 				type: "success",
-				text: "This device is registered with a license key.",
+				text: "Premium features are enabled.",
 			};
 		}
-		isDeviceRegistered = registered;
+		hasValidLicenseKey = hasValidKey;
 	});
 
 	async function handleInputChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
 
-		if (value.length === LICENSE_KEY_LENGTH) {
+		if (value.length < LICENSE_KEY_SIZE) return;
+
+		message = {
+			type: "info",
+			text: "Validating key...",
+		};
+
+		const result = await License.getInstance().addKey(value);
+
+		if (result) {
+			hasValidLicenseKey = true;
 			message = {
-				type: "info",
-				text: "Registering device...",
+				type: "success",
+				text: "Premium features are enabled.",
 			};
-
-			const result = await License.getInstance().registerDevice(value);
-
-			const responseMessage = License.getInstance().getResponseMessage();
-			if (result) {
-				isDeviceRegistered = true;
-				message = {
-					type: "success",
-					text: responseMessage,
-				};
-				EventManager.getInstance().emit(
-					PluginEvent.DEVICE_REGISTRATION_CHANGE,
-					true,
-				);
-			} else {
-				message = {
-					type: "failure",
-					text: responseMessage,
-				};
-			}
+			EventManager.getInstance().emit(
+				PluginEvent.LICENSE_KEY_VALIDATION_CHANGE,
+				true,
+			);
 		} else {
-			message = null;
+			hasValidLicenseKey = false;
+			message = {
+				type: "failure",
+				text: "Invalid key.",
+			};
 		}
 	}
 
-	async function handleButtonClick() {
-		const result = await License.getInstance().unregisterDevice();
-		if (result) {
-			isDeviceRegistered = false;
-			message = null;
-			EventManager.getInstance().emit(
-				PluginEvent.DEVICE_REGISTRATION_CHANGE,
-				false,
-			);
-		} else {
-			const responseMessage = License.getInstance().getResponseMessage();
-			message = {
-				type: "failure",
-				text: responseMessage,
-			};
-		}
+	function handleRemoveButtonClick() {
+		License.getInstance().removeKey();
+		hasValidLicenseKey = false;
+		message = null;
+		EventManager.getInstance().emit(
+			PluginEvent.LICENSE_KEY_VALIDATION_CHANGE,
+			false,
+		);
 	}
 
 	function getMessageClassName(message: Message | null) {
@@ -107,12 +99,16 @@
 		{/if}
 	</div>
 	<div class="setting-item-control">
-		{#if isDeviceRegistered === false}
-			<input type="text" maxlength="8" on:input={handleInputChange} />
+		{#if hasValidLicenseKey === false}
+			<input
+				type="text"
+				maxlength={LICENSE_KEY_SIZE}
+				on:input={handleInputChange}
+			/>
 		{/if}
-		{#if isDeviceRegistered === true}
-			<button class="mod-destructive" on:click={handleButtonClick}
-				>Unregister device</button
+		{#if hasValidLicenseKey === true}
+			<button class="mod-destructive" on:click={handleRemoveButtonClick}
+				>Remove key</button
 			>
 		{/if}
 	</div>
