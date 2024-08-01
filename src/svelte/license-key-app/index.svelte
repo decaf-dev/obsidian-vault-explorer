@@ -117,9 +117,6 @@
 <style>
 	.vault-explorer-setting-message {
 		color: var(--text-muted);
-		font-size: var(--font-smallest);
-		padding-top: var(--size-4-1);
-		line-height: var(--line-height-tight);
 	}
 
 	.vault-explorer-setting-message--success {
