@@ -181,14 +181,9 @@
 			if (socialUrl) {
 				putSocialMediaImageUrl(imgSrc, socialUrl);
 				target.src = socialUrl;
-				return;
-			} else {
-				isError = true;
 			}
 		}
 	}
-
-	let isError = false;
 
 	function handleImageLoad() {
 		isCoverImageLoaded = true;
@@ -219,9 +214,7 @@
 				<img
 					class="vault-explorer-grid-card__image"
 					src={imgSrc}
-					style="display: {isCoverImageLoaded || isError
-						? 'block'
-						: 'none'};"
+					style="display: {isCoverImageLoaded ? 'block' : 'none'};"
 					on:load={handleImageLoad}
 					on:error={handleImageError}
 				/>
