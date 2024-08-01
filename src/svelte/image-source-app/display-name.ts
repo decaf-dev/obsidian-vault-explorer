@@ -3,9 +3,9 @@ import { CoverImageSourceType } from "src/types";
 export const getDisplayNameForImageSource = (type: CoverImageSourceType) => {
 	switch (type) {
 		case "image-property":
-			return "Image Property";
+			return "Image property";
 		case "url-property":
-			return "URL";
+			return "URL property";
 		case "frontmatter":
 			return "Frontmatter";
 		case "body":
