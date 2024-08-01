@@ -18,6 +18,7 @@ export enum PluginEvent {
 	SCROLL_BUTTONS_SETTING_CHANGE = "scroll-buttons-setting-change",
 	VIEW_TOGGLE_SETTING_CHANGE = "view-toggle-setting-change",
 	FILE_ICONS_SETTING_CHANGE = "file-icons-setting-change",
+	LOAD_BODY_TAGS_SETTING_CHANGE = "load-body-tags-setting-change",
 	WRAP_FILTER_GROUPS_SETTING_CHANGE = "wrap-filter-groups-setting-change",
 	LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE = "load-social-media-image-setting-change",
 	SHOW_TAGS_SETTING_CHANGE = "show-tags-setting-change",

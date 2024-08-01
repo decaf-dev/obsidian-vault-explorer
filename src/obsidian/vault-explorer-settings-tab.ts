@@ -54,20 +54,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("General").setHeading();
 
 		new Setting(containerEl)
-			.setName("Wrap filter groups")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.shouldWrapFilterGroups)
-					.onChange(async (value) => {
-						this.plugin.settings.shouldWrapFilterGroups = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE
-						);
-					})
-			);
-
-		new Setting(containerEl)
 			.setName("File icons")
 			.setDesc("Display an icon next to the file name.")
 			.addToggle((toggle) =>
@@ -78,6 +64,23 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.FILE_ICONS_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Load tags from body")
+			.setDesc(
+				"Load tags from the body of the note, in addition to tags in the tags property."
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.loadBodyTags)
+					.onChange(async (value) => {
+						this.plugin.settings.loadBodyTags = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.LOAD_BODY_TAGS_SETTING_CHANGE
 						);
 					})
 			);
@@ -101,6 +104,20 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.PAGE_SIZE_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Wrap filter groups")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.shouldWrapFilterGroups)
+					.onChange(async (value) => {
+						this.plugin.settings.shouldWrapFilterGroups = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE
 						);
 					})
 			);
