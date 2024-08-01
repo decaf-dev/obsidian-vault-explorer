@@ -127,12 +127,22 @@
 			if (entry) {
 				const isExpired = await isSocialMediaImageEntryExpired(entry);
 				if (!isExpired) {
-					imgSrc = entry.socialMediaImageUrl;
+					const socialUrl = entry.socialMediaImageUrl;
+
+					//The url is null when the social media image does not exist
+					//This will always happen for sites like Twitter (x.com)
+					//To avoid fetching the same non-existent image, we will set imgSrc to null
+					if (socialUrl === null) {
+						imgSrc = null;
+					} else {
+						imgSrc = socialUrl;
+					}
 					return;
 				}
 			}
 			imgSrc = imageUrl;
 		}
+		console.log("Image", imageUrl, imgSrc);
 	}
 
 	function handleUrlClick(e: Event) {
@@ -188,6 +198,8 @@
 			if (socialUrl) {
 				putSocialMediaImageUrl(imgSrc, socialUrl);
 				target.src = socialUrl;
+			} else {
+				putSocialMediaImageUrl(imgSrc, null);
 			}
 		}
 	}
@@ -335,11 +347,6 @@
 		box-shadow: var(--shadow-s);
 		border-radius: var(--radius-m);
 	}
-
-	/* 
-	.vault-explorer-grid-card:hover {
-		background-color: var(--background-modifier-hover);
-	} */
 
 	.vault-explorer-grid-card:focus-visible {
 		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);

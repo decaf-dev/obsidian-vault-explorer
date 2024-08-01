@@ -9,7 +9,7 @@ const ENTRY_EXPIRATION_TIME = ONE_WEEK_MILLIS;
 
 interface SocialMediaImageEntry {
 	url: string;
-	socialMediaImageUrl: string;
+	socialMediaImageUrl: string | null; // null if no social media image found
 	timestamp: number;
 }
 
@@ -42,7 +42,7 @@ export const getSocialMediaImageEntry = async (url: string) => {
  */
 export const putSocialMediaImageUrl = async (
 	url: string,
-	socialMediaImageUrl: string
+	socialMediaImageUrl: string | null
 ) => {
 	const db = await openDatabase();
 	db.put(STORE_NAME, {
