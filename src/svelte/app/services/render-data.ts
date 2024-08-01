@@ -14,12 +14,7 @@ import {
 import { isImageExtension } from "./utils/image-utils";
 import { removeFrontmatter } from "./utils/content-utils";
 import { getURIForWikiLinkTarget } from "./utils/wiki-link-utils";
-import {
-	isExternalEmbed,
-	isInternalEmbed,
-	isUrl,
-	isWikiLink,
-} from "./link-utils/link-validators";
+import { isUrl, isWikiLink } from "./link-utils/link-validators";
 import {
 	getExternalEmbedTarget,
 	getInternalEmbedTarget,
