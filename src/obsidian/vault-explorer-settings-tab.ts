@@ -53,39 +53,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("General").setHeading();
 
-		// new Setting(containerEl)
-		// 	.setName("Title wrapping")
-		// 	.setDesc("Set the wrapping style for the title.")
-		// 	.addDropdown((cb) => {
-		// 		cb.addOptions({
-		// 			normal: "Normal",
-		// 			"break-word": "Break Word",
-		// 		});
-		// 		cb.setValue(this.plugin.settings.titleWrapping).onChange(
-		// 			async (value) => {
-		// 				this.plugin.settings.titleWrapping = value as WordBreak;
-		// 				await this.plugin.saveSettings();
-		// 				EventManager.getInstance().emit(
-		// 					PluginEvent.TITLE_WRAPPING_SETTING_CHANGE
-		// 				);
-		// 			}
-		// 		);
-		// 	});
-
-		new Setting(containerEl)
-			.setName("Wrap filter groups")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.shouldWrapFilterGroups)
-					.onChange(async (value) => {
-						this.plugin.settings.shouldWrapFilterGroups = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE
-						);
-					})
-			);
-
 		new Setting(containerEl)
 			.setName("File icons")
 			.setDesc("Display an icon next to the file name.")
@@ -97,6 +64,23 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.FILE_ICONS_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Load tags from body")
+			.setDesc(
+				"Load tags from the both the tags property and the body of a markdown note."
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.loadBodyTags)
+					.onChange(async (value) => {
+						this.plugin.settings.loadBodyTags = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.LOAD_BODY_TAGS_SETTING_CHANGE
 						);
 					})
 			);
@@ -120,6 +104,20 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.PAGE_SIZE_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Wrap filter groups")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.shouldWrapFilterGroups)
+					.onChange(async (value) => {
+						this.plugin.settings.shouldWrapFilterGroups = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE
 						);
 					})
 			);
