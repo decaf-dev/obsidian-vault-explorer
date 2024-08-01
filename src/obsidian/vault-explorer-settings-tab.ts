@@ -681,7 +681,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		});
 		configFolderDesc.createDiv({
 			text: "Restart Obsidian after changing this setting.",
-			cls: "mod-warning vault-explorer-setting-description",
+			cls: "mod-warning",
 		});
 
 		new Setting(containerEl)
