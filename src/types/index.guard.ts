@@ -638,6 +638,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["titleWrapping"] === "break-word") &&
         typeof typedObj["enableClockUpdates"] === "boolean" &&
         typeof typedObj["enableFileIcons"] === "boolean" &&
+        typeof typedObj["loadBodyTags"] === "boolean" &&
         (typedObj["currentView"] === null ||
             typedObj["currentView"] === TExplorerView.DASHBOARD ||
             typedObj["currentView"] === TExplorerView.GRID ||

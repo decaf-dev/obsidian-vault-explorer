@@ -99,6 +99,7 @@
   "titleWrapping": "normal",
   "enableClockUpdates": true,
   "enableFileIcons": true,
+  "loadBodyTags": true,
   "filterGroupsWidth": "759px",
   "shouldWrapFilterGroups": false,
   "pageSize": 25,
@@ -108,6 +109,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.37.0",
+  "pluginVersion": "1.38.0",
   "logLevel": "trace"
 }

@@ -98,6 +98,7 @@
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingsTime: number = Date.now();
 	let coverImageSourcesTime: number = Date.now();
+	let loadBodyTagsTime: number = Date.now();
 
 	let loadedFiles: LoadedFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
@@ -466,6 +467,29 @@
 		};
 	});
 
+	onMount(() => {
+		function handleLoadBodyTagsSettingChange() {
+			Logger.trace({
+				fileName: "app/index.svelte",
+				functionName: "handleLoadBodyTagsSettingChange",
+				message: "called",
+			});
+
+			loadBodyTagsTime = Date.now();
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.LOAD_BODY_TAGS_SETTING_CHANGE,
+			handleLoadBodyTagsSettingChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.LOAD_BODY_TAGS_SETTING_CHANGE,
+				handleLoadBodyTagsSettingChange,
+			);
+		};
+	});
+
 	// ============================================
 	// Functions
 	// ============================================
@@ -741,7 +765,7 @@
 	}
 
 	let formatted: FileRenderData[] = [];
-	$: if (propertySettingsTime || coverImageSourcesTime) {
+	$: if (propertySettingsTime || coverImageSourcesTime || loadBodyTagsTime) {
 		formatted = filteredCustom.map((loadedFile) => {
 			const { id, file } = loadedFile;
 			const frontmatter =

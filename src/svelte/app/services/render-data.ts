@@ -55,6 +55,7 @@ export const formatFileDataForRender = ({
 }): FileRenderData => {
 	const { name, basename, extension, path } = file;
 
+	const { loadBodyTags } = settings;
 	const { coverImageSources } = settings.views.grid;
 	const {
 		createdDate: createdDateProp,
@@ -67,11 +68,23 @@ export const formatFileDataForRender = ({
 		custom3: custom3Prop,
 	} = settings.properties;
 
-	const tags: string[] | null = loadPropertyValue<string[]>(
+	let tags: string[] | null = loadPropertyValue<string[]>(
 		fileFrontmatter,
 		"tags",
 		PropertyType.LIST
 	);
+	if (fileContent && loadBodyTags) {
+		const body = removeFrontmatter(fileContent);
+		const TAG_REGEX = /#\w+(\/\w+)*/g;
+		const bodyTags = body.match(TAG_REGEX);
+
+		//Keep the tags array null if there are no tags in the frontmatter or body
+		if (bodyTags !== null && bodyTags.length > 0) {
+			//Remove the hash from the tags
+			const tagsWithoutHash = bodyTags.map((tag) => tag.slice(1));
+			tags = Array.from(new Set([...(tags ?? []), ...tagsWithoutHash]));
+		}
+	}
 
 	const url: string | null = loadPropertyValue<string>(
 		fileFrontmatter,
