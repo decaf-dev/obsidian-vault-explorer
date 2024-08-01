@@ -91,72 +91,75 @@ Please do not share your license key with anyone. Shared license keys will be de
 
 ## Features
 
-| Name                                                                           | Categories           | Documented |
-| ------------------------------------------------------------------------------ | -------------------- | ---------- |
-| Move focus with left and right arrows                                          | Accessibility        | ✅         |
-| See an image placeholder on the grid card                                      | Cover image          |            |
-| Load images from the `image-property`, `url-property`, `frontmatter` or `body` | Cover image          | ✅         |
-| Change the order of cover image source loading                                 | Cover image, Setting | ✅         |
-| Enable/disable cover image sources                                             | Cover image, Setting | ✅         |
-| Cache social media images                                                      | Cover image          | ✅         |
-| Filter files by favorite property                                              | Favorites filter     | ✅         |
-| Favorites support for non-markdown files                                       | Favorites filter     | ✅         |
-| Add to favorites button in context menu                                        | Favorites filter     | ✅         |
-| Remove from favorites button in context menu                                   | Favorites filter     | ✅         |
-| See a favorite icon in the grid card                                           | Favorites filter     |            |
-| Reorder the filter group list                                                  | Filter group         | ✅         |
-| Add a filter group                                                             | Filter group         | ✅         |
-| Delete a filter group                                                          | Filter group         | ✅         |
-| Set a filter group as sticky                                                   | Filter group         | ✅         |
-| Unset a filter group as sticky                                                 | Filter group         | ✅         |
-| Right click to edit a filter group item                                        | Filter group         |            |
-| Add a filter rule                                                              | Filter rule          | ✅         |
-| Delete a filter rule                                                           | Filter rule          | ✅         |
-| Duplicate a filter rule                                                        | Filter rule          | ✅         |
-| Match when property doesn't exist toggle                                       | Filter rule          |            |
-| Filter files by folder                                                         | Filter rule          |            |
-| Filter by frontmatter property                                                 | Filter rule          | ✅         |
-| Select a condition                                                             | Filter rule          | ✅         |
-| Select a logical operator: `and`, `or`                                         | Filter rule          | ✅         |
-| Filter files by folder                                                         | Filter rule          | ✅         |
-| Filter files by file content                                                   | Filter rule          | ✅         |
-| Filter files by file name                                                      | Filter rule          | ✅         |
-| Enable/disable a filter rule                                                   | Filter rule          | ✅         |
-| Set the log level                                                              | Logging              | ✅         |
-| Filter by search                                                               | Search filter        | ✅         |
-| Set page size                                                                  | Setting              | ✅         |
-| Set property for modification date                                             | Setting              | ✅         |
-| Set property for creation date                                                 | Setting              | ✅         |
-| Set a url property                                                             | Setting              | ✅         |
-| Set a favorite property                                                        | Setting              | ✅         |
-| Set custom text property                                                       | Setting              | ✅         |
-| Toggle file icons                                                              | Setting              | ✅         |
-| Change the filter groups wrap                                                  | Setting              | ✅         |
-| Enable/disable loading the social media image                                  | Setting              | ✅         |
-| Change the collapse style for feed content                                     | Setting              | ✅         |
-| Remove H1 from feed content                                                    | Setting              | ✅         |
-| Remove markdown from feed content                                              | Setting              | ✅         |
-| Enable/disable tags on a list item                                             | Setting              | ✅         |
-| Change the plugin configuration folder                                         | Setting, Data        | ✅         |
-| Clear the social media cache                                                   | Setting, Data        | ✅         |
-| Change the feed content line clamp for small screens                           | Setting, Feed view   | ✅         |
-| Change the feed content line clamp for medium screens                          | Setting, Feed view   | ✅         |
-| Change the feed content line clamp for large screens                           | Setting, Feed view   | ✅         |
-| Enter a license key                                                            | Setting, License     | ✅         |
-| Sort by title: `asc`, `desc`                                                   | Sort order           | ✅         |
-| Sort by modification date: `asc`, `desc`                                       | Sort order           | ✅         |
-| Randomly sort files                                                            | Sort order           | ✅         |
-| Filter by creation date: `1 day`, `1 week`, `2 weeks`                          | Timestamp filter     | ✅         |
-| Filter by modification date: `1 day`, `1 week`, `2 weeks`                      | Timestamp filter     | ✅         |
-| See vault files in a grid view                                                 | View                 | ✅         |
-| See vault files in a list view                                                 | View                 | ✅         |
-| See vault files in a feed view                                                 | View                 | ✅         |
-| Change the view list order                                                     | View                 |            |
-| Limit displayed files with pagination                                          | View                 |            |
-| Search for a tag when clicked                                                  | View                 | ✅         |
-| See a file preview when mouse hovers link and ctrl/cmd is pressed              | View                 |            |
-| Search for property when clicked                                               | View                 | ✅         |
-| See files icons next to the file name                                          | View                 | ✅         |
+| Name                                                                        | Categories           | Documented |
+| --------------------------------------------------------------------------- | -------------------- | ---------- |
+| Move focus with left and right arrows                                       | Accessibility        | ✅         |
+| See an image placeholder on the grid card                                   | Cover image          | ✅         |
+| Load a cover image from the image property                                  | Cover                | ✅         |
+| Load images from the url property                                           | Cover image          | ✅         |
+| Load images from the first link in the frontmatter (wiki link or url)       | Cover image          | ✅         |
+| Load images from the first link the body (internal embed or external embed) | Cover image          | ✅         |
+| Change the order of cover image sources                                     | Cover image, Setting | ✅         |
+| Enable/disable cover image sources                                          | Cover image, Setting | ✅         |
+| Cache social media images                                                   | Cover image          | ✅         |
+| Filter files by favorite property                                           | Favorites filter     | ✅         |
+| Favorites support for non-markdown files                                    | Favorites filter     | ✅         |
+| Add to favorites button in context menu                                     | Favorites filter     | ✅         |
+| Remove from favorites button in context menu                                | Favorites filter     | ✅         |
+| See a favorite icon in the grid card                                        | Favorites filter     | ✅         |
+| Reorder the filter group list                                               | Filter group         | ✅         |
+| Add a filter group                                                          | Filter group         | ✅         |
+| Delete a filter group                                                       | Filter group         | ✅         |
+| Set a filter group as sticky                                                | Filter group         | ✅         |
+| Unset a filter group as sticky                                              | Filter group         | ✅         |
+| Right click to edit a filter group item                                     | Filter group         |            |
+| Add a filter rule                                                           | Filter rule          | ✅         |
+| Delete a filter rule                                                        | Filter rule          | ✅         |
+| Duplicate a filter rule                                                     | Filter rule          | ✅         |
+| Match when property doesn't exist toggle                                    | Filter rule          | ✅         |
+| Filter files by folder                                                      | Filter rule          | ✅         |
+| Filter by frontmatter property                                              | Filter rule          | ✅         |
+| Select a condition                                                          | Filter rule          | ✅         |
+| Select a logical operator: `and`, `or`                                      | Filter rule          | ✅         |
+| Filter files by folder                                                      | Filter rule          | ✅         |
+| Filter files by file content                                                | Filter rule          | ✅         |
+| Filter files by file name                                                   | Filter rule          | ✅         |
+| Enable/disable a filter rule                                                | Filter rule          | ✅         |
+| Set the log level                                                           | Logging              | ✅         |
+| Filter by search                                                            | Search filter        | ✅         |
+| Set page size                                                               | Setting              | ✅         |
+| Set property for modification date                                          | Setting              | ✅         |
+| Set property for creation date                                              | Setting              | ✅         |
+| Set a url property                                                          | Setting              | ✅         |
+| Set a favorite property                                                     | Setting              | ✅         |
+| Set custom text property                                                    | Setting              | ✅         |
+| Toggle file icons                                                           | Setting              | ✅         |
+| Change the filter groups wrap                                               | Setting              | ✅         |
+| Enable/disable loading the social media image                               | Setting              | ✅         |
+| Change the collapse style for feed content                                  | Setting              | ✅         |
+| Remove H1 from feed content                                                 | Setting              | ✅         |
+| Remove markdown from feed content                                           | Setting              | ✅         |
+| Enable/disable tags on a list item                                          | Setting              | ✅         |
+| Change the plugin configuration folder                                      | Setting, Data        | ✅         |
+| Clear the social media cache                                                | Setting, Data        | ✅         |
+| Change the feed content line clamp for small screens                        | Setting, Feed view   | ✅         |
+| Change the feed content line clamp for medium screens                       | Setting, Feed view   | ✅         |
+| Change the feed content line clamp for large screens                        | Setting, Feed view   | ✅         |
+| Enter a license key                                                         | Setting, License     | ✅         |
+| Sort by title: `asc`, `desc`                                                | Sort order           | ✅         |
+| Sort by modification date: `asc`, `desc`                                    | Sort order           | ✅         |
+| Randomly sort files                                                         | Sort order           | ✅         |
+| Filter by creation date: `1 day`, `1 week`, `2 weeks`                       | Timestamp filter     | ✅         |
+| Filter by modification date: `1 day`, `1 week`, `2 weeks`                   | Timestamp filter     | ✅         |
+| See vault files in a grid view                                              | View                 | ✅         |
+| See vault files in a list view                                              | View                 | ✅         |
+| See vault files in a feed view                                              | View                 | ✅         |
+| Change the view list order                                                  | View                 |            |
+| Limit displayed files with pagination                                       | View                 |            |
+| Search for a tag when clicked                                               | View                 | ✅         |
+| See a file preview when mouse hovers link and ctrl/cmd is pressed           | View                 |            |
+| Search for property when clicked                                            | View                 | ✅         |
+| See files icons next to the file name                                       | View                 | ✅         |
 
 ## Network use
 
