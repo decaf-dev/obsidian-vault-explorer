@@ -71,7 +71,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Load tags from body")
 			.setDesc(
-				"Load tags from the body of the note, in addition to tags in the tags property."
+				"Load tags from the both the tags property and the body of a markdown note."
 			)
 			.addToggle((toggle) =>
 				toggle
