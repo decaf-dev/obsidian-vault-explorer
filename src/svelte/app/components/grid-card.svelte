@@ -142,7 +142,6 @@
 			}
 			imgSrc = imageUrl;
 		}
-		console.log("Image", imageUrl, imgSrc);
 	}
 
 	function handleUrlClick(e: Event) {
