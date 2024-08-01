@@ -74,7 +74,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	titleWrapping: "normal",
 	enableClockUpdates: true,
 	enableFileIcons: false,
-	enableScrollButtons: true,
 	filterGroupsWidth: "300px",
 	shouldWrapFilterGroups: false,
 	pageSize: 25,
