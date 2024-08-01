@@ -319,26 +319,13 @@ const getImageUrlFromProperty = (
 ) => {
 	if (propertyValue === null) return null;
 
-	if (isInternalEmbed(propertyValue)) {
-		const target = getInternalEmbedTarget(propertyValue);
-		if (target) {
-			const uri = getURIForWikiLinkTarget(app, target, filePath);
-			if (uri) {
-				return uri;
-			}
-		}
-	} else if (isWikiLink(propertyValue)) {
+	if (isWikiLink(propertyValue)) {
 		const target = getWikiLinkTarget(propertyValue);
 		if (target) {
 			const uri = getURIForWikiLinkTarget(app, target, filePath);
 			if (uri) {
 				return uri;
 			}
-		}
-	} else if (isExternalEmbed(propertyValue)) {
-		const target = getExternalEmbedTarget(propertyValue);
-		if (target) {
-			return target;
 		}
 	} else if (isUrl(propertyValue)) {
 		return propertyValue;
