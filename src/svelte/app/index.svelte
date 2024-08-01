@@ -17,7 +17,6 @@
 		TTimestampFilter,
 		TExplorerView,
 		TListView,
-		TGridView,
 		TRecommendedView,
 		TRelatedView,
 		TTableView,
@@ -104,6 +103,7 @@
 
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingsTime: number = Date.now();
+	let coverImageSourcesTime: number = Date.now();
 
 	let loadedFiles: LoadedFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
@@ -494,8 +494,7 @@
 				message: "called",
 			});
 
-			//TODO update?
-			updateFrontmatterCacheTime();
+			coverImageSourcesTime = Date.now();
 		}
 
 		EventManager.getInstance().on(
@@ -791,7 +790,7 @@
 	}
 
 	let formatted: FileRenderData[] = [];
-	$: if (propertySettingsTime) {
+	$: if (propertySettingsTime || coverImageSourcesTime) {
 		formatted = filteredCustom.map((loadedFile) => {
 			const { id, file } = loadedFile;
 			const frontmatter =

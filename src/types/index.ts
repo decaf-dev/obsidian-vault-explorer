@@ -57,7 +57,7 @@ export interface TGridView extends BaseView {
 }
 
 export interface CoverImageSource {
-	source: CoverImageSourceType;
+	type: CoverImageSourceType;
 	isEnabled: boolean;
 }
 

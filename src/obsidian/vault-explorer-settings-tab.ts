@@ -14,9 +14,10 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { CollapseStyle, CoverImageSource, TExplorerView } from "src/types";
+import { CollapseStyle, TExplorerView } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
+import ImageSourceApp from "../svelte/image-source-app/index.svelte";
 import { PluginEvent } from "src/event/types";
 
 import "./styles.css";
@@ -24,12 +25,15 @@ import { clearSocialMediaImageCache } from "src/svelte/app/services/social-media
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
-	component: LicenseKeyApp | null;
+
+	licenseKeyApp: LicenseKeyApp | null;
+	imageSourceApp: ImageSourceApp | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.component = null;
+		this.licenseKeyApp = null;
+		this.imageSourceApp = null;
 	}
 
 	display(): void {
@@ -96,22 +100,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						);
 					})
 			);
-
-		// TODO remove?
-		// new Setting(containerEl)
-		// 	.setName("Scroll buttons")
-		// 	.setDesc("Display scroll buttons for scrollable content.")
-		// 	.addToggle((toggle) =>
-		// 		toggle
-		// 			.setValue(this.plugin.settings.enableScrollButtons)
-		// 			.onChange(async (value) => {
-		// 				this.plugin.settings.enableScrollButtons = value;
-		// 				await this.plugin.saveSettings();
-		// 				EventManager.getInstance().emit(
-		// 					"scroll-buttons-setting-change"
-		// 				);
-		// 			})
-		// 	);
 
 		new Setting(containerEl)
 			.setName("Page size")
@@ -309,9 +297,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
-		// EventManager.getInstance().emit(
-		// 	PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE
-		// );
+		this.imageSourceApp = new ImageSourceApp({
+			target: containerEl,
+		});
 
 		new Setting(containerEl)
 			.setName("Load social media image")
@@ -628,7 +616,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Premium").setHeading();
 
-		this.component = new LicenseKeyApp({
+		this.licenseKeyApp = new LicenseKeyApp({
 			target: containerEl,
 		});
 
@@ -692,7 +680,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	}
 
 	onClose() {
-		this.component?.$destroy();
+		this.licenseKeyApp?.$destroy();
+		this.imageSourceApp?.$destroy();
 	}
 
 	private updateViewOrder(view: TExplorerView, value: boolean) {

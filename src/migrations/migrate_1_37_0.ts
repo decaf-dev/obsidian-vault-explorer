@@ -13,19 +13,19 @@ export default class Migrate_1_37_0 implements MigrationInterface {
 					...typedData.views.grid,
 					coverImageSources: [
 						{
-							source: "image-property",
+							type: "image-property",
 							isEnabled: true,
 						},
 						{
-							source: "url-property",
+							type: "url-property",
 							isEnabled: true,
 						},
 						{
-							source: "frontmatter",
+							type: "frontmatter",
 							isEnabled: true,
 						},
 						{
-							source: "body",
+							type: "body",
 							isEnabled: true,
 						},
 					],

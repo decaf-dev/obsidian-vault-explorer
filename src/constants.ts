@@ -47,19 +47,19 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			isEnabled: true,
 			coverImageSources: [
 				{
-					source: "image-property",
+					type: "image-property",
 					isEnabled: true,
 				},
 				{
-					source: "url-property",
+					type: "url-property",
 					isEnabled: true,
 				},
 				{
-					source: "frontmatter",
+					type: "frontmatter",
 					isEnabled: true,
 				},
 				{
-					source: "body",
+					type: "body",
 					isEnabled: true,
 				},
 			],

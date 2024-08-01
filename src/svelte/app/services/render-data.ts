@@ -149,9 +149,9 @@ export const formatFileDataForRender = ({
 	}
 
 	for (const imageSource of coverImageSources) {
-		const { source, isEnabled } = imageSource;
+		const { type, isEnabled } = imageSource;
 		if (isEnabled) {
-			switch (source) {
+			switch (type) {
 				case "image-property": {
 					const loadedUrl = handleImagePropertyCoverSource(
 						app,
@@ -197,7 +197,9 @@ export const formatFileDataForRender = ({
 					break;
 				}
 				default:
-					throw new Error(`Unknown cover image source: ${source}`);
+					throw new Error(
+						`Unhandled cover image source type: ${type}`
+					);
 			}
 			if (imageUrl !== null) {
 				break; // Exit the loop if a non-null URL is found

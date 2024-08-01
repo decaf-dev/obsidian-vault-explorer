@@ -5,7 +5,7 @@
 	import store from "../../shared/services/store";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { createEventDispatcher, onMount } from "svelte";
+	import { afterUpdate, createEventDispatcher, onMount } from "svelte";
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
@@ -57,22 +57,15 @@
 	let renderKey = 0;
 
 	onMount(() => {
-		async function updateImgSrc() {
-			if (imageUrl !== null) {
-				const entry = await getSocialMediaImageEntry(imageUrl);
-				if (entry) {
-					const isExpired =
-						await isSocialMediaImageEntryExpired(entry);
-					if (!isExpired) {
-						imgSrc = entry.socialMediaImageUrl;
-						return;
-					}
-				}
-				imgSrc = imageUrl;
-			}
-		}
-
 		updateImgSrc();
+	});
+
+	afterUpdate(() => {
+		if (imageUrl === null) {
+			imgSrc = null;
+		} else {
+			updateImgSrc();
+		}
 	});
 
 	onMount(() => {
@@ -127,6 +120,20 @@
 			);
 		};
 	});
+
+	async function updateImgSrc() {
+		if (imageUrl !== null) {
+			const entry = await getSocialMediaImageEntry(imageUrl);
+			if (entry) {
+				const isExpired = await isSocialMediaImageEntryExpired(entry);
+				if (!isExpired) {
+					imgSrc = entry.socialMediaImageUrl;
+					return;
+				}
+			}
+			imgSrc = imageUrl;
+		}
+	}
 
 	function handleUrlClick(e: Event) {
 		e.stopPropagation();
