@@ -5,7 +5,7 @@
 	import License from "src/svelte/shared/services/license";
 	import FeedCard from "./feed-card.svelte";
 
-	export let isDeviceRegistered = false;
+	export let hasValidLicenseKey = false;
 	export let data: FileRenderData[] = [];
 	export let startIndex;
 	export let pageLength;
@@ -13,9 +13,9 @@
 	let filteredItems: FileRenderData[] = [];
 
 	License.getInstance()
-		.getIsDeviceRegisteredStore()
-		.subscribe((isRegistered) => {
-			isDeviceRegistered = isRegistered;
+		.getHasValidKeyStore()
+		.subscribe((hasValidKey) => {
+			hasValidLicenseKey = hasValidKey;
 		});
 
 	$: {
@@ -31,13 +31,13 @@
 </script>
 
 <div class="vault-explorer-feed-view">
-	{#if !isDeviceRegistered}
+	{#if !hasValidLicenseKey}
 		<div>
 			<PremiumMessage />
 			<PremiumLink />
 		</div>
 	{/if}
-	{#if isDeviceRegistered}
+	{#if hasValidLicenseKey}
 		{#each filteredItems as fileRenderData (fileRenderData.id)}
 			<FeedCard
 				displayName={fileRenderData.displayName}

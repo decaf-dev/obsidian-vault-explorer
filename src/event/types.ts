@@ -13,7 +13,7 @@ export enum PluginEvent {
 	FEED_CONTENT_SETTING_CHANGE = "feed-content-setting-change",
 	COVER_IMAGE_SOURCE_SETTING_CHANGE = "cover-image-source-setting-change",
 	PROPERTY_SETTING_CHANGE = "property-setting-change",
-	DEVICE_REGISTRATION_CHANGE = "device-registration-change",
+	LICENSE_KEY_VALIDATION_CHANGE = "license-key-validation-change",
 	CLOCK_UPDATES_SETTING_CHANGE = "clock-updates-setting-change",
 	FILTER_TOGGLE_SETTING_CHANGE = "filter-toggle-setting-change",
 	SCROLL_BUTTONS_SETTING_CHANGE = "scroll-buttons-setting-change",
