@@ -38,6 +38,40 @@
 		);
 	}
 
+	function handleSourceDragOver(e: Event) {
+		e.preventDefault();
+	}
+
+	function handleSourceDragStart(e: Event, type: CoverImageSourceType) {
+		(e as any).dataTransfer.setData("text", type);
+		(e as any).dataTransfer.effectAllowed = "move";
+	}
+
+	function handleSourceDrop(e: Event, id: string) {
+		const dragId = (e as any).dataTransfer.getData("text");
+		(e as any).dataTransfer.dropEffect = "move";
+
+		const draggedIndex = coverImageSources.findIndex(
+			(source) => source.type === dragId,
+		);
+		const dragged = coverImageSources.find(
+			(source) => source.type === dragId,
+		);
+
+		const droppedIndex = coverImageSources.findIndex(
+			(source) => source.type === id,
+		);
+		const dropped = coverImageSources.find((source) => source.type === id);
+
+		if (!dragged || !dropped || draggedIndex === -1 || droppedIndex === -1)
+			return;
+
+		let newCoverImageSources = [...coverImageSources];
+		newCoverImageSources[draggedIndex] = dropped;
+		newCoverImageSources[droppedIndex] = dragged;
+		coverImageSources = newCoverImageSources;
+	}
+
 	$: coverImageSources, saveSettings();
 </script>
 
@@ -50,6 +84,11 @@
 					<div
 						tabindex="0"
 						role="button"
+						draggable="true"
+						on:dragstart={(e) =>
+							handleSourceDragStart(e, source.type)}
+						on:dragover={handleSourceDragOver}
+						on:drop={(e) => handleSourceDrop(e, source.type)}
 						class="vault-explorer-image-source-setting-row"
 						on:click={() => handleSourceClick(source.type)}
 						on:keydown={(e) => {
