@@ -14,9 +14,10 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { CollapseStyle, CoverImageSource, TExplorerView } from "src/types";
+import { CollapseStyle, TExplorerView } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
+import ImageSourceApp from "../svelte/image-source-app/index.svelte";
 import { PluginEvent } from "src/event/types";
 
 import "./styles.css";
@@ -24,12 +25,15 @@ import { clearSocialMediaImageCache } from "src/svelte/app/services/social-media
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
-	component: LicenseKeyApp | null;
+
+	licenseKeyApp: LicenseKeyApp | null;
+	imageSourceApp: ImageSourceApp | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.component = null;
+		this.licenseKeyApp = null;
+		this.imageSourceApp = null;
 	}
 
 	display(): void {
@@ -96,22 +100,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						);
 					})
 			);
-
-		// TODO remove?
-		// new Setting(containerEl)
-		// 	.setName("Scroll buttons")
-		// 	.setDesc("Display scroll buttons for scrollable content.")
-		// 	.addToggle((toggle) =>
-		// 		toggle
-		// 			.setValue(this.plugin.settings.enableScrollButtons)
-		// 			.onChange(async (value) => {
-		// 				this.plugin.settings.enableScrollButtons = value;
-		// 				await this.plugin.saveSettings();
-		// 				EventManager.getInstance().emit(
-		// 					"scroll-buttons-setting-change"
-		// 				);
-		// 			})
-		// 	);
 
 		new Setting(containerEl)
 			.setName("Page size")
@@ -309,44 +297,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
-		new Setting(containerEl)
-			.setName("Automatic cover image detection")
-			.setDesc("Set where cover images are automatically loaded from.")
-			.addDropdown((cb) =>
-				cb
-					.addOptions({
-						"frontmatter-and-body": "Frontmatter and body",
-						"frontmatter-only": "Frontmatter only",
-						off: "Off",
-					})
-					.setValue(this.plugin.settings.views.grid.coverImageSource)
-					.onChange(async (value) => {
-						this.plugin.settings.views.grid.coverImageSource =
-							value as CoverImageSource;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE
-						);
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("Preferred cover image property")
-			.setDesc(
-				"If set, the value of the selected property will be preferred for the cover image"
-			)
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
-					.setValue(this.plugin.settings.properties.imageUrl)
-					.onChange(async (value) => {
-						this.plugin.settings.properties.imageUrl = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.PROPERTY_SETTING_CHANGE
-						);
-					})
-			);
+		this.imageSourceApp = new ImageSourceApp({
+			target: containerEl,
+		});
 
 		new Setting(containerEl)
 			.setName("Load social media image")
@@ -491,6 +444,24 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.properties.favorite)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.favorite = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.PROPERTY_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Image property")
+			.setDesc(
+				"Property used to store an image. This must be a text property."
+			)
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.setValue(this.plugin.settings.properties.image)
+					.onChange(async (value) => {
+						this.plugin.settings.properties.image = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.PROPERTY_SETTING_CHANGE
@@ -645,7 +616,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Premium").setHeading();
 
-		this.component = new LicenseKeyApp({
+		this.licenseKeyApp = new LicenseKeyApp({
 			target: containerEl,
 		});
 
@@ -697,7 +668,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Clear cache data")
+			.setName("Social media image cache")
 			.addButton((button) =>
 				button
 					.setClass("mod-destructive")
@@ -709,7 +680,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	}
 
 	onClose() {
-		this.component?.$destroy();
+		this.licenseKeyApp?.$destroy();
+		this.imageSourceApp?.$destroy();
 	}
 
 	private updateViewOrder(view: TExplorerView, value: boolean) {

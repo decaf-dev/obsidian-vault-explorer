@@ -15,7 +15,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["properties"] === "function") &&
         typeof typedObj["properties"]["favorite"] === "string" &&
         typeof typedObj["properties"]["url"] === "string" &&
-        typeof typedObj["properties"]["imageUrl"] === "string" &&
+        typeof typedObj["properties"]["image"] === "string" &&
         typeof typedObj["properties"]["createdDate"] === "string" &&
         typeof typedObj["properties"]["modifiedDate"] === "string" &&
         typeof typedObj["properties"]["custom1"] === "string" &&
@@ -595,9 +595,17 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["views"]["grid"] === "object" ||
             typeof typedObj["views"]["grid"] === "function") &&
         typeof typedObj["views"]["grid"]["isEnabled"] === "boolean" &&
-        (typedObj["views"]["grid"]["coverImageSource"] === "frontmatter-only" ||
-            typedObj["views"]["grid"]["coverImageSource"] === "frontmatter-and-body" ||
-            typedObj["views"]["grid"]["coverImageSource"] === "off") &&
+        Array.isArray(typedObj["views"]["grid"]["coverImageSources"]) &&
+        typedObj["views"]["grid"]["coverImageSources"].every((e: any) =>
+            (e !== null &&
+                typeof e === "object" ||
+                typeof e === "function") &&
+            (e["type"] === "image-property" ||
+                e["type"] === "url-property" ||
+                e["type"] === "frontmatter" ||
+                e["type"] === "body") &&
+            typeof e["isEnabled"] === "boolean"
+        ) &&
         typeof typedObj["views"]["grid"]["loadSocialMediaImage"] === "boolean" &&
         (typedObj["views"]["list"] !== null &&
             typeof typedObj["views"]["list"] === "object" ||
@@ -638,7 +646,6 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["currentView"] === TExplorerView.TABLE ||
             typedObj["currentView"] === TExplorerView.RECOMMENDED ||
             typedObj["currentView"] === TExplorerView.RELATED) &&
-        typeof typedObj["enableScrollButtons"] === "boolean" &&
         typeof typedObj["pageSize"] === "number" &&
         typeof typedObj["filterGroupsWidth"] === "string" &&
         typeof typedObj["shouldWrapFilterGroups"] === "boolean" &&

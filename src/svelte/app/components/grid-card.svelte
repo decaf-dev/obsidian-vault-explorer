@@ -5,7 +5,7 @@
 	import store from "../../shared/services/store";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { createEventDispatcher, onMount } from "svelte";
+	import { afterUpdate, createEventDispatcher, onMount } from "svelte";
 	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
@@ -57,22 +57,15 @@
 	let renderKey = 0;
 
 	onMount(() => {
-		async function updateImgSrc() {
-			if (imageUrl !== null) {
-				const entry = await getSocialMediaImageEntry(imageUrl);
-				if (entry) {
-					const isExpired =
-						await isSocialMediaImageEntryExpired(entry);
-					if (!isExpired) {
-						imgSrc = entry.socialMediaImageUrl;
-						return;
-					}
-				}
-				imgSrc = imageUrl;
-			}
-		}
-
 		updateImgSrc();
+	});
+
+	afterUpdate(() => {
+		if (imageUrl === null) {
+			imgSrc = null;
+		} else {
+			updateImgSrc();
+		}
 	});
 
 	onMount(() => {
@@ -128,6 +121,30 @@
 		};
 	});
 
+	async function updateImgSrc() {
+		if (imageUrl !== null) {
+			const entry = await getSocialMediaImageEntry(imageUrl);
+			if (entry) {
+				const isExpired = await isSocialMediaImageEntryExpired(entry);
+				if (!isExpired) {
+					const socialUrl = entry.socialMediaImageUrl;
+
+					//The url is null when the social media image does not exist
+					//This will always happen for sites like Twitter (x.com)
+					//To avoid fetching the same non-existent image, we will set imgSrc to null
+					if (socialUrl === null) {
+						imgSrc = null;
+					} else {
+						imgSrc = socialUrl;
+					}
+					return;
+				}
+			}
+			imgSrc = imageUrl;
+		}
+		console.log("Image", imageUrl, imgSrc);
+	}
+
 	function handleUrlClick(e: Event) {
 		e.stopPropagation();
 	}
@@ -181,14 +198,11 @@
 			if (socialUrl) {
 				putSocialMediaImageUrl(imgSrc, socialUrl);
 				target.src = socialUrl;
-				return;
 			} else {
-				isError = true;
+				putSocialMediaImageUrl(imgSrc, null);
 			}
 		}
 	}
-
-	let isError = false;
 
 	function handleImageLoad() {
 		isCoverImageLoaded = true;
@@ -219,9 +233,7 @@
 				<img
 					class="vault-explorer-grid-card__image"
 					src={imgSrc}
-					style="display: {isCoverImageLoaded || isError
-						? 'block'
-						: 'none'};"
+					style="display: {isCoverImageLoaded ? 'block' : 'none'};"
 					on:load={handleImageLoad}
 					on:error={handleImageError}
 				/>
@@ -335,11 +347,6 @@
 		box-shadow: var(--shadow-s);
 		border-radius: var(--radius-m);
 	}
-
-	/* 
-	.vault-explorer-grid-card:hover {
-		background-color: var(--background-modifier-hover);
-	} */
 
 	.vault-explorer-grid-card:focus-visible {
 		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);

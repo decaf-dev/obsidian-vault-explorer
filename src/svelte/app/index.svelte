@@ -10,18 +10,11 @@
 	import { Notice, TFile } from "obsidian";
 	import {
 		TCustomFilter,
-		TDashboardView,
 		TFavoritesFilter,
 		TSearchFilter,
 		TSortFilter,
 		TTimestampFilter,
 		TExplorerView,
-		TListView,
-		TGridView,
-		TRecommendedView,
-		TRelatedView,
-		TTableView,
-		TFeedView,
 	} from "src/types";
 	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
@@ -104,6 +97,7 @@
 
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingsTime: number = Date.now();
+	let coverImageSourcesTime: number = Date.now();
 
 	let loadedFiles: LoadedFile[] = [];
 	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
@@ -111,43 +105,6 @@
 	let favoritesCache: TFavoritesCache = new Map();
 	let contentCache: FileContentCache = new Map();
 	let randomSortCache: RandomFileSortCache = new Map();
-
-	let dashboardView: TDashboardView = {
-		isEnabled: false,
-	};
-
-	let listView: TListView = {
-		isEnabled: false,
-		showTags: true,
-	};
-
-	let gridView: TGridView = {
-		loadSocialMediaImage: false,
-		isEnabled: false,
-		coverImageSource: "frontmatter-and-body",
-	};
-
-	//TODO use just isEnabled
-	let feedView: TFeedView = {
-		isEnabled: false,
-		removeH1: true,
-		lineClampSmall: 2,
-		lineClampMedium: 3,
-		lineClampLarge: 5,
-		collapseStyle: "no-new-lines",
-	};
-
-	let tableView: TTableView = {
-		isEnabled: false,
-	};
-
-	let recommendedView: TRecommendedView = {
-		isEnabled: false,
-	};
-
-	let relatedView: TRelatedView = {
-		isEnabled: false,
-	};
 
 	let viewOrder: TExplorerView[] = [];
 
@@ -181,13 +138,6 @@
 		timestampFilter = settings.filters.timestamp;
 		currentView = settings.currentView;
 		customFilter = settings.filters.custom;
-		dashboardView = settings.views.dashboard;
-		listView = settings.views.list;
-		gridView = settings.views.grid;
-		feedView = settings.views.feed;
-		tableView = settings.views.table;
-		recommendedView = settings.views.recommended;
-		relatedView = settings.views.related;
 		viewOrder = settings.viewOrder;
 
 		if (settings.enableClockUpdates) {
@@ -501,8 +451,7 @@
 				message: "called",
 			});
 
-			//TODO update?
-			updateFrontmatterCacheTime();
+			coverImageSourcesTime = Date.now();
 		}
 
 		EventManager.getInstance().on(
@@ -567,13 +516,6 @@
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.favorites = favoritesFilter;
-		plugin.settings.views.dashboard = dashboardView;
-		plugin.settings.views.list = listView;
-		plugin.settings.views.grid = gridView;
-		plugin.settings.views.feed = feedView;
-		plugin.settings.views.table = tableView;
-		plugin.settings.views.recommended = recommendedView;
-		plugin.settings.views.related = relatedView;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
@@ -799,7 +741,7 @@
 	}
 
 	let formatted: FileRenderData[] = [];
-	$: if (propertySettingsTime) {
+	$: if (propertySettingsTime || coverImageSourcesTime) {
 		formatted = filteredCustom.map((loadedFile) => {
 			const { id, file } = loadedFile;
 			const frontmatter =
@@ -882,13 +824,6 @@
 		favoritesFilter,
 		currentView,
 		customFilter,
-		dashboardView,
-		listView,
-		gridView,
-		feedView,
-		tableView,
-		recommendedView,
-		relatedView,
 		viewOrder,
 		saveSettings();
 
