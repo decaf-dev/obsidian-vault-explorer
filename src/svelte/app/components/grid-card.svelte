@@ -6,7 +6,6 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { afterUpdate, createEventDispatcher, onMount } from "svelte";
-	import { WordBreak } from "src/types";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
@@ -38,7 +37,6 @@
 	export let isFavorite: boolean | null;
 
 	let plugin: VaultExplorerPlugin;
-	let wordBreak: WordBreak = "normal";
 	let enableFileIcons: boolean = false;
 	let loadSocialMediaImage: boolean = true;
 	let imgSrc: string | null;
@@ -47,7 +45,6 @@
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
-		wordBreak = plugin.settings.titleWrapping;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		loadSocialMediaImage = plugin.settings.views.grid.loadSocialMediaImage;
 	});
@@ -100,23 +97,6 @@
 			EventManager.getInstance().off(
 				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
-			);
-		};
-	});
-
-	onMount(() => {
-		function handleTitleWrappingSettingChange() {
-			wordBreak = plugin.settings.titleWrapping;
-		}
-
-		EventManager.getInstance().on(
-			PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
-			handleTitleWrappingSettingChange,
-		);
-		return () => {
-			EventManager.getInstance().off(
-				PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
-				handleTitleWrappingSettingChange,
 			);
 		};
 	});

@@ -53,25 +53,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("General").setHeading();
 
-		// new Setting(containerEl)
-		// 	.setName("Title wrapping")
-		// 	.setDesc("Set the wrapping style for the title.")
-		// 	.addDropdown((cb) => {
-		// 		cb.addOptions({
-		// 			normal: "Normal",
-		// 			"break-word": "Break Word",
-		// 		});
-		// 		cb.setValue(this.plugin.settings.titleWrapping).onChange(
-		// 			async (value) => {
-		// 				this.plugin.settings.titleWrapping = value as WordBreak;
-		// 				await this.plugin.saveSettings();
-		// 				EventManager.getInstance().emit(
-		// 					PluginEvent.TITLE_WRAPPING_SETTING_CHANGE
-		// 				);
-		// 			}
-		// 		);
-		// 	});
-
 		new Setting(containerEl)
 			.setName("Wrap filter groups")
 			.addToggle((toggle) =>

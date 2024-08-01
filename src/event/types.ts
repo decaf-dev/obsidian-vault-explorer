@@ -9,7 +9,6 @@ export enum PluginEvent {
 	FOLDER_DELETE = "folder-delete",
 	FOLDER_CREATE = "folder-create",
 	PAGE_SIZE_SETTING_CHANGE = "page-size-setting-change",
-	TITLE_WRAPPING_SETTING_CHANGE = "title-wrapping-setting-change",
 	FEED_CONTENT_SETTING_CHANGE = "feed-content-setting-change",
 	COVER_IMAGE_SOURCE_SETTING_CHANGE = "cover-image-source-setting-change",
 	PROPERTY_SETTING_CHANGE = "property-setting-change",

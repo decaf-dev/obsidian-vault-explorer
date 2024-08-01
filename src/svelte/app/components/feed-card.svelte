@@ -6,7 +6,6 @@
 	import store from "src/svelte/shared/services/store";
 	import { formatAsBearTimeString } from "../services/time-string";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import Tag from "src/svelte/shared/components/tag.svelte";
 	import {
 		removeBoldMarkdown,
 		removeCodeBlocks,
@@ -39,7 +38,6 @@
 	export let isFavorite: boolean | null;
 
 	let ref: HTMLElement | null = null;
-	let wordBreak: WordBreak = "normal";
 	let enableFileIcons = false;
 	let removeH1: boolean = true;
 	let lineClampSmall: number = 2;
@@ -53,7 +51,6 @@
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((value) => {
 		plugin = value;
-		wordBreak = plugin.settings.titleWrapping;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		removeH1 = plugin.settings.views.feed.removeH1;
 		collapseStyle = plugin.settings.views.feed.collapseStyle;
@@ -75,23 +72,6 @@
 			EventManager.getInstance().off(
 				PluginEvent.FILE_ICONS_SETTING_CHANGE,
 				handleFileIconsChange,
-			);
-		};
-	});
-
-	onMount(() => {
-		function handleTitleWrappingSettingChange() {
-			wordBreak = plugin.settings.titleWrapping;
-		}
-
-		EventManager.getInstance().on(
-			PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
-			handleTitleWrappingSettingChange,
-		);
-		return () => {
-			EventManager.getInstance().off(
-				PluginEvent.TITLE_WRAPPING_SETTING_CHANGE,
-				handleTitleWrappingSettingChange,
 			);
 		};
 	});
