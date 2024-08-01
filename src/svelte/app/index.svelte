@@ -10,17 +10,11 @@
 	import { Notice, TFile } from "obsidian";
 	import {
 		TCustomFilter,
-		TDashboardView,
 		TFavoritesFilter,
 		TSearchFilter,
 		TSortFilter,
 		TTimestampFilter,
 		TExplorerView,
-		TListView,
-		TRecommendedView,
-		TRelatedView,
-		TTableView,
-		TFeedView,
 	} from "src/types";
 	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
@@ -112,37 +106,6 @@
 	let contentCache: FileContentCache = new Map();
 	let randomSortCache: RandomFileSortCache = new Map();
 
-	let dashboardView: TDashboardView = {
-		isEnabled: false,
-	};
-
-	let listView: TListView = {
-		isEnabled: false,
-		showTags: true,
-	};
-
-	//TODO use just isEnabled
-	let feedView: TFeedView = {
-		isEnabled: false,
-		removeH1: true,
-		lineClampSmall: 2,
-		lineClampMedium: 3,
-		lineClampLarge: 5,
-		collapseStyle: "no-new-lines",
-	};
-
-	let tableView: TTableView = {
-		isEnabled: false,
-	};
-
-	let recommendedView: TRecommendedView = {
-		isEnabled: false,
-	};
-
-	let relatedView: TRelatedView = {
-		isEnabled: false,
-	};
-
 	let viewOrder: TExplorerView[] = [];
 
 	// ============================================
@@ -175,12 +138,6 @@
 		timestampFilter = settings.filters.timestamp;
 		currentView = settings.currentView;
 		customFilter = settings.filters.custom;
-		dashboardView = settings.views.dashboard;
-		listView = settings.views.list;
-		feedView = settings.views.feed;
-		tableView = settings.views.table;
-		recommendedView = settings.views.recommended;
-		relatedView = settings.views.related;
 		viewOrder = settings.viewOrder;
 
 		if (settings.enableClockUpdates) {
@@ -559,12 +516,6 @@
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.filters.favorites = favoritesFilter;
-		plugin.settings.views.dashboard = dashboardView;
-		plugin.settings.views.list = listView;
-		plugin.settings.views.feed = feedView;
-		plugin.settings.views.table = tableView;
-		plugin.settings.views.recommended = recommendedView;
-		plugin.settings.views.related = relatedView;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
@@ -873,12 +824,6 @@
 		favoritesFilter,
 		currentView,
 		customFilter,
-		dashboardView,
-		listView,
-		feedView,
-		tableView,
-		recommendedView,
-		relatedView,
 		viewOrder,
 		saveSettings();
 
