@@ -121,12 +121,6 @@
 		showTags: true,
 	};
 
-	let gridView: TGridView = {
-		loadSocialMediaImage: false,
-		isEnabled: false,
-		coverImageSource: "frontmatter-and-body",
-	};
-
 	//TODO use just isEnabled
 	let feedView: TFeedView = {
 		isEnabled: false,
@@ -183,7 +177,6 @@
 		customFilter = settings.filters.custom;
 		dashboardView = settings.views.dashboard;
 		listView = settings.views.list;
-		gridView = settings.views.grid;
 		feedView = settings.views.feed;
 		tableView = settings.views.table;
 		recommendedView = settings.views.recommended;
@@ -569,7 +562,6 @@
 		plugin.settings.filters.favorites = favoritesFilter;
 		plugin.settings.views.dashboard = dashboardView;
 		plugin.settings.views.list = listView;
-		plugin.settings.views.grid = gridView;
 		plugin.settings.views.feed = feedView;
 		plugin.settings.views.table = tableView;
 		plugin.settings.views.recommended = recommendedView;
@@ -884,7 +876,6 @@
 		customFilter,
 		dashboardView,
 		listView,
-		gridView,
 		feedView,
 		tableView,
 		recommendedView,

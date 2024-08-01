@@ -8,7 +8,7 @@
     "creationDate": "creation",
     "modifiedDate": "modification",
     "createdDate": "creation",
-    "imageUrl": "image"
+    "image": "image"
   },
   "filters": {
     "search": {
@@ -51,7 +51,24 @@
     "grid": {
       "isEnabled": true,
       "loadSocialMediaImage": true,
-      "coverImageSource": "frontmatter-and-body"
+      "coverImageSources": [
+        {
+          "source": "image-property",
+          "isEnabled": true
+        },
+        {
+          "source": "url-property",
+          "isEnabled": true
+        },
+        {
+          "source": "frontmatter",
+          "isEnabled": true
+        },
+        {
+          "source": "body",
+          "isEnabled": true
+        }
+      ]
     },
     "list": {
       "isEnabled": true,
@@ -82,7 +99,6 @@
   "titleWrapping": "normal",
   "enableClockUpdates": true,
   "enableFileIcons": true,
-  "enableScrollButtons": true,
   "filterGroupsWidth": "759px",
   "shouldWrapFilterGroups": false,
   "pageSize": 25,
@@ -92,6 +108,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.36.2",
+  "pluginVersion": "1.37.0",
   "logLevel": "trace"
 }

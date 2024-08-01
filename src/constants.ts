@@ -9,7 +9,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	properties: {
 		favorite: "",
 		url: "",
-		imageUrl: "",
+		image: "",
 		createdDate: "",
 		modifiedDate: "",
 		custom1: "",
@@ -45,8 +45,25 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		grid: {
 			isEnabled: true,
+			coverImageSources: [
+				{
+					source: "image-property",
+					isEnabled: true,
+				},
+				{
+					source: "url-property",
+					isEnabled: true,
+				},
+				{
+					source: "frontmatter",
+					isEnabled: true,
+				},
+				{
+					source: "body",
+					isEnabled: true,
+				},
+			],
 			loadSocialMediaImage: true,
-			coverImageSource: "frontmatter-and-body",
 		},
 		list: {
 			isEnabled: true,

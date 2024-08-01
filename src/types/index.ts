@@ -3,7 +3,7 @@ export interface VaultExplorerPluginSettings {
 	properties: {
 		favorite: string;
 		url: string;
-		imageUrl: string;
+		image: string;
 		createdDate: string;
 		modifiedDate: string;
 		custom1: string;
@@ -52,14 +52,20 @@ export interface TListView extends BaseView {
 }
 
 export interface TGridView extends BaseView {
-	coverImageSource: CoverImageSource;
+	coverImageSources: CoverImageSource[];
 	loadSocialMediaImage: boolean;
 }
 
-export type CoverImageSource =
-	| "frontmatter-only"
-	| "frontmatter-and-body"
-	| "off";
+export interface CoverImageSource {
+	source: CoverImageSourceType;
+	isEnabled: boolean;
+}
+
+export type CoverImageSourceType =
+	| "image-property"
+	| "url-property"
+	| "frontmatter"
+	| "body";
 
 export interface TDashboardView extends BaseView {}
 
