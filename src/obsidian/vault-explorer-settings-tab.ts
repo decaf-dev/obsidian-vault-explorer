@@ -20,7 +20,7 @@ import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import { PluginEvent } from "src/event/types";
 
 import "./styles.css";
-import { clearSocialImageCache } from "src/svelte/app/services/social-media-image";
+import { clearSocialMediaImageCache } from "src/svelte/app/services/social-media-image-cache";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -681,7 +681,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		});
 		configFolderDesc.createDiv({
 			text: "Restart Obsidian after changing this setting.",
-			cls: "mod-warning vault-explorer-setting-description",
+			cls: "mod-warning",
 		});
 
 		new Setting(containerEl)
@@ -697,13 +697,13 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Social media image cache")
+			.setName("Clear cache data")
 			.addButton((button) =>
 				button
 					.setClass("mod-destructive")
 					.setButtonText("Clear cache")
 					.onClick(async () => {
-						await clearSocialImageCache();
+						await clearSocialMediaImageCache();
 					})
 			);
 	}

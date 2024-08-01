@@ -1,8 +1,3 @@
 .vault-explorer-premium-setting {
 	color: var(--text-accent);
 }
-
-.vault-explorer-setting-description {
-	padding-top: var(--size-4-1);
-	font-size: var(--font-smaller);
-}

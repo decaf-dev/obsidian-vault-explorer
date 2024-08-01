@@ -11,14 +11,20 @@ import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
-import {
-	findFirstImageEmbed,
-	isImageExtension,
-	isImageUrl,
-} from "./utils/image-utils";
+import { isImageExtension } from "./utils/image-utils";
 import { removeFrontmatter } from "./utils/content-utils";
-import { isHttpsLink } from "./utils/url-utils";
-import { getURIForEmbedLink, getURIForWikiLink } from "./utils/wiki-link-utils";
+import { getURIForWikiLinkTarget } from "./utils/wiki-link-utils";
+import {
+	isExternalEmbed,
+	isInternalEmbed,
+	isUrl,
+	isWikiLink,
+} from "./link-utils/link-validators";
+import {
+	getExternalEmbedTarget,
+	getInternalEmbedTarget,
+	getWikiLinkTarget,
+} from "./link-utils/link-target-getters";
 
 /**
  * Formats the file's data for rendering
@@ -144,7 +150,7 @@ export const formatFileDataForRender = ({
 	}
 
 	//Handle image property
-	if (imageUrl === null) {
+	if (imageUrl === null && coverImageSource !== "off") {
 		const loadedUrl = loadPropertyValue<string>(
 			fileFrontmatter,
 			imageUrlProp,
@@ -152,10 +158,28 @@ export const formatFileDataForRender = ({
 		);
 
 		if (loadedUrl !== null) {
-			const uri = getURIForWikiLink(app, loadedUrl, path);
-			if (uri && isImageUrl(uri)) {
-				imageUrl = uri;
-			} else if (isHttpsLink(loadedUrl)) {
+			if (isInternalEmbed(loadedUrl)) {
+				const target = getInternalEmbedTarget(loadedUrl);
+				if (target) {
+					const uri = getURIForWikiLinkTarget(app, target, path);
+					if (uri) {
+						imageUrl = uri;
+					}
+				}
+			} else if (isWikiLink(loadedUrl)) {
+				const target = getWikiLinkTarget(loadedUrl);
+				if (target) {
+					const uri = getURIForWikiLinkTarget(app, target, path);
+					if (uri) {
+						imageUrl = uri;
+					}
+				}
+			} else if (isExternalEmbed(loadedUrl)) {
+				const target = getExternalEmbedTarget(loadedUrl);
+				if (target) {
+					imageUrl = target;
+				}
+			} else if (isUrl(loadedUrl)) {
 				imageUrl = loadedUrl;
 			}
 		}
@@ -169,32 +193,15 @@ export const formatFileDataForRender = ({
 		);
 
 		for (const property of textProperties) {
-			const { value } = property;
-			const uri = getURIForWikiLink(app, value, path);
-			if (uri && isImageUrl(uri)) {
-				imageUrl = uri;
-				break;
-			} else if (isHttpsLink(value)) {
-				imageUrl = value;
-				break;
-			}
+			//TODO implement
 		}
 	}
 
 	if (imageUrl === null && coverImageSource === "frontmatter-and-body") {
 		if (fileContent !== null) {
 			const body = removeFrontmatter(fileContent);
-			const imageEmbed = findFirstImageEmbed(body);
-			if (imageEmbed) {
-				const uri = getURIForEmbedLink(app, imageEmbed, path);
-				imageUrl = uri;
-			}
+			//TODO implement
 		}
-
-		// if (imageUrl === null && fileContent !== null) {
-		// 	const body = removeFrontmatter(fileContent);
-		// 	imageUrl = findFirstHttpsLink(body);
-		// }
 	}
 
 	const displayName = extension === "md" ? basename : name;
