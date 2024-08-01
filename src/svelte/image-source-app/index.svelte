@@ -77,7 +77,7 @@
 
 <div class="setting-item">
 	<div class="setting-item-info">
-		<div class="setting-item-name">Image source</div>
+		<div class="setting-item-name">Cover image sources</div>
 		<div class="setting-item-description">
 			<div class="vault-explorer-image-source-setting-container">
 				{#each coverImageSources as source}
