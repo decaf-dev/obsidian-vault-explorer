@@ -11,14 +11,19 @@ import {
 	isDateSupported,
 	getTimeMillis,
 } from "src/svelte/shared/services/time-utils";
-import {
-	findFirstImageEmbed,
-	isImageExtension,
-	isImageUrl,
-} from "./utils/image-utils";
+import { isImageExtension } from "./utils/image-utils";
 import { removeFrontmatter } from "./utils/content-utils";
-import { isHttpsLink } from "./utils/url-utils";
-import { getURIForEmbedLink, getURIForWikiLink } from "./utils/wiki-link-utils";
+import { getURIForWikiLinkTarget } from "./utils/wiki-link-utils";
+import { isUrl, isWikiLink } from "./link-utils/link-validators";
+import {
+	getExternalEmbedTarget,
+	getInternalEmbedTarget,
+	getWikiLinkTarget,
+} from "./link-utils/link-target-getters";
+import {
+	getFirstExternalEmbed,
+	getFirstInternalEmbed,
+} from "./link-utils/link-getters";
 
 /**
  * Formats the file's data for rendering
@@ -50,12 +55,12 @@ export const formatFileDataForRender = ({
 }): FileRenderData => {
 	const { name, basename, extension, path } = file;
 
-	const { coverImageSource } = settings.views.grid;
+	const { coverImageSources } = settings.views.grid;
 	const {
 		createdDate: createdDateProp,
 		modifiedDate: modifiedDateProp,
 		url: urlProp,
-		imageUrl: imageUrlProp,
+		image: imageProp,
 		favorite: favoriteProp,
 		custom1: custom1Prop,
 		custom2: custom2Prop,
@@ -143,58 +148,63 @@ export const formatFileDataForRender = ({
 		imageUrl = app.vault.getResourcePath(file);
 	}
 
-	//Handle image property
-	if (imageUrl === null) {
-		const loadedUrl = loadPropertyValue<string>(
-			fileFrontmatter,
-			imageUrlProp,
-			PropertyType.TEXT
-		);
-
-		if (loadedUrl !== null) {
-			const uri = getURIForWikiLink(app, loadedUrl, path);
-			if (uri && isImageUrl(uri)) {
-				imageUrl = uri;
-			} else if (isHttpsLink(loadedUrl)) {
-				imageUrl = loadedUrl;
+	for (const imageSource of coverImageSources) {
+		const { type, isEnabled } = imageSource;
+		if (isEnabled) {
+			switch (type) {
+				case "image-property": {
+					const loadedUrl = handleImagePropertyCoverSource(
+						app,
+						fileFrontmatter,
+						path,
+						imageProp
+					);
+					if (loadedUrl !== null) {
+						imageUrl = loadedUrl;
+					}
+					break;
+				}
+				case "url-property": {
+					const loadedUrl = handleUrlPropertyCoverSource(
+						fileFrontmatter,
+						urlProp
+					);
+					if (loadedUrl !== null) {
+						imageUrl = loadedUrl;
+					}
+					break;
+				}
+				case "frontmatter": {
+					const loadedUrl = handleFrontmatterCoverSource(
+						app,
+						fileFrontmatter,
+						path
+					);
+					if (loadedUrl !== null) {
+						imageUrl = loadedUrl;
+					}
+					break;
+				}
+				case "body": {
+					const loadedUrl = handleBodyCoverSource(
+						app,
+						path,
+						fileContent
+					);
+					if (loadedUrl !== null) {
+						imageUrl = loadedUrl;
+					}
+					break;
+				}
+				default:
+					throw new Error(
+						`Unhandled cover image source type: ${type}`
+					);
+			}
+			if (imageUrl !== null) {
+				break; // Exit the loop if a non-null URL is found
 			}
 		}
-	}
-
-	//Handle image in frontmatter
-	if (imageUrl === null && coverImageSource !== "off") {
-		const textProperties: FileTextProperties = loadTextProperties(
-			app,
-			fileFrontmatter
-		);
-
-		for (const property of textProperties) {
-			const { value } = property;
-			const uri = getURIForWikiLink(app, value, path);
-			if (uri && isImageUrl(uri)) {
-				imageUrl = uri;
-				break;
-			} else if (isHttpsLink(value)) {
-				imageUrl = value;
-				break;
-			}
-		}
-	}
-
-	if (imageUrl === null && coverImageSource === "frontmatter-and-body") {
-		if (fileContent !== null) {
-			const body = removeFrontmatter(fileContent);
-			const imageEmbed = findFirstImageEmbed(body);
-			if (imageEmbed) {
-				const uri = getURIForEmbedLink(app, imageEmbed, path);
-				imageUrl = uri;
-			}
-		}
-
-		// if (imageUrl === null && fileContent !== null) {
-		// 	const body = removeFrontmatter(fileContent);
-		// 	imageUrl = findFirstHttpsLink(body);
-		// }
 	}
 
 	const displayName = extension === "md" ? basename : name;
@@ -216,4 +226,106 @@ export const formatFileDataForRender = ({
 		custom2,
 		custom3,
 	};
+};
+
+const handleImagePropertyCoverSource = (
+	app: App,
+	fileFrontmatter: FrontMatterCache | undefined,
+	filePath: string,
+	imageProperty: string
+) => {
+	const propertyValue = loadPropertyValue<string>(
+		fileFrontmatter,
+		imageProperty,
+		PropertyType.TEXT
+	);
+	return getImageUrlFromProperty(app, filePath, propertyValue);
+};
+
+const handleUrlPropertyCoverSource = (
+	fileFrontmatter: FrontMatterCache | undefined,
+	urlProperty: string
+) => {
+	const propertyValue = loadPropertyValue<string>(
+		fileFrontmatter,
+		urlProperty,
+		PropertyType.TEXT
+	);
+	if (propertyValue !== null) {
+		if (isUrl(propertyValue)) {
+			return propertyValue;
+		}
+	}
+	return null;
+};
+
+const handleFrontmatterCoverSource = (
+	app: App,
+	fileFrontmatter: FrontMatterCache | undefined,
+	filePath: string
+) => {
+	const textProperties: FileTextProperties = loadTextProperties(
+		app,
+		fileFrontmatter
+	);
+
+	for (const property of textProperties) {
+		const { value } = property;
+		const imageUrl = getImageUrlFromProperty(app, filePath, value);
+		if (imageUrl) {
+			return imageUrl;
+		}
+	}
+	return null;
+};
+
+const handleBodyCoverSource = (
+	app: App,
+	filePath: string,
+	fileContent: string | null
+) => {
+	if (fileContent === null) return null;
+
+	const body = removeFrontmatter(fileContent);
+	const firstInternalLink = getFirstInternalEmbed(body);
+	if (firstInternalLink) {
+		const target = getInternalEmbedTarget(firstInternalLink);
+		if (target) {
+			const uri = getURIForWikiLinkTarget(app, target, filePath);
+			if (uri) {
+				return uri;
+			}
+		}
+	}
+
+	const firstExternalLink = getFirstExternalEmbed(body);
+	if (firstExternalLink) {
+		const target = getExternalEmbedTarget(firstExternalLink);
+		if (target) {
+			return target;
+		}
+	}
+
+	return null;
+};
+
+const getImageUrlFromProperty = (
+	app: App,
+	filePath: string,
+	propertyValue: string | null
+) => {
+	if (propertyValue === null) return null;
+
+	if (isWikiLink(propertyValue)) {
+		const target = getWikiLinkTarget(propertyValue);
+		if (target) {
+			const uri = getURIForWikiLinkTarget(app, target, filePath);
+			if (uri) {
+				return uri;
+			}
+		}
+	} else if (isUrl(propertyValue)) {
+		return propertyValue;
+	}
+	return null;
 };

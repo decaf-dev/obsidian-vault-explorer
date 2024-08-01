@@ -1,7 +1,7 @@
 {
 	"id": "vault-explorer",
 	"name": "Vault Explorer",
-	"version": "1.36.3",
+	"version": "1.37.0",
 	"minAppVersion": "1.4.13",
 	"description": "Explore your vault in visual format",
 	"author": "DecafDev",
