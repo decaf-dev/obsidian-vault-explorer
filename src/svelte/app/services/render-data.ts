@@ -222,7 +222,7 @@ export const formatFileDataForRender = ({
 
 	const displayName = extension === "md" ? basename : name;
 	const basePath = path.includes("/")
-		? path.substring(0, path.lastIndexOf("/") + 1)
+		? path.substring(0, path.lastIndexOf("/"))
 		: "/";
 
 	return {
