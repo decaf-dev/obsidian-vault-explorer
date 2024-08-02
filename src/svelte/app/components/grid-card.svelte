@@ -159,10 +159,6 @@
 		handleCardClick();
 	}
 
-	function handleTitleContextMenu(e: Event) {
-		handleCardContextMenu(e);
-	}
-
 	$: hasFooterContent =
 		tags != null || custom1 != null || custom2 != null || custom3 != null;
 
@@ -248,10 +244,6 @@
 			on:click={(e) => {
 				e.preventDefault();
 				handleTitleClick();
-			}}
-			on:contextmenu={(e) => {
-				e.preventDefault();
-				handleTitleContextMenu(e);
 			}}
 			on:keydown={(e) => {
 				if (e.key === "Enter" || e.key === " ") {

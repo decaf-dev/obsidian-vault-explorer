@@ -158,10 +158,6 @@
 		});
 	}
 
-	function handleTitleContextMenu(e: Event) {
-		handleCardContextMenu(e);
-	}
-
 	function handleCardMouseOver(e: MouseEvent) {
 		const targetEl = e.currentTarget as HTMLElement;
 		plugin.app.workspace.trigger("hover-link", {
@@ -233,14 +229,6 @@
 		role="link"
 		class="vault-explorer-feed-card__title"
 		on:focus={() => {}}
-		on:click={(e) => {
-			e.preventDefault();
-			handleTitleClick();
-		}}
-		on:contextmenu={(e) => {
-			e.preventDefault();
-			handleTitleContextMenu(e);
-		}}
 		on:keydown={(e) => {
 			if (e.key === "Enter" || e.key === " ") {
 				e.preventDefault();
