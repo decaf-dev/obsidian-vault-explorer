@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import { openContextMenu } from "../services/context-menu";
 	import { formatAsBearTimeString } from "../services/time-string";
 	import { FileRenderData } from "../types";
@@ -9,6 +9,11 @@
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import { openInCurrentTab } from "../services/open-file";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
+	import Stack from "src/svelte/shared/components/stack.svelte";
+	import { getIconIdForFile } from "../services/file-icon";
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import EventManager from "src/event/event-manager";
+	import { PluginEvent } from "src/event/types";
 
 	interface TColumn {
 		key: string;
@@ -23,6 +28,7 @@
 
 	let filteredItems: FileRenderData[] = [];
 	let plugin: VaultExplorerPlugin | null = null;
+	let enableFileIcons: boolean = true;
 
 	let columns: TColumn[] = [
 		{
@@ -57,34 +63,40 @@
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
+		enableFileIcons = plugin.settings.enableFileIcons;
 	});
 
-	$: {
-		if (startIndex < data.length) {
-			filteredItems = Array.from({ length: pageLength }, (_, i) => {
-				const index = startIndex + i;
-				return data[index];
-			});
-		} else {
-			filteredItems = [];
+	onMount(() => {
+		function handleFileIconsChange() {
+			if (plugin === null) return;
+
+			enableFileIcons = plugin.settings.enableFileIcons;
 		}
-	}
+
+		EventManager.getInstance().on(
+			PluginEvent.FILE_ICONS_SETTING_CHANGE,
+			handleFileIconsChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.FILE_ICONS_SETTING_CHANGE,
+				handleFileIconsChange,
+			);
+		};
+	});
 
 	function handleFavoriteChange(filePath: string, value: boolean) {
 		dispatch("favoritePropertyChange", { filePath, value });
 	}
 
 	function handleRowClick(path: string) {
-		if (plugin === null) {
-			return;
-		}
+		if (plugin === null) return;
+
 		openInCurrentTab(plugin, path);
 	}
 
 	function handleRowMouseOver(e: MouseEvent, path: string) {
-		if (plugin === null) {
-			return;
-		}
+		if (plugin === null) return;
 
 		const targetEl = e.currentTarget as HTMLElement;
 		plugin.app.workspace.trigger("hover-link", {
@@ -101,9 +113,7 @@
 		path: string,
 		isFavorite: boolean | null,
 	) {
-		if (plugin === null) {
-			return;
-		}
+		if (plugin === null) return;
 
 		const nativeEvent = e as MouseEvent;
 		openContextMenu(plugin, path, nativeEvent, {
@@ -124,6 +134,17 @@
 
 	function asStringArray(value: unknown): string[] {
 		return value as string[];
+	}
+
+	$: {
+		if (startIndex < data.length) {
+			filteredItems = Array.from({ length: pageLength }, (_, i) => {
+				const index = startIndex + i;
+				return data[index];
+			});
+		} else {
+			filteredItems = [];
+		}
 	}
 </script>
 
@@ -169,11 +190,21 @@
 								</Wrap>
 							{:else if column.key == "baseName"}
 								<div class="vault-explorer-table-view__title">
-									<div
-										class="vault-explorer-table-view__title-text"
-									>
-										{value}
-									</div>
+									<Stack spacing="xs">
+										{#if enableFileIcons}
+											<Icon
+												iconId={getIconIdForFile(
+													filteredItem.baseName,
+													filteredItem.extension,
+												)}
+											/>
+										{/if}
+										<div
+											class="vault-explorer-table-view__title-text"
+										>
+											{value}
+										</div>
+									</Stack>
 								</div>
 							{:else}
 								<div>{value}</div>
