@@ -5,6 +5,8 @@
 	import { FileRenderData } from "../types";
 	import store from "src/svelte/shared/services/store";
 	import VaultExplorerPlugin from "src/main";
+	import Tag from "src/svelte/shared/components/tag.svelte";
+	import Wrap from "src/svelte/shared/components/wrap.svelte";
 
 	export let data: FileRenderData[];
 	export let startIndex: number;
@@ -64,8 +66,11 @@
 			classNames: "vault-explorer-table-view__title-text",
 		},
 		{ key: "extension", label: "Extension" },
-		{ key: "basePath", label: "Path" },
-		{ key: "tags", label: "Tags" },
+		{ key: "basePath", label: "Folder" },
+		{
+			key: "tags",
+			label: "Tags",
+		},
 		{
 			key: "isFavorite",
 			label: "Favorite",
@@ -83,7 +88,7 @@
 		},
 	];
 
-	function getValue(item: FileRenderData, column: TColumn): any {
+	function getValue(item: FileRenderData, column: TColumn): unknown {
 		const { key, format } = column;
 		const itemValue = item[key as keyof FileRenderData] ?? "";
 
@@ -91,6 +96,10 @@
 			return format(itemValue);
 		}
 		return itemValue;
+	}
+
+	function asStringArray(value: unknown): string[] {
+		return value as string[];
 	}
 </script>
 
@@ -114,11 +123,26 @@
 						)}
 				>
 					{#each columns as column (column.key)}
-						<td
-							><div class={column.classNames}>
-								{getValue(filteredItem, column)}
-							</div></td
-						>
+						{@const value = getValue(filteredItem, column)}
+						<td>
+							{#if column.key == "tags"}
+								<Wrap spacingX="sm" spacingY="sm">
+									{#each asStringArray(value) as tag}
+										<Tag name={tag} variant="unstyled" />
+									{/each}
+								</Wrap>
+							{:else if column.key == "baseName"}
+								<div class="vault-explorer-table-view__title">
+									<div
+										class="vault-explorer-table-view__title-text"
+									>
+										{value}
+									</div>
+								</div>
+							{:else}
+								<div>{value}</div>
+							{/if}
+						</td>
 					{/each}
 				</tr>
 			{/each}
@@ -134,6 +158,17 @@
 
 	.vault-explorer-table-view table {
 		border-collapse: collapse;
+	}
+
+	.vault-explorer-table-view th:first-child,
+	.vault-explorer-table-view td:first-child {
+		width: 300px;
+		max-width: 300px;
+		overflow: hidden;
+	}
+
+	.vault-explorer-table-view__title {
+		width: 100%;
 	}
 
 	.vault-explorer-table-view__title-text {
