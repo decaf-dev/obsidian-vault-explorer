@@ -40,8 +40,11 @@
 			label: "Created",
 			format: (value: unknown) => formatAsBearTimeString(value as number),
 		},
-		{ key: "modifiedMillis", label: "Modified" },
-		{ key: "createdMillis", label: "Created" },
+		{
+			key: "modifiedMillis",
+			label: "Modified",
+			format: (value: unknown) => formatAsBearTimeString(value as number),
+		},
 	];
 
 	function getValue(item: FileRenderData, column: TColumn): any {
