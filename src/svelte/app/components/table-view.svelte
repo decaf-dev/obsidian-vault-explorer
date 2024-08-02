@@ -53,11 +53,16 @@
 	interface TColumn {
 		key: string;
 		label: string;
+		classNames?: string;
 		format?: (value: unknown) => string;
 	}
 
 	let columns: TColumn[] = [
-		{ key: "baseName", label: "Name" },
+		{
+			key: "baseName",
+			label: "Name",
+			classNames: "vault-explorer-table-view__title-text",
+		},
 		{ key: "extension", label: "Extension" },
 		{ key: "basePath", label: "Path" },
 		{ key: "tags", label: "Tags" },
@@ -81,7 +86,7 @@
 	function getValue(item: FileRenderData, column: TColumn): any {
 		const { key, format } = column;
 		const itemValue = item[key as keyof FileRenderData] ?? "";
-		// console.log(itemValue);
+
 		if (format !== undefined) {
 			return format(itemValue);
 		}
@@ -109,7 +114,11 @@
 						)}
 				>
 					{#each columns as column (column.key)}
-						<td>{getValue(filteredItem, column)}</td>
+						<td
+							><div class={column.classNames}>
+								{getValue(filteredItem, column)}
+							</div></td
+						>
 					{/each}
 				</tr>
 			{/each}
@@ -125,6 +134,15 @@
 
 	.vault-explorer-table-view table {
 		border-collapse: collapse;
+	}
+
+	.vault-explorer-table-view__title-text {
+		width: fit-content;
+		color: var(--text-accent);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		cursor: pointer;
 	}
 
 	.vault-explorer-table-view th {
