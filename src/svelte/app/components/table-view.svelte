@@ -207,6 +207,18 @@
 		padding: 8px;
 	}
 
+	.vault-explorer-table-view th:nth-child(4) {
+		min-width: 250px;
+	}
+
+	.vault-explorer-table-view th:nth-child(6) {
+		min-width: 175px;
+	}
+
+	.vault-explorer-table-view th:nth-child(7) {
+		min-width: 175px;
+	}
+
 	.vault-explorer-table-view tr:hover:not(:has(th)) {
 		background-color: var(--background-modifier-hover);
 	}
