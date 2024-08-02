@@ -7,50 +7,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import Tag from "src/svelte/shared/components/tag.svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
-
-	export let data: FileRenderData[];
-	export let startIndex: number;
-	export let pageLength: number;
-
-	let filteredItems: FileRenderData[] = [];
-	let plugin: VaultExplorerPlugin | null = null;
-
-	const dispatch = createEventDispatcher();
-
-	store.plugin.subscribe((p) => {
-		plugin = p;
-	});
-
-	$: {
-		if (startIndex < data.length) {
-			filteredItems = Array.from({ length: pageLength }, (_, i) => {
-				const index = startIndex + i;
-				return data[index];
-			});
-		} else {
-			filteredItems = [];
-		}
-	}
-
-	function handleFavoriteChange(filePath: string, value: boolean) {
-		dispatch("favoritePropertyChange", { filePath, value });
-	}
-
-	function handleRowContextMenu(
-		e: Event,
-		path: string,
-		isFavorite: boolean | null,
-	) {
-		if (plugin === null) {
-			return;
-		}
-
-		const nativeEvent = e as MouseEvent;
-		openContextMenu(plugin, path, nativeEvent, {
-			isFavorite,
-			onFavoriteChange: handleFavoriteChange,
-		});
-	}
+	import { openInCurrentTab } from "../services/open-file";
 
 	interface TColumn {
 		key: string;
@@ -58,6 +15,13 @@
 		classNames?: string;
 		format?: (value: unknown) => string;
 	}
+
+	export let data: FileRenderData[];
+	export let startIndex: number;
+	export let pageLength: number;
+
+	let filteredItems: FileRenderData[] = [];
+	let plugin: VaultExplorerPlugin | null = null;
 
 	let columns: TColumn[] = [
 		{
@@ -88,6 +52,50 @@
 		},
 	];
 
+	const dispatch = createEventDispatcher();
+
+	store.plugin.subscribe((p) => {
+		plugin = p;
+	});
+
+	$: {
+		if (startIndex < data.length) {
+			filteredItems = Array.from({ length: pageLength }, (_, i) => {
+				const index = startIndex + i;
+				return data[index];
+			});
+		} else {
+			filteredItems = [];
+		}
+	}
+
+	function handleFavoriteChange(filePath: string, value: boolean) {
+		dispatch("favoritePropertyChange", { filePath, value });
+	}
+
+	function handleRowClick(path: string) {
+		if (plugin === null) {
+			return;
+		}
+		openInCurrentTab(plugin, path);
+	}
+
+	function handleRowContextMenu(
+		e: Event,
+		path: string,
+		isFavorite: boolean | null,
+	) {
+		if (plugin === null) {
+			return;
+		}
+
+		const nativeEvent = e as MouseEvent;
+		openContextMenu(plugin, path, nativeEvent, {
+			isFavorite,
+			onFavoriteChange: handleFavoriteChange,
+		});
+	}
+
 	function getValue(item: FileRenderData, column: TColumn): unknown {
 		const { key, format } = column;
 		const itemValue = item[key as keyof FileRenderData] ?? "";
@@ -115,6 +123,16 @@
 		<tbody>
 			{#each filteredItems as filteredItem}
 				<tr
+					tabindex="0"
+					role="button"
+					class="vault-explorer-list-item"
+					on:click={() => handleRowClick(filteredItem.path)}
+					on:keydown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							handleRowClick(filteredItem.path);
+						}
+					}}
+					on:focus={() => {}}
 					on:contextmenu={(e) =>
 						handleRowContextMenu(
 							e,
@@ -172,7 +190,6 @@
 	}
 
 	.vault-explorer-table-view__title-text {
-		width: fit-content;
 		color: var(--text-accent);
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -192,5 +209,9 @@
 
 	.vault-explorer-table-view tr:hover:not(:has(th)) {
 		background-color: var(--background-modifier-hover);
+	}
+
+	.vault-explorer-table-view tr:focus-visible:not(:has(th)) {
+		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
 	}
 </style>
