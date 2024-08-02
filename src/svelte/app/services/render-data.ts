@@ -221,12 +221,16 @@ export const formatFileDataForRender = ({
 	}
 
 	const displayName = extension === "md" ? basename : name;
+	const basePath = path.includes("/")
+		? path.substring(0, path.lastIndexOf("/") + 1)
+		: "/";
 
 	return {
 		id: fileId,
 		displayName,
-		baseName: basename,
 		path,
+		baseName: basename,
+		basePath,
 		extension,
 		url,
 		content: fileContent,

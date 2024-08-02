@@ -28,7 +28,7 @@
 	let columns: TColumn[] = [
 		{ key: "baseName", label: "Name" },
 		{ key: "extension", label: "Extension" },
-		{ key: "path", label: "Path" },
+		{ key: "basePath", label: "Path" },
 		{ key: "tags", label: "Tags" },
 		{
 			key: "isFavorite",
