@@ -8,6 +8,7 @@
 	import Tag from "src/svelte/shared/components/tag.svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import { openInCurrentTab } from "../services/open-file";
+	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 
 	interface TColumn {
 		key: string;
@@ -80,6 +81,21 @@
 		openInCurrentTab(plugin, path);
 	}
 
+	function handleRowMouseOver(e: MouseEvent, path: string) {
+		if (plugin === null) {
+			return;
+		}
+
+		const targetEl = e.currentTarget as HTMLElement;
+		plugin.app.workspace.trigger("hover-link", {
+			event: e,
+			linktext: path,
+			source: HOVER_LINK_SOURCE_ID,
+			targetEl,
+			hoverParent: targetEl.parentElement,
+		});
+	}
+
 	function handleRowContextMenu(
 		e: Event,
 		path: string,
@@ -139,6 +155,8 @@
 							filteredItem.path,
 							filteredItem.isFavorite,
 						)}
+					on:mouseover={(e) =>
+						handleRowMouseOver(e, filteredItem.path)}
 				>
 					{#each columns as column (column.key)}
 						{@const value = getValue(filteredItem, column)}
