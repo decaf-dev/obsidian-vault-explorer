@@ -1,12 +1,23 @@
 <script lang="ts">
+	import { createEventDispatcher } from "svelte";
+	import { openContextMenu } from "../services/context-menu";
 	import { formatAsBearTimeString } from "../services/time-string";
 	import { FileRenderData } from "../types";
+	import store from "src/svelte/shared/services/store";
+	import VaultExplorerPlugin from "src/main";
 
 	export let data: FileRenderData[];
 	export let startIndex: number;
 	export let pageLength: number;
 
 	let filteredItems: FileRenderData[] = [];
+	let plugin: VaultExplorerPlugin | null = null;
+
+	const dispatch = createEventDispatcher();
+
+	store.plugin.subscribe((p) => {
+		plugin = p;
+	});
 
 	$: {
 		if (startIndex < data.length) {
@@ -17,6 +28,26 @@
 		} else {
 			filteredItems = [];
 		}
+	}
+
+	function handleFavoriteChange(filePath: string, value: boolean) {
+		dispatch("favoritePropertyChange", { filePath, value });
+	}
+
+	function handleRowContextMenu(
+		e: Event,
+		path: string,
+		isFavorite: boolean | null,
+	) {
+		if (plugin === null) {
+			return;
+		}
+
+		const nativeEvent = e as MouseEvent;
+		openContextMenu(plugin, path, nativeEvent, {
+			isFavorite,
+			onFavoriteChange: handleFavoriteChange,
+		});
 	}
 
 	interface TColumn {
@@ -69,7 +100,14 @@
 		</thead>
 		<tbody>
 			{#each filteredItems as filteredItem}
-				<tr>
+				<tr
+					on:contextmenu={(e) =>
+						handleRowContextMenu(
+							e,
+							filteredItem.path,
+							filteredItem.isFavorite,
+						)}
+				>
 					{#each columns as column (column.key)}
 						<td>{getValue(filteredItem, column)}</td>
 					{/each}

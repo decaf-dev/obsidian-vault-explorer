@@ -967,7 +967,12 @@
 				on:favoritePropertyChange={handleFavoritePropertyChange}
 			/>
 		{:else if currentView === "table"}
-			<TableView data={renderData} {startIndex} {pageLength} />
+			<TableView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
 		{:else if currentView === "feed"}
 			<FeedView
 				data={renderData}
