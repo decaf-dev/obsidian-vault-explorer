@@ -60,6 +60,7 @@
 		favoritesStore,
 		TFavoritesCache,
 	} from "./services/favorites-store";
+	import TableView from "./components/table-view.svelte";
 
 	// ============================================
 	// Variables
@@ -965,6 +966,8 @@
 				{pageLength}
 				on:favoritePropertyChange={handleFavoritePropertyChange}
 			/>
+		{:else if currentView === "table"}
+			<TableView data={renderData} {startIndex} {pageLength} />
 		{:else if currentView === "feed"}
 			<FeedView
 				data={renderData}

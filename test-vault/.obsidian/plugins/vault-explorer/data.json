@@ -95,7 +95,7 @@
       "isEnabled": false
     }
   },
-  "currentView": "grid",
+  "currentView": "table",
   "titleWrapping": "normal",
   "enableClockUpdates": true,
   "enableFileIcons": true,
@@ -106,9 +106,10 @@
   "viewOrder": [
     "grid",
     "list",
+    "table",
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.38.0",
+  "pluginVersion": "1.39.0",
   "logLevel": "trace"
 }

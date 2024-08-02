@@ -285,7 +285,7 @@
 	}
 
 	.vault-explorer-feed-card:focus-visible {
-		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+		box-shadow: 0 0 0 3px var(--background-modifier-focus);
 	}
 
 	.vault-explorer-feed-card__title {
