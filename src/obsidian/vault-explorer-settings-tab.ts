@@ -247,8 +247,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Table view").addToggle((toggle) =>
 			toggle
-				.setDisabled(true) //TODO implement
-				.setTooltip("This view is not yet implemented.")
 				.setValue(this.plugin.settings.views.table.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.table.isEnabled = value;

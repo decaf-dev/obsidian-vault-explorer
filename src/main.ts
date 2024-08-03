@@ -19,6 +19,7 @@ import { PluginEvent } from "./event/types";
 import { isVersionLessThan } from "./utils";
 import License from "./svelte/shared/services/license";
 import { clearSocialMediaImageCache } from "./svelte/app/services/social-media-image-cache";
+import store from "./svelte/shared/services/store";
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -27,6 +28,8 @@ export default class VaultExplorerPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		this.setupLogger();
+
+		store.plugin.set(this);
 
 		await License.getInstance().loadStoredKey();
 

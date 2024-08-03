@@ -60,6 +60,7 @@
 		favoritesStore,
 		TFavoritesCache,
 	} from "./services/favorites-store";
+	import TableView from "./components/table-view.svelte";
 
 	// ============================================
 	// Variables
@@ -960,6 +961,13 @@
 			/>
 		{:else if currentView === "list"}
 			<ListView
+				data={renderData}
+				{startIndex}
+				{pageLength}
+				on:favoritePropertyChange={handleFavoritePropertyChange}
+			/>
+		{:else if currentView === "table"}
+			<TableView
 				data={renderData}
 				{startIndex}
 				{pageLength}

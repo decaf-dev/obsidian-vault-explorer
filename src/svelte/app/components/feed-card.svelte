@@ -49,8 +49,8 @@
 	const dispatch = createEventDispatcher();
 
 	let plugin: VaultExplorerPlugin;
-	store.plugin.subscribe((value) => {
-		plugin = value;
+	store.plugin.subscribe((p) => {
+		plugin = p;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		removeH1 = plugin.settings.views.feed.removeH1;
 		collapseStyle = plugin.settings.views.feed.collapseStyle;
@@ -158,10 +158,6 @@
 		});
 	}
 
-	function handleTitleContextMenu(e: Event) {
-		handleCardContextMenu(e);
-	}
-
 	function handleCardMouseOver(e: MouseEvent) {
 		const targetEl = e.currentTarget as HTMLElement;
 		plugin.app.workspace.trigger("hover-link", {
@@ -233,14 +229,6 @@
 		role="link"
 		class="vault-explorer-feed-card__title"
 		on:focus={() => {}}
-		on:click={(e) => {
-			e.preventDefault();
-			handleTitleClick();
-		}}
-		on:contextmenu={(e) => {
-			e.preventDefault();
-			handleTitleContextMenu(e);
-		}}
 		on:keydown={(e) => {
 			if (e.key === "Enter" || e.key === " ") {
 				e.preventDefault();
@@ -285,7 +273,7 @@
 	}
 
 	.vault-explorer-feed-card:focus-visible {
-		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+		box-shadow: 0 0 0 3px var(--background-modifier-focus);
 	}
 
 	.vault-explorer-feed-card__title {

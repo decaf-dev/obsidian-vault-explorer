@@ -106,10 +106,6 @@
 		openInCurrentTab(plugin, path);
 	}
 
-	function handleTitleContextMenu(e: Event) {
-		handleItemContextMenu(e);
-	}
-
 	function handleFavoriteChange(filePath: string, value: boolean) {
 		dispatch("favoritePropertyChange", { filePath, value });
 	}
@@ -166,14 +162,6 @@
 			role="link"
 			class={titleClassName}
 			on:focus={() => {}}
-			on:click={(e) => {
-				e.preventDefault();
-				handleTitleClick();
-			}}
-			on:contextmenu={(e) => {
-				e.preventDefault();
-				handleTitleContextMenu(e);
-			}}
 			on:keydown={(e) => {
 				if (e.key === "Enter" || e.key === " ") {
 					e.preventDefault();
