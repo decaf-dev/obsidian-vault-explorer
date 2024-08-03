@@ -95,7 +95,12 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	filterGroupsWidth: "300px",
 	shouldWrapFilterGroups: false,
 	pageSize: 25,
-	viewOrder: [TExplorerView.GRID, TExplorerView.LIST, TExplorerView.FEED],
+	viewOrder: [
+		TExplorerView.GRID,
+		TExplorerView.LIST,
+		TExplorerView.TABLE,
+		TExplorerView.FEED,
+	],
 	configDir: ".vaultexplorer",
 	pluginVersion: null,
 	logLevel: LOG_LEVEL_WARN,

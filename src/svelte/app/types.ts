@@ -2,6 +2,7 @@ export interface FileRenderData {
 	id: string;
 	displayName: string;
 	path: string;
+	basePath: string;
 	extension: string;
 	baseName: string;
 	content: string | null;
