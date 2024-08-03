@@ -75,7 +75,7 @@
       "showTags": true
     },
     "table": {
-      "isEnabled": false
+      "isEnabled": true
     },
     "feed": {
       "isEnabled": true,

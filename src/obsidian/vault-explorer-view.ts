@@ -36,6 +36,7 @@ export default class VaultExplorerView extends ItemView {
 		const containerEl = this.containerEl.children[1];
 
 		store.plugin.set(this.plugin);
+
 		this.component = new VaultExplorerApp({
 			target: containerEl,
 		});

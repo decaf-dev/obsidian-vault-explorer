@@ -49,8 +49,8 @@
 	const dispatch = createEventDispatcher();
 
 	let plugin: VaultExplorerPlugin;
-	store.plugin.subscribe((value) => {
-		plugin = value;
+	store.plugin.subscribe((p) => {
+		plugin = p;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		removeH1 = plugin.settings.views.feed.removeH1;
 		collapseStyle = plugin.settings.views.feed.collapseStyle;

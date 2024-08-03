@@ -13,6 +13,12 @@ export default class Migrate_1_39_0 implements MigrationInterface {
 				TExplorerView.TABLE,
 				TExplorerView.FEED,
 			],
+			views: {
+				...typedData.views,
+				table: {
+					isEnabled: true,
+				},
+			},
 		};
 
 		return newData as unknown as Record<string, unknown>;
