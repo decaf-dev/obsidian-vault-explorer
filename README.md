@@ -38,6 +38,10 @@ Vault Explorer is a work in progress. Please check the GitHub repository and doc
 
 ![](/readme/list-view.png)
 
+### Table view
+
+![](/readme/table-view.png)
+
 ### Feed view
 
 ![](/readme/feed-view.png)
