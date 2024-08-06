@@ -490,18 +490,11 @@
 	<h3>Custom filter</h3>
 	{#if selectedGroup !== undefined}
 		<Stack spacing="md" align="flex-end">
-			<Stack direction="column" spacing="sm">
-				<label for="filter-group-select">Selected group</label>
-				<select
-					id="filter-group-select"
-					value={selectedGroup.id}
-					on:change={handleGroupChange}
-				>
-					{#each groups as group}
-						<option value={group.id}>{group.name}</option>
-					{/each}
-				</select>
-			</Stack>
+			<select value={selectedGroup.id} on:change={handleGroupChange}>
+				{#each groups as group}
+					<option value={group.id}>{group.name}</option>
+				{/each}
+			</select>
 			<Stack spacing="xs" align="flex-end">
 				<input
 					id="filter-group-name"
@@ -510,50 +503,45 @@
 					on:change={handleGroupNameChange}
 				/>
 				<IconButton
-					ariaLabel="Delete filter group"
+					ariaLabel="Delete group"
 					iconId="trash"
 					on:click={() => handleGroupDeleteClick()}
 				/>
 			</Stack>
 		</Stack>
-		<Spacer size="lg" />
+		<Spacer size="sm" />
 		<Divider />
-		<FilterRuleList
-			rules={selectedGroup?.rules ?? []}
-			on:ruleTypeChange={handleRuleTypeChange}
-			on:ruleConditionChange={handleRuleConditionChange}
-			on:ruleDeleteClick={handleRuleDeleteClick}
-			on:ruleDuplicateClick={handleRuleDuplicateClick}
-			on:ruleValueChange={handleRuleValueChange}
-			on:ruleOperatorChange={handleRuleOperatorChange}
-			on:ruleToggle={handleRuleToggle}
-			on:groupDeleteClick={handleGroupDeleteClick}
-			on:groupNameChange={handleGroupNameChange}
-			on:propertyTypeChange={handlePropertyTypeChange}
-			on:propertyNameChange={handlePropertyNameChange}
-			on:propertyValueDataChange={handlePropertyValueDataChange}
-			on:propertyMatchWhenPropertyDNEChange={handlePropertyMatchWhenPropertyDNEChange}
-			on:folderSubfoldersToggle={handleFolderSubfoldersToggle}
-		/>
-		<Divider />
-		<Spacer size="md" />
+		<Spacer size="sm" />
 	{/if}
+	<IconButton iconId="plus" on:click={() => handleGroupAddClick()}
+		>Add group</IconButton
+	>
+	<Spacer size="sm" />
+	<Divider />
+	<FilterRuleList
+		rules={selectedGroup?.rules ?? []}
+		on:ruleTypeChange={handleRuleTypeChange}
+		on:ruleConditionChange={handleRuleConditionChange}
+		on:ruleDeleteClick={handleRuleDeleteClick}
+		on:ruleDuplicateClick={handleRuleDuplicateClick}
+		on:ruleValueChange={handleRuleValueChange}
+		on:ruleOperatorChange={handleRuleOperatorChange}
+		on:ruleToggle={handleRuleToggle}
+		on:groupDeleteClick={handleGroupDeleteClick}
+		on:groupNameChange={handleGroupNameChange}
+		on:propertyTypeChange={handlePropertyTypeChange}
+		on:propertyNameChange={handlePropertyNameChange}
+		on:propertyValueDataChange={handlePropertyValueDataChange}
+		on:propertyMatchWhenPropertyDNEChange={handlePropertyMatchWhenPropertyDNEChange}
+		on:folderSubfoldersToggle={handleFolderSubfoldersToggle}
+	/>
+	<Divider />
+	<Spacer size="md" />
 	<div class="vault-explorer-filter-app__footer">
-		<Stack>
-			<IconButton iconId="plus" on:click={() => handleGroupAddClick()}
-				>Add group</IconButton
+		{#if groups.length > 0}
+			<IconButton iconId="plus" on:click={handleRuleAddClick}
+				>Add rule</IconButton
 			>
-			{#if groups.length > 0}
-				<IconButton iconId="plus" on:click={handleRuleAddClick}
-					>Add rule</IconButton
-				>
-			{/if}
-		</Stack>
+		{/if}
 	</div>
 </div>
-
-<style>
-	.vault-explorer-filter-app {
-		height: 410px;
-	}
-</style>
