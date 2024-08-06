@@ -3,6 +3,7 @@ export enum PluginEvent {
 	FILE_CREATE = "file-create",
 	FILE_DELETE = "file-delete",
 	FILE_MODIFY = "file-modify",
+	COLLAPSE_FILTERS_CHANGE = "collapse-filters-change",
 	METADATA_CHANGE = "metadata-change",
 	PROPERTIES_FILTER_UPDATE = "properties-filter-update",
 	FOLDER_RENAME = "folder-rename",

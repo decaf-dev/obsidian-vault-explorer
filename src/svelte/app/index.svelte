@@ -61,6 +61,7 @@
 		TFavoritesCache,
 	} from "./services/favorites-store";
 	import TableView from "./components/table-view.svelte";
+	import Spacer from "../shared/components/spacer.svelte";
 
 	// ============================================
 	// Variables
@@ -70,6 +71,8 @@
 	let startOfTodayMillis: number;
 	let startOfThisWeekMillis: number;
 	let startOfLastWeekMillis: number;
+
+	let shouldCollapseFilters: boolean = false;
 
 	let pageSize: number = 0;
 	let searchFilter: TSearchFilter = {
@@ -133,6 +136,7 @@
 		plugin = p;
 
 		const { app, settings } = plugin;
+		shouldCollapseFilters = settings.shouldCollapseFilters;
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
 		favoritesFilter = settings.filters.favorites;
@@ -210,6 +214,23 @@
 			EventManager.getInstance().off(
 				PluginEvent.CLOCK_UPDATES_SETTING_CHANGE,
 				handleClockUpdatesSettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function handleToggleFiltersChange() {
+			shouldCollapseFilters = !shouldCollapseFilters;
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.COLLAPSE_FILTERS_CHANGE,
+			handleToggleFiltersChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.COLLAPSE_FILTERS_CHANGE,
+				handleToggleFiltersChange,
 			);
 		};
 	});
@@ -544,6 +565,7 @@
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
+		plugin.settings.shouldCollapseFilters = shouldCollapseFilters;
 		await plugin.saveSettings();
 	}
 
@@ -850,6 +872,7 @@
 		currentView,
 		customFilter,
 		viewOrder,
+		shouldCollapseFilters,
 		saveSettings();
 
 	$: totalItems = renderData.length;
@@ -868,133 +891,139 @@
 </script>
 
 <div class="vault-explorer">
-	<div class="vault-explorer-header">
-		{#if searchFilter.isEnabled}
-			<SearchFilter
-				value={searchFilter.value}
-				on:input={debounceSearchFilterChange}
-				on:clear={() => (searchFilter.value = "")}
-			/>
-		{/if}
-		<Stack direction="column" spacing="sm">
-			<Flex justify="space-between">
-				<Stack spacing="sm">
-					{#if favoritesFilter.isEnabled}
-						<FavoritesFilter
-							value={favoritesFilter.value}
-							on:change={handleFavoritesChange}
-						/>
-					{/if}
-					<Flex>
-						{#if timestampFilter.isEnabled}
-							<TimestampFilter
-								value={timestampFilter.value}
-								on:change={handleTimestampFilterChange}
-							/>
-						{/if}
-						{#if sortFilter.isEnabled}
-							<SortFilter
-								value={sortFilter.value}
-								on:change={handleSortChange}
-							/>
-						{/if}
-						{#if sortFilter.value == "random"}
-							<IconButton
-								iconId="shuffle"
-								ariaLabel="Reshuffle files"
-								on:click={handleReshuffleClick}
+	{#if shouldCollapseFilters === false}
+		<div class="vault-explorer-filters">
+			<Stack spacing="md" direction="column">
+				{#if searchFilter.isEnabled}
+					<SearchFilter
+						value={searchFilter.value}
+						on:input={debounceSearchFilterChange}
+						on:clear={() => (searchFilter.value = "")}
+					/>
+				{/if}
+				<Stack direction="column" spacing="sm">
+					<Flex justify="space-between">
+						<Stack spacing="sm">
+							{#if favoritesFilter.isEnabled}
+								<FavoritesFilter
+									value={favoritesFilter.value}
+									on:change={handleFavoritesChange}
+								/>
+							{/if}
+							<Flex>
+								{#if timestampFilter.isEnabled}
+									<TimestampFilter
+										value={timestampFilter.value}
+										on:change={handleTimestampFilterChange}
+									/>
+								{/if}
+								{#if sortFilter.isEnabled}
+									<SortFilter
+										value={sortFilter.value}
+										on:change={handleSortChange}
+									/>
+								{/if}
+								{#if sortFilter.value == "random"}
+									<IconButton
+										iconId="shuffle"
+										ariaLabel="Reshuffle files"
+										on:click={handleReshuffleClick}
+									/>
+								{/if}
+								<IconButton
+									ariaLabel="Change custom filter"
+									iconId="list-filter"
+									on:click={handleCustomFilterClick}
+								/>
+							</Flex>
+						</Stack>
+					</Flex>
+					<Flex justify="space-between">
+						{#if customFilter.isEnabled}
+							<FilterGroupList
+								groups={customFilter.groups}
+								on:groupClick={handleGroupClick}
+								on:groupContextMenu={handleGroupContextMenu}
+								on:groupDrop={handleGroupDrop}
+								on:groupDragOver={handleGroupDragOver}
+								on:groupDragStart={handleGroupDragStart}
 							/>
 						{/if}
 						<IconButton
+							iconId="settings"
 							ariaLabel="Change custom filter"
-							iconId="list-filter"
 							on:click={handleCustomFilterClick}
 						/>
 					</Flex>
 				</Stack>
-			</Flex>
-			{#if customFilter.isEnabled}
-				<FilterGroupList
-					groups={customFilter.groups}
-					on:groupClick={handleGroupClick}
-					on:groupContextMenu={handleGroupContextMenu}
-					on:groupDrop={handleGroupDrop}
-					on:groupDragOver={handleGroupDragOver}
-					on:groupDragStart={handleGroupDragStart}
-				/>
-			{/if}
-		</Stack>
-		<Wrap align="center" spacingY="sm" justify="space-between">
-			<div class="vault-explorer-view-select">
-				<TabList
-					initialSelectedIndex={viewOrder.findIndex(
-						(view) => view === currentView,
-					)}
-				>
-					{#each viewOrder as view}
-						<Tab
-							draggable={true}
-							on:click={() => (currentView = view)}
-							on:dragstart={(e) => handleViewDragStart(e, view)}
-							on:dragover={handleViewDragOver}
-							on:drop={(e) => handleViewDrop(e, view)}
-							>{getDisplayNameForView(view)}</Tab
-						>
-					{/each}
-				</TabList>
-			</div>
-			<PaginationIndicator
-				{startIndex}
-				{endIndex}
-				{currentPage}
-				{totalPages}
-				{totalItems}
-				on:change={handlePageChange}
-			/>
-		</Wrap>
-		{#if currentView === "grid"}
-			<GridView
-				data={renderData}
-				{startIndex}
-				{pageLength}
-				on:favoritePropertyChange={handleFavoritePropertyChange}
-			/>
-		{:else if currentView === "list"}
-			<ListView
-				data={renderData}
-				{startIndex}
-				{pageLength}
-				on:favoritePropertyChange={handleFavoritePropertyChange}
-			/>
-		{:else if currentView === "table"}
-			<TableView
-				data={renderData}
-				{startIndex}
-				{pageLength}
-				on:favoritePropertyChange={handleFavoritePropertyChange}
-			/>
-		{:else if currentView === "feed"}
-			<FeedView
-				data={renderData}
-				{startIndex}
-				{pageLength}
-				on:favoritePropertyChange={handleFavoritePropertyChange}
-			/>
-		{/if}
-	</div>
+			</Stack>
+			<Spacer size="md" />
+		</div>
+	{/if}
+	<Wrap align="center" spacingY="sm" justify="space-between">
+		<div class="vault-explorer-view-select">
+			<TabList
+				initialSelectedIndex={viewOrder.findIndex(
+					(view) => view === currentView,
+				)}
+			>
+				{#each viewOrder as view}
+					<Tab
+						draggable={true}
+						on:click={() => (currentView = view)}
+						on:dragstart={(e) => handleViewDragStart(e, view)}
+						on:dragover={handleViewDragOver}
+						on:drop={(e) => handleViewDrop(e, view)}
+						>{getDisplayNameForView(view)}</Tab
+					>
+				{/each}
+			</TabList>
+		</div>
+		<PaginationIndicator
+			{startIndex}
+			{endIndex}
+			{currentPage}
+			{totalPages}
+			{totalItems}
+			on:change={handlePageChange}
+		/>
+	</Wrap>
+	<Spacer size="md" />
+	{#if currentView === "grid"}
+		<GridView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			on:favoritePropertyChange={handleFavoritePropertyChange}
+		/>
+	{:else if currentView === "list"}
+		<ListView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			on:favoritePropertyChange={handleFavoritePropertyChange}
+		/>
+	{:else if currentView === "table"}
+		<TableView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			on:favoritePropertyChange={handleFavoritePropertyChange}
+		/>
+	{:else if currentView === "feed"}
+		<FeedView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			on:favoritePropertyChange={handleFavoritePropertyChange}
+		/>
+	{/if}
 </div>
 
 <style>
 	.vault-explorer {
 		display: flex;
 		flex-direction: column;
-	}
-
-	.vault-explorer-header {
-		display: flex;
-		flex-direction: column;
-		row-gap: 1rem;
-		margin-bottom: 2rem;
 	}
 
 	.vault-explorer-view-select {
