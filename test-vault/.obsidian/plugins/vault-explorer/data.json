@@ -21,20 +21,12 @@
     },
     "sort": {
       "isEnabled": true,
-      "value": "modified-desc"
+      "value": "file-name-asc"
     },
     "custom": {
       "isEnabled": true,
-      "selectedGroupId": "A3PgwC3AaYu1XqDn",
-      "groups": [
-        {
-          "id": "A3PgwC3AaYu1XqDn",
-          "name": "Group 1",
-          "rules": [],
-          "isEnabled": true,
-          "isSticky": false
-        }
-      ]
+      "selectedGroupId": "",
+      "groups": []
     },
     "favorites": {
       "isEnabled": true,
@@ -95,13 +87,14 @@
       "isEnabled": false
     }
   },
-  "currentView": "table",
+  "currentView": "grid",
   "titleWrapping": "normal",
   "enableClockUpdates": true,
   "enableFileIcons": true,
   "loadBodyTags": true,
-  "filterGroupsWidth": "759px",
+  "filterGroupsWidth": "69px",
   "shouldWrapFilterGroups": false,
+  "shouldCollapseFilters": false,
   "pageSize": 25,
   "viewOrder": [
     "grid",
@@ -110,6 +103,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.39.0",
+  "pluginVersion": "1.40.0",
   "logLevel": "trace"
 }

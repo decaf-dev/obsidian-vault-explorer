@@ -34,6 +34,7 @@ export interface VaultExplorerPluginSettings {
 	pageSize: number;
 	filterGroupsWidth: string;
 	shouldWrapFilterGroups: boolean;
+	shouldCollapseFilters: boolean;
 	viewOrder: TExplorerView[];
 	configDir: string;
 	pluginVersion: string | null;

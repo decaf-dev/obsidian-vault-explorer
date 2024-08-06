@@ -1,8 +1,8 @@
-export interface VaultExplorerPluginSettings_1_29_0 {
+export interface VaultExplorerPluginSettings_1_39_0 {
 	properties: {
 		favorite: string;
 		url: string;
-		imageUrl: string;
+		image: string;
 		createdDate: string;
 		modifiedDate: string;
 		custom1: string;
@@ -28,19 +28,18 @@ export interface VaultExplorerPluginSettings_1_29_0 {
 	titleWrapping: WordBreak;
 	enableClockUpdates: boolean;
 	enableFileIcons: boolean;
-	fileInteractionStyle: FileInteractionStyle;
+	loadBodyTags: boolean;
 	currentView: TExplorerView | null;
-	enableScrollButtons: boolean;
 	pageSize: number;
 	filterGroupsWidth: string;
-	filterGroupsWrapping: FlexWrap;
+	shouldWrapFilterGroups: boolean;
 	viewOrder: TExplorerView[];
 	configDir: string;
 	pluginVersion: string | null;
 	logLevel: string;
 }
 
-type FileInteractionStyle = "title" | "content";
+export { TExplorerView as TExplorerView_1_39_0 };
 
 interface BaseView {
 	isEnabled: boolean;
@@ -53,8 +52,20 @@ interface TListView extends BaseView {
 }
 
 interface TGridView extends BaseView {
+	coverImageSources: CoverImageSource[];
 	loadSocialMediaImage: boolean;
 }
+
+interface CoverImageSource {
+	type: CoverImageSourceType;
+	isEnabled: boolean;
+}
+
+type CoverImageSourceType =
+	| "image-property"
+	| "url-property"
+	| "frontmatter"
+	| "body";
 
 interface TDashboardView extends BaseView {}
 
@@ -114,8 +125,6 @@ type SortFilterOption =
 	| "random";
 
 type WordBreak = "normal" | "break-word";
-
-type FlexWrap = "wrap" | "nowrap";
 
 enum TExplorerView {
 	DASHBOARD = "dashboard",
