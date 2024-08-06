@@ -135,42 +135,6 @@
 		groups = newGroups;
 	}
 
-	function handleGroupDragStart(e: CustomEvent) {
-		const { nativeEvent, id } = e.detail;
-
-		nativeEvent.dataTransfer.setData("text", id);
-		nativeEvent.dataTransfer.effectAllowed = "move";
-	}
-
-	function handleGroupDragOver(e: CustomEvent) {
-		const { nativeEvent } = e.detail;
-
-		nativeEvent.preventDefault();
-	}
-
-	function handleGroupDrop(e: CustomEvent) {
-		const { id, nativeEvent } = e.detail;
-		const dragId = nativeEvent.dataTransfer.getData("text");
-		nativeEvent.dataTransfer.dropEffect = "move";
-
-		const draggedIndex = groups.findIndex((group) => group.id === dragId);
-		const dragged = groups.find((group) => group.id === dragId);
-
-		const droppedIndex = groups.findIndex((group) => group.id === id);
-
-		if (!dragged || draggedIndex === -1 || droppedIndex === -1) return;
-
-		let newGroups = [...groups];
-
-		// Remove the dragged item
-		newGroups.splice(draggedIndex, 1);
-
-		// Insert the dragged item at the drop index
-		newGroups.splice(droppedIndex, 0, dragged);
-
-		groups = newGroups;
-	}
-
 	function handleRuleDeleteClick(e: CustomEvent) {
 		const { id } = e.detail;
 		Logger.trace({
