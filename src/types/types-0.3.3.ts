@@ -5,7 +5,7 @@ export interface VaultExplorerPluginSettings_0_3_3 {
 		custom1: string;
 		custom2: string;
 		custom3: string;
-	},
+	};
 	filters: {
 		folder: string;
 		search: string;
@@ -15,8 +15,8 @@ export interface VaultExplorerPluginSettings_0_3_3 {
 		properties: {
 			selectedGroupId: string;
 			groups: PropertyFilterGroup[];
-		}
-	},
+		};
+	};
 	currentView: CurrentView;
 	pageSize: number;
 	pluginVersion: string | null;
@@ -61,6 +61,17 @@ type FilterOperator = "and" | "or";
 
 type CurrentView = "grid" | "list";
 
-type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
+type SortFilter =
+	| "file-name-asc"
+	| "file-name-desc"
+	| "modified-asc"
+	| "modified-desc";
 
-type TimestampFilter = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
+type TimestampFilter =
+	| "created-today"
+	| "modified-today"
+	| "created-this-week"
+	| "modified-this-week"
+	| "created-2-weeks"
+	| "modified-2-weeks"
+	| "all";
