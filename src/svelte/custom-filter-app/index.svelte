@@ -490,18 +490,11 @@
 	<h3>Custom filter</h3>
 	{#if selectedGroup !== undefined}
 		<Stack spacing="md" align="flex-end">
-			<Stack direction="column" spacing="sm">
-				<label for="filter-group-select">Selected group</label>
-				<select
-					id="filter-group-select"
-					value={selectedGroup.id}
-					on:change={handleGroupChange}
-				>
-					{#each groups as group}
-						<option value={group.id}>{group.name}</option>
-					{/each}
-				</select>
-			</Stack>
+			<select value={selectedGroup.id} on:change={handleGroupChange}>
+				{#each groups as group}
+					<option value={group.id}>{group.name}</option>
+				{/each}
+			</select>
 			<Stack spacing="xs" align="flex-end">
 				<input
 					id="filter-group-name"
