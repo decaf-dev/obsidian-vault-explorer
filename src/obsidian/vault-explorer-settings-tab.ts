@@ -410,6 +410,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				return component
 					.setValue(this.plugin.settings.views.feed.lineClampLarge)
 					.setLimits(2, 8, 1)
+					.setDynamicTooltip()
 					.onChange(async (value) => {
 						this.plugin.settings.views.feed.lineClampLarge = value;
 						await this.plugin.saveSettings();
@@ -443,6 +444,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				return component
 					.setValue(this.plugin.settings.views.feed.lineClampMedium)
 					.setLimits(2, 8, 1)
+					.setDynamicTooltip()
 					.onChange(async (value) => {
 						this.plugin.settings.views.feed.lineClampMedium = value;
 						await this.plugin.saveSettings();
@@ -476,6 +478,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				return component
 					.setValue(this.plugin.settings.views.feed.lineClampSmall)
 					.setLimits(2, 8, 1)
+					.setDynamicTooltip()
 					.onChange(async (value) => {
 						this.plugin.settings.views.feed.lineClampSmall = value;
 						await this.plugin.saveSettings();
