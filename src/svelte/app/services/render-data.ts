@@ -1,5 +1,9 @@
 import { App, FrontMatterCache, TFile } from "obsidian";
-import { PropertyType, VaultExplorerPluginSettings } from "src/types";
+import {
+	CoverImageFit,
+	PropertyType,
+	VaultExplorerPluginSettings,
+} from "src/types";
 import { FileRenderData } from "../types";
 import Logger from "js-logger";
 import {
@@ -62,6 +66,7 @@ export const formatFileDataForRender = ({
 		modifiedDate: modifiedDateProp,
 		url: urlProp,
 		image: imageProp,
+		coverImageFit: coverImageFitProp,
 		favorite: favoriteProp,
 		custom1: custom1Prop,
 		custom2: custom2Prop,
@@ -101,6 +106,15 @@ export const formatFileDataForRender = ({
 		);
 	} else {
 		isFavorite = fileFavorite;
+	}
+
+	let coverImageFit: CoverImageFit | null = loadPropertyValue<string>(
+		fileFrontmatter,
+		coverImageFitProp,
+		PropertyType.TEXT
+	) as CoverImageFit | null;
+	if (coverImageFit === null) {
+		coverImageFit = settings.views.grid.coverImageFit;
 	}
 
 	const creationDate: string | null = loadPropertyValue<string>(
@@ -230,6 +244,7 @@ export const formatFileDataForRender = ({
 		displayName,
 		path,
 		baseName: basename,
+		coverImageFit,
 		basePath,
 		extension,
 		url,

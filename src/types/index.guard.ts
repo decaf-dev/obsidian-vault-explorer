@@ -16,6 +16,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
         typeof typedObj["properties"]["favorite"] === "string" &&
         typeof typedObj["properties"]["url"] === "string" &&
         typeof typedObj["properties"]["image"] === "string" &&
+        typeof typedObj["properties"]["coverImageFit"] === "string" &&
         typeof typedObj["properties"]["createdDate"] === "string" &&
         typeof typedObj["properties"]["modifiedDate"] === "string" &&
         typeof typedObj["properties"]["custom1"] === "string" &&
@@ -606,6 +607,10 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
                 e["type"] === "body") &&
             typeof e["isEnabled"] === "boolean"
         ) &&
+        (typedObj["views"]["grid"]["coverImageFit"] === "cover" ||
+            typedObj["views"]["grid"]["coverImageFit"] === "contain" ||
+            typedObj["views"]["grid"]["coverImageFit"] === "scale-down" ||
+            typedObj["views"]["grid"]["coverImageFit"] === "none") &&
         typeof typedObj["views"]["grid"]["loadSocialMediaImage"] === "boolean" &&
         (typedObj["views"]["list"] !== null &&
             typeof typedObj["views"]["list"] === "object" ||

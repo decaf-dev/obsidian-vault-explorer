@@ -15,6 +15,7 @@
 		TSortFilter,
 		TTimestampFilter,
 		TExplorerView,
+		CoverImageFit,
 	} from "src/types";
 	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
@@ -104,6 +105,7 @@
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingsTime: number = Date.now();
 	let coverImageSourcesTime: number = Date.now();
+	let coverImageFitTime: number = Date.now();
 	let loadBodyTagsTime: number = Date.now();
 
 	let loadedFiles: LoadedFile[] = [];
@@ -472,6 +474,29 @@
 	});
 
 	onMount(() => {
+		function handleCoverImageFitSettingChange() {
+			Logger.trace({
+				fileName: "app/index.svelte",
+				functionName: "handleCoverImageFitSettingChange",
+				message: "called",
+			});
+
+			coverImageFitTime = Date.now();
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.COVER_IMAGE_FIT_SETTING_CHANGE,
+			handleCoverImageFitSettingChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.COVER_IMAGE_FIT_SETTING_CHANGE,
+				handleCoverImageFitSettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
 		function handleCoverImageSourceSettingChange() {
 			Logger.trace({
 				fileName: "app/index.svelte",
@@ -759,6 +784,43 @@
 		debounceFavoriteFilterChange(value);
 	}
 
+	function handleCoverImageFitChange(e: CustomEvent) {
+		const { filePath, value } = e.detail as {
+			filePath: string;
+			value: CoverImageFit;
+		};
+
+		console.log(filePath, value);
+
+		const { properties } = plugin.settings;
+		const { coverImageFit: coverImageFitProperty } = properties;
+
+		//If the favorite property is not set, return
+		if (coverImageFitProperty === "") {
+			new Notice(
+				"Vault Explorer: Please set a cover image fit property in the plugin settings to use this feature",
+			);
+			return;
+		}
+
+		const file = plugin.app.vault.getFileByPath(filePath);
+		if (!file) {
+			Logger.error({
+				fileName: "app/index.svelte",
+				functionName: "handleCoverImageFitChange",
+				message: "file not found. returning...",
+			});
+			return;
+		}
+
+		if (file.extension === "md") {
+			plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+				frontmatter[coverImageFitProperty] = value;
+				return frontmatter;
+			});
+		}
+	}
+
 	function handleFavoritePropertyChange(e: CustomEvent) {
 		const { filePath, value } = e.detail as {
 			filePath: string;
@@ -771,7 +833,7 @@
 		//If the favorite property is not set, return
 		if (favoritePropertyName === "") {
 			new Notice(
-				"Please select a favorite property in the Vault Explorer settings to use this feature",
+				"Vault Explorer: Please set a favorite property in the plugin settings to use this feature",
 			);
 			return;
 		}
@@ -827,7 +889,12 @@
 	}
 
 	let formatted: FileRenderData[] = [];
-	$: if (propertySettingsTime || coverImageSourcesTime || loadBodyTagsTime) {
+	$: if (
+		propertySettingsTime ||
+		coverImageSourcesTime ||
+		loadBodyTagsTime ||
+		coverImageFitTime
+	) {
 		formatted = filteredCustom.map((loadedFile) => {
 			const { id, file } = loadedFile;
 			const frontmatter =
@@ -1047,6 +1114,7 @@
 			{startIndex}
 			{pageLength}
 			on:favoritePropertyChange={handleFavoritePropertyChange}
+			on:coverImageFitChange={handleCoverImageFitChange}
 		/>
 	{:else if currentView === "list"}
 		<ListView

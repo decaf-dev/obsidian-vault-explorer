@@ -10,6 +10,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		favorite: "",
 		url: "",
 		image: "",
+		coverImageFit: "",
 		createdDate: "",
 		modifiedDate: "",
 		custom1: "",
@@ -45,6 +46,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		grid: {
 			isEnabled: true,
+			coverImageFit: "cover",
 			coverImageSources: [
 				{
 					type: "image-property",

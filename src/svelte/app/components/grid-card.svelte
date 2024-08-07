@@ -23,6 +23,7 @@
 		isSocialMediaImageEntryExpired,
 		putSocialMediaImageUrl,
 	} from "../services/social-media-image-cache";
+	import { CoverImageFit } from "src/types";
 
 	export let displayName: string;
 	export let path: string;
@@ -35,6 +36,7 @@
 	export let custom2: string | null;
 	export let custom3: string | null;
 	export let isFavorite: boolean | null;
+	export let coverImageFit: CoverImageFit;
 
 	let plugin: VaultExplorerPlugin;
 	let enableFileIcons: boolean = false;
@@ -136,11 +138,21 @@
 		dispatch("favoritePropertyChange", { filePath, value });
 	}
 
+	function handleCoverImageFitChange(filePath: string, value: CoverImageFit) {
+		dispatch("coverImageFitChange", { filePath, value });
+	}
+
 	function handleCardContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
+
+		const showCoverImageOptions = path.endsWith(".md");
 		openContextMenu(plugin, path, nativeEvent, {
 			isFavorite,
+			coverImageFit: showCoverImageOptions ? coverImageFit : undefined,
 			onFavoriteChange: handleFavoriteChange,
+			onCoverImageFitChange: showCoverImageOptions
+				? handleCoverImageFitChange
+				: undefined,
 		});
 	}
 
@@ -208,7 +220,9 @@
 				<img
 					class="vault-explorer-grid-card__image"
 					src={imgSrc}
-					style="display: {isCoverImageLoaded ? 'block' : 'none'};"
+					style="display: {isCoverImageLoaded
+						? 'block'
+						: 'none'}; object-fit: {coverImageFit};"
 					on:load={handleImageLoad}
 					on:error={handleImageError}
 				/>
@@ -335,7 +349,6 @@
 	.vault-explorer-grid-card__image {
 		width: 100%;
 		height: 150px;
-		object-fit: cover;
 		border-top-left-radius: var(--radius-m);
 		border-top-right-radius: var(--radius-m);
 	}

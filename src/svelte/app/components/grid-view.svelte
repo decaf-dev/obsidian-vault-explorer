@@ -26,6 +26,7 @@
 			<GridCard
 				displayName={fileRenderData.displayName}
 				path={fileRenderData.path}
+				coverImageFit={fileRenderData.coverImageFit}
 				baseName={fileRenderData.baseName}
 				extension={fileRenderData.extension}
 				imageUrl={fileRenderData.imageUrl}
@@ -36,6 +37,7 @@
 				custom3={fileRenderData.custom3}
 				isFavorite={fileRenderData.isFavorite}
 				on:favoritePropertyChange
+				on:coverImageFitChange
 			/>
 		{/each}
 	</div>
