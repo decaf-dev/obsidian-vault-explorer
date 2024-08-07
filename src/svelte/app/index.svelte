@@ -62,6 +62,7 @@
 	} from "./services/favorites-store";
 	import TableView from "./components/table-view.svelte";
 	import Spacer from "../shared/components/spacer.svelte";
+	import Divider from "../shared/components/divider.svelte";
 
 	// ============================================
 	// Variables
@@ -112,6 +113,7 @@
 	let randomSortCache: RandomFileSortCache = new Map();
 
 	let viewOrder: TExplorerView[] = [];
+	let showListViewTags: boolean = false;
 
 	// ============================================
 	// Lifecycle hooks
@@ -136,6 +138,7 @@
 		plugin = p;
 
 		const { app, settings } = plugin;
+		showListViewTags = settings.views.list.showTags;
 		shouldCollapseFilters = settings.shouldCollapseFilters;
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
@@ -566,6 +569,7 @@
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
 		plugin.settings.shouldCollapseFilters = shouldCollapseFilters;
+		plugin.settings.views.list.showTags = showListViewTags;
 		await plugin.saveSettings();
 	}
 
@@ -610,6 +614,10 @@
 		});
 		customFilter.selectedGroupId = id;
 		customFilter.groups = newGroups;
+	}
+
+	function handleListViewTagsToggle() {
+		showListViewTags = !showListViewTags;
 	}
 
 	function handleViewDragOver(e: CustomEvent) {
@@ -949,11 +957,6 @@
 								on:groupDragStart={handleGroupDragStart}
 							/>
 						{/if}
-						<IconButton
-							iconId="settings"
-							ariaLabel="Change custom filter"
-							on:click={handleCustomFilterClick}
-						/>
 					</Flex>
 				</Stack>
 			</Stack>
@@ -962,6 +965,7 @@
 	{/if}
 	<Wrap align="center" spacingY="sm" justify="space-between">
 		<div class="vault-explorer-view-select">
+			<!-- <Stack spacing="sm"> -->
 			<TabList
 				initialSelectedIndex={viewOrder.findIndex(
 					(view) => view === currentView,
@@ -978,15 +982,32 @@
 					>
 				{/each}
 			</TabList>
+			<!-- <IconButton
+					iconId="ellipsis-vertical"
+					ariaLabel="View options"
+					noPadding
+					on:click={() => {}}
+				/> -->
+			<!-- </Stack> -->
 		</div>
-		<PaginationIndicator
-			{startIndex}
-			{endIndex}
-			{currentPage}
-			{totalPages}
-			{totalItems}
-			on:change={handlePageChange}
-		/>
+		<Stack spacing="sm">
+			{#if currentView === "list"}
+				<IconButton
+					iconId="tags"
+					ariaLabel="Toggle tags"
+					on:click={handleListViewTagsToggle}
+				/>
+				<Divider direction="vertical" />
+			{/if}
+			<PaginationIndicator
+				{startIndex}
+				{endIndex}
+				{currentPage}
+				{totalPages}
+				{totalItems}
+				on:change={handlePageChange}
+			/>
+		</Stack>
 	</Wrap>
 	<Spacer size="md" />
 	{#if currentView === "grid"}
@@ -999,6 +1020,7 @@
 	{:else if currentView === "list"}
 		<ListView
 			data={renderData}
+			showTags={showListViewTags}
 			{startIndex}
 			{pageLength}
 			on:favoritePropertyChange={handleFavoritePropertyChange}
