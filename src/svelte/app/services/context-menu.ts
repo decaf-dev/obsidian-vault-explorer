@@ -47,8 +47,12 @@ const openToTheRight = (plugin: VaultExplorerPlugin, filePath: string) => {
 };
 
 const openInNewTab = (plugin: VaultExplorerPlugin, filePath: string) => {
-	plugin.app.workspace.openLinkText("", filePath, "tab", {
+	plugin.app.workspace.getLeaf().setViewState({
+		type: "markdown",
 		active: false,
+		state: {
+			file: filePath,
+		},
 	});
 };
 
