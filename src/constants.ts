@@ -94,6 +94,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	loadBodyTags: true,
 	filterGroupsWidth: "300px",
 	shouldWrapFilterGroups: false,
+	shouldCollapseFilters: false,
 	pageSize: 25,
 	viewOrder: [
 		TExplorerView.GRID,

@@ -3,6 +3,8 @@ import { ItemView, WorkspaceLeaf } from "obsidian";
 import { VAULT_EXPLORER_VIEW } from "src/constants";
 import VaultExplorerApp from "../svelte/app/index.svelte";
 import VaultExplorerPlugin from "src/main";
+import EventManager from "src/event/event-manager";
+import { PluginEvent } from "src/event/types";
 
 export default class VaultExplorerView extends ItemView {
 	component: VaultExplorerApp | null;
@@ -30,6 +32,12 @@ export default class VaultExplorerView extends ItemView {
 			const app = this.plugin.app;
 			(app as any).setting.open();
 			(app as any).setting.openTabById(this.plugin.manifest.id);
+		});
+
+		this.addAction("chevrons-down-up", "Collapse filters", () => {
+			EventManager.getInstance().emit(
+				PluginEvent.COLLAPSE_FILTERS_CHANGE
+			);
 		});
 
 		const containerEl = this.containerEl.children[1];

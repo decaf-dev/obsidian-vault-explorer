@@ -39,7 +39,7 @@
 	import SearchFilter from "./components/search-filter.svelte";
 	import TimestampFilter from "./components/timestamp-filter.svelte";
 	import SortFilter from "./components/sort-filter.svelte";
-	import { DEBOUNCE_INPUT_TIME } from "./constants";
+	import { DEBOUNCE_INPUT_TIME, SCREEN_SIZE_MD } from "./constants";
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
@@ -61,15 +61,20 @@
 		TFavoritesCache,
 	} from "./services/favorites-store";
 	import TableView from "./components/table-view.svelte";
+	import Spacer from "../shared/components/spacer.svelte";
+	import Divider from "../shared/components/divider.svelte";
 
 	// ============================================
 	// Variables
 	// ============================================
 	let plugin: VaultExplorerPlugin;
+	let ref: HTMLElement | null = null;
 
 	let startOfTodayMillis: number;
 	let startOfThisWeekMillis: number;
 	let startOfLastWeekMillis: number;
+
+	let shouldCollapseFilters: boolean = false;
 
 	let pageSize: number = 0;
 	let searchFilter: TSearchFilter = {
@@ -109,6 +114,8 @@
 	let randomSortCache: RandomFileSortCache = new Map();
 
 	let viewOrder: TExplorerView[] = [];
+	let showListViewTags: boolean = false;
+	let isSmallScreenSize: boolean = false;
 
 	// ============================================
 	// Lifecycle hooks
@@ -133,6 +140,8 @@
 		plugin = p;
 
 		const { app, settings } = plugin;
+		showListViewTags = settings.views.list.showTags;
+		shouldCollapseFilters = settings.shouldCollapseFilters;
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
 		favoritesFilter = settings.filters.favorites;
@@ -210,6 +219,23 @@
 			EventManager.getInstance().off(
 				PluginEvent.CLOCK_UPDATES_SETTING_CHANGE,
 				handleClockUpdatesSettingChange,
+			);
+		};
+	});
+
+	onMount(() => {
+		function handleToggleFiltersChange() {
+			shouldCollapseFilters = !shouldCollapseFilters;
+		}
+
+		EventManager.getInstance().on(
+			PluginEvent.COLLAPSE_FILTERS_CHANGE,
+			handleToggleFiltersChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.COLLAPSE_FILTERS_CHANGE,
+				handleToggleFiltersChange,
 			);
 		};
 	});
@@ -469,6 +495,35 @@
 	});
 
 	onMount(() => {
+		let resizeObserver: ResizeObserver;
+
+		function checkLeafWidth(leafEl: HTMLElement) {
+			const { clientWidth } = leafEl;
+			if (clientWidth < SCREEN_SIZE_MD) {
+				isSmallScreenSize = true;
+			} else {
+				isSmallScreenSize = false;
+			}
+		}
+
+		const leafEl = ref?.closest(
+			".workspace-leaf-content",
+		) as HTMLElement | null;
+		if (leafEl) {
+			checkLeafWidth(leafEl);
+
+			resizeObserver = new ResizeObserver(() => {
+				checkLeafWidth(leafEl);
+			});
+			resizeObserver.observe(leafEl);
+		}
+
+		return () => {
+			resizeObserver?.disconnect();
+		};
+	});
+
+	onMount(() => {
 		function handleLoadBodyTagsSettingChange() {
 			Logger.trace({
 				fileName: "app/index.svelte",
@@ -544,6 +599,8 @@
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
+		plugin.settings.shouldCollapseFilters = shouldCollapseFilters;
+		plugin.settings.views.list.showTags = showListViewTags;
 		await plugin.saveSettings();
 	}
 
@@ -588,6 +645,10 @@
 		});
 		customFilter.selectedGroupId = id;
 		customFilter.groups = newGroups;
+	}
+
+	function handleListViewTagsToggle() {
+		showListViewTags = !showListViewTags;
 	}
 
 	function handleViewDragOver(e: CustomEvent) {
@@ -850,6 +911,7 @@
 		currentView,
 		customFilter,
 		viewOrder,
+		shouldCollapseFilters,
 		saveSettings();
 
 	$: totalItems = renderData.length;
@@ -867,82 +929,107 @@
 	$: endIndex = startIndex + pageLength;
 </script>
 
-<div class="vault-explorer">
-	<div class="vault-explorer-header">
-		{#if searchFilter.isEnabled}
-			<SearchFilter
-				value={searchFilter.value}
-				on:input={debounceSearchFilterChange}
-				on:clear={() => (searchFilter.value = "")}
-			/>
-		{/if}
-		<Stack direction="column" spacing="sm">
-			<Flex justify="space-between">
-				<Stack spacing="sm">
-					{#if favoritesFilter.isEnabled}
-						<FavoritesFilter
-							value={favoritesFilter.value}
-							on:change={handleFavoritesChange}
-						/>
-					{/if}
-					<Flex>
-						{#if timestampFilter.isEnabled}
-							<TimestampFilter
-								value={timestampFilter.value}
-								on:change={handleTimestampFilterChange}
+<div class="vault-explorer" bind:this={ref}>
+	{#if shouldCollapseFilters === false}
+		<div class="vault-explorer-filters">
+			<Stack spacing="md" direction="column">
+				{#if searchFilter.isEnabled}
+					<SearchFilter
+						value={searchFilter.value}
+						on:input={debounceSearchFilterChange}
+						on:clear={() => (searchFilter.value = "")}
+					/>
+				{/if}
+				<Stack direction="column" spacing="sm">
+					<Flex justify="space-between">
+						<Stack spacing="sm">
+							{#if favoritesFilter.isEnabled}
+								<FavoritesFilter
+									value={favoritesFilter.value}
+									on:change={handleFavoritesChange}
+								/>
+							{/if}
+							<Flex>
+								{#if timestampFilter.isEnabled}
+									<TimestampFilter
+										value={timestampFilter.value}
+										on:change={handleTimestampFilterChange}
+									/>
+								{/if}
+								{#if sortFilter.isEnabled}
+									<SortFilter
+										value={sortFilter.value}
+										on:change={handleSortChange}
+									/>
+								{/if}
+								{#if sortFilter.value == "random"}
+									<IconButton
+										iconId="shuffle"
+										ariaLabel="Reshuffle files"
+										on:click={handleReshuffleClick}
+									/>
+								{/if}
+								<IconButton
+									ariaLabel="Change custom filter"
+									iconId="list-filter"
+									on:click={handleCustomFilterClick}
+								/>
+							</Flex>
+						</Stack>
+					</Flex>
+					<Flex justify="space-between">
+						{#if customFilter.isEnabled}
+							<FilterGroupList
+								groups={customFilter.groups}
+								on:groupClick={handleGroupClick}
+								on:groupContextMenu={handleGroupContextMenu}
+								on:groupDrop={handleGroupDrop}
+								on:groupDragOver={handleGroupDragOver}
+								on:groupDragStart={handleGroupDragStart}
 							/>
 						{/if}
-						{#if sortFilter.isEnabled}
-							<SortFilter
-								value={sortFilter.value}
-								on:change={handleSortChange}
-							/>
-						{/if}
-						{#if sortFilter.value == "random"}
-							<IconButton
-								iconId="shuffle"
-								ariaLabel="Reshuffle files"
-								on:click={handleReshuffleClick}
-							/>
-						{/if}
-						<IconButton
-							ariaLabel="Change custom filter"
-							iconId="list-filter"
-							on:click={handleCustomFilterClick}
-						/>
 					</Flex>
 				</Stack>
-			</Flex>
-			{#if customFilter.isEnabled}
-				<FilterGroupList
-					groups={customFilter.groups}
-					on:groupClick={handleGroupClick}
-					on:groupContextMenu={handleGroupContextMenu}
-					on:groupDrop={handleGroupDrop}
-					on:groupDragOver={handleGroupDragOver}
-					on:groupDragStart={handleGroupDragStart}
+			</Stack>
+			<Spacer size="md" />
+		</div>
+	{/if}
+	<Wrap align="center" spacingY="sm" justify="space-between">
+		<div class="vault-explorer-view-select">
+			<!-- <Stack spacing="sm"> -->
+			<TabList
+				initialSelectedIndex={viewOrder.findIndex(
+					(view) => view === currentView,
+				)}
+			>
+				{#each viewOrder as view}
+					<Tab
+						draggable={true}
+						on:click={() => (currentView = view)}
+						on:dragstart={(e) => handleViewDragStart(e, view)}
+						on:dragover={handleViewDragOver}
+						on:drop={(e) => handleViewDrop(e, view)}
+						>{getDisplayNameForView(view)}</Tab
+					>
+				{/each}
+			</TabList>
+			<!-- <IconButton
+					iconId="ellipsis-vertical"
+					ariaLabel="View options"
+					noPadding
+					on:click={() => {}}
+				/> -->
+			<!-- </Stack> -->
+		</div>
+		<Stack spacing="sm">
+			{#if currentView === "list"}
+				<IconButton
+					iconId="tags"
+					ariaLabel="Toggle tags"
+					on:click={handleListViewTagsToggle}
 				/>
+				<Divider direction="vertical" />
 			{/if}
-		</Stack>
-		<Wrap align="center" spacingY="sm" justify="space-between">
-			<div class="vault-explorer-view-select">
-				<TabList
-					initialSelectedIndex={viewOrder.findIndex(
-						(view) => view === currentView,
-					)}
-				>
-					{#each viewOrder as view}
-						<Tab
-							draggable={true}
-							on:click={() => (currentView = view)}
-							on:dragstart={(e) => handleViewDragStart(e, view)}
-							on:dragover={handleViewDragOver}
-							on:drop={(e) => handleViewDrop(e, view)}
-							>{getDisplayNameForView(view)}</Tab
-						>
-					{/each}
-				</TabList>
-			</div>
 			<PaginationIndicator
 				{startIndex}
 				{endIndex}
@@ -951,50 +1038,46 @@
 				{totalItems}
 				on:change={handlePageChange}
 			/>
-		</Wrap>
-		{#if currentView === "grid"}
-			<GridView
-				data={renderData}
-				{startIndex}
-				{pageLength}
-				on:favoritePropertyChange={handleFavoritePropertyChange}
-			/>
-		{:else if currentView === "list"}
-			<ListView
-				data={renderData}
-				{startIndex}
-				{pageLength}
-				on:favoritePropertyChange={handleFavoritePropertyChange}
-			/>
-		{:else if currentView === "table"}
-			<TableView
-				data={renderData}
-				{startIndex}
-				{pageLength}
-				on:favoritePropertyChange={handleFavoritePropertyChange}
-			/>
-		{:else if currentView === "feed"}
-			<FeedView
-				data={renderData}
-				{startIndex}
-				{pageLength}
-				on:favoritePropertyChange={handleFavoritePropertyChange}
-			/>
-		{/if}
-	</div>
+		</Stack>
+	</Wrap>
+	<Spacer size="md" />
+	{#if currentView === "grid"}
+		<GridView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			on:favoritePropertyChange={handleFavoritePropertyChange}
+		/>
+	{:else if currentView === "list"}
+		<ListView
+			data={renderData}
+			{isSmallScreenSize}
+			showTags={showListViewTags}
+			{startIndex}
+			{pageLength}
+			on:favoritePropertyChange={handleFavoritePropertyChange}
+		/>
+	{:else if currentView === "table"}
+		<TableView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			on:favoritePropertyChange={handleFavoritePropertyChange}
+		/>
+	{:else if currentView === "feed"}
+		<FeedView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			on:favoritePropertyChange={handleFavoritePropertyChange}
+		/>
+	{/if}
 </div>
 
 <style>
 	.vault-explorer {
 		display: flex;
 		flex-direction: column;
-	}
-
-	.vault-explorer-header {
-		display: flex;
-		flex-direction: column;
-		row-gap: 1rem;
-		margin-bottom: 2rem;
 	}
 
 	.vault-explorer-view-select {
