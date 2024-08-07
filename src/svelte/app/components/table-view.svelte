@@ -224,13 +224,63 @@
 	}
 
 	.vault-explorer-table-view table {
+		table-layout: fixed;
 		border-collapse: collapse;
 	}
 
-	.vault-explorer-table-view th:first-child,
-	.vault-explorer-table-view td:first-child {
+	.vault-explorer-table-view th:nth-child(1),
+	.vault-explorer-table-view td:nth-child(1) {
+		min-width: 300px;
 		width: 300px;
 		max-width: 300px;
+		overflow: hidden;
+	}
+
+	.vault-explorer-table-view th:nth-child(2),
+	.vault-explorer-table-view td:nth-child(2) {
+		min-width: 125px;
+		width: 125px;
+		max-width: 125px;
+		overflow: hidden;
+	}
+
+	.vault-explorer-table-view th:nth-child(3),
+	.vault-explorer-table-view td:nth-child(3) {
+		min-width: 150px;
+		width: 150px;
+		max-width: 150px;
+		overflow: hidden;
+	}
+
+	.vault-explorer-table-view th:nth-child(4),
+	.vault-explorer-table-view td:nth-child(4) {
+		min-width: 200px;
+		width: 200px;
+		max-width: 200px;
+		overflow: hidden;
+	}
+
+	.vault-explorer-table-view th:nth-child(5),
+	.vault-explorer-table-view td:nth-child(5) {
+		min-width: 100px;
+		width: 100px;
+		max-width: 100px;
+		overflow: hidden;
+	}
+
+	.vault-explorer-table-view th:nth-child(6),
+	.vault-explorer-table-view td:nth-child(6) {
+		min-width: 175px;
+		width: 175px;
+		max-width: 175px;
+		overflow: hidden;
+	}
+
+	.vault-explorer-table-view th:nth-child(7),
+	.vault-explorer-table-view td:nth-child(7) {
+		min-width: 175px;
+		width: 175px;
+		max-width: 175px;
 		overflow: hidden;
 	}
 
@@ -254,18 +304,6 @@
 	.vault-explorer-table-view td {
 		border: 1px solid var(--background-modifier-border);
 		padding: 8px;
-	}
-
-	.vault-explorer-table-view th:nth-child(4) {
-		min-width: 250px;
-	}
-
-	.vault-explorer-table-view th:nth-child(6) {
-		min-width: 175px;
-	}
-
-	.vault-explorer-table-view th:nth-child(7) {
-		min-width: 175px;
 	}
 
 	.vault-explorer-table-view tr:hover:not(:has(th)) {
