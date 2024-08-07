@@ -1,5 +1,6 @@
 import { Menu } from "obsidian";
 import VaultExplorerPlugin from "src/main";
+import { CoverImageFit } from "src/types";
 
 export const openContextMenu = (
 	plugin: VaultExplorerPlugin,
@@ -7,10 +8,17 @@ export const openContextMenu = (
 	e: MouseEvent,
 	{
 		isFavorite,
+		coverImageFit,
 		onFavoriteChange,
+		onCoverImageFitChange,
 	}: {
 		isFavorite: boolean | null;
+		coverImageFit?: CoverImageFit;
 		onFavoriteChange: (filePath: string, value: boolean) => void;
+		onCoverImageFitChange?: (
+			filePath: string,
+			value: CoverImageFit
+		) => void;
 	}
 ) => {
 	const menu = new Menu();
@@ -37,6 +45,19 @@ export const openContextMenu = (
 			onFavoriteChange(filePath, newValue);
 		});
 	});
+	if (coverImageFit !== undefined && onCoverImageFitChange !== undefined) {
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item.setTitle("Cover image fit: cover");
+			item.setChecked(coverImageFit === "cover");
+			item.onClick(() => onCoverImageFitChange(filePath, "cover"));
+		});
+		menu.addItem((item) => {
+			item.setTitle("Cover image fit: contain");
+			item.setChecked(coverImageFit === "contain");
+			item.onClick(() => onCoverImageFitChange(filePath, "contain"));
+		});
+	}
 	menu.showAtMouseEvent(e);
 };
 

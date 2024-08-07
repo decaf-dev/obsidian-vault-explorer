@@ -7,6 +7,10 @@ export default class Migrate_1_41_0 implements MigrationInterface {
 		const typedData = data as unknown as VaultExplorerPluginSettings_1_40_2;
 		const newData: VaultExplorerPluginSettings = {
 			...typedData,
+			properties: {
+				...typedData.properties,
+				coverImageFit: "",
+			},
 			views: {
 				...typedData.views,
 				grid: {

@@ -16,6 +16,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
         typeof typedObj["properties"]["favorite"] === "string" &&
         typeof typedObj["properties"]["url"] === "string" &&
         typeof typedObj["properties"]["image"] === "string" &&
+        typeof typedObj["properties"]["coverImageFit"] === "string" &&
         typeof typedObj["properties"]["createdDate"] === "string" &&
         typeof typedObj["properties"]["modifiedDate"] === "string" &&
         typeof typedObj["properties"]["custom1"] === "string" &&

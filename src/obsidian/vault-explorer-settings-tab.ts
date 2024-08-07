@@ -320,8 +320,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					.addOptions({
 						cover: "Cover",
 						contain: "Contain",
-						"scale-down": "Scale down",
-						none: "None",
 					})
 					.setValue(this.plugin.settings.views.grid.coverImageFit)
 					.onChange(async (value) => {
@@ -465,9 +463,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Image property")
+			.setName("Cover image property")
 			.setDesc(
-				"Property used to store an image. This must be a text property."
+				"Property used to store a cover image. This must be a text property."
 			)
 			.addDropdown((dropdown) =>
 				dropdown
@@ -475,6 +473,24 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.properties.image)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.image = value;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.PROPERTY_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Cover image fit property")
+			.setDesc(
+				"Property used to store the cover image fit. This must be a text property."
+			)
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.setValue(this.plugin.settings.properties.coverImageFit)
+					.onChange(async (value) => {
+						this.plugin.settings.properties.coverImageFit = value;
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.PROPERTY_SETTING_CHANGE

@@ -4,6 +4,7 @@ export interface VaultExplorerPluginSettings {
 		favorite: string;
 		url: string;
 		image: string;
+		coverImageFit: string;
 		createdDate: string;
 		modifiedDate: string;
 		custom1: string;
@@ -64,7 +65,7 @@ export interface CoverImageSource {
 	isEnabled: boolean;
 }
 
-export type CoverImageFit = "cover" | "contain" | "scale-down" | "none";
+export type CoverImageFit = "cover" | "contain";
 
 export type CoverImageSourceType =
 	| "image-property"

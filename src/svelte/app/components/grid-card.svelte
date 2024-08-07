@@ -36,12 +36,12 @@
 	export let custom2: string | null;
 	export let custom3: string | null;
 	export let isFavorite: boolean | null;
+	export let coverImageFit: CoverImageFit;
 
 	let plugin: VaultExplorerPlugin;
 	let enableFileIcons: boolean = false;
 	let loadSocialMediaImage: boolean = true;
 	let imgSrc: string | null;
-	let coverImageFit: CoverImageFit = "cover";
 
 	let isCoverImageLoaded = false;
 
@@ -49,7 +49,6 @@
 		plugin = p;
 		enableFileIcons = plugin.settings.enableFileIcons;
 		loadSocialMediaImage = plugin.settings.views.grid.loadSocialMediaImage;
-		coverImageFit = plugin.settings.views.grid.coverImageFit;
 	});
 
 	const dispatch = createEventDispatcher();
@@ -83,23 +82,6 @@
 			EventManager.getInstance().off(
 				PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE,
 				handleLoadSocialMediaImageChange,
-			);
-		};
-	});
-
-	onMount(() => {
-		function handleCoverImageFitChange() {
-			coverImageFit = plugin.settings.views.grid.coverImageFit;
-		}
-
-		EventManager.getInstance().on(
-			PluginEvent.COVER_IMAGE_FIT_SETTING_CHANGE,
-			handleCoverImageFitChange,
-		);
-		return () => {
-			EventManager.getInstance().off(
-				PluginEvent.COVER_IMAGE_FIT_SETTING_CHANGE,
-				handleCoverImageFitChange,
 			);
 		};
 	});
@@ -156,11 +138,17 @@
 		dispatch("favoritePropertyChange", { filePath, value });
 	}
 
+	function handleCoverImageFitChange(filePath: string, value: CoverImageFit) {
+		dispatch("coverImageFitChange", { filePath, value });
+	}
+
 	function handleCardContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
 		openContextMenu(plugin, path, nativeEvent, {
 			isFavorite,
+			coverImageFit,
 			onFavoriteChange: handleFavoriteChange,
+			onCoverImageFitChange: handleCoverImageFitChange,
 		});
 	}
 
