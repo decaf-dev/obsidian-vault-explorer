@@ -140,12 +140,15 @@ export const loadPropertyValue = <T>(
 		//If the property is not an array, return it as an array
 		//This is a bug in Obsidian?
 		if (!Array.isArray(propertyValue)) {
-			return [propertyValue] as unknown as T;
+			if (typeof propertyValue === "string") {
+				return [propertyValue] as unknown as T;
+			}
+			return null;
 		}
 
-		//Filter out null and undefined values
+		//Filter out values that are not strings
 		return propertyValue.filter(
-			(v) => v !== null && v !== undefined
+			(v) => typeof v === "string"
 		) as unknown as T;
 	}
 
