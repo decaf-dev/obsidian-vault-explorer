@@ -14,7 +14,7 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { CollapseStyle, TExplorerView } from "src/types";
+import { CollapseStyle, CoverImageFit, TExplorerView } from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import ImageSourceApp from "../svelte/image-source-app/index.svelte";
@@ -308,6 +308,28 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						EventManager.getInstance().emit(
 							PluginEvent.LOAD_SOCIAL_MEDIA_IMAGE_SETTING_CHANGE
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Cover image fit")
+			.setDesc("Set the cover image fit")
+			.addDropdown((cb) =>
+				cb
+					.addOptions({
+						cover: "Cover",
+						contain: "Contain",
+						"scale-down": "Scale down",
+						none: "None",
+					})
+					.setValue(this.plugin.settings.views.grid.coverImageFit)
+					.onChange(async (value) => {
+						this.plugin.settings.views.grid.coverImageFit =
+							value as CoverImageFit;
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.COVER_IMAGE_FIT_SETTING_CHANGE
 						);
 					})
 			);

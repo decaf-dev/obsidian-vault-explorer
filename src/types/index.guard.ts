@@ -606,6 +606,10 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
                 e["type"] === "body") &&
             typeof e["isEnabled"] === "boolean"
         ) &&
+        (typedObj["views"]["grid"]["coverImageFit"] === "cover" ||
+            typedObj["views"]["grid"]["coverImageFit"] === "contain" ||
+            typedObj["views"]["grid"]["coverImageFit"] === "scale-down" ||
+            typedObj["views"]["grid"]["coverImageFit"] === "none") &&
         typeof typedObj["views"]["grid"]["loadSocialMediaImage"] === "boolean" &&
         (typedObj["views"]["list"] !== null &&
             typeof typedObj["views"]["list"] === "object" ||

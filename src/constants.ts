@@ -45,6 +45,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		grid: {
 			isEnabled: true,
+			coverImageFit: "cover",
 			coverImageSources: [
 				{
 					type: "image-property",
