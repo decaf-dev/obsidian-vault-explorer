@@ -12,7 +12,6 @@
 	export let noPadding: boolean = false;
 
 	const dispatch = createEventDispatcher();
-	let ref: HTMLElement;
 
 	function handleClick(event: Event) {
 		dispatch("click", { nativeEvent: event });
@@ -34,12 +33,17 @@
 	tabindex={isTabbable ? 0 : -1}
 	{disabled}
 	aria-label={ariaLabel}
-	bind:this={ref}
-	on:click={handleClick}><Icon {iconId} {size} /></button
+	on:click={handleClick}
+	><Icon {iconId} {size} />
+	<div class="vault-explorer-icon-button__text"><slot /></div></button
 >
 
 <style>
 	.vault-explorer-icon-button--no-padding {
 		padding: 0px 4px;
+	}
+
+	.vault-explorer-icon-button__text {
+		margin-left: 4px;
 	}
 </style>
