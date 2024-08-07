@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting, SliderComponent } from "obsidian";
 import VaultExplorerPlugin from "src/main";
 import {
 	getDropdownOptionsForProperties,
@@ -386,13 +386,28 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
+		let largeScreenLineClampSlider: SliderComponent | null = null;
 		new Setting(containerEl)
 			.setName("Large screen line clamp")
 			.setDesc(
-				"Number of lines to clamp on large screens (>= 1024px). (2-8, default 5)"
+				"Number of lines to clamp on large screens (>= 1024px) (2-8, default 5)"
 			)
-			.addSlider((component) =>
-				component
+			.addExtraButton((button) =>
+				button
+					.setIcon("reset")
+					.setTooltip("Restore default")
+					.onClick(async () => {
+						this.plugin.settings.views.feed.lineClampLarge = 5;
+						largeScreenLineClampSlider?.setValue(5);
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.FEED_CONTENT_SETTING_CHANGE
+						);
+					})
+			)
+			.addSlider((component) => {
+				largeScreenLineClampSlider = component;
+				return component
 					.setValue(this.plugin.settings.views.feed.lineClampLarge)
 					.setLimits(2, 8, 1)
 					.onChange(async (value) => {
@@ -401,16 +416,31 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						EventManager.getInstance().emit(
 							PluginEvent.FEED_CONTENT_SETTING_CHANGE
 						);
-					})
-			);
+					});
+			});
 
+		let mediumScreenLineClampSlider: SliderComponent | null = null;
 		new Setting(containerEl)
 			.setName("Medium screen line clamp")
 			.setDesc(
-				"Number of lines to clamp on medium screens (>= 600px and < 1024px). (2-8, default 3)"
+				"Number of lines to clamp on medium screens (>= 600px and < 1024px) (2-8, default 3)"
 			)
-			.addSlider((component) =>
-				component
+			.addExtraButton((button) =>
+				button
+					.setIcon("reset")
+					.setTooltip("Restore default")
+					.onClick(async () => {
+						this.plugin.settings.views.feed.lineClampLarge = 3;
+						mediumScreenLineClampSlider?.setValue(3);
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.FEED_CONTENT_SETTING_CHANGE
+						);
+					})
+			)
+			.addSlider((component) => {
+				mediumScreenLineClampSlider = component;
+				return component
 					.setValue(this.plugin.settings.views.feed.lineClampMedium)
 					.setLimits(2, 8, 1)
 					.onChange(async (value) => {
@@ -419,16 +449,31 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						EventManager.getInstance().emit(
 							PluginEvent.FEED_CONTENT_SETTING_CHANGE
 						);
-					})
-			);
+					});
+			});
 
+		let smallScreenLineClampSlider: SliderComponent | null = null;
 		new Setting(containerEl)
 			.setName("Small screen line clamp")
 			.setDesc(
-				"Number of lines to clamp on small screens (< 600px). (2-8, default 2)"
+				"Number of lines to clamp on small screens (< 600px) (2-8, default 2)"
 			)
-			.addSlider((component) =>
-				component
+			.addExtraButton((button) =>
+				button
+					.setIcon("reset")
+					.setTooltip("Restore default")
+					.onClick(async () => {
+						this.plugin.settings.views.feed.lineClampLarge = 2;
+						smallScreenLineClampSlider?.setValue(2);
+						await this.plugin.saveSettings();
+						EventManager.getInstance().emit(
+							PluginEvent.FEED_CONTENT_SETTING_CHANGE
+						);
+					})
+			)
+			.addSlider((component) => {
+				smallScreenLineClampSlider = component;
+				return component
 					.setValue(this.plugin.settings.views.feed.lineClampSmall)
 					.setLimits(2, 8, 1)
 					.onChange(async (value) => {
@@ -437,8 +482,8 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						EventManager.getInstance().emit(
 							PluginEvent.FEED_CONTENT_SETTING_CHANGE
 						);
-					})
-			);
+					});
+			});
 
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
