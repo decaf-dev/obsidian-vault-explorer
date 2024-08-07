@@ -99,6 +99,8 @@
 		});
 	}
 
+	$: console.log(tags);
+
 	$: tagsClassName = `vault-explorer-list-item__tags ${isSmallScreenSize ? "vault-explorer-list-item__tags--screen-size-sm" : ""}`;
 	$: titleClassName = `vault-explorer-list-item__title ${isSmallScreenSize ? "vault-explorer-list-item__title--screen-size-sm" : ""}`;
 </script>
@@ -148,19 +150,17 @@
 				</div>
 			</Stack>
 		</div>
-		{#if showTags}
+		{#if showTags && tags !== null}
 			<div class={tagsClassName}>
-				{#if tags !== null}
-					<Wrap
-						spacingX="sm"
-						spacingY="sm"
-						justify={isSmallScreenSize ? "flex-start" : "flex-end"}
-					>
-						{#each tags as tag}
-							<Tag name={tag} variant="unstyled" />
-						{/each}
-					</Wrap>
-				{/if}
+				<Wrap
+					spacingX="sm"
+					spacingY="sm"
+					justify={isSmallScreenSize ? "flex-start" : "flex-end"}
+				>
+					{#each tags as tag}
+						<Tag name={tag} variant="unstyled" />
+					{/each}
+				</Wrap>
 			</div>
 		{/if}
 	</Wrap>
