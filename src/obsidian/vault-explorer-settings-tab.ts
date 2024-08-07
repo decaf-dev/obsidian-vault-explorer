@@ -314,7 +314,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Cover image fit")
-			.setDesc("Set the cover image fit")
+			.setDesc("Set the default cover image fit")
 			.addDropdown((cb) =>
 				cb
 					.addOptions({
