@@ -144,11 +144,15 @@
 
 	function handleCardContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
+
+		const showCoverImageOptions = path.endsWith(".md");
 		openContextMenu(plugin, path, nativeEvent, {
 			isFavorite,
-			coverImageFit,
+			coverImageFit: showCoverImageOptions ? coverImageFit : undefined,
 			onFavoriteChange: handleFavoriteChange,
-			onCoverImageFitChange: handleCoverImageFitChange,
+			onCoverImageFitChange: showCoverImageOptions
+				? handleCoverImageFitChange
+				: undefined,
 		});
 	}
 
