@@ -1,46 +1,32 @@
 <script lang="ts">
-	import { setIcon } from "obsidian";
-	import { createEventDispatcher, onMount } from "svelte";
-	import { getSvgData } from "../services/get-svg-data";
-	import Stack from "./stack.svelte";
+	import { createEventDispatcher } from "svelte";
+	import Icon from "./icon.svelte";
+
+	type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 	export let ariaLabel = "";
 	export let iconId = "";
 	export let disabled = false;
-	export let noPadding = false;
 	export let isTabbable = true;
+	export let size: IconSize = "md";
+	export let noPadding: boolean = false;
 
 	const dispatch = createEventDispatcher();
 	let ref: HTMLElement;
-
-	// Use onMount to ensure the element is available in the DOM
-	onMount(() => {
-		if (iconId === "ellipsis-vertical") return;
-		setIcon(ref, iconId);
-
-		if (ref.childNodes.length == 2) {
-			const firstElement = ref.firstChild;
-			const secondElement = ref.lastChild;
-			if (firstElement && secondElement) {
-				ref.insertBefore(secondElement, firstElement);
-
-				const svg = ref.querySelector("svg");
-				if (svg) {
-					svg.style.marginRight = "4px";
-				}
-			}
-		}
-	});
 
 	function handleClick(event: Event) {
 		dispatch("click", { nativeEvent: event });
 	}
 
-	$: className =
-		"clickable-icon" +
-		(noPadding == true ? " vault-explorer-icon--no-padding" : "");
+	function getClassName(noPadding: boolean) {
+		let className = "clickable-icon vault-explorer-icon-button";
+		if (noPadding) {
+			className += " vault-explorer-icon-button--no-padding";
+		}
+		return className;
+	}
 
-	$: svgData = getSvgData(iconId);
+	$: className = getClassName(noPadding);
 </script>
 
 <button
@@ -49,11 +35,11 @@
 	{disabled}
 	aria-label={ariaLabel}
 	bind:this={ref}
-	on:click={handleClick}>{@html svgData}<slot /></button
+	on:click={handleClick}><Icon {iconId} {size} /></button
 >
 
 <style>
-	.vault-explorer-icon--no-padding {
-		padding: 0;
+	.vault-explorer-icon-button--no-padding {
+		padding: 0px 4px;
 	}
 </style>

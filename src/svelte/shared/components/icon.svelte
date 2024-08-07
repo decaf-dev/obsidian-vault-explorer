@@ -65,7 +65,7 @@
 	}
 
 	$: className = getClassName(size);
-	$: svgData = getSvgData(iconId);
+	$: svgData = getSvgData(iconId, className);
 </script>
 
 <div
@@ -90,8 +90,8 @@
 	}
 
 	.vault-explorer-icon--sm {
-		width: var(--icon-sm);
-		height: var(--icon-sm);
+		width: var(--icon-s);
+		height: var(--icon-s);
 	}
 
 	.vault-explorer-icon--md {
