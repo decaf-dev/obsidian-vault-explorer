@@ -1,3 +1,5 @@
+import { CoverImageFit } from "src/types";
+
 export interface FileRenderData {
 	id: string;
 	displayName: string;
@@ -5,6 +7,7 @@ export interface FileRenderData {
 	basePath: string;
 	extension: string;
 	baseName: string;
+	coverImageFit: CoverImageFit;
 	content: string | null;
 	url: string | null;
 	imageUrl: string | null;
