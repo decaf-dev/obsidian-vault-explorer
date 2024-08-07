@@ -7,6 +7,7 @@
 	export let startIndex: number;
 	export let pageLength: number;
 	export let showTags: boolean;
+	export let isSmallScreenSize: boolean;
 
 	let filteredItems: FileRenderData[] = [];
 
@@ -29,6 +30,7 @@
 			displayName={fileRenderData.displayName}
 			extension={fileRenderData.extension}
 			baseName={fileRenderData.baseName}
+			{isSmallScreenSize}
 			path={fileRenderData.path}
 			tags={fileRenderData.tags}
 			isFavorite={fileRenderData.isFavorite}

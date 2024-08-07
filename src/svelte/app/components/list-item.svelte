@@ -12,7 +12,6 @@
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
-	import { SCREEN_SIZE_MD } from "../constants";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -21,9 +20,9 @@
 	export let tags: string[] | null;
 	export let isFavorite: boolean | null;
 	export let showTags: boolean;
+	export let isSmallScreenSize: boolean;
 
 	let enableFileIcons: boolean = false;
-	let isSmallScreenSize: boolean = false;
 	let ref: HTMLElement | null = null;
 	let plugin: VaultExplorerPlugin;
 
@@ -68,35 +67,6 @@
 			);
 		};
 	});
-
-	onMount(() => {
-		let resizeObserver: ResizeObserver;
-
-		const leafEl = ref?.closest(
-			".workspace-leaf-content",
-		) as HTMLElement | null;
-		if (leafEl) {
-			checkLeafWidth(leafEl);
-
-			resizeObserver = new ResizeObserver(() => {
-				checkLeafWidth(leafEl);
-			});
-			resizeObserver.observe(leafEl);
-		}
-
-		return () => {
-			resizeObserver?.disconnect();
-		};
-	});
-
-	function checkLeafWidth(leafEl: HTMLElement) {
-		const { clientWidth } = leafEl;
-		if (clientWidth < SCREEN_SIZE_MD) {
-			isSmallScreenSize = true;
-		} else {
-			isSmallScreenSize = false;
-		}
-	}
 
 	function handleTitleClick() {
 		handleItemClick();

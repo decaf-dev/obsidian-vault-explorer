@@ -39,7 +39,7 @@
 	import SearchFilter from "./components/search-filter.svelte";
 	import TimestampFilter from "./components/timestamp-filter.svelte";
 	import SortFilter from "./components/sort-filter.svelte";
-	import { DEBOUNCE_INPUT_TIME } from "./constants";
+	import { DEBOUNCE_INPUT_TIME, SCREEN_SIZE_MD } from "./constants";
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
@@ -68,6 +68,7 @@
 	// Variables
 	// ============================================
 	let plugin: VaultExplorerPlugin;
+	let ref: HTMLElement | null = null;
 
 	let startOfTodayMillis: number;
 	let startOfThisWeekMillis: number;
@@ -114,6 +115,7 @@
 
 	let viewOrder: TExplorerView[] = [];
 	let showListViewTags: boolean = false;
+	let isSmallScreenSize: boolean = false;
 
 	// ============================================
 	// Lifecycle hooks
@@ -489,6 +491,35 @@
 				PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE,
 				handleCoverImageSourceSettingChange,
 			);
+		};
+	});
+
+	onMount(() => {
+		let resizeObserver: ResizeObserver;
+
+		function checkLeafWidth(leafEl: HTMLElement) {
+			const { clientWidth } = leafEl;
+			if (clientWidth < SCREEN_SIZE_MD) {
+				isSmallScreenSize = true;
+			} else {
+				isSmallScreenSize = false;
+			}
+		}
+
+		const leafEl = ref?.closest(
+			".workspace-leaf-content",
+		) as HTMLElement | null;
+		if (leafEl) {
+			checkLeafWidth(leafEl);
+
+			resizeObserver = new ResizeObserver(() => {
+				checkLeafWidth(leafEl);
+			});
+			resizeObserver.observe(leafEl);
+		}
+
+		return () => {
+			resizeObserver?.disconnect();
 		};
 	});
 
@@ -898,7 +929,7 @@
 	$: endIndex = startIndex + pageLength;
 </script>
 
-<div class="vault-explorer">
+<div class="vault-explorer" bind:this={ref}>
 	{#if shouldCollapseFilters === false}
 		<div class="vault-explorer-filters">
 			<Stack spacing="md" direction="column">
@@ -1020,6 +1051,7 @@
 	{:else if currentView === "list"}
 		<ListView
 			data={renderData}
+			{isSmallScreenSize}
 			showTags={showListViewTags}
 			{startIndex}
 			{pageLength}
