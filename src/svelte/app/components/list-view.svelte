@@ -6,6 +6,8 @@
 	export let data: FileRenderData[];
 	export let startIndex: number;
 	export let pageLength: number;
+	export let showTags: boolean;
+	export let isSmallScreenSize: boolean;
 
 	let filteredItems: FileRenderData[] = [];
 
@@ -24,9 +26,11 @@
 <div class="vault-explorer-list-view">
 	{#each filteredItems as fileRenderData (fileRenderData.id)}
 		<ListItem
+			{showTags}
 			displayName={fileRenderData.displayName}
 			extension={fileRenderData.extension}
 			baseName={fileRenderData.baseName}
+			{isSmallScreenSize}
 			path={fileRenderData.path}
 			tags={fileRenderData.tags}
 			isFavorite={fileRenderData.isFavorite}

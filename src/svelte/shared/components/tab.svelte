@@ -77,6 +77,7 @@
 	.vault-explorer-tab {
 		padding: 4px 6px;
 		white-space: nowrap;
+		border-radius: var(--radius-s);
 	}
 
 	.vault-explorer-tab:focus-visible {

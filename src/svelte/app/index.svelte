@@ -39,7 +39,7 @@
 	import SearchFilter from "./components/search-filter.svelte";
 	import TimestampFilter from "./components/timestamp-filter.svelte";
 	import SortFilter from "./components/sort-filter.svelte";
-	import { DEBOUNCE_INPUT_TIME } from "./constants";
+	import { DEBOUNCE_INPUT_TIME, SCREEN_SIZE_MD } from "./constants";
 	import FeedView from "./components/feed-view.svelte";
 	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
@@ -62,11 +62,13 @@
 	} from "./services/favorites-store";
 	import TableView from "./components/table-view.svelte";
 	import Spacer from "../shared/components/spacer.svelte";
+	import Divider from "../shared/components/divider.svelte";
 
 	// ============================================
 	// Variables
 	// ============================================
 	let plugin: VaultExplorerPlugin;
+	let ref: HTMLElement | null = null;
 
 	let startOfTodayMillis: number;
 	let startOfThisWeekMillis: number;
@@ -112,6 +114,8 @@
 	let randomSortCache: RandomFileSortCache = new Map();
 
 	let viewOrder: TExplorerView[] = [];
+	let showListViewTags: boolean = false;
+	let isSmallScreenSize: boolean = false;
 
 	// ============================================
 	// Lifecycle hooks
@@ -136,6 +140,7 @@
 		plugin = p;
 
 		const { app, settings } = plugin;
+		showListViewTags = settings.views.list.showTags;
 		shouldCollapseFilters = settings.shouldCollapseFilters;
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
@@ -490,6 +495,35 @@
 	});
 
 	onMount(() => {
+		let resizeObserver: ResizeObserver;
+
+		function checkLeafWidth(leafEl: HTMLElement) {
+			const { clientWidth } = leafEl;
+			if (clientWidth < SCREEN_SIZE_MD) {
+				isSmallScreenSize = true;
+			} else {
+				isSmallScreenSize = false;
+			}
+		}
+
+		const leafEl = ref?.closest(
+			".workspace-leaf-content",
+		) as HTMLElement | null;
+		if (leafEl) {
+			checkLeafWidth(leafEl);
+
+			resizeObserver = new ResizeObserver(() => {
+				checkLeafWidth(leafEl);
+			});
+			resizeObserver.observe(leafEl);
+		}
+
+		return () => {
+			resizeObserver?.disconnect();
+		};
+	});
+
+	onMount(() => {
 		function handleLoadBodyTagsSettingChange() {
 			Logger.trace({
 				fileName: "app/index.svelte",
@@ -566,6 +600,7 @@
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
 		plugin.settings.shouldCollapseFilters = shouldCollapseFilters;
+		plugin.settings.views.list.showTags = showListViewTags;
 		await plugin.saveSettings();
 	}
 
@@ -610,6 +645,10 @@
 		});
 		customFilter.selectedGroupId = id;
 		customFilter.groups = newGroups;
+	}
+
+	function handleListViewTagsToggle() {
+		showListViewTags = !showListViewTags;
 	}
 
 	function handleViewDragOver(e: CustomEvent) {
@@ -890,7 +929,7 @@
 	$: endIndex = startIndex + pageLength;
 </script>
 
-<div class="vault-explorer">
+<div class="vault-explorer" bind:this={ref}>
 	{#if shouldCollapseFilters === false}
 		<div class="vault-explorer-filters">
 			<Stack spacing="md" direction="column">
@@ -949,11 +988,6 @@
 								on:groupDragStart={handleGroupDragStart}
 							/>
 						{/if}
-						<IconButton
-							iconId="settings"
-							ariaLabel="Change custom filter"
-							on:click={handleCustomFilterClick}
-						/>
 					</Flex>
 				</Stack>
 			</Stack>
@@ -962,6 +996,7 @@
 	{/if}
 	<Wrap align="center" spacingY="sm" justify="space-between">
 		<div class="vault-explorer-view-select">
+			<!-- <Stack spacing="sm"> -->
 			<TabList
 				initialSelectedIndex={viewOrder.findIndex(
 					(view) => view === currentView,
@@ -978,15 +1013,32 @@
 					>
 				{/each}
 			</TabList>
+			<!-- <IconButton
+					iconId="ellipsis-vertical"
+					ariaLabel="View options"
+					noPadding
+					on:click={() => {}}
+				/> -->
+			<!-- </Stack> -->
 		</div>
-		<PaginationIndicator
-			{startIndex}
-			{endIndex}
-			{currentPage}
-			{totalPages}
-			{totalItems}
-			on:change={handlePageChange}
-		/>
+		<Stack spacing="sm">
+			{#if currentView === "list"}
+				<IconButton
+					iconId="tags"
+					ariaLabel="Toggle tags"
+					on:click={handleListViewTagsToggle}
+				/>
+				<Divider direction="vertical" />
+			{/if}
+			<PaginationIndicator
+				{startIndex}
+				{endIndex}
+				{currentPage}
+				{totalPages}
+				{totalItems}
+				on:change={handlePageChange}
+			/>
+		</Stack>
 	</Wrap>
 	<Spacer size="md" />
 	{#if currentView === "grid"}
@@ -999,6 +1051,8 @@
 	{:else if currentView === "list"}
 		<ListView
 			data={renderData}
+			{isSmallScreenSize}
+			showTags={showListViewTags}
 			{startIndex}
 			{pageLength}
 			on:favoritePropertyChange={handleFavoritePropertyChange}
