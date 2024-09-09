@@ -1,0 +1,20 @@
+name: Check Console Log
+
+on: [push, pull_request]
+
+jobs:
+    check_console_log:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v3
+
+            - name: Run console.log check
+              run: |
+                  found=$(grep -r "console.log" --exclude="src/main.ts" src/ || true)
+                  if [ -n "$found" ]; then
+                      echo "console.log found in the following files:"
+                      echo "$found"
+                     exit 1
+                  fi
+                  echo "No console.log statements found!"
