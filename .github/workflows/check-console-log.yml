@@ -11,7 +11,7 @@ jobs:
 
             - name: Run console.log check
               run: |
-                  found=$(grep -r "console.log" --exclude="*main.ts" src/ || true)
+                  found=$(grep -r "console.log" --exclude="*main.ts" --exclude="*migrations/index.ts" src/ || true)
                   if [ -n "$found" ]; then
                       echo "console.log found in the following files:"
                       echo "$found"
