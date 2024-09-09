@@ -1,6 +1,6 @@
 name: Check Console Log
 
-on: [push, pull_request]
+on: pull_request
 
 jobs:
     check_src_folder:
