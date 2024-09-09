@@ -11,7 +11,7 @@ jobs:
 
             - name: Run console.log check
               run: |
-                  found=$(find src/ -type f ! -name "main.ts" ! -path "/migrations/index.ts" | xargs grep "console.log" || true)
+                  found=$(find src/ -type f ! -name "main.ts" ! -path "migrations/index.ts" | xargs grep "console.log" || true)
                   if [ -n "$found" ]; then
                       echo "console.log found in the following files:"
                       echo "$found"
