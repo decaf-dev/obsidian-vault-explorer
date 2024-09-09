@@ -3,7 +3,7 @@ name: Check Console Log
 on: pull_request
 
 jobs:
-    check_src_folder:
+    check_console_log:
         runs-on: ubuntu-latest
         steps:
             - name: checkout code
