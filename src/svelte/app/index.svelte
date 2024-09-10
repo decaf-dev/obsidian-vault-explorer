@@ -952,6 +952,13 @@
 						<Stack spacing="sm"></Stack>
 					</Flex>
 				</Stack>
+				{#if searchFilter.isEnabled}
+					<SearchFilter
+						value={searchFilter.value}
+						on:input={debounceSearchFilterChange}
+						on:clear={() => (searchFilter.value = "")}
+					/>
+				{/if}
 			</Stack>
 			<Spacer size="md" />
 		</div>
@@ -999,13 +1006,6 @@
 			{/if}
 		</Flex>
 	</Wrap>
-	{#if searchFilter.isEnabled}
-		<SearchFilter
-			value={searchFilter.value}
-			on:input={debounceSearchFilterChange}
-			on:clear={() => (searchFilter.value = "")}
-		/>
-	{/if}
 	<Spacer size="md" />
 	{#if currentView === "grid"}
 		<GridView
