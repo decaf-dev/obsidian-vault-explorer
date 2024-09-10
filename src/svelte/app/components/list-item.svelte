@@ -6,7 +6,7 @@
 	import Icon from "src/svelte/shared/components/icon.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import { getIconIdForFile } from "../services/file-icon";
-	import { createEventDispatcher, onMount } from "svelte";
+	import { onMount } from "svelte";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
 	import { openContextMenu } from "../services/context-menu";
@@ -18,7 +18,6 @@
 	export let extension: string;
 	export let path: string;
 	export let tags: string[] | null;
-	export let isFavorite: boolean | null;
 	export let showTags: boolean;
 	export let isSmallScreenSize: boolean;
 
@@ -26,30 +25,28 @@
 	let ref: HTMLElement | null = null;
 	let plugin: VaultExplorerPlugin;
 
-	const dispatch = createEventDispatcher();
-
 	store.plugin.subscribe((p) => {
 		plugin = p;
 		enableFileIcons = plugin.settings.enableFileIcons;
-		// showTags = plugin.settings.views.list.showTags;
+		showTags = plugin.settings.views.list.showTags;
 	});
 
-	// onMount(() => {
-	// 	function handleShowTagsChange() {
-	// 		showTags = plugin.settings.views.list.showTags;
-	// 	}
+	onMount(() => {
+		function handleShowTagsChange() {
+			showTags = plugin.settings.views.list.showTags;
+		}
 
-	// 	EventManager.getInstance().on(
-	// 		PluginEvent.SHOW_TAGS_SETTING_CHANGE,
-	// 		handleShowTagsChange,
-	// 	);
-	// 	return () => {
-	// 		EventManager.getInstance().off(
-	// 			PluginEvent.SHOW_TAGS_SETTING_CHANGE,
-	// 			handleShowTagsChange,
-	// 		);
-	// 	};
-	// });
+		EventManager.getInstance().on(
+			PluginEvent.SHOW_TAGS_SETTING_CHANGE,
+			handleShowTagsChange,
+		);
+		return () => {
+			EventManager.getInstance().off(
+				PluginEvent.SHOW_TAGS_SETTING_CHANGE,
+				handleShowTagsChange,
+			);
+		};
+	});
 
 	onMount(() => {
 		function handleFileIconsChange() {
@@ -76,16 +73,9 @@
 		openInCurrentTab(plugin, path);
 	}
 
-	function handleFavoriteChange(filePath: string, value: boolean) {
-		dispatch("favoritePropertyChange", { filePath, value });
-	}
-
 	function handleItemContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
-		openContextMenu(plugin, path, nativeEvent, {
-			isFavorite,
-			onFavoriteChange: handleFavoriteChange,
-		});
+		openContextMenu(plugin, path, nativeEvent, {});
 	}
 
 	function handleItemMouseOver(e: MouseEvent) {

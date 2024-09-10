@@ -35,8 +35,6 @@
 				custom1={fileRenderData.custom1}
 				custom2={fileRenderData.custom2}
 				custom3={fileRenderData.custom3}
-				isFavorite={fileRenderData.isFavorite}
-				on:favoritePropertyChange
 				on:coverImageFitChange
 			/>
 		{/each}

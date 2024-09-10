@@ -35,7 +35,6 @@
 	export let path: string;
 	export let createdMillis: number;
 	export let content: string | null;
-	export let isFavorite: boolean | null;
 
 	let ref: HTMLElement | null = null;
 	let enableFileIcons = false;
@@ -146,16 +145,9 @@
 		openInCurrentTab(plugin, path);
 	}
 
-	function handleFavoriteChange(filePath: string, value: boolean) {
-		dispatch("favoritePropertyChange", { filePath, value });
-	}
-
 	function handleCardContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
-		openContextMenu(plugin, path, nativeEvent, {
-			isFavorite,
-			onFavoriteChange: handleFavoriteChange,
-		});
+		openContextMenu(plugin, path, nativeEvent, {});
 	}
 
 	function handleCardMouseOver(e: MouseEvent) {

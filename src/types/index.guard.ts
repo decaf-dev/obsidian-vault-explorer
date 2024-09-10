@@ -13,7 +13,6 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
         (typedObj["properties"] !== null &&
             typeof typedObj["properties"] === "object" ||
             typeof typedObj["properties"] === "function") &&
-        typeof typedObj["properties"]["favorite"] === "string" &&
         typeof typedObj["properties"]["url"] === "string" &&
         typeof typedObj["properties"]["image"] === "string" &&
         typeof typedObj["properties"]["coverImageFit"] === "string" &&
@@ -30,11 +29,6 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["filters"]["search"] === "function") &&
         typeof typedObj["filters"]["search"]["isEnabled"] === "boolean" &&
         typeof typedObj["filters"]["search"]["value"] === "string" &&
-        (typedObj["filters"]["favorites"] !== null &&
-            typeof typedObj["filters"]["favorites"] === "object" ||
-            typeof typedObj["filters"]["favorites"] === "function") &&
-        typeof typedObj["filters"]["favorites"]["isEnabled"] === "boolean" &&
-        typeof typedObj["filters"]["favorites"]["value"] === "boolean" &&
         (typedObj["filters"]["sort"] !== null &&
             typeof typedObj["filters"]["sort"] === "object" ||
             typeof typedObj["filters"]["sort"] === "function") &&
@@ -43,18 +37,9 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["filters"]["sort"]["value"] === "file-name-desc" ||
             typedObj["filters"]["sort"]["value"] === "modified-asc" ||
             typedObj["filters"]["sort"]["value"] === "modified-desc" ||
+            typedObj["filters"]["sort"]["value"] === "created-asc" ||
+            typedObj["filters"]["sort"]["value"] === "created-desc" ||
             typedObj["filters"]["sort"]["value"] === "random") &&
-        (typedObj["filters"]["timestamp"] !== null &&
-            typeof typedObj["filters"]["timestamp"] === "object" ||
-            typeof typedObj["filters"]["timestamp"] === "function") &&
-        typeof typedObj["filters"]["timestamp"]["isEnabled"] === "boolean" &&
-        (typedObj["filters"]["timestamp"]["value"] === "created-today" ||
-            typedObj["filters"]["timestamp"]["value"] === "modified-today" ||
-            typedObj["filters"]["timestamp"]["value"] === "created-this-week" ||
-            typedObj["filters"]["timestamp"]["value"] === "modified-this-week" ||
-            typedObj["filters"]["timestamp"]["value"] === "created-2-weeks" ||
-            typedObj["filters"]["timestamp"]["value"] === "modified-2-weeks" ||
-            typedObj["filters"]["timestamp"]["value"] === "all") &&
         (typedObj["filters"]["custom"] !== null &&
             typeof typedObj["filters"]["custom"] === "object" ||
             typeof typedObj["filters"]["custom"] === "function") &&
@@ -608,9 +593,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof e["isEnabled"] === "boolean"
         ) &&
         (typedObj["views"]["grid"]["coverImageFit"] === "cover" ||
-            typedObj["views"]["grid"]["coverImageFit"] === "contain" ||
-            typedObj["views"]["grid"]["coverImageFit"] === "scale-down" ||
-            typedObj["views"]["grid"]["coverImageFit"] === "none") &&
+            typedObj["views"]["grid"]["coverImageFit"] === "contain") &&
         typeof typedObj["views"]["grid"]["loadSocialMediaImage"] === "boolean" &&
         (typedObj["views"]["list"] !== null &&
             typeof typedObj["views"]["list"] === "object" ||
@@ -653,8 +636,6 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["currentView"] === TExplorerView.RECOMMENDED ||
             typedObj["currentView"] === TExplorerView.RELATED) &&
         typeof typedObj["pageSize"] === "number" &&
-        typeof typedObj["filterGroupsWidth"] === "string" &&
-        typeof typedObj["shouldWrapFilterGroups"] === "boolean" &&
         typeof typedObj["shouldCollapseFilters"] === "boolean" &&
         Array.isArray(typedObj["viewOrder"]) &&
         typedObj["viewOrder"].every((e: any) =>

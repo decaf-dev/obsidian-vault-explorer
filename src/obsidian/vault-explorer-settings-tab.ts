@@ -108,20 +108,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl)
-			.setName("Wrap filter groups")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.shouldWrapFilterGroups)
-					.onChange(async (value) => {
-						this.plugin.settings.shouldWrapFilterGroups = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE
-						);
-					})
-			);
-
 		new Setting(containerEl).setName("Filters").setHeading();
 
 		new Setting(containerEl).setName("Search filter").addToggle((toggle) =>
@@ -135,36 +121,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					);
 				})
 		);
-
-		new Setting(containerEl)
-			.setName("Favorites filter")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.filters.favorites.isEnabled)
-					.onChange(async (value) => {
-						this.plugin.settings.filters.favorites.isEnabled =
-							value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
-						);
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("Timestamp filter")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.filters.timestamp.isEnabled)
-					.onChange(async (value) => {
-						this.plugin.settings.filters.timestamp.isEnabled =
-							value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
-						);
-					})
-			);
 
 		new Setting(containerEl).setName("Sort filter").addToggle((toggle) =>
 			toggle
@@ -491,33 +447,17 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
 		new Setting(containerEl)
-			.setName("Favorite property")
-			.setDesc(
-				"Property used to mark a note as a favorite. This must be a checkbox property."
-			)
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOptions(
-						getDropdownOptionsForProperties(checkboxProperties)
-					)
-					.setValue(this.plugin.settings.properties.favorite)
-					.onChange(async (value) => {
-						this.plugin.settings.properties.favorite = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.PROPERTY_SETTING_CHANGE
-						);
-					})
-			);
-
-		new Setting(containerEl)
 			.setName("Cover image property")
 			.setDesc(
 				"Property used to store a cover image. This must be a text property."
 			)
 			.addDropdown((dropdown) =>
 				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.addOptions(
+						getDropdownOptionsForProperties(textProperties, {
+							image: "image",
+						})
+					)
 					.setValue(this.plugin.settings.properties.image)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.image = value;
@@ -535,7 +475,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			)
 			.addDropdown((dropdown) =>
 				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.addOptions(
+						getDropdownOptionsForProperties(textProperties, {
+							"image-fit": "image-fit",
+						})
+					)
 					.setValue(this.plugin.settings.properties.coverImageFit)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.coverImageFit = value;
@@ -553,7 +497,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			)
 			.addDropdown((dropdown) =>
 				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.addOptions(
+						getDropdownOptionsForProperties(textProperties, {
+							url: "url",
+						})
+					)
 					.setValue(this.plugin.settings.properties.url)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.url = value;
@@ -569,7 +517,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			text: "Property used to store a creation date. This must be a date or datetime property.",
 		});
 		creationDateDesc.createDiv({
-			text: "If set to 'Select a property', the file's created at date will be used.",
+			text: "If set, the property will be preferred over the file's creation date.",
 		});
 
 		new Setting(containerEl)
@@ -598,7 +546,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			text: "Property used to store a modification date. This must be a date or datetime property.",
 		});
 		modificationDateDesc.createDiv({
-			text: "If set to 'Select a property', the file's modified at date will be used.",
+			text: "If set, the property will be preferred over the file's modification date.",
 		});
 
 		new Setting(containerEl)
@@ -744,16 +692,14 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl)
-			.setName("Social media image cache")
-			.addButton((button) =>
-				button
-					.setClass("mod-destructive")
-					.setButtonText("Clear cache")
-					.onClick(async () => {
-						await clearSocialMediaImageCache();
-					})
-			);
+		new Setting(containerEl).setName("Image cache").addButton((button) =>
+			button
+				.setClass("mod-destructive")
+				.setButtonText("Clear cache")
+				.onClick(async () => {
+					await clearSocialMediaImageCache();
+				})
+		);
 	}
 
 	onClose() {

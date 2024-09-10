@@ -1,4 +1,4 @@
-name: Check Console Log
+name: Check for console.log statements
 
 on: pull_request
 

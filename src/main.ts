@@ -20,6 +20,7 @@ import { isVersionLessThan } from "./utils";
 import License from "./svelte/shared/services/license";
 import { clearSocialMediaImageCache } from "./svelte/app/services/social-media-image-cache";
 import store from "./svelte/shared/services/store";
+import "./styles.css";
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -63,6 +64,22 @@ export default class VaultExplorerPlugin extends Plugin {
 	}
 
 	private registerEvents() {
+		this.registerEvent(
+			this.app.workspace.on("active-leaf-change", () => {
+				const explorerLeaf =
+					this.app.workspace.getActiveViewOfType(VaultExplorerView);
+				const statusBar = document.querySelector(
+					".status-bar"
+				) as HTMLElement | null;
+				if (!statusBar) return;
+				if (explorerLeaf) {
+					statusBar.classList.add("vault-explorer-status-bar");
+				} else {
+					statusBar.classList.remove("vault-explorer-status-bar");
+				}
+			})
+		);
+
 		//Callback if the file is renamed or moved
 		//This callback is already debounced by Obsidian
 		this.registerEvent(
@@ -228,7 +245,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			const leaf = leaves[0];
 			this.app.workspace.revealLeaf(leaf);
 		} else {
-			this.app.workspace.getLeaf().setViewState({
+			this.app.workspace.getLeaf("tab").setViewState({
 				type: VAULT_EXPLORER_VIEW,
 				active: true,
 			});

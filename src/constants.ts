@@ -7,10 +7,9 @@ export const HOVER_LINK_SOURCE_ID = "vault-explorer-preview";
 
 export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	properties: {
-		favorite: "",
-		url: "",
-		image: "",
-		coverImageFit: "",
+		url: "url",
+		image: "image",
+		coverImageFit: "image-fit",
 		createdDate: "",
 		modifiedDate: "",
 		custom1: "",
@@ -21,14 +20,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		search: {
 			isEnabled: true,
 			value: "",
-		},
-		favorites: {
-			isEnabled: true,
-			value: false,
-		},
-		timestamp: {
-			isEnabled: true,
-			value: "all",
 		},
 		sort: {
 			isEnabled: true,
@@ -94,8 +85,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	enableClockUpdates: true,
 	enableFileIcons: false,
 	loadBodyTags: true,
-	filterGroupsWidth: "300px",
-	shouldWrapFilterGroups: false,
 	shouldCollapseFilters: false,
 	pageSize: 25,
 	viewOrder: [
