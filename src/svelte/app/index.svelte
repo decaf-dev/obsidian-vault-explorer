@@ -952,13 +952,6 @@
 						<Stack spacing="sm"></Stack>
 					</Flex>
 				</Stack>
-				{#if searchFilter.isEnabled}
-					<SearchFilter
-						value={searchFilter.value}
-						on:input={debounceSearchFilterChange}
-						on:clear={() => (searchFilter.value = "")}
-					/>
-				{/if}
 			</Stack>
 			<Spacer size="md" />
 		</div>
@@ -991,6 +984,13 @@
 			<!-- </Stack> -->
 		</div>
 		<Flex>
+			{#if searchFilter.isEnabled}
+				<SearchFilter
+					value={searchFilter.value}
+					on:input={debounceSearchFilterChange}
+					on:clear={() => (searchFilter.value = "")}
+				/>
+			{/if}
 			{#if sortFilter.isEnabled}
 				<SortFilter
 					value={sortFilter.value}
