@@ -447,33 +447,17 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Built-in properties").setHeading();
 
 		new Setting(containerEl)
-			.setName("Favorite property")
-			.setDesc(
-				"Property used to mark a note as a favorite. This must be a checkbox property."
-			)
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOptions(
-						getDropdownOptionsForProperties(checkboxProperties)
-					)
-					.setValue(this.plugin.settings.properties.favorite)
-					.onChange(async (value) => {
-						this.plugin.settings.properties.favorite = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.PROPERTY_SETTING_CHANGE
-						);
-					})
-			);
-
-		new Setting(containerEl)
 			.setName("Cover image property")
 			.setDesc(
 				"Property used to store a cover image. This must be a text property."
 			)
 			.addDropdown((dropdown) =>
 				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.addOptions(
+						getDropdownOptionsForProperties(textProperties, {
+							image: "image",
+						})
+					)
 					.setValue(this.plugin.settings.properties.image)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.image = value;
@@ -491,7 +475,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			)
 			.addDropdown((dropdown) =>
 				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.addOptions(
+						getDropdownOptionsForProperties(textProperties, {
+							"image-fit": "image-fit",
+						})
+					)
 					.setValue(this.plugin.settings.properties.coverImageFit)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.coverImageFit = value;
@@ -509,7 +497,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			)
 			.addDropdown((dropdown) =>
 				dropdown
-					.addOptions(getDropdownOptionsForProperties(textProperties))
+					.addOptions(
+						getDropdownOptionsForProperties(textProperties, {
+							url: "url",
+						})
+					)
 					.setValue(this.plugin.settings.properties.url)
 					.onChange(async (value) => {
 						this.plugin.settings.properties.url = value;
