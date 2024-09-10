@@ -33,7 +33,7 @@
 			{/each}
 		{/if}
 		{#if groups.length === 0}
-			<span class="vault-explorer-empty-label">No groups</span>
+			<span class="vault-explorer-empty-label">No groups to display</span>
 		{/if}
 	</Stack>
 </div>
@@ -42,11 +42,11 @@
 	.vault-explorer-filter-group-list {
 		width: min(100%, 700px);
 		overflow-x: auto;
-		padding-bottom: 8px;
 	}
 
 	.vault-explorer-empty-label {
 		color: var(--text-faint);
-		font-size: var(--font-smaller);
+		font-size: var(--font-md);
+		margin-left: 4px;
 	}
 </style>

@@ -929,29 +929,25 @@
 <div class="vault-explorer" bind:this={ref}>
 	{#if shouldCollapseFilters === false}
 		<div class="vault-explorer-filters">
-			<Stack spacing="md" direction="column">
-				<Stack direction="column" spacing="sm">
-					<Flex justify="space-between">
-						{#if customFilter.isEnabled}
-							<FilterGroupList
-								groups={customFilter.groups}
-								on:groupClick={handleGroupClick}
-								on:groupContextMenu={handleGroupContextMenu}
-								on:groupDrop={handleGroupDrop}
-								on:groupDragOver={handleGroupDragOver}
-								on:groupDragStart={handleGroupDragStart}
-							/>
-						{/if}
-					</Flex>
-					<Flex justify="space-between">
-						<IconButton
-							ariaLabel="Change custom filter"
-							iconId="settings-2"
-							on:click={handleCustomFilterClick}
+			<Stack spacing="sm" direction="column">
+				<Flex justify="space-between">
+					{#if customFilter.isEnabled}
+						<FilterGroupList
+							groups={customFilter.groups}
+							on:groupClick={handleGroupClick}
+							on:groupContextMenu={handleGroupContextMenu}
+							on:groupDrop={handleGroupDrop}
+							on:groupDragOver={handleGroupDragOver}
+							on:groupDragStart={handleGroupDragStart}
 						/>
-						<Stack spacing="sm"></Stack>
-					</Flex>
-				</Stack>
+					{/if}
+				</Flex>
+				<div>
+					<button
+						class="vault-explorer-button"
+						on:click={handleCustomFilterClick}>Configure</button
+					>
+				</div>
 			</Stack>
 			<Spacer size="md" />
 		</div>
@@ -1057,5 +1053,15 @@
 
 	.vault-explorer-view-select {
 		flex: 1;
+	}
+
+	.vault-explorer-button {
+		background: none;
+		text-decoration: underline;
+		color: var(--text-faint);
+		font-size: var(--font-small);
+		border: none;
+		box-shadow: none;
+		padding: 0;
 	}
 </style>
