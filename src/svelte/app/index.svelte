@@ -790,8 +790,6 @@
 			value: CoverImageFit;
 		};
 
-		console.log(filePath, value);
-
 		const { properties } = plugin.settings;
 		const { coverImageFit: coverImageFitProperty } = properties;
 
