@@ -5,7 +5,7 @@
 	import store from "../../shared/services/store";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { afterUpdate, createEventDispatcher, onMount } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import Icon from "src/svelte/shared/components/icon.svelte";
@@ -13,7 +13,6 @@
 	import { PluginEvent } from "src/event/types";
 	import { openContextMenu } from "../services/context-menu";
 	import { openInCurrentTab } from "../services/open-file";
-	import Flex from "src/svelte/shared/components/flex.svelte";
 	import { getDomainFromUrl } from "../services/utils/url-utils";
 	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import Divider from "src/svelte/shared/components/divider.svelte";
@@ -24,6 +23,11 @@
 		putSocialMediaImageUrl,
 	} from "../services/social-media-image-cache";
 	import { CoverImageFit } from "src/types";
+
+	type SocialMediaImageResult = {
+		status: "SUCCESS" | "NOT_FOUND" | "EXPIRED" | "NO_IMAGE";
+		url?: string; // Only present when status is 'SUCCESS'
+	};
 
 	export let displayName: string;
 	export let path: string;
@@ -40,9 +44,8 @@
 	let plugin: VaultExplorerPlugin;
 	let enableFileIcons: boolean = false;
 	let loadSocialMediaImage: boolean = true;
-	let imgSrc: string | null;
-
-	let isCoverImageLoaded = false;
+	let imgSrc: string | null = null;
+	let isImageLoaded = false;
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
@@ -52,25 +55,10 @@
 
 	const dispatch = createEventDispatcher();
 
-	let renderKey = 0;
-
-	onMount(() => {
-		updateImgSrc();
-	});
-
-	afterUpdate(() => {
-		if (imageUrl === null) {
-			imgSrc = null;
-		} else {
-			updateImgSrc();
-		}
-	});
-
 	onMount(() => {
 		function handleLoadSocialMediaImageChange() {
 			const newValue = plugin.settings.views.grid.loadSocialMediaImage;
 			loadSocialMediaImage = newValue;
-			renderKey++;
 		}
 
 		EventManager.getInstance().on(
@@ -101,29 +89,6 @@
 			);
 		};
 	});
-
-	async function updateImgSrc() {
-		if (imageUrl !== null) {
-			const entry = await getSocialMediaImageEntry(imageUrl);
-			if (entry) {
-				const isExpired = await isSocialMediaImageEntryExpired(entry);
-				if (!isExpired) {
-					const socialUrl = entry.socialMediaImageUrl;
-
-					//The url is null when the social media image does not exist
-					//This will always happen for sites like Twitter (x.com)
-					//To avoid fetching the same non-existent image, we will set imgSrc to null
-					if (socialUrl === null) {
-						imgSrc = null;
-					} else {
-						imgSrc = socialUrl;
-					}
-					return;
-				}
-			}
-			imgSrc = imageUrl;
-		}
-	}
 
 	function handleUrlClick(e: Event) {
 		e.stopPropagation();
@@ -164,29 +129,71 @@
 		handleCardClick();
 	}
 
-	$: hasFooterContent =
-		tags != null || custom1 != null || custom2 != null || custom3 != null;
+	function handleImageLoad() {
+		isImageLoaded = true;
+	}
 
 	async function handleImageError(event: Event) {
 		const target = event.target as HTMLImageElement;
 		target.onerror = null; // Prevent infinite loop
 
-		if (!imgSrc) return;
+		let websiteUrl = target.src;
+		if (websiteUrl.endsWith("/")) {
+			websiteUrl = websiteUrl.slice(0, -1); // Remove the trailing slash
+		}
 
 		if (loadSocialMediaImage) {
-			const socialUrl = await fetchSocialMediaImage(imgSrc);
+			const socialUrl = await fetchSocialMediaImage(websiteUrl);
 			if (socialUrl) {
-				putSocialMediaImageUrl(imgSrc, socialUrl);
+				await putSocialMediaImageUrl(websiteUrl, socialUrl);
 				target.src = socialUrl;
 			} else {
-				putSocialMediaImageUrl(imgSrc, null);
+				await putSocialMediaImageUrl(websiteUrl, null);
 			}
 		}
 	}
 
-	function handleImageLoad() {
-		isCoverImageLoaded = true;
+	async function getCachedSocialMediaImageUrl(
+		websiteUrl: string,
+	): Promise<SocialMediaImageResult> {
+		const entry = await getSocialMediaImageEntry(websiteUrl);
+
+		if (entry) {
+			const { socialMediaImageUrl } = entry;
+
+			if (socialMediaImageUrl) {
+				const isExpired = await isSocialMediaImageEntryExpired(entry);
+				if (!isExpired) {
+					return { status: "SUCCESS", url: socialMediaImageUrl };
+				} else {
+					return { status: "EXPIRED" }; // Image found but expired
+				}
+			} else {
+				return { status: "NO_IMAGE" }; // Social image was fetched but doesn't exist
+			}
+		}
+
+		return { status: "NOT_FOUND" }; // Image not cached
 	}
+
+	$: if (imageUrl) {
+		isImageLoaded = false;
+		getCachedSocialMediaImageUrl(imageUrl).then((result) => {
+			const { status, url } = result;
+			if (status === "SUCCESS") {
+				imgSrc = url!;
+			} else if (status === "EXPIRED" || status === "NOT_FOUND") {
+				imgSrc = imageUrl;
+			} else if (status === "NO_IMAGE") {
+				//Do nothing
+				//This is for websites like x.com where the social image is not found
+				//We don't want to keep trying to fetch the image
+			}
+		});
+	}
+
+	$: hasFooterContent =
+		tags != null || custom1 != null || custom2 != null || custom3 != null;
 </script>
 
 <div
@@ -207,35 +214,21 @@
 	on:mouseover={handleCardMouseOver}
 >
 	<div class="vault-explorer-grid-card__cover">
-		{#each [renderKey] as k (k)}
-			{#if imgSrc !== null}
-				<!-- svelte-ignore a11y-missing-attribute -->
-				<img
-					class="vault-explorer-grid-card__image"
-					src={imgSrc}
-					style="display: {isCoverImageLoaded
-						? 'block'
-						: 'none'}; object-fit: {coverImageFit};"
-					on:load={handleImageLoad}
-					on:error={handleImageError}
-				/>
-			{/if}
-		{/each}
+		{#if imgSrc !== null}
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<img
+				class="vault-explorer-grid-card__image"
+				src={imgSrc}
+				style="display: {isImageLoaded
+					? 'block'
+					: 'none'}; object-fit: {coverImageFit};"
+				on:load={handleImageLoad}
+				on:error={handleImageError}
+			/>
+		{/if}
 		{#if imageUrl === null}
 			<div class="vault-explorer-grid-card__image"></div>
 		{/if}
-		<!-- {#if isFavorite === true}
-			<div class="vault-explorer-grid-card__favorite">
-				<Flex
-					justify="center"
-					align="center"
-					width="100%"
-					height="100%"
-				>
-					<Icon iconId="star" ariaLabel="Favorite" />
-				</Flex>
-			</div>
-		{/if} -->
 	</div>
 	<div class="vault-explorer-grid-card__body">
 		<div
@@ -340,16 +333,6 @@
 		border-top-left-radius: var(--radius-m);
 		border-top-right-radius: var(--radius-m);
 	}
-
-	/* .vault-explorer-grid-card__favorite {
-		position: absolute;
-		top: 8px;
-		right: 8px;
-		width: 20px;
-		height: 20px;
-		background-color: var(--background-primary);
-		border-radius: 50%;
-	} */
 
 	.vault-explorer-grid-card__body {
 		padding: 8px 16px;

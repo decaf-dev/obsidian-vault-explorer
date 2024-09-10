@@ -45,7 +45,7 @@ export const putSocialMediaImageUrl = async (
 	socialMediaImageUrl: string | null
 ) => {
 	const db = await openDatabase();
-	db.put(STORE_NAME, {
+	await db.put(STORE_NAME, {
 		url,
 		socialMediaImageUrl,
 		timestamp: Date.now(),
@@ -76,7 +76,7 @@ export const clearSocialMediaImageCache = async () => {
 	}
 };
 
-const openDatabase = (): Promise<IDBPDatabase<SocialMediaImageDB>> => {
+const openDatabase = () => {
 	return openDB<SocialMediaImageDB>(DATABASE_NAME, 1, {
 		upgrade(db) {
 			db.createObjectStore(STORE_NAME, { keyPath: "url" });
