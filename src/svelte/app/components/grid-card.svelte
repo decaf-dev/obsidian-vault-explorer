@@ -229,12 +229,7 @@
 			{/if}
 		{/each}
 		{#if imageUrl === null}
-			<div class="vault-explorer-grid-card__cover-icon">
-				<Icon
-					iconId={getIconIdForFile(baseName, extension)}
-					size="lg"
-				/>
-			</div>
+			<div class="vault-explorer-grid-card__image"></div>
 		{/if}
 		{#if isFavorite === true}
 			<div class="vault-explorer-grid-card__favorite">
