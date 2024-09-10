@@ -635,8 +635,6 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["currentView"] === TExplorerView.RECOMMENDED ||
             typedObj["currentView"] === TExplorerView.RELATED) &&
         typeof typedObj["pageSize"] === "number" &&
-        typeof typedObj["filterGroupsWidth"] === "string" &&
-        typeof typedObj["shouldWrapFilterGroups"] === "boolean" &&
         typeof typedObj["shouldCollapseFilters"] === "boolean" &&
         Array.isArray(typedObj["viewOrder"]) &&
         typedObj["viewOrder"].every((e: any) =>

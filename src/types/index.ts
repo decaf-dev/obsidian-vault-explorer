@@ -31,8 +31,6 @@ export interface VaultExplorerPluginSettings {
 	loadBodyTags: boolean;
 	currentView: TExplorerView | null;
 	pageSize: number;
-	filterGroupsWidth: string;
-	shouldWrapFilterGroups: boolean;
 	shouldCollapseFilters: boolean;
 	viewOrder: TExplorerView[];
 	configDir: string;

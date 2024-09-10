@@ -946,7 +946,7 @@
 					<Flex justify="space-between">
 						<IconButton
 							ariaLabel="Change custom filter"
-							iconId="list-filter"
+							iconId="settings-2"
 							on:click={handleCustomFilterClick}
 						/>
 						<Stack spacing="sm"></Stack>
