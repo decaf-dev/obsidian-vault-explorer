@@ -16,10 +16,6 @@
       "isEnabled": true,
       "value": ""
     },
-    "timestamp": {
-      "isEnabled": true,
-      "value": "all"
-    },
     "sort": {
       "isEnabled": true,
       "value": "file-name-asc"
@@ -28,10 +24,6 @@
       "isEnabled": true,
       "selectedGroupId": "",
       "groups": []
-    },
-    "favorites": {
-      "isEnabled": true,
-      "value": false
     },
     "properties": {
       "groups": []
@@ -94,8 +86,6 @@
   "enableClockUpdates": true,
   "enableFileIcons": true,
   "loadBodyTags": true,
-  "filterGroupsWidth": "69px",
-  "shouldWrapFilterGroups": false,
   "shouldCollapseFilters": false,
   "pageSize": 25,
   "viewOrder": [
@@ -105,6 +95,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.41.1",
+  "pluginVersion": "1.42.0",
   "logLevel": "trace"
 }
