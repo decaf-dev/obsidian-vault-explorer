@@ -853,6 +853,10 @@
 			return a.modifiedMillis - b.modifiedMillis;
 		} else if (value === "modified-desc") {
 			return b.modifiedMillis - a.modifiedMillis;
+		} else if (value === "created-asc") {
+			return a.createdMillis - b.createdMillis;
+		} else if (value === "created-desc") {
+			return b.createdMillis - a.createdMillis;
 		} else if (value === "random") {
 			const sortKeyA = randomSortCache.get(a.path) ?? 0;
 			const sortKeyB = randomSortCache.get(b.path) ?? 0;

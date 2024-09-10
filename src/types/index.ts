@@ -107,6 +107,8 @@ export type SortFilterOption =
 	| "file-name-desc"
 	| "modified-asc"
 	| "modified-desc"
+	| "created-asc"
+	| "created-desc"
 	| "random";
 
 export type WordBreak = "normal" | "break-word";

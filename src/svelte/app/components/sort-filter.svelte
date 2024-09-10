@@ -39,6 +39,17 @@
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
+			item.setTitle("Created time (new to old)");
+			item.setChecked(value === "created-desc");
+			item.onClick(() => handleValueChange("created-desc"));
+		});
+		menu.addItem((item) => {
+			item.setTitle("Created time (old to new)");
+			item.setChecked(value === "created-asc");
+			item.onClick(() => handleValueChange("created-asc"));
+		});
+		menu.addSeparator();
+		menu.addItem((item) => {
 			item.setTitle("Random");
 			item.setChecked(value === "random");
 			item.onClick(() => handleValueChange("random"));
