@@ -245,7 +245,7 @@ export default class VaultExplorerPlugin extends Plugin {
 			const leaf = leaves[0];
 			this.app.workspace.revealLeaf(leaf);
 		} else {
-			this.app.workspace.getLeaf().setViewState({
+			this.app.workspace.getLeaf("tab").setViewState({
 				type: VAULT_EXPLORER_VIEW,
 				active: true,
 			});
