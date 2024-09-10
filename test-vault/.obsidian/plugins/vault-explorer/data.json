@@ -9,7 +9,7 @@
     "modifiedDate": "modification",
     "createdDate": "creation",
     "image": "image",
-    "coverImageFit": ""
+    "coverImageFit": "image-fit"
   },
   "filters": {
     "search": {
@@ -18,7 +18,7 @@
     },
     "sort": {
       "isEnabled": true,
-      "value": "file-name-asc"
+      "value": "modified-desc"
     },
     "custom": {
       "isEnabled": true,

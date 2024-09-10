@@ -7,10 +7,9 @@ export const HOVER_LINK_SOURCE_ID = "vault-explorer-preview";
 
 export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	properties: {
-		favorite: "",
-		url: "",
-		image: "",
-		coverImageFit: "",
+		url: "url",
+		image: "image",
+		coverImageFit: "image-fit",
 		createdDate: "",
 		modifiedDate: "",
 		custom1: "",

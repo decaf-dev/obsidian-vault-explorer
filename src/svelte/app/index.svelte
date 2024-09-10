@@ -754,14 +754,6 @@
 		const { properties } = plugin.settings;
 		const { coverImageFit: coverImageFitProperty } = properties;
 
-		//If the favorite property is not set, return
-		if (coverImageFitProperty === "") {
-			new Notice(
-				"Vault Explorer: Please set a cover image fit property in the plugin settings to use this feature",
-			);
-			return;
-		}
-
 		const file = plugin.app.vault.getFileByPath(filePath);
 		if (!file) {
 			Logger.error({
