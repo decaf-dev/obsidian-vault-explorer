@@ -23,11 +23,8 @@ export const fetchSocialMediaImage = async (url: string) => {
 
 		const ogImage = getMetaTagContent(document, "og:image");
 		const twitterImage = getMetaTagContent(document, "twitter:image");
-		// const maskIcon = getLinkTagContent(document, "mask-icon");
-		// const appleTouchIcon = getLinkTagContent(document, "apple-touch-icon");
 
 		let imageUrl = ogImage || twitterImage;
-		// || appleTouchIcon || maskIcon;
 
 		if (imageUrl) {
 			//Handle edge case where social media image URL has slashes at the beginning
@@ -83,11 +80,6 @@ export const fetchSocialMediaImage = async (url: string) => {
 		return null;
 	}
 };
-
-// const getLinkTagContent = (document: Document, property: string) => {
-// 	const tag = document.querySelector(`link[rel='${property}']`);
-// 	return tag ? tag.getAttribute("href") : null;
-// };
 
 const getMetaTagContent = (document: Document, property: string) => {
 	const tag =
