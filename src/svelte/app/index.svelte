@@ -780,43 +780,6 @@
 		}
 	}
 
-	function handleFavoritePropertyChange(e: CustomEvent) {
-		const { filePath, value } = e.detail as {
-			filePath: string;
-			value: boolean;
-		};
-
-		const { properties } = plugin.settings;
-		const { favorite: favoritePropertyName } = properties;
-
-		//If the favorite property is not set, return
-		if (favoritePropertyName === "") {
-			new Notice(
-				"Vault Explorer: Please set a favorite property in the plugin settings to use this feature",
-			);
-			return;
-		}
-
-		const file = plugin.app.vault.getFileByPath(filePath);
-		if (!file) {
-			Logger.error({
-				fileName: "app/index.svelte",
-				functionName: "handleFavoritePropertyChange",
-				message: "file not found. returning...",
-			});
-			return;
-		}
-
-		if (file.extension === "md") {
-			plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
-				frontmatter[favoritePropertyName] = value;
-				return frontmatter;
-			});
-		} else {
-			favoritesStore.setFavorite(filePath, value);
-		}
-	}
-
 	function handleCustomFilterClick() {
 		new CustomFilterModal(plugin).open();
 	}
@@ -1008,7 +971,6 @@
 			data={renderData}
 			{startIndex}
 			{pageLength}
-			on:favoritePropertyChange={handleFavoritePropertyChange}
 			on:coverImageFitChange={handleCoverImageFitChange}
 		/>
 	{:else if currentView === "list"}
@@ -1018,22 +980,11 @@
 			showTags={showListViewTags}
 			{startIndex}
 			{pageLength}
-			on:favoritePropertyChange={handleFavoritePropertyChange}
 		/>
 	{:else if currentView === "table"}
-		<TableView
-			data={renderData}
-			{startIndex}
-			{pageLength}
-			on:favoritePropertyChange={handleFavoritePropertyChange}
-		/>
+		<TableView data={renderData} {startIndex} {pageLength} />
 	{:else if currentView === "feed"}
-		<FeedView
-			data={renderData}
-			{startIndex}
-			{pageLength}
-			on:favoritePropertyChange={handleFavoritePropertyChange}
-		/>
+		<FeedView data={renderData} {startIndex} {pageLength} />
 	{/if}
 	<PaginationIndicator
 		{startIndex}
