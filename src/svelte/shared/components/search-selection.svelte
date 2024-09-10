@@ -130,6 +130,8 @@
 
 	.vault-explorer-dropdown-item {
 		padding: 6px 8px;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.vault-explorer-dropdown-item:hover {
