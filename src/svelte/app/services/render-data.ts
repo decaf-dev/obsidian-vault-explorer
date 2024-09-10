@@ -65,7 +65,6 @@ export const formatFileDataForRender = ({
 		url: urlProp,
 		image: imageProp,
 		coverImageFit: coverImageFitProp,
-		favorite: favoriteProp,
 		custom1: custom1Prop,
 		custom2: custom2Prop,
 		custom3: custom3Prop,

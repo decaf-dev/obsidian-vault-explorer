@@ -46,7 +46,6 @@
 				path={fileRenderData.path}
 				content={fileRenderData.content}
 				createdMillis={fileRenderData.createdMillis}
-				on:favoritePropertyChange
 			/>
 		{/each}
 	{/if}

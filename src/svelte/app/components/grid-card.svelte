@@ -133,10 +133,6 @@
 		openInCurrentTab(plugin, path);
 	}
 
-	function handleFavoriteChange(filePath: string, value: boolean) {
-		dispatch("favoritePropertyChange", { filePath, value });
-	}
-
 	function handleCoverImageFitChange(filePath: string, value: CoverImageFit) {
 		dispatch("coverImageFitChange", { filePath, value });
 	}
