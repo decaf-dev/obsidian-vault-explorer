@@ -897,11 +897,7 @@
 	) {
 		formatted = filteredCustom.map((loadedFile) => {
 			const { id, file } = loadedFile;
-			const frontmatter =
-				plugin.app.metadataCache.getFileCache(file)?.frontmatter;
-
 			const isFavorite = favoritesCache.get(file.path) ?? null;
-
 			const content = contentCache.get(file.path) ?? null;
 
 			return formatFileDataForRender({
@@ -909,7 +905,6 @@
 				settings: plugin.settings,
 				fileId: id,
 				file,
-				fileFrontmatter: frontmatter,
 				fileContent: content,
 				fileFavorite: isFavorite,
 			});
