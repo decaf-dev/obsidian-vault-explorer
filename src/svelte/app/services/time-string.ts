@@ -19,7 +19,7 @@ export const formatAsBearTimeString = (milliseconds: number) => {
 		return `${diffInHours} hours ago`;
 	}
 	if (diffInDays === 1) {
-		return `Yesterday at ${time.format("hh:mm A")}`;
+		return `Yesterday at ${time.format("h:mm A")}`;
 	}
 	if (time.year() === now.year()) {
 		return time.format("MMMM D");
