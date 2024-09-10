@@ -7,14 +7,10 @@ export const openContextMenu = (
 	filePath: string,
 	e: MouseEvent,
 	{
-		isFavorite,
 		coverImageFit,
-		onFavoriteChange,
 		onCoverImageFitChange,
 	}: {
-		isFavorite: boolean | null;
 		coverImageFit?: CoverImageFit;
-		onFavoriteChange: (filePath: string, value: boolean) => void;
 		onCoverImageFitChange?: (
 			filePath: string,
 			value: CoverImageFit
@@ -34,16 +30,6 @@ export const openContextMenu = (
 	menu.addItem((item) => {
 		item.setTitle("Open in new window");
 		item.onClick(() => openInNewWindow(plugin, filePath));
-	});
-	menu.addSeparator();
-	menu.addItem((item) => {
-		item.setTitle(
-			isFavorite ? "Remove from favorites" : "Add to favorites"
-		);
-		item.onClick(() => {
-			const newValue = isFavorite !== null ? !isFavorite : true;
-			onFavoriteChange(filePath, newValue);
-		});
 	});
 	if (coverImageFit !== undefined && onCoverImageFitChange !== undefined) {
 		menu.addSeparator();

@@ -46,14 +46,12 @@ export const formatFileDataForRender = ({
 	file,
 	fileId,
 	fileContent,
-	fileFavorite,
 }: {
 	app: App;
 	settings: VaultExplorerPluginSettings;
 	file: TFile;
 	fileId: string;
 	fileContent: string | null;
-	fileFavorite: boolean | null;
 }): FileRenderData => {
 	const { name, basename, extension, path } = file;
 
@@ -95,17 +93,6 @@ export const formatFileDataForRender = ({
 		urlProp,
 		PropertyType.TEXT
 	);
-
-	let isFavorite: boolean | null;
-	if (fileFavorite === null) {
-		isFavorite = loadPropertyValue<boolean>(
-			fileFrontmatter,
-			favoriteProp,
-			PropertyType.CHECKBOX
-		);
-	} else {
-		isFavorite = fileFavorite;
-	}
 
 	let coverImageFit: CoverImageFit | null = loadPropertyValue<string>(
 		fileFrontmatter,
@@ -250,7 +237,6 @@ export const formatFileDataForRender = ({
 		content: fileContent,
 		tags,
 		imageUrl,
-		isFavorite,
 		createdMillis,
 		modifiedMillis,
 		custom1,

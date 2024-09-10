@@ -30,11 +30,6 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["filters"]["search"] === "function") &&
         typeof typedObj["filters"]["search"]["isEnabled"] === "boolean" &&
         typeof typedObj["filters"]["search"]["value"] === "string" &&
-        (typedObj["filters"]["favorites"] !== null &&
-            typeof typedObj["filters"]["favorites"] === "object" ||
-            typeof typedObj["filters"]["favorites"] === "function") &&
-        typeof typedObj["filters"]["favorites"]["isEnabled"] === "boolean" &&
-        typeof typedObj["filters"]["favorites"]["value"] === "boolean" &&
         (typedObj["filters"]["sort"] !== null &&
             typeof typedObj["filters"]["sort"] === "object" ||
             typeof typedObj["filters"]["sort"] === "function") &&
@@ -608,9 +603,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof e["isEnabled"] === "boolean"
         ) &&
         (typedObj["views"]["grid"]["coverImageFit"] === "cover" ||
-            typedObj["views"]["grid"]["coverImageFit"] === "contain" ||
-            typedObj["views"]["grid"]["coverImageFit"] === "scale-down" ||
-            typedObj["views"]["grid"]["coverImageFit"] === "none") &&
+            typedObj["views"]["grid"]["coverImageFit"] === "contain") &&
         typeof typedObj["views"]["grid"]["loadSocialMediaImage"] === "boolean" &&
         (typedObj["views"]["list"] !== null &&
             typeof typedObj["views"]["list"] === "object" ||

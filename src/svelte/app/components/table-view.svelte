@@ -43,11 +43,6 @@
 			label: "Tags",
 		},
 		{
-			key: "isFavorite",
-			label: "Favorite",
-			format: (value: unknown) => (value === true ? "Yes" : "No"),
-		},
-		{
 			key: "createdMillis",
 			label: "Created",
 			format: (value: unknown) => formatAsBearTimeString(value as number),
@@ -85,10 +80,6 @@
 		};
 	});
 
-	function handleFavoriteChange(filePath: string, value: boolean) {
-		dispatch("favoritePropertyChange", { filePath, value });
-	}
-
 	function handleRowClick(path: string) {
 		if (plugin === null) return;
 
@@ -108,18 +99,11 @@
 		});
 	}
 
-	function handleRowContextMenu(
-		e: Event,
-		path: string,
-		isFavorite: boolean | null,
-	) {
+	function handleRowContextMenu(e: Event, path: string) {
 		if (plugin === null) return;
 
 		const nativeEvent = e as MouseEvent;
-		openContextMenu(plugin, path, nativeEvent, {
-			isFavorite,
-			onFavoriteChange: handleFavoriteChange,
-		});
+		openContextMenu(plugin, path, nativeEvent, {});
 	}
 
 	function getValue(item: FileRenderData, column: TColumn): unknown {
@@ -171,11 +155,7 @@
 					}}
 					on:focus={() => {}}
 					on:contextmenu={(e) =>
-						handleRowContextMenu(
-							e,
-							filteredItem.path,
-							filteredItem.isFavorite,
-						)}
+						handleRowContextMenu(e, filteredItem.path)}
 					on:mouseover={(e) =>
 						handleRowMouseOver(e, filteredItem.path)}
 				>

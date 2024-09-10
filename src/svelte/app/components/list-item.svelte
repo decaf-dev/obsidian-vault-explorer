@@ -18,7 +18,6 @@
 	export let extension: string;
 	export let path: string;
 	export let tags: string[] | null;
-	export let isFavorite: boolean | null;
 	export let showTags: boolean;
 	export let isSmallScreenSize: boolean;
 
@@ -82,10 +81,7 @@
 
 	function handleItemContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
-		openContextMenu(plugin, path, nativeEvent, {
-			isFavorite,
-			onFavoriteChange: handleFavoriteChange,
-		});
+		openContextMenu(plugin, path, nativeEvent, {});
 	}
 
 	function handleItemMouseOver(e: MouseEvent) {

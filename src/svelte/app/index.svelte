@@ -4,13 +4,11 @@
 	// ============================================
 	import Stack from "../shared/components/stack.svelte";
 	import Flex from "../shared/components/flex.svelte";
-	import FavoritesFilter from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
 	import { Notice, TFile } from "obsidian";
 	import {
 		TCustomFilter,
-		TFavoritesFilter,
 		TSearchFilter,
 		TSortFilter,
 		TTimestampFilter,
@@ -21,7 +19,6 @@
 	import VaultExplorerPlugin from "src/main";
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";
-	import { filterByFavorites } from "./services/filters/favorite-filter";
 	import { filterBySearch } from "./services/filters/search-filter";
 	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
@@ -81,10 +78,6 @@
 	let searchFilter: TSearchFilter = {
 		isEnabled: true,
 		value: "",
-	};
-	let favoritesFilter: TFavoritesFilter = {
-		isEnabled: false,
-		value: false,
 	};
 	let timestampFilter: TTimestampFilter = {
 		isEnabled: true,
@@ -146,7 +139,6 @@
 		shouldCollapseFilters = settings.shouldCollapseFilters;
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
-		favoritesFilter = settings.filters.favorites;
 		sortFilter = settings.filters.sort;
 		timestampFilter = settings.filters.timestamp;
 		currentView = settings.currentView;
@@ -171,7 +163,6 @@
 			});
 
 			searchFilter = plugin.settings.filters.search;
-			favoritesFilter = plugin.settings.filters.favorites;
 			sortFilter = plugin.settings.filters.sort;
 			timestampFilter = plugin.settings.filters.timestamp;
 			customFilter = plugin.settings.filters.custom;
@@ -579,10 +570,6 @@
 		searchFilter.value = e.target.value;
 	}, DEBOUNCE_INPUT_TIME);
 
-	const debounceFavoriteFilterChange = _.debounce((value) => {
-		favoritesFilter.value = value;
-	}, DEBOUNCE_INPUT_TIME);
-
 	function handleReshuffleClick() {
 		randomFileSortStore.load(plugin.app);
 	}
@@ -620,7 +607,6 @@
 		plugin.settings.filters.search = searchFilter;
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.filters.timestamp = timestampFilter;
-		plugin.settings.filters.favorites = favoritesFilter;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
@@ -778,12 +764,6 @@
 		sortFilter.value = value;
 	}
 
-	function handleFavoritesChange(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent;
-		const value = (nativeEvent.target as HTMLInputElement).checked;
-		debounceFavoriteFilterChange(value);
-	}
-
 	function handleCoverImageFitChange(e: CustomEvent) {
 		const { filePath, value } = e.detail as {
 			filePath: string;
@@ -895,7 +875,6 @@
 	) {
 		formatted = filteredCustom.map((loadedFile) => {
 			const { id, file } = loadedFile;
-			const isFavorite = favoritesCache.get(file.path) ?? null;
 			const content = contentCache.get(file.path) ?? null;
 
 			return formatFileDataForRender({
@@ -904,7 +883,6 @@
 				fileId: id,
 				file,
 				fileContent: content,
-				fileFavorite: isFavorite,
 			});
 		});
 	}
@@ -917,15 +895,7 @@
 		return true;
 	});
 
-	$: filteredFavorites = filteredSearch.filter((file) => {
-		const { isEnabled, value } = favoritesFilter;
-		if (isEnabled) {
-			return filterByFavorites(file, value);
-		}
-		return true;
-	});
-
-	$: filteredTimestamp = filteredFavorites.filter((file) => {
+	$: filteredTimestamp = filteredSearch.filter((file) => {
 		const { modifiedMillis, createdMillis } = file;
 		return filterByTimestamp({
 			value: timestampFilter.value,
@@ -967,7 +937,6 @@
 	$: searchFilter,
 		sortFilter,
 		timestampFilter,
-		favoritesFilter,
 		currentView,
 		customFilter,
 		viewOrder,
@@ -1003,12 +972,6 @@
 				<Stack direction="column" spacing="sm">
 					<Flex justify="space-between">
 						<Stack spacing="sm">
-							{#if favoritesFilter.isEnabled}
-								<FavoritesFilter
-									value={favoritesFilter.value}
-									on:change={handleFavoritesChange}
-								/>
-							{/if}
 							<Flex>
 								{#if timestampFilter.isEnabled}
 									<TimestampFilter

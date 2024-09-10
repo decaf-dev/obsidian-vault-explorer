@@ -22,10 +22,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			isEnabled: true,
 			value: "",
 		},
-		favorites: {
-			isEnabled: true,
-			value: false,
-		},
 		timestamp: {
 			isEnabled: true,
 			value: "all",
