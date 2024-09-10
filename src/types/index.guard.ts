@@ -38,6 +38,8 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["filters"]["sort"]["value"] === "file-name-desc" ||
             typedObj["filters"]["sort"]["value"] === "modified-asc" ||
             typedObj["filters"]["sort"]["value"] === "modified-desc" ||
+            typedObj["filters"]["sort"]["value"] === "created-asc" ||
+            typedObj["filters"]["sort"]["value"] === "created-desc" ||
             typedObj["filters"]["sort"]["value"] === "random") &&
         (typedObj["filters"]["custom"] !== null &&
             typeof typedObj["filters"]["custom"] === "object" ||
