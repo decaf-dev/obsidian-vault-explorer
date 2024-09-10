@@ -48,12 +48,12 @@ export const openContextMenu = (
 	if (coverImageFit !== undefined && onCoverImageFitChange !== undefined) {
 		menu.addSeparator();
 		menu.addItem((item) => {
-			item.setTitle("Cover image fit: cover");
+			item.setTitle("Cover");
 			item.setChecked(coverImageFit === "cover");
 			item.onClick(() => onCoverImageFitChange(filePath, "cover"));
 		});
 		menu.addItem((item) => {
-			item.setTitle("Cover image fit: contain");
+			item.setTitle("Contain");
 			item.setChecked(coverImageFit === "contain");
 			item.onClick(() => onCoverImageFitChange(filePath, "contain"));
 		});
