@@ -517,7 +517,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			text: "Property used to store a creation date. This must be a date or datetime property.",
 		});
 		creationDateDesc.createDiv({
-			text: "If set to 'File system', the file's created at date will be used.",
+			text: "If set, the property will be preferred over the file's creation date.",
 		});
 
 		new Setting(containerEl)
@@ -526,10 +526,10 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOptions(
-						getDropdownOptionsForProperties(
-							[...dateProperties, ...dateTimeProperties],
-							{ "": "File system" }
-						)
+						getDropdownOptionsForProperties([
+							...dateProperties,
+							...dateTimeProperties,
+						])
 					)
 					.setValue(this.plugin.settings.properties.createdDate)
 					.onChange(async (value) => {
@@ -546,7 +546,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			text: "Property used to store a modification date. This must be a date or datetime property.",
 		});
 		modificationDateDesc.createDiv({
-			text: "If set to 'File system', the file's modified at date will be used.",
+			text: "If set, the property will be preferred over the file's modification date.",
 		});
 
 		new Setting(containerEl)
@@ -555,10 +555,10 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOptions(
-						getDropdownOptionsForProperties(
-							[...dateProperties, ...dateTimeProperties],
-							{ "": "File system" }
-						)
+						getDropdownOptionsForProperties([
+							...dateProperties,
+							...dateTimeProperties,
+						])
 					)
 					.setValue(this.plugin.settings.properties.modifiedDate)
 					.onChange(async (value) => {
