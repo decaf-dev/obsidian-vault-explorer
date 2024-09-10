@@ -108,20 +108,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl)
-			.setName("Wrap filter groups")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.shouldWrapFilterGroups)
-					.onChange(async (value) => {
-						this.plugin.settings.shouldWrapFilterGroups = value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.WRAP_FILTER_GROUPS_SETTING_CHANGE
-						);
-					})
-			);
-
 		new Setting(containerEl).setName("Filters").setHeading();
 
 		new Setting(containerEl).setName("Search filter").addToggle((toggle) =>
@@ -135,36 +121,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					);
 				})
 		);
-
-		new Setting(containerEl)
-			.setName("Favorites filter")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.filters.favorites.isEnabled)
-					.onChange(async (value) => {
-						this.plugin.settings.filters.favorites.isEnabled =
-							value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
-						);
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("Timestamp filter")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.filters.timestamp.isEnabled)
-					.onChange(async (value) => {
-						this.plugin.settings.filters.timestamp.isEnabled =
-							value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
-						);
-					})
-			);
 
 		new Setting(containerEl).setName("Sort filter").addToggle((toggle) =>
 			toggle

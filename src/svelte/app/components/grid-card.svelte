@@ -35,7 +35,6 @@
 	export let custom1: string | null;
 	export let custom2: string | null;
 	export let custom3: string | null;
-	export let isFavorite: boolean | null;
 	export let coverImageFit: CoverImageFit;
 
 	let plugin: VaultExplorerPlugin;
@@ -147,9 +146,7 @@
 
 		const showCoverImageOptions = path.endsWith(".md");
 		openContextMenu(plugin, path, nativeEvent, {
-			isFavorite,
 			coverImageFit: showCoverImageOptions ? coverImageFit : undefined,
-			onFavoriteChange: handleFavoriteChange,
 			onCoverImageFitChange: showCoverImageOptions
 				? handleCoverImageFitChange
 				: undefined,
@@ -229,14 +226,9 @@
 			{/if}
 		{/each}
 		{#if imageUrl === null}
-			<div class="vault-explorer-grid-card__cover-icon">
-				<Icon
-					iconId={getIconIdForFile(baseName, extension)}
-					size="lg"
-				/>
-			</div>
+			<div class="vault-explorer-grid-card__image"></div>
 		{/if}
-		{#if isFavorite === true}
+		<!-- {#if isFavorite === true}
 			<div class="vault-explorer-grid-card__favorite">
 				<Flex
 					justify="center"
@@ -247,7 +239,7 @@
 					<Icon iconId="star" ariaLabel="Favorite" />
 				</Flex>
 			</div>
-		{/if}
+		{/if} -->
 	</div>
 	<div class="vault-explorer-grid-card__body">
 		<div
@@ -353,14 +345,7 @@
 		border-top-right-radius: var(--radius-m);
 	}
 
-	.vault-explorer-grid-card__cover-icon {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}
-
-	.vault-explorer-grid-card__favorite {
+	/* .vault-explorer-grid-card__favorite {
 		position: absolute;
 		top: 8px;
 		right: 8px;
@@ -368,7 +353,7 @@
 		height: 20px;
 		background-color: var(--background-primary);
 		border-radius: 50%;
-	}
+	} */
 
 	.vault-explorer-grid-card__body {
 		padding: 8px 16px;

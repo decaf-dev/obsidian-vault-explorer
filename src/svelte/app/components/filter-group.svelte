@@ -66,18 +66,16 @@
 
 <style>
 	.vault-explorer-filter-group {
+		display: flex;
+		align-items: center;
+		width: 150px;
+		height: 75px;
 		white-space: nowrap;
-		font-size: var(--tag-size);
-		font-weight: var(--tag-weight);
-		text-decoration: var(--tag-decoration);
-		padding: var(--tag-padding-y) var(--tag-padding-x);
-		line-height: 1;
-		border-radius: var(--tag-radius);
-
+		padding: 4px 8px;
+		border-radius: var(--radius-m);
 		color: var(--text-faint);
 		border: 1px solid var(--background-modifier-border);
 		background-color: var(--background-primary);
-		pointer-events: auto;
 	}
 
 	.vault-explorer-filter-group:focus-visible {

@@ -4,16 +4,13 @@
 	// ============================================
 	import Stack from "../shared/components/stack.svelte";
 	import Flex from "../shared/components/flex.svelte";
-	import FavoritesFilter from "./components/favorites-filter.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
 	import { Notice, TFile } from "obsidian";
 	import {
 		TCustomFilter,
-		TFavoritesFilter,
 		TSearchFilter,
 		TSortFilter,
-		TTimestampFilter,
 		TExplorerView,
 		CoverImageFit,
 	} from "src/types";
@@ -21,9 +18,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";
-	import { filterByFavorites } from "./services/filters/favorite-filter";
 	import { filterBySearch } from "./services/filters/search-filter";
-	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
 	import { formatFileDataForRender } from "./services/render-data";
 	import _ from "lodash";
@@ -38,7 +33,6 @@
 	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
 	import SearchFilter from "./components/search-filter.svelte";
-	import TimestampFilter from "./components/timestamp-filter.svelte";
 	import SortFilter from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME, SCREEN_SIZE_MD } from "./constants";
 	import FeedView from "./components/feed-view.svelte";
@@ -81,14 +75,6 @@
 	let searchFilter: TSearchFilter = {
 		isEnabled: true,
 		value: "",
-	};
-	let favoritesFilter: TFavoritesFilter = {
-		isEnabled: false,
-		value: false,
-	};
-	let timestampFilter: TTimestampFilter = {
-		isEnabled: true,
-		value: "all",
 	};
 	let sortFilter: TSortFilter = {
 		isEnabled: true,
@@ -146,9 +132,7 @@
 		shouldCollapseFilters = settings.shouldCollapseFilters;
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
-		favoritesFilter = settings.filters.favorites;
 		sortFilter = settings.filters.sort;
-		timestampFilter = settings.filters.timestamp;
 		currentView = settings.currentView;
 		customFilter = settings.filters.custom;
 		viewOrder = settings.viewOrder;
@@ -171,9 +155,7 @@
 			});
 
 			searchFilter = plugin.settings.filters.search;
-			favoritesFilter = plugin.settings.filters.favorites;
 			sortFilter = plugin.settings.filters.sort;
-			timestampFilter = plugin.settings.filters.timestamp;
 			customFilter = plugin.settings.filters.custom;
 		}
 
@@ -579,10 +561,6 @@
 		searchFilter.value = e.target.value;
 	}, DEBOUNCE_INPUT_TIME);
 
-	const debounceFavoriteFilterChange = _.debounce((value) => {
-		favoritesFilter.value = value;
-	}, DEBOUNCE_INPUT_TIME);
-
 	function handleReshuffleClick() {
 		randomFileSortStore.load(plugin.app);
 	}
@@ -619,8 +597,6 @@
 	async function saveSettings() {
 		plugin.settings.filters.search = searchFilter;
 		plugin.settings.filters.sort = sortFilter;
-		plugin.settings.filters.timestamp = timestampFilter;
-		plugin.settings.filters.favorites = favoritesFilter;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
@@ -672,18 +648,9 @@
 		customFilter.groups = newGroups;
 	}
 
-	function handleListViewTagsToggle() {
-		showListViewTags = !showListViewTags;
-	}
-
 	function handleViewDragOver(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
 		nativeEvent.preventDefault();
-	}
-
-	function handleTimestampFilterChange(e: CustomEvent) {
-		const { value } = e.detail;
-		timestampFilter.value = value;
 	}
 
 	function handleViewDragStart(e: CustomEvent, id: string) {
@@ -776,12 +743,6 @@
 	function handleSortChange(e: CustomEvent) {
 		const { value } = e.detail;
 		sortFilter.value = value;
-	}
-
-	function handleFavoritesChange(e: CustomEvent) {
-		const nativeEvent = e.detail.nativeEvent;
-		const value = (nativeEvent.target as HTMLInputElement).checked;
-		debounceFavoriteFilterChange(value);
 	}
 
 	function handleCoverImageFitChange(e: CustomEvent) {
@@ -895,7 +856,6 @@
 	) {
 		formatted = filteredCustom.map((loadedFile) => {
 			const { id, file } = loadedFile;
-			const isFavorite = favoritesCache.get(file.path) ?? null;
 			const content = contentCache.get(file.path) ?? null;
 
 			return formatFileDataForRender({
@@ -904,7 +864,6 @@
 				fileId: id,
 				file,
 				fileContent: content,
-				fileFavorite: isFavorite,
 			});
 		});
 	}
@@ -917,27 +876,7 @@
 		return true;
 	});
 
-	$: filteredFavorites = filteredSearch.filter((file) => {
-		const { isEnabled, value } = favoritesFilter;
-		if (isEnabled) {
-			return filterByFavorites(file, value);
-		}
-		return true;
-	});
-
-	$: filteredTimestamp = filteredFavorites.filter((file) => {
-		const { modifiedMillis, createdMillis } = file;
-		return filterByTimestamp({
-			value: timestampFilter.value,
-			createdMillis,
-			modifiedMillis,
-			startOfTodayMillis,
-			startOfThisWeekMillis,
-			startOfLastWeekMillis,
-		});
-	});
-
-	$: renderData = [...filteredTimestamp].sort((a, b) => {
+	$: renderData = [...filteredSearch].sort((a, b) => {
 		const { value } = sortFilter;
 		if (value === "file-name-asc") {
 			return a.displayName
@@ -966,8 +905,6 @@
 	//and save the settings again
 	$: searchFilter,
 		sortFilter,
-		timestampFilter,
-		favoritesFilter,
 		currentView,
 		customFilter,
 		viewOrder,
@@ -992,64 +929,25 @@
 <div class="vault-explorer" bind:this={ref}>
 	{#if shouldCollapseFilters === false}
 		<div class="vault-explorer-filters">
-			<Stack spacing="md" direction="column">
-				{#if searchFilter.isEnabled}
-					<SearchFilter
-						value={searchFilter.value}
-						on:input={debounceSearchFilterChange}
-						on:clear={() => (searchFilter.value = "")}
-					/>
-				{/if}
-				<Stack direction="column" spacing="sm">
-					<Flex justify="space-between">
-						<Stack spacing="sm">
-							{#if favoritesFilter.isEnabled}
-								<FavoritesFilter
-									value={favoritesFilter.value}
-									on:change={handleFavoritesChange}
-								/>
-							{/if}
-							<Flex>
-								{#if timestampFilter.isEnabled}
-									<TimestampFilter
-										value={timestampFilter.value}
-										on:change={handleTimestampFilterChange}
-									/>
-								{/if}
-								{#if sortFilter.isEnabled}
-									<SortFilter
-										value={sortFilter.value}
-										on:change={handleSortChange}
-									/>
-								{/if}
-								{#if sortFilter.value == "random"}
-									<IconButton
-										iconId="shuffle"
-										ariaLabel="Reshuffle files"
-										on:click={handleReshuffleClick}
-									/>
-								{/if}
-								<IconButton
-									ariaLabel="Change custom filter"
-									iconId="list-filter"
-									on:click={handleCustomFilterClick}
-								/>
-							</Flex>
-						</Stack>
-					</Flex>
-					<Flex justify="space-between">
-						{#if customFilter.isEnabled}
-							<FilterGroupList
-								groups={customFilter.groups}
-								on:groupClick={handleGroupClick}
-								on:groupContextMenu={handleGroupContextMenu}
-								on:groupDrop={handleGroupDrop}
-								on:groupDragOver={handleGroupDragOver}
-								on:groupDragStart={handleGroupDragStart}
-							/>
-						{/if}
-					</Flex>
-				</Stack>
+			<Stack spacing="sm" direction="column">
+				<Flex justify="space-between">
+					{#if customFilter.isEnabled}
+						<FilterGroupList
+							groups={customFilter.groups}
+							on:groupClick={handleGroupClick}
+							on:groupContextMenu={handleGroupContextMenu}
+							on:groupDrop={handleGroupDrop}
+							on:groupDragOver={handleGroupDragOver}
+							on:groupDragStart={handleGroupDragStart}
+						/>
+					{/if}
+				</Flex>
+				<div>
+					<button
+						class="vault-explorer-button"
+						on:click={handleCustomFilterClick}>Configure</button
+					>
+				</div>
 			</Stack>
 			<Spacer size="md" />
 		</div>
@@ -1081,24 +979,28 @@
 				/> -->
 			<!-- </Stack> -->
 		</div>
-		<Stack spacing="sm">
-			{#if currentView === "list"}
-				<IconButton
-					iconId="tags"
-					ariaLabel="Toggle tags"
-					on:click={handleListViewTagsToggle}
+		<Flex>
+			{#if searchFilter.isEnabled}
+				<SearchFilter
+					value={searchFilter.value}
+					on:input={debounceSearchFilterChange}
+					on:clear={() => (searchFilter.value = "")}
 				/>
-				<Divider direction="vertical" />
 			{/if}
-			<PaginationIndicator
-				{startIndex}
-				{endIndex}
-				{currentPage}
-				{totalPages}
-				{totalItems}
-				on:change={handlePageChange}
-			/>
-		</Stack>
+			{#if sortFilter.isEnabled}
+				<SortFilter
+					value={sortFilter.value}
+					on:change={handleSortChange}
+				/>
+			{/if}
+			{#if sortFilter.value == "random"}
+				<IconButton
+					iconId="shuffle"
+					ariaLabel="Reshuffle files"
+					on:click={handleReshuffleClick}
+				/>
+			{/if}
+		</Flex>
 	</Wrap>
 	<Spacer size="md" />
 	{#if currentView === "grid"}
@@ -1133,6 +1035,14 @@
 			on:favoritePropertyChange={handleFavoritePropertyChange}
 		/>
 	{/if}
+	<PaginationIndicator
+		{startIndex}
+		{endIndex}
+		{currentPage}
+		{totalPages}
+		{totalItems}
+		on:change={handlePageChange}
+	/>
 </div>
 
 <style>
@@ -1143,5 +1053,15 @@
 
 	.vault-explorer-view-select {
 		flex: 1;
+	}
+
+	.vault-explorer-button {
+		background: none;
+		text-decoration: underline;
+		color: var(--text-faint);
+		font-size: var(--font-small);
+		border: none;
+		box-shadow: none;
+		padding: 0;
 	}
 </style>

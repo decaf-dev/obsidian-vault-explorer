@@ -33,7 +33,6 @@
 			{isSmallScreenSize}
 			path={fileRenderData.path}
 			tags={fileRenderData.tags}
-			isFavorite={fileRenderData.isFavorite}
 			on:favoritePropertyChange
 		/>
 	{/each}

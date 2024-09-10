@@ -26,6 +26,7 @@
 	}
 
 	$: className = getClassName(noPadding);
+	$: hasSlotContent = !!$$slots.default;
 </script>
 
 <button
@@ -34,9 +35,14 @@
 	{disabled}
 	aria-label={ariaLabel}
 	on:click={handleClick}
-	><Icon {iconId} {size} />
-	<div class="vault-explorer-icon-button__text"><slot /></div></button
 >
+	<Icon {iconId} {size} />
+	{#if hasSlotContent}
+		<div class="vault-explorer-icon-button__text">
+			<slot />
+		</div>
+	{/if}
+</button>
 
 <style>
 	.vault-explorer-icon-button--no-padding {

@@ -22,14 +22,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			isEnabled: true,
 			value: "",
 		},
-		favorites: {
-			isEnabled: true,
-			value: false,
-		},
-		timestamp: {
-			isEnabled: true,
-			value: "all",
-		},
 		sort: {
 			isEnabled: true,
 			value: "file-name-asc",
@@ -94,8 +86,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	enableClockUpdates: true,
 	enableFileIcons: false,
 	loadBodyTags: true,
-	filterGroupsWidth: "300px",
-	shouldWrapFilterGroups: false,
 	shouldCollapseFilters: false,
 	pageSize: 25,
 	viewOrder: [
