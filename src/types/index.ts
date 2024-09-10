@@ -14,7 +14,6 @@ export interface VaultExplorerPluginSettings {
 	filters: {
 		search: TSearchFilter;
 		sort: TSortFilter;
-		timestamp: TTimestampFilter;
 		custom: TCustomFilter;
 	};
 	views: {
@@ -100,23 +99,10 @@ export interface TSortFilter extends BaseFilter {
 	value: SortFilterOption;
 }
 
-export interface TTimestampFilter extends BaseFilter {
-	value: TimestampFilterOption;
-}
-
 export interface TCustomFilter extends BaseFilter {
 	selectedGroupId: string;
 	groups: TFilterGroup[];
 }
-
-export type TimestampFilterOption =
-	| "created-today"
-	| "modified-today"
-	| "created-this-week"
-	| "modified-this-week"
-	| "created-2-weeks"
-	| "modified-2-weeks"
-	| "all";
 
 export type SortFilterOption =
 	| "file-name-asc"

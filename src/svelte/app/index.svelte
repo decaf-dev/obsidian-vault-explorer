@@ -11,7 +11,6 @@
 		TCustomFilter,
 		TSearchFilter,
 		TSortFilter,
-		TTimestampFilter,
 		TExplorerView,
 		CoverImageFit,
 	} from "src/types";
@@ -20,7 +19,6 @@
 	import GridView from "./components/grid-view.svelte";
 	import ListView from "./components/list-view.svelte";
 	import { filterBySearch } from "./services/filters/search-filter";
-	import { filterByTimestamp } from "./services/filters/timestamp-filter";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
 	import { formatFileDataForRender } from "./services/render-data";
 	import _ from "lodash";
@@ -35,7 +33,6 @@
 	import { FileRenderData } from "./types";
 	import Logger from "js-logger";
 	import SearchFilter from "./components/search-filter.svelte";
-	import TimestampFilter from "./components/timestamp-filter.svelte";
 	import SortFilter from "./components/sort-filter.svelte";
 	import { DEBOUNCE_INPUT_TIME, SCREEN_SIZE_MD } from "./constants";
 	import FeedView from "./components/feed-view.svelte";
@@ -78,10 +75,6 @@
 	let searchFilter: TSearchFilter = {
 		isEnabled: true,
 		value: "",
-	};
-	let timestampFilter: TTimestampFilter = {
-		isEnabled: true,
-		value: "all",
 	};
 	let sortFilter: TSortFilter = {
 		isEnabled: true,
@@ -140,7 +133,6 @@
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
 		sortFilter = settings.filters.sort;
-		timestampFilter = settings.filters.timestamp;
 		currentView = settings.currentView;
 		customFilter = settings.filters.custom;
 		viewOrder = settings.viewOrder;
@@ -164,7 +156,6 @@
 
 			searchFilter = plugin.settings.filters.search;
 			sortFilter = plugin.settings.filters.sort;
-			timestampFilter = plugin.settings.filters.timestamp;
 			customFilter = plugin.settings.filters.custom;
 		}
 
@@ -606,7 +597,6 @@
 	async function saveSettings() {
 		plugin.settings.filters.search = searchFilter;
 		plugin.settings.filters.sort = sortFilter;
-		plugin.settings.filters.timestamp = timestampFilter;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
 		plugin.settings.viewOrder = viewOrder;
@@ -661,11 +651,6 @@
 	function handleViewDragOver(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
 		nativeEvent.preventDefault();
-	}
-
-	function handleTimestampFilterChange(e: CustomEvent) {
-		const { value } = e.detail;
-		timestampFilter.value = value;
 	}
 
 	function handleViewDragStart(e: CustomEvent, id: string) {
@@ -891,19 +876,7 @@
 		return true;
 	});
 
-	$: filteredTimestamp = filteredSearch.filter((file) => {
-		const { modifiedMillis, createdMillis } = file;
-		return filterByTimestamp({
-			value: timestampFilter.value,
-			createdMillis,
-			modifiedMillis,
-			startOfTodayMillis,
-			startOfThisWeekMillis,
-			startOfLastWeekMillis,
-		});
-	});
-
-	$: renderData = [...filteredTimestamp].sort((a, b) => {
+	$: renderData = [...filteredSearch].sort((a, b) => {
 		const { value } = sortFilter;
 		if (value === "file-name-asc") {
 			return a.displayName
@@ -932,7 +905,6 @@
 	//and save the settings again
 	$: searchFilter,
 		sortFilter,
-		timestampFilter,
 		currentView,
 		customFilter,
 		viewOrder,
@@ -1012,12 +984,6 @@
 			<!-- </Stack> -->
 		</div>
 		<Flex>
-			{#if timestampFilter.isEnabled}
-				<TimestampFilter
-					value={timestampFilter.value}
-					on:change={handleTimestampFilterChange}
-				/>
-			{/if}
 			{#if sortFilter.isEnabled}
 				<SortFilter
 					value={sortFilter.value}

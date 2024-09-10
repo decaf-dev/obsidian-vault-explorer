@@ -39,17 +39,6 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typedObj["filters"]["sort"]["value"] === "modified-asc" ||
             typedObj["filters"]["sort"]["value"] === "modified-desc" ||
             typedObj["filters"]["sort"]["value"] === "random") &&
-        (typedObj["filters"]["timestamp"] !== null &&
-            typeof typedObj["filters"]["timestamp"] === "object" ||
-            typeof typedObj["filters"]["timestamp"] === "function") &&
-        typeof typedObj["filters"]["timestamp"]["isEnabled"] === "boolean" &&
-        (typedObj["filters"]["timestamp"]["value"] === "created-today" ||
-            typedObj["filters"]["timestamp"]["value"] === "modified-today" ||
-            typedObj["filters"]["timestamp"]["value"] === "created-this-week" ||
-            typedObj["filters"]["timestamp"]["value"] === "modified-this-week" ||
-            typedObj["filters"]["timestamp"]["value"] === "created-2-weeks" ||
-            typedObj["filters"]["timestamp"]["value"] === "modified-2-weeks" ||
-            typedObj["filters"]["timestamp"]["value"] === "all") &&
         (typedObj["filters"]["custom"] !== null &&
             typeof typedObj["filters"]["custom"] === "object" ||
             typeof typedObj["filters"]["custom"] === "function") &&

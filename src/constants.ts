@@ -22,10 +22,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			isEnabled: true,
 			value: "",
 		},
-		timestamp: {
-			isEnabled: true,
-			value: "all",
-		},
 		sort: {
 			isEnabled: true,
 			value: "file-name-asc",

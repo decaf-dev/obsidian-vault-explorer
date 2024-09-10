@@ -136,21 +136,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				})
 		);
 
-		new Setting(containerEl)
-			.setName("Timestamp filter")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.filters.timestamp.isEnabled)
-					.onChange(async (value) => {
-						this.plugin.settings.filters.timestamp.isEnabled =
-							value;
-						await this.plugin.saveSettings();
-						EventManager.getInstance().emit(
-							PluginEvent.FILTER_TOGGLE_SETTING_CHANGE
-						);
-					})
-			);
-
 		new Setting(containerEl).setName("Sort filter").addToggle((toggle) =>
 			toggle
 				.setValue(this.plugin.settings.filters.sort.isEnabled)
