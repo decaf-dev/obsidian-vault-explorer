@@ -58,14 +58,6 @@ Vault Explorer is a work in progress. Please check the GitHub repository and doc
 
 <img src="readme/custom-filter-options-2.png" width="500">
 
-### Favorites
-
-![](/readme/favorites-filter.png)
-
-### Timestamp filter
-
-![](/readme/timestamp-filter.png)
-
 ### Sort filter
 
 ![](/readme/sort-filter.png)
