@@ -658,10 +658,6 @@
 		customFilter.groups = newGroups;
 	}
 
-	function handleListViewTagsToggle() {
-		showListViewTags = !showListViewTags;
-	}
-
 	function handleViewDragOver(e: CustomEvent) {
 		const { nativeEvent } = e.detail;
 		nativeEvent.preventDefault();
@@ -962,44 +958,7 @@
 	{#if shouldCollapseFilters === false}
 		<div class="vault-explorer-filters">
 			<Stack spacing="md" direction="column">
-				{#if searchFilter.isEnabled}
-					<SearchFilter
-						value={searchFilter.value}
-						on:input={debounceSearchFilterChange}
-						on:clear={() => (searchFilter.value = "")}
-					/>
-				{/if}
 				<Stack direction="column" spacing="sm">
-					<Flex justify="space-between">
-						<Stack spacing="sm">
-							<Flex>
-								{#if timestampFilter.isEnabled}
-									<TimestampFilter
-										value={timestampFilter.value}
-										on:change={handleTimestampFilterChange}
-									/>
-								{/if}
-								{#if sortFilter.isEnabled}
-									<SortFilter
-										value={sortFilter.value}
-										on:change={handleSortChange}
-									/>
-								{/if}
-								{#if sortFilter.value == "random"}
-									<IconButton
-										iconId="shuffle"
-										ariaLabel="Reshuffle files"
-										on:click={handleReshuffleClick}
-									/>
-								{/if}
-								<IconButton
-									ariaLabel="Change custom filter"
-									iconId="list-filter"
-									on:click={handleCustomFilterClick}
-								/>
-							</Flex>
-						</Stack>
-					</Flex>
 					<Flex justify="space-between">
 						{#if customFilter.isEnabled}
 							<FilterGroupList
@@ -1011,6 +970,14 @@
 								on:groupDragStart={handleGroupDragStart}
 							/>
 						{/if}
+					</Flex>
+					<Flex justify="space-between">
+						<IconButton
+							ariaLabel="Change custom filter"
+							iconId="list-filter"
+							on:click={handleCustomFilterClick}
+						/>
+						<Stack spacing="sm"></Stack>
 					</Flex>
 				</Stack>
 			</Stack>
@@ -1044,25 +1011,35 @@
 				/> -->
 			<!-- </Stack> -->
 		</div>
-		<Stack spacing="sm">
-			{#if currentView === "list"}
-				<IconButton
-					iconId="tags"
-					ariaLabel="Toggle tags"
-					on:click={handleListViewTagsToggle}
+		<Flex>
+			{#if timestampFilter.isEnabled}
+				<TimestampFilter
+					value={timestampFilter.value}
+					on:change={handleTimestampFilterChange}
 				/>
-				<Divider direction="vertical" />
 			{/if}
-			<PaginationIndicator
-				{startIndex}
-				{endIndex}
-				{currentPage}
-				{totalPages}
-				{totalItems}
-				on:change={handlePageChange}
-			/>
-		</Stack>
+			{#if sortFilter.isEnabled}
+				<SortFilter
+					value={sortFilter.value}
+					on:change={handleSortChange}
+				/>
+			{/if}
+			{#if sortFilter.value == "random"}
+				<IconButton
+					iconId="shuffle"
+					ariaLabel="Reshuffle files"
+					on:click={handleReshuffleClick}
+				/>
+			{/if}
+		</Flex>
 	</Wrap>
+	{#if searchFilter.isEnabled}
+		<SearchFilter
+			value={searchFilter.value}
+			on:input={debounceSearchFilterChange}
+			on:clear={() => (searchFilter.value = "")}
+		/>
+	{/if}
 	<Spacer size="md" />
 	{#if currentView === "grid"}
 		<GridView
@@ -1096,6 +1073,14 @@
 			on:favoritePropertyChange={handleFavoritePropertyChange}
 		/>
 	{/if}
+	<PaginationIndicator
+		{startIndex}
+		{endIndex}
+		{currentPage}
+		{totalPages}
+		{totalItems}
+		on:change={handlePageChange}
+	/>
 </div>
 
 <style>
