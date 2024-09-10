@@ -8,7 +8,8 @@
     "creationDate": "creation",
     "modifiedDate": "modification",
     "createdDate": "creation",
-    "image": "image"
+    "image": "image",
+    "coverImageFit": ""
   },
   "filters": {
     "search": {
@@ -60,7 +61,8 @@
           "type": "body",
           "isEnabled": true
         }
-      ]
+      ],
+      "coverImageFit": "cover"
     },
     "list": {
       "isEnabled": true,
@@ -103,6 +105,6 @@
     "feed"
   ],
   "configDir": ".vaultexplorer",
-  "pluginVersion": "1.40.0",
+  "pluginVersion": "1.41.0",
   "logLevel": "trace"
 }
