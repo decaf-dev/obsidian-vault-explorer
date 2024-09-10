@@ -61,9 +61,9 @@ export const clearSocialMediaImageCache = async () => {
 	try {
 		const db = await openDatabase();
 		await db.clear(STORE_NAME);
-		new Notice("Vault Explorer: social media image cache cleared");
+		new Notice("Vault Explorer: Image cache cleared");
 	} catch (err) {
-		new Notice("Failed to clear social media image cache");
+		new Notice("Vault Explorer: Failed to clear image cache");
 		const error = err as Error;
 		Logger.error(
 			{

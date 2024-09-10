@@ -692,16 +692,14 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl)
-			.setName("Social media image cache")
-			.addButton((button) =>
-				button
-					.setClass("mod-destructive")
-					.setButtonText("Clear cache")
-					.onClick(async () => {
-						await clearSocialMediaImageCache();
-					})
-			);
+		new Setting(containerEl).setName("Image cache").addButton((button) =>
+			button
+				.setClass("mod-destructive")
+				.setButtonText("Clear cache")
+				.onClick(async () => {
+					await clearSocialMediaImageCache();
+				})
+		);
 	}
 
 	onClose() {
