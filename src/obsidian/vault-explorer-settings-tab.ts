@@ -21,7 +21,7 @@ import ImageSourceApp from "../svelte/image-source-app/index.svelte";
 import { PluginEvent } from "src/event/types";
 
 import "./styles.css";
-import { clearSocialMediaImageCache } from "src/svelte/app/services/social-media-image-cache";
+import { clearSMICache } from "src/svelte/app/services/smi-cache";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
@@ -697,7 +697,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setClass("mod-destructive")
 				.setButtonText("Clear cache")
 				.onClick(async () => {
-					await clearSocialMediaImageCache();
+					await clearSMICache();
 				})
 		);
 	}

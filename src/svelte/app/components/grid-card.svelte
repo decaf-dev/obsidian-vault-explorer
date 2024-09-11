@@ -18,11 +18,12 @@
 	import Divider from "src/svelte/shared/components/divider.svelte";
 	import { fetchSocialMediaImage } from "../services/fetch-social-media-image";
 	import {
-		getSocialMediaImageEntry,
-		isSocialMediaImageEntryExpired,
-		putSocialMediaImageUrl,
-	} from "../services/social-media-image-cache";
+		getSMICacheEntry,
+		isSMICacheEntryExpired,
+		putSMICacheEntry,
+	} from "../services/smi-cache";
 	import { CoverImageFit } from "src/types";
+	import Logger from "js-logger";
 
 	type SocialMediaImageResult = {
 		status: "SUCCESS" | "NOT_FOUND" | "EXPIRED" | "NO_IMAGE";
@@ -134,21 +135,48 @@
 	}
 
 	async function handleImageError(event: Event) {
+		Logger.trace({
+			fileName: "grid-card.svelte",
+			functionName: "handleImageError",
+			message: "called",
+		});
+
 		const target = event.target as HTMLImageElement;
 		target.onerror = null; // Prevent infinite loop
+
+		Logger.debug(
+			{
+				fileName: "grid-card.svelte",
+				functionName: "handleImageError",
+				message: "target.src",
+			},
+			{
+				src: target.src,
+			},
+		);
 
 		let websiteUrl = target.src;
 		if (websiteUrl.endsWith("/")) {
 			websiteUrl = websiteUrl.slice(0, -1); // Remove the trailing slash
 		}
+		Logger.debug(
+			{
+				fileName: "grid-card.svelte",
+				functionName: "handleImageError",
+				message: "websiteUrl",
+			},
+			{
+				websiteUrl,
+			},
+		);
 
 		if (loadSocialMediaImage) {
 			const socialUrl = await fetchSocialMediaImage(websiteUrl);
 			if (socialUrl) {
-				await putSocialMediaImageUrl(websiteUrl, socialUrl);
+				await putSMICacheEntry(websiteUrl, socialUrl);
 				target.src = socialUrl;
 			} else {
-				await putSocialMediaImageUrl(websiteUrl, null);
+				await putSMICacheEntry(websiteUrl, null);
 			}
 		}
 	}
@@ -156,13 +184,13 @@
 	async function getCachedSocialMediaImageUrl(
 		websiteUrl: string,
 	): Promise<SocialMediaImageResult> {
-		const entry = await getSocialMediaImageEntry(websiteUrl);
+		const entry = await getSMICacheEntry(websiteUrl);
 
 		if (entry) {
 			const { socialMediaImageUrl } = entry;
 
 			if (socialMediaImageUrl) {
-				const isExpired = await isSocialMediaImageEntryExpired(entry);
+				const isExpired = await isSMICacheEntryExpired(entry);
 				if (!isExpired) {
 					return { status: "SUCCESS", url: socialMediaImageUrl };
 				} else {
@@ -179,6 +207,17 @@
 	$: if (imageUrl) {
 		isImageLoaded = false;
 		getCachedSocialMediaImageUrl(imageUrl).then((result) => {
+			Logger.debug(
+				{
+					fileName: "grid-card.svelte",
+					functionName: "getCachedSocialMediaImage",
+					message: "result",
+				},
+				{
+					result,
+				},
+			);
+
 			const { status, url } = result;
 			if (status === "SUCCESS") {
 				imgSrc = url!;

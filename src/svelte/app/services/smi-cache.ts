@@ -20,18 +20,16 @@ interface SocialMediaImageDB extends DBSchema {
 	};
 }
 
-export const isSocialMediaImageEntryExpired = async (
-	entry: SocialMediaImageEntry
-) => {
+export const isSMICacheEntryExpired = async (entry: SocialMediaImageEntry) => {
 	if (Date.now() - entry.timestamp > ENTRY_EXPIRATION_TIME) {
 		return true;
 	}
 	return false;
 };
 
-export const getSocialMediaImageEntry = async (url: string) => {
+export const getSMICacheEntry = async (websiteUrl: string) => {
 	const db = await openDatabase();
-	const cachedEntry = await db.get(STORE_NAME, url);
+	const cachedEntry = await db.get(STORE_NAME, websiteUrl);
 	return cachedEntry ?? null;
 };
 
@@ -40,22 +38,37 @@ export const getSocialMediaImageEntry = async (url: string) => {
  * @param url - The URL of the page to cache the social media image for
  * @param smiUrl - The URL of the social media image
  */
-export const putSocialMediaImageUrl = async (
-	url: string,
-	socialMediaImageUrl: string | null
-) => {
+export const putSMICacheEntry = async (url: string, smiUrl: string | null) => {
+	Logger.trace({
+		fileName: "smi-cache.ts",
+		functionName: "putSMICacheEntry",
+		message: "called",
+	});
+
+	Logger.debug(
+		{
+			fileName: "smi-cache.ts",
+			functionName: "putSMICacheEntry",
+			message: "putting entry",
+		},
+		{
+			url,
+			smiUrl,
+		}
+	);
+
 	const db = await openDatabase();
 	await db.put(STORE_NAME, {
 		url,
-		socialMediaImageUrl,
+		socialMediaImageUrl: smiUrl,
 		timestamp: Date.now(),
 	});
 };
 
-export const clearSocialMediaImageCache = async () => {
+export const clearSMICache = async () => {
 	Logger.trace({
-		fileName: "social-media-image-cache.ts",
-		functionName: "clearSocialMediaImageCache",
+		fileName: "smi-cache.ts",
+		functionName: "clearSMICache",
 		message: "called",
 	});
 	try {
@@ -67,8 +80,8 @@ export const clearSocialMediaImageCache = async () => {
 		const error = err as Error;
 		Logger.error(
 			{
-				fileName: "social-media-image-cache.ts",
-				functionName: "clearSocialMediaImageCache",
+				fileName: "smi-cache.ts",
+				functionName: "clearSMICache",
 				message: "failed to clear cache",
 			},
 			error.message
