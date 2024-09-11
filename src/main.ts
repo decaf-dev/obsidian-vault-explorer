@@ -18,7 +18,7 @@ import { moveFocus } from "./focus-utils";
 import { PluginEvent } from "./event/types";
 import { isVersionLessThan } from "./utils";
 import License from "./svelte/shared/services/license";
-import { clearSocialMediaImageCache } from "./svelte/app/services/social-media-image-cache";
+import { clearSMICache } from "./svelte/app/services/smi-cache";
 import store from "./svelte/shared/services/store";
 import "./styles.css";
 
@@ -210,7 +210,7 @@ export default class VaultExplorerPlugin extends Plugin {
 					localStorage.removeItem(LOCAL_STORAGE_LICENSE_KEY);
 				}
 				if (isVersionLessThan(loadedVersion, "1.37.1")) {
-					await clearSocialMediaImageCache();
+					await clearSMICache();
 				}
 			}
 		}
