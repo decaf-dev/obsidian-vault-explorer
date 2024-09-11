@@ -210,6 +210,12 @@ export default class VaultExplorerPlugin extends Plugin {
 					localStorage.removeItem(LOCAL_STORAGE_LICENSE_KEY);
 				}
 				if (isVersionLessThan(loadedVersion, "1.37.1")) {
+					console.log("Clearing image cache");
+					await clearSMICache();
+				}
+				if (isVersionLessThan(loadedVersion, "1.44.1")) {
+					//socialMediaImageUrl -> smiUrl
+					console.log("Clearing image cache");
 					await clearSMICache();
 				}
 			}
