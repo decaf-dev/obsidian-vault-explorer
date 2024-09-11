@@ -156,28 +156,13 @@
 			},
 		);
 
-		let websiteUrl = target.src;
-		if (websiteUrl.endsWith("/")) {
-			websiteUrl = websiteUrl.slice(0, -1); // Remove the trailing slash
-		}
-		Logger.debug(
-			{
-				fileName: "grid-card.svelte",
-				functionName: "handleImageError",
-				message: "websiteUrl",
-			},
-			{
-				websiteUrl,
-			},
-		);
-
 		if (loadSocialMediaImage) {
-			const socialUrl = await fetchSocialMediaImage(websiteUrl);
+			const socialUrl = await fetchSocialMediaImage(target.src);
 			if (socialUrl) {
-				await putSMICacheEntry(websiteUrl, socialUrl);
+				await putSMICacheEntry(target.src, socialUrl);
 				target.src = socialUrl;
 			} else {
-				await putSMICacheEntry(websiteUrl, null);
+				await putSMICacheEntry(target.src, null);
 			}
 		}
 	}
@@ -190,7 +175,14 @@
 			functionName: "getCachedSocialMediaUrl",
 			message: "result",
 		});
-		const entry = await getSMICacheEntry(websiteUrl);
+
+		//e.target.src will use the DOM href which may end in a slash
+		//target.src will output https://x.com/ if the URL is https://x.com
+		//this will cause the cache to not find the image
+		//We need to use the URL API to get a consistent URL format
+		//See line 160
+		const url = new URL(websiteUrl);
+		const entry = await getSMICacheEntry(url.href);
 
 		if (entry) {
 			const { smiUrl } = entry;
@@ -198,16 +190,16 @@
 			if (smiUrl) {
 				const isExpired = await isSMICacheEntryExpired(entry);
 				if (!isExpired) {
-					return { status: "SUCCESS", websiteUrl, smiUrl };
+					return { status: "SUCCESS", websiteUrl: url.href, smiUrl };
 				} else {
-					return { status: "EXPIRED", websiteUrl, smiUrl }; // Image found but expired
+					return { status: "EXPIRED", websiteUrl: url.href, smiUrl }; // Image found but expired
 				}
 			} else {
-				return { status: "NO_IMAGE", websiteUrl, smiUrl }; // Image was previously cached but doesn't exist
+				return { status: "NO_IMAGE", websiteUrl: url.href, smiUrl }; // Image was previously cached but doesn't exist
 			}
 		}
 
-		return { status: "NOT_FOUND", websiteUrl, smiUrl: null }; // Website URL doesn't have a cached image
+		return { status: "NOT_FOUND", websiteUrl: url.href, smiUrl: null }; // Website URL doesn't have a cached image
 	}
 
 	$: if (imageUrl) {
