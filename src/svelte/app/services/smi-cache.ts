@@ -1,4 +1,4 @@
-import { DBSchema, IDBPDatabase, openDB } from "idb";
+import { DBSchema, openDB } from "idb";
 import Logger from "js-logger";
 import { Notice } from "obsidian";
 
@@ -9,7 +9,7 @@ const ENTRY_EXPIRATION_TIME = ONE_WEEK_MILLIS;
 
 interface SocialMediaImageEntry {
 	url: string;
-	socialMediaImageUrl: string | null; // null if no social media image found
+	smiUrl: string | null; // null if no social media image found
 	timestamp: number;
 }
 
@@ -28,6 +28,22 @@ export const isSMICacheEntryExpired = async (entry: SocialMediaImageEntry) => {
 };
 
 export const getSMICacheEntry = async (websiteUrl: string) => {
+	Logger.trace({
+		fileName: "smi-cache.ts",
+		functionName: "getSMICacheEntry",
+		message: "called",
+	});
+
+	Logger.debug(
+		{
+			fileName: "grid-card.svelte",
+			functionName: "getCachedSocialMediaUrl",
+			message: "getting cached entry",
+		},
+		{
+			websiteUrl,
+		}
+	);
 	const db = await openDatabase();
 	const cachedEntry = await db.get(STORE_NAME, websiteUrl);
 	return cachedEntry ?? null;
@@ -60,7 +76,7 @@ export const putSMICacheEntry = async (url: string, smiUrl: string | null) => {
 	const db = await openDatabase();
 	await db.put(STORE_NAME, {
 		url,
-		socialMediaImageUrl: smiUrl,
+		smiUrl,
 		timestamp: Date.now(),
 	});
 };

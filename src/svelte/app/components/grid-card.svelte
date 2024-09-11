@@ -27,7 +27,8 @@
 
 	type SocialMediaImageResult = {
 		status: "SUCCESS" | "NOT_FOUND" | "EXPIRED" | "NO_IMAGE";
-		url?: string; // Only present when status is 'SUCCESS'
+		websiteUrl: string;
+		smiUrl: string | null;
 	};
 
 	export let displayName: string;
@@ -184,24 +185,29 @@
 	async function getCachedSocialMediaImageUrl(
 		websiteUrl: string,
 	): Promise<SocialMediaImageResult> {
+		Logger.trace({
+			fileName: "grid-card.svelte",
+			functionName: "getCachedSocialMediaUrl",
+			message: "result",
+		});
 		const entry = await getSMICacheEntry(websiteUrl);
 
 		if (entry) {
-			const { socialMediaImageUrl } = entry;
+			const { smiUrl } = entry;
 
-			if (socialMediaImageUrl) {
+			if (smiUrl) {
 				const isExpired = await isSMICacheEntryExpired(entry);
 				if (!isExpired) {
-					return { status: "SUCCESS", url: socialMediaImageUrl };
+					return { status: "SUCCESS", websiteUrl, smiUrl };
 				} else {
-					return { status: "EXPIRED" }; // Image found but expired
+					return { status: "EXPIRED", websiteUrl, smiUrl }; // Image found but expired
 				}
 			} else {
-				return { status: "NO_IMAGE" }; // Social image was fetched but doesn't exist
+				return { status: "NO_IMAGE", websiteUrl, smiUrl }; // Image was previously cached but doesn't exist
 			}
 		}
 
-		return { status: "NOT_FOUND" }; // Image not cached
+		return { status: "NOT_FOUND", websiteUrl, smiUrl: null }; // Website URL doesn't have a cached image
 	}
 
 	$: if (imageUrl) {
@@ -218,9 +224,9 @@
 				},
 			);
 
-			const { status, url } = result;
+			const { status, smiUrl } = result;
 			if (status === "SUCCESS") {
-				imgSrc = url!;
+				imgSrc = smiUrl;
 			} else if (status === "EXPIRED" || status === "NOT_FOUND") {
 				imgSrc = imageUrl;
 			} else if (status === "NO_IMAGE") {
