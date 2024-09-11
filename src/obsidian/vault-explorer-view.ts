@@ -14,6 +14,7 @@ export default class VaultExplorerView extends ItemView {
 		super(leaf);
 		this.component = null;
 		this.plugin = plugin;
+		this.navigation = true;
 	}
 
 	getIcon(): string {
