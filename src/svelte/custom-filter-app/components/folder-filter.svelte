@@ -108,8 +108,8 @@
 		};
 	});
 
-	function handleValueChange(e: Event) {
-		const value = (e.target as HTMLInputElement).value;
+	function handleValueChange(e: CustomEvent) {
+		const { value } = e.detail;
 		dispatch("ruleValueChange", { id, value });
 	}
 
@@ -135,7 +135,7 @@
 	on:ruleToggle
 >
 	<svelte:fragment slot="after-condition">
-		<SearchSelect options={folders} />
+		<SearchSelect {value} options={folders} on:select={handleValueChange} />
 		<input
 			aria-label="Include subfolders"
 			type="checkbox"

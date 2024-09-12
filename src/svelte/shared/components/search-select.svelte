@@ -1,15 +1,17 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import Icon from "./icon.svelte";
 
 	export let width = "fit-content";
 	export let options: string[] = [];
+	export let value: string = "";
 
-	let inputValue = "";
-	let selectedValue = "";
+	let inputValue = value;
 	let isOpen = false;
 	let dropdownRef: HTMLDivElement | null = null;
 	let currentFocusIndex = 0;
+
+	const dispatch = createEventDispatcher();
 
 	onMount(() => {
 		document.addEventListener("click", handleClickOutside);
@@ -30,10 +32,11 @@
 		currentFocusIndex = 0;
 	}
 
-	function handleOptionClick(e: Event, option: string) {
+	function handleOptionClick(option: string) {
 		inputValue = option;
-		selectedValue = option;
+		value = option;
 		isOpen = false;
+		dispatch("select", { value: option });
 	}
 
 	function handleInputChange(e: Event) {
@@ -70,7 +73,7 @@
 			if (isOpen) {
 				const option = filteredOptions[currentFocusIndex];
 				if (option) {
-					handleOptionClick(e, option);
+					handleOptionClick(option);
 				}
 			} else {
 				openDropdown();
@@ -100,7 +103,7 @@
 <div class="vault-explorer-search-selection" style={`width: ${width}`}>
 	<input
 		bind:value={inputValue}
-		placeholder={selectedValue || "Search..."}
+		placeholder={value || "Search..."}
 		type="text"
 		on:input={handleInputChange}
 		on:focus={handleInputFocus}
@@ -116,12 +119,12 @@
 				<div
 					tabindex="-1"
 					role="option"
-					aria-selected={option === selectedValue}
+					aria-selected={option === value}
 					class="vault-explorer-dropdown-item"
 					class:vault-explorer-dropdown-item--selected={currentFocusIndex ===
 						i}
-					on:click={(e) => handleOptionClick(e, option)}
-					on:keydown={(e) => {}}
+					on:click={() => handleOptionClick(option)}
+					on:keydown={() => {}}
 				>
 					{option}
 				</div>
