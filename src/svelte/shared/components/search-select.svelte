@@ -79,6 +79,7 @@
 				openDropdown();
 			}
 		} else {
+			// open dropdown on any key press
 			if (!isOpen) {
 				openDropdown();
 			}
