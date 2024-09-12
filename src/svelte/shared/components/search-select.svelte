@@ -7,7 +7,9 @@
 
 	let inputValue = "";
 	let selectedValue = "";
-	let showDropdown = false;
+	let isOpen = false;
+	let dropdownRef: HTMLDivElement | null = null;
+	let currentFocusIndex = 0;
 
 	onMount(() => {
 		document.addEventListener("click", handleClickOutside);
@@ -17,21 +19,63 @@
 		};
 	});
 
+	function openDropdown() {
+		isOpen = true;
+		inputValue = "";
+	}
+
+	function closeDropdown() {
+		isOpen = false;
+		inputValue = "";
+		currentFocusIndex = 0;
+	}
+
 	function handleOptionClick(e: Event, option: string) {
-		e.stopPropagation();
 		inputValue = option;
 		selectedValue = option;
-		showDropdown = false;
+		isOpen = false;
 	}
 
 	function handleInputChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
 		inputValue = value;
+		currentFocusIndex = 0;
 	}
 
-	function handleInputClick() {
-		showDropdown = true;
-		inputValue = "";
+	function handleInputFocus() {
+		openDropdown();
+	}
+
+	function handleInputKeyDown(e: KeyboardEvent) {
+		if (e.key === "ArrowDown") {
+			if (!isOpen) {
+				openDropdown();
+				return;
+			}
+			currentFocusIndex = currentFocusIndex + 1;
+			if (currentFocusIndex == filteredOptions.length) {
+				currentFocusIndex = currentFocusIndex - 1;
+			}
+		} else if (e.key === "ArrowUp") {
+			if (!isOpen) {
+				openDropdown();
+				return;
+			}
+
+			currentFocusIndex = currentFocusIndex - 1;
+			if (currentFocusIndex < 0) {
+				currentFocusIndex = currentFocusIndex = 0;
+			}
+		} else if (e.key === "Enter") {
+			if (isOpen) {
+				const option = filteredOptions[currentFocusIndex];
+				if (option) {
+					handleOptionClick(e, option);
+				}
+			} else {
+				openDropdown();
+			}
+		}
 	}
 
 	function handleClickOutside(e: Event) {
@@ -39,9 +83,8 @@
 		const isInsideClick = targetEl.closest(
 			".vault-explorer-search-selection",
 		);
-		if (!isInsideClick && showDropdown) {
-			showDropdown = false;
-			inputValue = "";
+		if (!isInsideClick && isOpen) {
+			closeDropdown();
 		}
 	}
 
@@ -60,26 +103,25 @@
 		placeholder={selectedValue || "Search..."}
 		type="text"
 		on:input={handleInputChange}
-		on:click={handleInputClick}
+		on:focus={handleInputFocus}
+		on:keydown={handleInputKeyDown}
 	/>
 	<span class="vault-explorer-dropdown-icon"
 		><Icon iconId="chevron-down" size="xs" /></span
 	>
 
-	{#if showDropdown}
-		<div class="vault-explorer-dropdown">
-			{#each filteredOptions as option}
+	{#if isOpen}
+		<div class="vault-explorer-dropdown" bind:this={dropdownRef}>
+			{#each filteredOptions as option, i}
 				<div
-					tabindex="0"
-					aria-selected={selectedValue === option}
+					tabindex="-1"
 					role="option"
+					aria-selected={option === selectedValue}
 					class="vault-explorer-dropdown-item"
+					class:vault-explorer-dropdown-item--selected={currentFocusIndex ===
+						i}
 					on:click={(e) => handleOptionClick(e, option)}
-					on:keydown={(e) => {
-						if (e.key === "Enter") {
-							handleOptionClick(e, option);
-						}
-					}}
+					on:keydown={(e) => {}}
 				>
 					{option}
 				</div>
@@ -134,8 +176,12 @@
 		text-overflow: ellipsis;
 	}
 
+	.vault-explorer-dropdown-item--selected {
+		background-color: var(--color-base-20);
+	}
+
 	.vault-explorer-dropdown-item:hover {
-		background-color: var(--background-modifier-hover);
+		background-color: var(--color-base-30);
 	}
 
 	.vault-explorer-dropdown-item--empty:hover {

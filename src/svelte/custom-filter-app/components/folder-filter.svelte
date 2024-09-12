@@ -7,7 +7,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
-	import SearchSelection from "src/svelte/shared/components/search-select.svelte";
+	import SearchSelect from "src/svelte/shared/components/search-select.svelte";
 
 	export let index: number;
 	export let id: string;
@@ -135,7 +135,7 @@
 	on:ruleToggle
 >
 	<svelte:fragment slot="after-condition">
-		<SearchSelection options={folders} />
+		<SearchSelect options={folders} />
 		<input
 			aria-label="Include subfolders"
 			type="checkbox"
