@@ -1011,4 +1011,8 @@
 		box-shadow: none;
 		padding: 0;
 	}
+
+	.vault-explorer-button:focus-visible {
+		box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
+	}
 </style>
