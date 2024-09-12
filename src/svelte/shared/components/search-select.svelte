@@ -81,6 +81,7 @@
 		} else if (e.key === "Tab") {
 			closeDropdown();
 		} else {
+			// open dropdown on any key press
 			if (!isOpen) {
 				openDropdown();
 			}
