@@ -78,6 +78,10 @@
 			} else {
 				openDropdown();
 			}
+		} else {
+			if (!isOpen) {
+				openDropdown();
+			}
 		}
 	}
 
