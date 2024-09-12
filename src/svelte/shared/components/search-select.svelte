@@ -78,6 +78,8 @@
 			} else {
 				openDropdown();
 			}
+		} else if (e.key === "Tab") {
+			closeDropdown();
 		} else {
 			if (!isOpen) {
 				openDropdown();
