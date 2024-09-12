@@ -7,7 +7,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
-	import SearchSelection from "src/svelte/shared/components/search-selection.svelte";
+	import SearchSelect from "src/svelte/shared/components/search-select.svelte";
 
 	export let index: number;
 	export let id: string;
@@ -108,8 +108,8 @@
 		};
 	});
 
-	function handleValueChange(e: Event) {
-		const value = (e.target as HTMLInputElement).value;
+	function handleValueChange(e: CustomEvent) {
+		const { value } = e.detail;
 		dispatch("ruleValueChange", { id, value });
 	}
 
@@ -135,7 +135,7 @@
 	on:ruleToggle
 >
 	<svelte:fragment slot="after-condition">
-		<SearchSelection options={folders} />
+		<SearchSelect {value} options={folders} on:select={handleValueChange} />
 		<input
 			aria-label="Include subfolders"
 			type="checkbox"

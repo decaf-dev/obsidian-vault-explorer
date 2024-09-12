@@ -1,100 +1,95 @@
 {
-  "properties": {
-    "favorite": "favorite",
-    "url": "url",
-    "custom1": "category",
-    "custom2": "color",
-    "custom3": "size",
-    "creationDate": "creation",
-    "modifiedDate": "modification",
-    "createdDate": "creation",
-    "image": "image",
-    "coverImageFit": "image-fit"
-  },
-  "filters": {
-    "search": {
-      "isEnabled": true,
-      "value": ""
-    },
-    "sort": {
-      "isEnabled": true,
-      "value": "modified-desc"
-    },
-    "custom": {
-      "isEnabled": true,
-      "selectedGroupId": "",
-      "groups": []
-    },
-    "properties": {
-      "groups": []
-    }
-  },
-  "views": {
-    "dashboard": {
-      "isEnabled": false
-    },
-    "grid": {
-      "isEnabled": true,
-      "loadSocialMediaImage": true,
-      "coverImageSources": [
-        {
-          "type": "image-property",
-          "isEnabled": true
-        },
-        {
-          "type": "url-property",
-          "isEnabled": true
-        },
-        {
-          "type": "frontmatter",
-          "isEnabled": true
-        },
-        {
-          "type": "body",
-          "isEnabled": true
-        }
-      ],
-      "coverImageFit": "cover"
-    },
-    "list": {
-      "isEnabled": true,
-      "showTags": true
-    },
-    "table": {
-      "isEnabled": true
-    },
-    "feed": {
-      "isEnabled": true,
-      "renderNewLineCharacters": false,
-      "collapseContent": true,
-      "removeLevel1Headers": true,
-      "collapseStyle": "no-new-lines",
-      "lineClampLarge": 5,
-      "lineClampMedium": 3,
-      "lineClampSmall": 2,
-      "removeH1": true
-    },
-    "recommended": {
-      "isEnabled": false
-    },
-    "related": {
-      "isEnabled": false
-    }
-  },
-  "currentView": "grid",
-  "titleWrapping": "normal",
-  "enableClockUpdates": true,
-  "enableFileIcons": true,
-  "loadBodyTags": true,
-  "shouldCollapseFilters": false,
-  "pageSize": 25,
-  "viewOrder": [
-    "grid",
-    "list",
-    "table",
-    "feed"
-  ],
-  "configDir": ".vaultexplorer",
-  "pluginVersion": "1.42.0",
-  "logLevel": "trace"
+	"properties": {
+		"favorite": "favorite",
+		"url": "url",
+		"custom1": "category",
+		"custom2": "color",
+		"custom3": "size",
+		"creationDate": "creation",
+		"modifiedDate": "modification",
+		"createdDate": "creation",
+		"image": "image",
+		"coverImageFit": "image-fit"
+	},
+	"filters": {
+		"search": {
+			"isEnabled": true,
+			"value": ""
+		},
+		"sort": {
+			"isEnabled": true,
+			"value": "modified-desc"
+		},
+		"custom": {
+			"isEnabled": true,
+			"selectedGroupId": "",
+			"groups": []
+		},
+		"properties": {
+			"groups": []
+		}
+	},
+	"views": {
+		"dashboard": {
+			"isEnabled": false
+		},
+		"grid": {
+			"isEnabled": true,
+			"loadSocialMediaImage": true,
+			"coverImageSources": [
+				{
+					"type": "image-property",
+					"isEnabled": true
+				},
+				{
+					"type": "url-property",
+					"isEnabled": true
+				},
+				{
+					"type": "frontmatter",
+					"isEnabled": true
+				},
+				{
+					"type": "body",
+					"isEnabled": true
+				}
+			],
+			"coverImageFit": "cover"
+		},
+		"list": {
+			"isEnabled": true,
+			"showTags": true
+		},
+		"table": {
+			"isEnabled": true
+		},
+		"feed": {
+			"isEnabled": true,
+			"renderNewLineCharacters": false,
+			"collapseContent": true,
+			"removeLevel1Headers": true,
+			"collapseStyle": "no-new-lines",
+			"lineClampLarge": 5,
+			"lineClampMedium": 3,
+			"lineClampSmall": 2,
+			"removeH1": true
+		},
+		"recommended": {
+			"isEnabled": false
+		},
+		"related": {
+			"isEnabled": false
+		}
+	},
+	"currentView": "grid",
+	"titleWrapping": "normal",
+	"enableClockUpdates": true,
+	"enableFileIcons": true,
+	"loadBodyTags": true,
+	"shouldCollapseFilters": false,
+	"pageSize": 25,
+	"viewOrder": ["grid", "list", "table", "feed"],
+	"configDir": ".vaultexplorer",
+	"pluginVersion": "1.44.2",
+	"logLevel": "trace"
 }
