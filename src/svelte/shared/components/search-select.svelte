@@ -78,8 +78,6 @@
 			} else {
 				openDropdown();
 			}
-		} else if (e.key === "Tab") {
-			closeDropdown();
 		} else {
 			if (!isOpen) {
 				openDropdown();
@@ -158,7 +156,6 @@
 
 	.vault-explorer-dropdown {
 		position: absolute;
-		top: calc(100% + 5px);
 		background-color: var(--dropdown-background);
 		box-shadow: var(--input-shadow);
 		width: 100%;
