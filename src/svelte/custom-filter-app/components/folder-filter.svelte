@@ -7,7 +7,7 @@
 	import VaultExplorerPlugin from "src/main";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
-	import SearchSelection from "src/svelte/shared/components/search-selection.svelte";
+	import SearchSelection from "src/svelte/shared/components/search-select.svelte";
 
 	export let index: number;
 	export let id: string;
