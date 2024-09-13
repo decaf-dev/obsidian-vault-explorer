@@ -40,8 +40,6 @@ export interface VaultExplorerPluginSettings_1_40_2 {
 	logLevel: string;
 }
 
-type FileInteractionStyle = "title" | "content";
-
 interface BaseView {
 	isEnabled: boolean;
 }
