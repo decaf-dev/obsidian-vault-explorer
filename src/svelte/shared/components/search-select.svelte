@@ -42,7 +42,7 @@
 
 	function closeDropdown() {
 		isOpen = false;
-		inputValue = "";
+		inputValue = value;
 		currentFocusIndex = 0;
 	}
 
