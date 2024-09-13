@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount, tick } from "svelte";
 	import Icon from "./icon.svelte";
+	import Divider from "./divider.svelte";
 
 	export let width = "fit-content";
 	export let options: string[] = [];
@@ -49,6 +50,10 @@
 		e.preventDefault();
 	}
 
+	function handleOptionClearClick() {
+		handleOptionClick("");
+	}
+
 	function handleOptionClick(option: string) {
 		closeDropdown();
 		inputValue = option;
@@ -62,10 +67,14 @@
 		currentFocusIndex = 0;
 	}
 
-	function handleInputClick() {
-		if (isOpen) {
-			closeDropdown();
-		} else {
+	function handleInputFocus(e: Event) {
+		if (!isOpen) {
+			openDropdown();
+		}
+	}
+
+	function handleInputClick(e: Event) {
+		if (!isOpen) {
 			openDropdown();
 		}
 	}
@@ -106,7 +115,6 @@
 		);
 
 		if (!isInsideClick && isOpen) {
-			console.log("clicking outside");
 			closeDropdown();
 		}
 	}
@@ -136,6 +144,7 @@
 		type="text"
 		on:input={handleInputChange}
 		on:click={handleInputClick}
+		on:focus={handleInputFocus}
 		on:keydown={handleInputKeyDown}
 	/>
 	<span class="vault-explorer-search-select__input-icon"
@@ -163,6 +172,20 @@
 					{option}
 				</div>
 			{/each}
+			{#if filteredOptions.length > 0}
+				<Divider />
+				<div
+					tabindex="-1"
+					role="option"
+					aria-selected="false"
+					class="vault-explorer-search-select__dropdown-item"
+					on:mousedown={handleOptionMouseDown}
+					on:click={(e) => handleOptionClearClick()}
+					on:keydown={() => {}}
+				>
+					Clear
+				</div>
+			{/if}
 			{#if filteredOptions.length === 0}
 				<div
 					class="vault-explorer-search-select__dropdown-item vault-explorer-search-select__dropdown-item--empty"
