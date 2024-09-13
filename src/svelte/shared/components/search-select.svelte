@@ -50,7 +50,9 @@
 	}
 
 	function handleInputKeyDown(e: KeyboardEvent) {
-		if (e.key === "ArrowDown") {
+		if (e.key === "Tab") {
+			closeDropdown();
+		} else if (e.key === "ArrowDown") {
 			if (!isOpen) {
 				openDropdown();
 				return;
@@ -78,8 +80,6 @@
 			} else {
 				openDropdown();
 			}
-		} else if (e.key === "Tab") {
-			closeDropdown();
 		} else {
 			// open dropdown on any key press
 			if (!isOpen) {
@@ -157,22 +157,6 @@
 		max-width: 300px;
 	}
 
-	.vault-explorer-dropdown {
-		position: absolute;
-		top: calc(100% + 5px);
-		background-color: var(--dropdown-background);
-		box-shadow: var(--input-shadow);
-		width: 100%;
-		max-height: 175px;
-		overflow-y: auto;
-		z-index: 999;
-		color: var(--text-normal);
-		font-size: var(--font-ui-small);
-		line-height: var(--line-height-tight);
-		font-weight: var(--input-font-weight);
-		border-radius: var(--input-radius);
-	}
-
 	.vault-explorer-dropdown-icon {
 		position: absolute;
 		top: 50%;
@@ -201,5 +185,21 @@
 
 	.vault-explorer-dropdown-item:focus-visible {
 		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
+	}
+
+	.vault-explorer-dropdown {
+		position: absolute;
+		top: calc(100% + 5px);
+		background-color: var(--dropdown-background);
+		box-shadow: var(--input-shadow);
+		width: 100%;
+		max-height: 175px;
+		overflow-y: auto;
+		z-index: 999;
+		color: var(--text-normal);
+		font-size: var(--font-ui-small);
+		line-height: var(--line-height-tight);
+		font-weight: var(--input-font-weight);
+		border-radius: var(--input-radius);
 	}
 </style>
