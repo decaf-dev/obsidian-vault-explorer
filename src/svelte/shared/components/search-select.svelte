@@ -19,6 +19,7 @@
 
 		return () => {
 			document.removeEventListener("click", handleClickOutside);
+			dropdownRef?.remove();
 		};
 	});
 
