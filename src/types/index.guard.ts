@@ -622,6 +622,7 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["views"]["related"] === "object" ||
             typeof typedObj["views"]["related"] === "function") &&
         typeof typedObj["views"]["related"]["isEnabled"] === "boolean" &&
+        typeof typedObj["confirmBeforeDelete"] === "boolean" &&
         (typedObj["titleWrapping"] === "normal" ||
             typedObj["titleWrapping"] === "break-word") &&
         typeof typedObj["enableClockUpdates"] === "boolean" &&

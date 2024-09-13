@@ -1,11 +1,12 @@
-import { Menu } from "obsidian";
-import VaultExplorerPlugin from "src/main";
-import { CoverImageFit } from "src/types";
+import { App, Menu, Notice } from "obsidian";
+import { CoverImageFit, VaultExplorerPluginSettings } from "src/types";
 
 export const openContextMenu = (
-	plugin: VaultExplorerPlugin,
-	filePath: string,
 	e: MouseEvent,
+	filePath: string,
+	app: App,
+	settings: VaultExplorerPluginSettings,
+	enablePremiumFeatures: boolean,
 	{
 		coverImageFit,
 		onCoverImageFitChange,
@@ -17,19 +18,21 @@ export const openContextMenu = (
 		) => void;
 	}
 ) => {
+	const { confirmBeforeDelete } = settings;
+
 	const menu = new Menu();
 	menu.setUseNativeMenu(true);
 	menu.addItem((item) => {
 		item.setTitle("Open in new tab");
-		item.onClick(() => openInNewTab(plugin, filePath));
+		item.onClick(() => openInNewTab(app, filePath));
 	});
 	menu.addItem((item) => {
 		item.setTitle("Open to the right");
-		item.onClick(() => openToTheRight(plugin, filePath));
+		item.onClick(() => openToTheRight(app, filePath));
 	});
 	menu.addItem((item) => {
 		item.setTitle("Open in new window");
-		item.onClick(() => openInNewWindow(plugin, filePath));
+		item.onClick(() => openInNewWindow(app, filePath));
 	});
 	if (coverImageFit !== undefined && onCoverImageFitChange !== undefined) {
 		menu.addSeparator();
@@ -44,17 +47,43 @@ export const openContextMenu = (
 			item.onClick(() => onCoverImageFitChange(filePath, "contain"));
 		});
 	}
+	menu.addSeparator();
+	menu.addItem((item) => {
+		item.setTitle("Delete");
+		item.onClick(async () => {
+			if (!enablePremiumFeatures) {
+				new Notice(
+					"This feature requires a premium Vault Explorer license."
+				);
+				return;
+			}
+			if (confirmBeforeDelete) {
+				if (confirm("Are you sure you want to delete this file?")) {
+					await deleteFile(app, filePath);
+				}
+			} else {
+				await deleteFile(app, filePath);
+			}
+		});
+	});
 	menu.showAtMouseEvent(e);
 };
 
-const openToTheRight = (plugin: VaultExplorerPlugin, filePath: string) => {
-	plugin.app.workspace.openLinkText("", filePath, "split", {
+const deleteFile = async (app: App, filePath: string) => {
+	const file = app.vault.getAbstractFileByPath(filePath);
+	if (!file) return;
+
+	return app.vault.delete(file);
+};
+
+const openToTheRight = (app: App, filePath: string) => {
+	app.workspace.openLinkText("", filePath, "split", {
 		active: false,
 	});
 };
 
-const openInNewTab = (plugin: VaultExplorerPlugin, filePath: string) => {
-	plugin.app.workspace.getLeaf().setViewState({
+const openInNewTab = (app: App, filePath: string) => {
+	app.workspace.getLeaf().setViewState({
 		type: "markdown",
 		active: false,
 		state: {
@@ -63,6 +92,6 @@ const openInNewTab = (plugin: VaultExplorerPlugin, filePath: string) => {
 	});
 };
 
-const openInNewWindow = (plugin: VaultExplorerPlugin, filePath: string) => {
-	plugin.app.workspace.openLinkText("", filePath, "window");
+const openInNewWindow = (app: App, filePath: string) => {
+	app.workspace.openLinkText("", filePath, "window");
 };

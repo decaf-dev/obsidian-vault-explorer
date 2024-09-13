@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte";
+	import { onMount } from "svelte";
 	import { CollapseStyle } from "src/types";
 	import EventManager from "src/event/event-manager";
 	import VaultExplorerPlugin from "src/main";
@@ -35,6 +35,7 @@
 	export let path: string;
 	export let createdMillis: number;
 	export let content: string | null;
+	export let enablePremiumFeatures: boolean;
 
 	let ref: HTMLElement | null = null;
 	let enableFileIcons = false;
@@ -44,8 +45,6 @@
 	let lineClampLarge: number = 5;
 	let collapseStyle: CollapseStyle = "no-new-lines";
 	let currentLineClamp: number = lineClampLarge;
-
-	const dispatch = createEventDispatcher();
 
 	let plugin: VaultExplorerPlugin;
 	store.plugin.subscribe((p) => {
@@ -147,7 +146,15 @@
 
 	function handleCardContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
-		openContextMenu(plugin, path, nativeEvent, {});
+		const { app, settings } = plugin;
+		openContextMenu(
+			nativeEvent,
+			path,
+			app,
+			settings,
+			enablePremiumFeatures,
+			{},
+		);
 	}
 
 	function handleCardMouseOver(e: MouseEvent) {

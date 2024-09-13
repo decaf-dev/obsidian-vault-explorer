@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte";
+	import { onMount } from "svelte";
 	import { openContextMenu } from "../services/context-menu";
 	import { formatAsBearTimeString } from "../services/time-string";
 	import { FileRenderData } from "../types";
@@ -25,6 +25,7 @@
 	export let data: FileRenderData[];
 	export let startIndex: number;
 	export let pageLength: number;
+	export let enablePremiumFeatures: boolean;
 
 	let filteredItems: FileRenderData[] = [];
 	let plugin: VaultExplorerPlugin | null = null;
@@ -53,8 +54,6 @@
 			format: (value: unknown) => formatAsBearTimeString(value as number),
 		},
 	];
-
-	const dispatch = createEventDispatcher();
 
 	store.plugin.subscribe((p) => {
 		plugin = p;
@@ -103,7 +102,15 @@
 		if (plugin === null) return;
 
 		const nativeEvent = e as MouseEvent;
-		openContextMenu(plugin, path, nativeEvent, {});
+		const { app, settings } = plugin;
+		openContextMenu(
+			nativeEvent,
+			path,
+			app,
+			settings,
+			enablePremiumFeatures,
+			{},
+		);
 	}
 
 	function getValue(item: FileRenderData, column: TColumn): unknown {
