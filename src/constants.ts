@@ -80,6 +80,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			isEnabled: false,
 		},
 	},
+	confirmBeforeDelete: true,
 	currentView: TExplorerView.GRID,
 	titleWrapping: "normal",
 	enableClockUpdates: true,

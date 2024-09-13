@@ -6,7 +6,7 @@
 	import Flex from "../shared/components/flex.svelte";
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
-	import { Notice, TFile } from "obsidian";
+	import { TFile } from "obsidian";
 	import {
 		TCustomFilter,
 		TSearchFilter,
@@ -57,7 +57,7 @@
 	} from "./services/favorites-store";
 	import TableView from "./components/table-view.svelte";
 	import Spacer from "../shared/components/spacer.svelte";
-	import Divider from "../shared/components/divider.svelte";
+	import License from "../shared/services/license";
 
 	// ============================================
 	// Variables
@@ -104,10 +104,18 @@
 	let viewOrder: TExplorerView[] = [];
 	let showListViewTags: boolean = false;
 	let isSmallScreenSize: boolean = false;
+	let enablePremiumFeatures: boolean = false;
 
 	// ============================================
 	// Lifecycle hooks
 	// ============================================
+
+	License.getInstance()
+		.getHasValidKeyStore()
+		.subscribe((hasValidKey) => {
+			enablePremiumFeatures = hasValidKey;
+		});
+
 	randomFileSortStore.subscribe((value) => {
 		randomSortCache = value;
 	});
@@ -967,6 +975,7 @@
 			data={renderData}
 			{startIndex}
 			{pageLength}
+			{enablePremiumFeatures}
 			on:coverImageFitChange={handleCoverImageFitChange}
 		/>
 	{:else if currentView === "list"}
@@ -976,11 +985,22 @@
 			showTags={showListViewTags}
 			{startIndex}
 			{pageLength}
+			{enablePremiumFeatures}
 		/>
 	{:else if currentView === "table"}
-		<TableView data={renderData} {startIndex} {pageLength} />
+		<TableView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			{enablePremiumFeatures}
+		/>
 	{:else if currentView === "feed"}
-		<FeedView data={renderData} {startIndex} {pageLength} />
+		<FeedView
+			data={renderData}
+			{startIndex}
+			{pageLength}
+			{enablePremiumFeatures}
+		/>
 	{/if}
 	<PaginationIndicator
 		{startIndex}

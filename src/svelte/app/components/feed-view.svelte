@@ -5,6 +5,7 @@
 	export let data: FileRenderData[] = [];
 	export let startIndex;
 	export let pageLength;
+	export let enablePremiumFeatures: boolean;
 
 	let filteredItems: FileRenderData[] = [];
 
@@ -23,6 +24,7 @@
 <div class="vault-explorer-feed-view">
 	{#each filteredItems as fileRenderData (fileRenderData.id)}
 		<FeedCard
+			{enablePremiumFeatures}
 			displayName={fileRenderData.displayName}
 			extension={fileRenderData.extension}
 			baseName={fileRenderData.baseName}

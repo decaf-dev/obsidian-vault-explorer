@@ -20,6 +20,7 @@
 	export let tags: string[] | null;
 	export let showTags: boolean;
 	export let isSmallScreenSize: boolean;
+	export let enablePremiumFeatures: boolean;
 
 	let enableFileIcons: boolean = false;
 	let ref: HTMLElement | null = null;
@@ -75,7 +76,15 @@
 
 	function handleItemContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
-		openContextMenu(plugin, path, nativeEvent, {});
+		const { app, settings } = plugin;
+		openContextMenu(
+			nativeEvent,
+			path,
+			app,
+			settings,
+			enablePremiumFeatures,
+			{},
+		);
 	}
 
 	function handleItemMouseOver(e: MouseEvent) {

@@ -42,6 +42,7 @@
 	export let custom2: string | null;
 	export let custom3: string | null;
 	export let coverImageFit: CoverImageFit;
+	export let enablePremiumFeatures: boolean;
 
 	let plugin: VaultExplorerPlugin;
 	let enableFileIcons: boolean = false;
@@ -108,12 +109,22 @@
 		const nativeEvent = e as MouseEvent;
 
 		const showCoverImageOptions = path.endsWith(".md");
-		openContextMenu(plugin, path, nativeEvent, {
-			coverImageFit: showCoverImageOptions ? coverImageFit : undefined,
-			onCoverImageFitChange: showCoverImageOptions
-				? handleCoverImageFitChange
-				: undefined,
-		});
+		const { app, settings } = plugin;
+		openContextMenu(
+			nativeEvent,
+			path,
+			app,
+			settings,
+			enablePremiumFeatures,
+			{
+				coverImageFit: showCoverImageOptions
+					? coverImageFit
+					: undefined,
+				onCoverImageFitChange: showCoverImageOptions
+					? handleCoverImageFitChange
+					: undefined,
+			},
+		);
 	}
 
 	function handleCardMouseOver(e: MouseEvent) {
