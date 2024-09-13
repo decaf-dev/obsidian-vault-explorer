@@ -157,21 +157,30 @@
 			bind:this={dropdownRef}
 			use:portalAction
 		>
-			{#each filteredOptions as option, i}
-				<div
-					tabindex="-1"
-					role="option"
-					aria-selected={option === value}
-					class="vault-explorer-search-select__dropdown-item"
-					class:vault-explorer-search-select__dropdown-item--selected={currentFocusIndex ===
-						i}
-					on:mousedown={handleOptionMouseDown}
-					on:click={(e) => handleOptionClick(option)}
-					on:keydown={() => {}}
-				>
-					{option}
-				</div>
-			{/each}
+			<div class="vault-explorer-search-select__dropdown-container">
+				{#each filteredOptions as option, i}
+					<div
+						tabindex="-1"
+						role="option"
+						aria-selected={option === value}
+						class="vault-explorer-search-select__dropdown-item"
+						class:vault-explorer-search-select__dropdown-item--selected={currentFocusIndex ===
+							i}
+						on:mousedown={handleOptionMouseDown}
+						on:click={(e) => handleOptionClick(option)}
+						on:keydown={() => {}}
+					>
+						{option}
+					</div>
+				{/each}
+				{#if filteredOptions.length === 0}
+					<div
+						class="vault-explorer-search-select__dropdown-item vault-explorer-search-select__dropdown-item--empty"
+					>
+						No results found
+					</div>
+				{/if}
+			</div>
 			{#if filteredOptions.length > 0}
 				<Divider />
 				<div
@@ -184,13 +193,6 @@
 					on:keydown={() => {}}
 				>
 					Clear
-				</div>
-			{/if}
-			{#if filteredOptions.length === 0}
-				<div
-					class="vault-explorer-search-select__dropdown-item vault-explorer-search-select__dropdown-item--empty"
-				>
-					No results found
 				</div>
 			{/if}
 		</div>
@@ -211,14 +213,17 @@
 		position: absolute;
 		background-color: var(--dropdown-background);
 		box-shadow: var(--input-shadow);
-		max-height: 175px;
-		overflow-y: auto;
 		z-index: 999;
 		color: var(--text-normal);
 		font-size: var(--font-ui-small);
 		line-height: var(--line-height-tight);
 		font-weight: var(--input-font-weight);
 		border-radius: var(--input-radius);
+	}
+
+	.vault-explorer-search-select__dropdown-container {
+		max-height: 145px;
+		overflow-y: auto;
 	}
 
 	.vault-explorer-search-select__input-icon {
