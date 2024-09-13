@@ -26,7 +26,7 @@
 		isOpen = true;
 		inputValue = "";
 
-		await tick();
+		await tick(); //Wait for the dropdown to be rendered
 
 		if (inputRef && dropdownRef) {
 			const inputRect = inputRef.getBoundingClientRect();
@@ -44,10 +44,14 @@
 		currentFocusIndex = 0;
 	}
 
+	function handleOptionMouseDown(e: MouseEvent) {
+		e.preventDefault();
+	}
+
 	function handleOptionClick(option: string) {
+		closeDropdown();
 		inputValue = option;
 		value = option;
-		isOpen = false;
 		dispatch("select", { value: option });
 	}
 
@@ -57,45 +61,39 @@
 		currentFocusIndex = 0;
 	}
 
-	function handleInputFocus() {
-		openDropdown();
+	function handleInputClick() {
+		if (isOpen) {
+			closeDropdown();
+		} else {
+			openDropdown();
+		}
 	}
 
 	function handleInputKeyDown(e: KeyboardEvent) {
 		if (e.key === "Tab") {
 			closeDropdown();
-		} else if (e.key === "ArrowDown") {
-			if (!isOpen) {
-				openDropdown();
-				return;
-			}
+			return;
+		}
+
+		if (!isOpen) {
+			openDropdown();
+			return;
+		}
+
+		if (e.key === "ArrowDown") {
 			currentFocusIndex = currentFocusIndex + 1;
 			if (currentFocusIndex == filteredOptions.length) {
 				currentFocusIndex = currentFocusIndex - 1;
 			}
 		} else if (e.key === "ArrowUp") {
-			if (!isOpen) {
-				openDropdown();
-				return;
-			}
-
 			currentFocusIndex = currentFocusIndex - 1;
 			if (currentFocusIndex < 0) {
 				currentFocusIndex = currentFocusIndex = 0;
 			}
 		} else if (e.key === "Enter") {
-			if (isOpen) {
-				const option = filteredOptions[currentFocusIndex];
-				if (option) {
-					handleOptionClick(option);
-				}
-			} else {
-				openDropdown();
-			}
-		} else {
-			// open dropdown on any key press
-			if (!isOpen) {
-				openDropdown();
+			const option = filteredOptions[currentFocusIndex];
+			if (option) {
+				handleOptionClick(option);
 			}
 		}
 	}
@@ -103,9 +101,11 @@
 	function handleClickOutside(e: Event) {
 		const targetEl = e.target as HTMLElement;
 		const isInsideClick = targetEl.closest(
-			".vault-explorer-search-selection",
+			".vault-explorer-search-select, .vault-explorer-search-select__dropdown-item",
 		);
+
 		if (!isInsideClick && isOpen) {
+			console.log("clicking outside");
 			closeDropdown();
 		}
 	}
@@ -127,23 +127,23 @@
 	$: filteredOptions = fuzzySearch(inputValue);
 </script>
 
-<div class="vault-explorer-search-selection" style={`width: ${width}`}>
+<div class="vault-explorer-search-select" style={`width: ${width}`}>
 	<input
 		bind:this={inputRef}
 		bind:value={inputValue}
 		placeholder={value || "Search..."}
 		type="text"
 		on:input={handleInputChange}
-		on:focus={handleInputFocus}
+		on:click={handleInputClick}
 		on:keydown={handleInputKeyDown}
 	/>
-	<span class="vault-explorer-dropdown-icon"
+	<span class="vault-explorer-search-select__input-icon"
 		><Icon iconId="chevron-down" size="xs" /></span
 	>
 
 	{#if isOpen}
 		<div
-			class="vault-explorer-dropdown"
+			class="vault-explorer-search-select__dropdown"
 			bind:this={dropdownRef}
 			use:portalAction
 		>
@@ -152,10 +152,11 @@
 					tabindex="-1"
 					role="option"
 					aria-selected={option === value}
-					class="vault-explorer-dropdown-item"
-					class:vault-explorer-dropdown-item--selected={currentFocusIndex ===
+					class="vault-explorer-search-select__dropdown-item"
+					class:vault-explorer-search-select__dropdown-item--selected={currentFocusIndex ===
 						i}
-					on:click={() => handleOptionClick(option)}
+					on:mousedown={handleOptionMouseDown}
+					on:click={(e) => handleOptionClick(option)}
 					on:keydown={() => {}}
 				>
 					{option}
@@ -163,7 +164,7 @@
 			{/each}
 			{#if filteredOptions.length === 0}
 				<div
-					class="vault-explorer-dropdown-item vault-explorer-dropdown-item--empty"
+					class="vault-explorer-search-select__dropdown-item vault-explorer-search-select__dropdown-item--empty"
 				>
 					No results found
 				</div>
@@ -173,16 +174,16 @@
 </div>
 
 <style>
-	.vault-explorer-search-selection {
+	.vault-explorer-search-select {
 		position: relative;
 	}
 
-	.vault-explorer-search-selection input {
+	.vault-explorer-search-select input {
 		cursor: default;
 		max-width: 300px;
 	}
 
-	.vault-explorer-dropdown {
+	.vault-explorer-search-select__dropdown {
 		position: absolute;
 		background-color: var(--dropdown-background);
 		box-shadow: var(--input-shadow);
@@ -196,7 +197,7 @@
 		border-radius: var(--input-radius);
 	}
 
-	.vault-explorer-dropdown-icon {
+	.vault-explorer-search-select__input-icon {
 		position: absolute;
 		top: 50%;
 		right: 10px;
@@ -204,25 +205,25 @@
 		pointer-events: none;
 	}
 
-	.vault-explorer-dropdown-item {
+	.vault-explorer-search-select__dropdown-item {
 		padding: 6px 8px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	.vault-explorer-dropdown-item--selected {
+	.vault-explorer-search-select__dropdown-item--selected {
 		background-color: var(--color-base-20);
 	}
 
-	.vault-explorer-dropdown-item:hover {
+	.vault-explorer-search-select__dropdown-item:hover {
 		background-color: var(--color-base-30);
 	}
 
-	.vault-explorer-dropdown-item--empty:hover {
+	.vault-explorer-search-select__dropdown-item--empty:hover {
 		background-color: transparent;
 	}
 
-	.vault-explorer-dropdown-item:focus-visible {
+	.vault-explorer-search-select__dropdown-item:focus-visible {
 		box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
 	}
 </style>
