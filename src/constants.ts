@@ -80,6 +80,7 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			isEnabled: false,
 		},
 	},
+	confirmBeforeDelete: true,
 	currentView: TExplorerView.GRID,
 	titleWrapping: "normal",
 	enableClockUpdates: true,
@@ -90,8 +91,8 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	viewOrder: [
 		TExplorerView.GRID,
 		TExplorerView.LIST,
-		TExplorerView.TABLE,
 		TExplorerView.FEED,
+		TExplorerView.TABLE,
 	],
 	configDir: ".vaultexplorer",
 	pluginVersion: null,

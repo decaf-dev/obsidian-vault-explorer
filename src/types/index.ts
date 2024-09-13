@@ -24,6 +24,7 @@ export interface VaultExplorerPluginSettings {
 		recommended: TRecommendedView;
 		related: TRelatedView;
 	};
+	confirmBeforeDelete: boolean;
 	titleWrapping: WordBreak;
 	enableClockUpdates: boolean;
 	enableFileIcons: boolean;

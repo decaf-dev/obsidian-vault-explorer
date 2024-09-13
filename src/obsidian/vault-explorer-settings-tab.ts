@@ -46,10 +46,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			this.app,
 			"datetime"
 		);
-		const checkboxProperties = getObsidianPropertiesByType(
-			this.app,
-			"checkbox"
-		);
 
 		new Setting(containerEl).setName("General").setHeading();
 
@@ -105,6 +101,20 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						EventManager.getInstance().emit(
 							PluginEvent.PAGE_SIZE_SETTING_CHANGE
 						);
+					})
+			);
+
+		new Setting(containerEl).setName("Context menu").setHeading();
+
+		new Setting(containerEl)
+			.setName("Confirm before delete")
+			.setDesc("Ask for confirmation before deleting a file.")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.confirmBeforeDelete)
+					.onChange(async (value) => {
+						this.plugin.settings.confirmBeforeDelete = value;
+						await this.plugin.saveSettings();
 					})
 			);
 

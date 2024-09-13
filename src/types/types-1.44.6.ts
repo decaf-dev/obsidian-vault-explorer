@@ -1,6 +1,5 @@
-export interface VaultExplorerPluginSettings_1_41_1 {
+export interface VaultExplorerPluginSettings_1_44_6 {
 	properties: {
-		favorite: string;
 		url: string;
 		image: string;
 		coverImageFit: string;
@@ -12,9 +11,7 @@ export interface VaultExplorerPluginSettings_1_41_1 {
 	};
 	filters: {
 		search: TSearchFilter;
-		favorites: TFavoritesFilter;
 		sort: TSortFilter;
-		timestamp: TTimestampFilter;
 		custom: TCustomFilter;
 	};
 	views: {
@@ -32,8 +29,6 @@ export interface VaultExplorerPluginSettings_1_41_1 {
 	loadBodyTags: boolean;
 	currentView: TExplorerView | null;
 	pageSize: number;
-	filterGroupsWidth: string;
-	shouldWrapFilterGroups: boolean;
 	shouldCollapseFilters: boolean;
 	viewOrder: TExplorerView[];
 	configDir: string;
@@ -94,16 +89,8 @@ interface TSearchFilter extends BaseFilter {
 	value: string;
 }
 
-interface TFavoritesFilter extends BaseFilter {
-	value: boolean;
-}
-
 interface TSortFilter extends BaseFilter {
 	value: SortFilterOption;
-}
-
-interface TTimestampFilter extends BaseFilter {
-	value: TimestampFilterOption;
 }
 
 interface TCustomFilter extends BaseFilter {
@@ -111,20 +98,13 @@ interface TCustomFilter extends BaseFilter {
 	groups: TFilterGroup[];
 }
 
-type TimestampFilterOption =
-	| "created-today"
-	| "modified-today"
-	| "created-this-week"
-	| "modified-this-week"
-	| "created-2-weeks"
-	| "modified-2-weeks"
-	| "all";
-
 type SortFilterOption =
 	| "file-name-asc"
 	| "file-name-desc"
 	| "modified-asc"
 	| "modified-desc"
+	| "created-asc"
+	| "created-desc"
 	| "random";
 
 type WordBreak = "normal" | "break-word";
