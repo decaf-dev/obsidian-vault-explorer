@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte";
+	import { createEventDispatcher, onMount, tick } from "svelte";
 	import Icon from "./icon.svelte";
 
 	export let width = "fit-content";
@@ -10,6 +10,7 @@
 	let isOpen = false;
 	let dropdownRef: HTMLDivElement | null = null;
 	let currentFocusIndex = 0;
+	let inputRef: HTMLInputElement | null = null;
 
 	const dispatch = createEventDispatcher();
 
@@ -21,9 +22,20 @@
 		};
 	});
 
-	function openDropdown() {
+	async function openDropdown() {
 		isOpen = true;
 		inputValue = "";
+
+		await tick();
+
+		if (inputRef && dropdownRef) {
+			const inputRect = inputRef.getBoundingClientRect();
+
+			// Set the dropdown position and width based on inputEl
+			dropdownRef.style.top = `${inputRect.bottom + 6}px`;
+			dropdownRef.style.left = `${inputRect.left}px`;
+			dropdownRef.style.width = `${inputRect.width}px`;
+		}
 	}
 
 	function closeDropdown() {
@@ -104,11 +116,20 @@
 		);
 	}
 
+	function portalAction(
+		node: HTMLElement,
+		parent: HTMLElement = document.body,
+	) {
+		parent = parent || document.body;
+		parent.appendChild(node);
+	}
+
 	$: filteredOptions = fuzzySearch(inputValue);
 </script>
 
 <div class="vault-explorer-search-selection" style={`width: ${width}`}>
 	<input
+		bind:this={inputRef}
 		bind:value={inputValue}
 		placeholder={value || "Search..."}
 		type="text"
@@ -121,7 +142,11 @@
 	>
 
 	{#if isOpen}
-		<div class="vault-explorer-dropdown" bind:this={dropdownRef}>
+		<div
+			class="vault-explorer-dropdown"
+			bind:this={dropdownRef}
+			use:portalAction
+		>
 			{#each filteredOptions as option, i}
 				<div
 					tabindex="-1"
@@ -159,10 +184,8 @@
 
 	.vault-explorer-dropdown {
 		position: absolute;
-		top: calc(100% + 5px);
 		background-color: var(--dropdown-background);
 		box-shadow: var(--input-shadow);
-		width: 100%;
 		max-height: 175px;
 		overflow-y: auto;
 		z-index: 999;
