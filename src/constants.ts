@@ -90,8 +90,8 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	viewOrder: [
 		TExplorerView.GRID,
 		TExplorerView.LIST,
-		TExplorerView.TABLE,
 		TExplorerView.FEED,
+		TExplorerView.TABLE,
 	],
 	configDir: ".vaultexplorer",
 	pluginVersion: null,
