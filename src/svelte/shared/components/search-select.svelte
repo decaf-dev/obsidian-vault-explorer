@@ -181,7 +181,7 @@
 					</div>
 				{/if}
 			</div>
-			{#if filteredOptions.length > 0}
+			{#if value !== ""}
 				<Divider />
 				<div
 					tabindex="-1"
