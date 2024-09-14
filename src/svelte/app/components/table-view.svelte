@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { openContextMenu } from "../services/context-menu";
-	import { formatAsBearTimeString } from "../services/time-string";
 	import { FileRenderData } from "../types";
 	import store from "src/svelte/shared/services/store";
 	import VaultExplorerPlugin from "src/main";
@@ -37,22 +36,20 @@
 			label: "Name",
 			classNames: "vault-explorer-table-view__title-text",
 		},
-		{ key: "extension", label: "Extension" },
-		{ key: "basePath", label: "Folder" },
 		{
 			key: "tags",
 			label: "Tags",
 		},
-		{
-			key: "createdMillis",
-			label: "Created",
-			format: (value: unknown) => formatAsBearTimeString(value as number),
-		},
-		{
-			key: "modifiedMillis",
-			label: "Modified",
-			format: (value: unknown) => formatAsBearTimeString(value as number),
-		},
+		// {
+		// 	key: "createdMillis",
+		// 	label: "Created",
+		// 	format: (value: unknown) => formatAsBearTimeString(value as number),
+		// },
+		// {
+		// 	key: "modifiedMillis",
+		// 	label: "Modified",
+		// 	format: (value: unknown) => formatAsBearTimeString(value as number),
+		// },
 	];
 
 	store.plugin.subscribe((p) => {
@@ -172,7 +169,7 @@
 							{#if column.key == "tags"}
 								<Wrap spacingX="sm" spacingY="sm">
 									{#each asStringArray(value) as tag}
-										<Tag name={tag} variant="unstyled" />
+										<Tag name={tag} />
 									{/each}
 								</Wrap>
 							{:else if column.key == "baseName"}
@@ -225,9 +222,9 @@
 
 	.vault-explorer-table-view th:nth-child(2),
 	.vault-explorer-table-view td:nth-child(2) {
-		min-width: 125px;
-		width: 125px;
-		max-width: 125px;
+		min-width: 300px;
+		width: 300px;
+		max-width: 300px;
 		overflow: hidden;
 	}
 
