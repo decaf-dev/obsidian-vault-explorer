@@ -99,8 +99,8 @@
 		});
 	}
 
-	$: tagsClassName = `vault-explorer-list-item__tags ${isSmallScreenSize ? "vault-explorer-list-item__tags--screen-size-sm" : ""}`;
-	$: titleClassName = `vault-explorer-list-item__title ${isSmallScreenSize ? "vault-explorer-list-item__title--screen-size-sm" : ""}`;
+	$: tagsClassName = `vault-explorer-list-item__tags ${isSmallScreenSize ? "vault-explorer-list-item__tags--full" : ""}`;
+	$: titleClassName = `vault-explorer-list-item__title ${isSmallScreenSize || !showTags ? "vault-explorer-list-item__title--full" : ""}`;
 </script>
 
 <div
@@ -187,7 +187,7 @@
 		box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
 	}
 
-	.vault-explorer-list-item__title--screen-size-sm {
+	.vault-explorer-list-item__title--full {
 		width: 100%;
 	}
 
@@ -202,7 +202,7 @@
 		width: 50%;
 	}
 
-	.vault-explorer-list-item__tags--screen-size-sm {
+	.vault-explorer-list-item__tags--full {
 		width: 100%;
 	}
 </style>
