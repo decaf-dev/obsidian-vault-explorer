@@ -32,11 +32,9 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 	},
 	views: {
-		dashboard: {
-			isEnabled: false,
-		},
 		grid: {
 			isEnabled: true,
+			order: 0,
 			coverImageFit: "cover",
 			coverImageSources: [
 				{
@@ -60,24 +58,21 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		},
 		list: {
 			isEnabled: true,
+			order: 1,
 			showTags: true,
-		},
-		table: {
-			isEnabled: false,
 		},
 		feed: {
 			isEnabled: true,
+			order: 2,
 			removeH1: true,
 			collapseStyle: "no-new-lines",
 			lineClampLarge: 5,
 			lineClampMedium: 3,
 			lineClampSmall: 2,
 		},
-		recommended: {
+		table: {
 			isEnabled: false,
-		},
-		related: {
-			isEnabled: false,
+			order: 3,
 		},
 	},
 	confirmBeforeDelete: true,
@@ -88,12 +83,6 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	loadBodyTags: true,
 	shouldCollapseFilters: false,
 	pageSize: 25,
-	viewOrder: [
-		TExplorerView.GRID,
-		TExplorerView.LIST,
-		TExplorerView.FEED,
-		TExplorerView.TABLE,
-	],
 	configDir: ".vaultexplorer",
 	pluginVersion: null,
 	logLevel: LOG_LEVEL_WARN,

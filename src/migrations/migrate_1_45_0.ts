@@ -1,6 +1,7 @@
 import { VaultExplorerPluginSettings_1_44_6 } from "src/types/types-1.44.6";
 import MigrationInterface from "./migration_interface";
-import { TExplorerView, VaultExplorerPluginSettings } from "src/types";
+import { TExplorerView } from "src/types";
+import { VaultExplorerPluginSettings_1_45_0 } from "src/types/types-1.45.0";
 
 export default class Migrate_1_45_0 implements MigrationInterface {
 	migrate(data: Record<string, unknown>) {
@@ -20,7 +21,7 @@ export default class Migrate_1_45_0 implements MigrationInterface {
 			viewOrder.push(TExplorerView.TABLE);
 		}
 
-		const newData: VaultExplorerPluginSettings = {
+		const newData: VaultExplorerPluginSettings_1_45_0 = {
 			...typedData,
 			confirmBeforeDelete: true,
 			viewOrder,
