@@ -1052,7 +1052,6 @@
 		<ListView
 			data={renderData}
 			{isSmallScreenSize}
-			showTags={listView.showTags}
 			{startIndex}
 			{pageLength}
 			{enablePremiumFeatures}
