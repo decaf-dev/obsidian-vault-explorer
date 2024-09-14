@@ -573,14 +573,11 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
         (typedObj["views"] !== null &&
             typeof typedObj["views"] === "object" ||
             typeof typedObj["views"] === "function") &&
-        (typedObj["views"]["dashboard"] !== null &&
-            typeof typedObj["views"]["dashboard"] === "object" ||
-            typeof typedObj["views"]["dashboard"] === "function") &&
-        typeof typedObj["views"]["dashboard"]["isEnabled"] === "boolean" &&
         (typedObj["views"]["grid"] !== null &&
             typeof typedObj["views"]["grid"] === "object" ||
             typeof typedObj["views"]["grid"] === "function") &&
         typeof typedObj["views"]["grid"]["isEnabled"] === "boolean" &&
+        typeof typedObj["views"]["grid"]["order"] === "number" &&
         Array.isArray(typedObj["views"]["grid"]["coverImageSources"]) &&
         typedObj["views"]["grid"]["coverImageSources"].every((e: any) =>
             (e !== null &&
@@ -599,29 +596,24 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
             typeof typedObj["views"]["list"] === "object" ||
             typeof typedObj["views"]["list"] === "function") &&
         typeof typedObj["views"]["list"]["isEnabled"] === "boolean" &&
+        typeof typedObj["views"]["list"]["order"] === "number" &&
         typeof typedObj["views"]["list"]["showTags"] === "boolean" &&
-        (typedObj["views"]["table"] !== null &&
-            typeof typedObj["views"]["table"] === "object" ||
-            typeof typedObj["views"]["table"] === "function") &&
-        typeof typedObj["views"]["table"]["isEnabled"] === "boolean" &&
         (typedObj["views"]["feed"] !== null &&
             typeof typedObj["views"]["feed"] === "object" ||
             typeof typedObj["views"]["feed"] === "function") &&
         typeof typedObj["views"]["feed"]["isEnabled"] === "boolean" &&
+        typeof typedObj["views"]["feed"]["order"] === "number" &&
         (typedObj["views"]["feed"]["collapseStyle"] === "no-new-lines" ||
             typedObj["views"]["feed"]["collapseStyle"] === "no-extra-new-lines") &&
         typeof typedObj["views"]["feed"]["removeH1"] === "boolean" &&
         typeof typedObj["views"]["feed"]["lineClampSmall"] === "number" &&
         typeof typedObj["views"]["feed"]["lineClampMedium"] === "number" &&
         typeof typedObj["views"]["feed"]["lineClampLarge"] === "number" &&
-        (typedObj["views"]["recommended"] !== null &&
-            typeof typedObj["views"]["recommended"] === "object" ||
-            typeof typedObj["views"]["recommended"] === "function") &&
-        typeof typedObj["views"]["recommended"]["isEnabled"] === "boolean" &&
-        (typedObj["views"]["related"] !== null &&
-            typeof typedObj["views"]["related"] === "object" ||
-            typeof typedObj["views"]["related"] === "function") &&
-        typeof typedObj["views"]["related"]["isEnabled"] === "boolean" &&
+        (typedObj["views"]["table"] !== null &&
+            typeof typedObj["views"]["table"] === "object" ||
+            typeof typedObj["views"]["table"] === "function") &&
+        typeof typedObj["views"]["table"]["isEnabled"] === "boolean" &&
+        typeof typedObj["views"]["table"]["order"] === "number" &&
         typeof typedObj["confirmBeforeDelete"] === "boolean" &&
         (typedObj["titleWrapping"] === "normal" ||
             typedObj["titleWrapping"] === "break-word") &&
@@ -629,25 +621,12 @@ export function isVaultExplorerPluginSettings(obj: unknown): obj is VaultExplore
         typeof typedObj["enableFileIcons"] === "boolean" &&
         typeof typedObj["loadBodyTags"] === "boolean" &&
         (typedObj["currentView"] === null ||
-            typedObj["currentView"] === TExplorerView.DASHBOARD ||
             typedObj["currentView"] === TExplorerView.GRID ||
             typedObj["currentView"] === TExplorerView.LIST ||
             typedObj["currentView"] === TExplorerView.FEED ||
-            typedObj["currentView"] === TExplorerView.TABLE ||
-            typedObj["currentView"] === TExplorerView.RECOMMENDED ||
-            typedObj["currentView"] === TExplorerView.RELATED) &&
+            typedObj["currentView"] === TExplorerView.TABLE) &&
         typeof typedObj["pageSize"] === "number" &&
         typeof typedObj["shouldCollapseFilters"] === "boolean" &&
-        Array.isArray(typedObj["viewOrder"]) &&
-        typedObj["viewOrder"].every((e: any) =>
-        (e === TExplorerView.DASHBOARD ||
-            e === TExplorerView.GRID ||
-            e === TExplorerView.LIST ||
-            e === TExplorerView.FEED ||
-            e === TExplorerView.TABLE ||
-            e === TExplorerView.RECOMMENDED ||
-            e === TExplorerView.RELATED)
-        ) &&
         typeof typedObj["configDir"] === "string" &&
         (typedObj["pluginVersion"] === null ||
             typeof typedObj["pluginVersion"] === "string") &&

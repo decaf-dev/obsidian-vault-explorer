@@ -33,6 +33,7 @@ import Migrate_1_40_0 from "./migrate_1_40_0";
 import Migrate_1_41_0 from "./migrate_1_41_0";
 import Migrate_1_42_0 from "./migrate_1_42_0";
 import Migrate_1_45_0 from "./migrate_1_45_0";
+import Migrate_1_46_0 from "./migrate_1_46_0";
 
 const migrations: TMigration[] = [
 	{
@@ -194,6 +195,11 @@ const migrations: TMigration[] = [
 		from: "1.44.6",
 		to: "1.45.0",
 		migrate: Migrate_1_45_0,
+	},
+	{
+		from: "1.45.0",
+		to: "1.46.0",
+		migrate: Migrate_1_46_0,
 	},
 ];
 
