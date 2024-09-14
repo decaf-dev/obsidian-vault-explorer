@@ -6,7 +6,6 @@
 	export let data: FileRenderData[];
 	export let startIndex: number;
 	export let pageLength: number;
-	export let showTags: boolean;
 	export let isSmallScreenSize: boolean;
 	export let enablePremiumFeatures: boolean;
 
@@ -28,7 +27,6 @@
 	{#each filteredItems as fileRenderData (fileRenderData.id)}
 		<ListItem
 			{enablePremiumFeatures}
-			{showTags}
 			displayName={fileRenderData.displayName}
 			extension={fileRenderData.extension}
 			baseName={fileRenderData.baseName}

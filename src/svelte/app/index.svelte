@@ -13,6 +13,10 @@
 		TSortFilter,
 		TExplorerView,
 		CoverImageFit,
+		TGridView,
+		TFeedView,
+		TTableView,
+		TListView,
 	} from "src/types";
 	import store from "../shared/services/store";
 	import VaultExplorerPlugin from "src/main";
@@ -65,28 +69,30 @@
 	let plugin: VaultExplorerPlugin;
 	let ref: HTMLElement | null = null;
 
-	let startOfTodayMillis: number;
-	let startOfThisWeekMillis: number;
-	let startOfLastWeekMillis: number;
+	let startOfTodayMillis: number = -1;
+	let startOfThisWeekMillis: number = -1;
+	let startOfLastWeekMillis: number = -1;
 
 	let shouldCollapseFilters: boolean = false;
 
 	let pageSize: number = 0;
 	let searchFilter: TSearchFilter = {
-		isEnabled: true,
+		isEnabled: false,
 		value: "",
 	};
+
 	let sortFilter: TSortFilter = {
-		isEnabled: true,
+		isEnabled: false,
 		value: "file-name-asc",
 	};
+
 	let customFilter: TCustomFilter = {
-		isEnabled: true,
-		groups: [],
+		isEnabled: false,
 		selectedGroupId: "",
+		groups: [],
 	};
 
-	let currentView: TExplorerView | null = TExplorerView.GRID;
+	let currentView: TExplorerView | null = null;
 
 	let frontmatterCacheTime: number = Date.now();
 	let propertySettingsTime: number = Date.now();
@@ -101,14 +107,48 @@
 	let contentCache: FileContentCache = new Map();
 	let randomSortCache: RandomFileSortCache = new Map();
 
-	let viewOrder: TExplorerView[] = [];
-	let showListViewTags: boolean = false;
 	let isSmallScreenSize: boolean = false;
 	let enablePremiumFeatures: boolean = false;
+
+	//Views
+	let gridView: TGridView = {
+		isEnabled: true,
+		order: 0,
+		coverImageSources: [],
+		coverImageFit: "contain",
+		loadSocialMediaImage: false,
+	};
+
+	let listView: TListView = {
+		showTags: false,
+		isEnabled: true,
+		order: 1,
+	};
+
+	let feedView: TFeedView = {
+		isEnabled: true,
+		order: 2,
+		collapseStyle: "no-new-lines",
+		removeH1: true,
+		lineClampSmall: 2,
+		lineClampMedium: 3,
+		lineClampLarge: 5,
+	};
+
+	let tableView: TTableView = {
+		isEnabled: true,
+		order: 3,
+	};
+
+	let initialRender = true;
 
 	// ============================================
 	// Lifecycle hooks
 	// ============================================
+
+	onMount(() => {
+		initialRender = false;
+	});
 
 	License.getInstance()
 		.getHasValidKeyStore()
@@ -132,18 +172,20 @@
 		loadedFiles = value;
 	});
 
-	store.plugin.subscribe(async (p) => {
+	store.plugin.subscribe((p) => {
 		plugin = p;
 
 		const { app, settings } = plugin;
-		showListViewTags = settings.views.list.showTags;
 		shouldCollapseFilters = settings.shouldCollapseFilters;
 		pageSize = settings.pageSize;
 		searchFilter = settings.filters.search;
 		sortFilter = settings.filters.sort;
 		currentView = settings.currentView;
 		customFilter = settings.filters.custom;
-		viewOrder = settings.viewOrder;
+		gridView = settings.views.grid;
+		listView = settings.views.list;
+		tableView = settings.views.table;
+		feedView = settings.views.feed;
 
 		if (settings.enableClockUpdates) {
 			setTimeValuesUpdateInterval();
@@ -154,6 +196,7 @@
 		fileContentStore.load(app);
 		randomFileSortStore.load(app);
 	});
+
 	onMount(() => {
 		function handleFilterToggleSettingChange() {
 			Logger.trace({
@@ -402,8 +445,11 @@
 				message: "called",
 			});
 
-			viewOrder = plugin.settings.viewOrder;
 			currentView = plugin.settings.currentView;
+			gridView = plugin.settings.views.grid;
+			listView = plugin.settings.views.list;
+			tableView = plugin.settings.views.table;
+			feedView = plugin.settings.views.feed;
 		}
 
 		EventManager.getInstance().on(
@@ -565,7 +611,6 @@
 	// Functions
 	// ============================================
 	const debounceSearchFilterChange = _.debounce((e) => {
-		if (searchFilter == null) return;
 		searchFilter.value = e.target.value;
 	}, DEBOUNCE_INPUT_TIME);
 
@@ -603,13 +648,17 @@
 	}
 
 	async function saveSettings() {
+		if (initialRender) return;
+
 		plugin.settings.filters.search = searchFilter;
 		plugin.settings.filters.sort = sortFilter;
 		plugin.settings.currentView = currentView;
 		plugin.settings.filters.custom = customFilter;
-		plugin.settings.viewOrder = viewOrder;
 		plugin.settings.shouldCollapseFilters = shouldCollapseFilters;
-		plugin.settings.views.list.showTags = showListViewTags;
+		plugin.settings.views.list = listView;
+		plugin.settings.views.grid = gridView;
+		plugin.settings.views.table = tableView;
+		plugin.settings.views.feed = feedView;
 		await plugin.saveSettings();
 	}
 
@@ -661,30 +710,42 @@
 		nativeEvent.preventDefault();
 	}
 
-	function handleViewDragStart(e: CustomEvent, id: string) {
+	function handleViewDragStart(e: CustomEvent, type: TExplorerView) {
 		const { nativeEvent } = e.detail;
-		nativeEvent.dataTransfer.setData("text", id);
+		nativeEvent.dataTransfer.setData("text", type);
 		nativeEvent.dataTransfer.effectAllowed = "move";
 	}
 
-	function handleViewDrop(e: CustomEvent, id: string) {
+	function handleViewDrop(e: CustomEvent, type: TExplorerView) {
 		const { nativeEvent } = e.detail;
 		const dragId = nativeEvent.dataTransfer.getData("text");
 		nativeEvent.dataTransfer.dropEffect = "move";
 
-		const draggedIndex = viewOrder.findIndex((view) => view === dragId);
-		const dragged = viewOrder.find((view) => view === dragId);
+		const views = {
+			[TExplorerView.GRID]: gridView,
+			[TExplorerView.LIST]: listView,
+			[TExplorerView.FEED]: feedView,
+			[TExplorerView.TABLE]: tableView,
+		};
 
-		const droppedIndex = viewOrder.findIndex((view) => view === id);
-		const dropped = viewOrder.find((view) => view === id);
+		const draggedView = Object.entries(views).find(
+			([key]) => key === dragId,
+		);
 
-		if (!dragged || !dropped || draggedIndex === -1 || droppedIndex === -1)
-			return;
+		const droppedView = Object.entries(views).find(([key]) => key === type);
 
-		let newViewOrder = [...viewOrder];
-		newViewOrder[draggedIndex] = dropped;
-		newViewOrder[droppedIndex] = dragged;
-		viewOrder = newViewOrder;
+		// Ensure both dragged and dropped views are found
+		if (!draggedView || !droppedView) return;
+
+		// Swap the order properties of the dragged and dropped views
+		const tempOrder = draggedView[1].order;
+		draggedView[1].order = droppedView[1].order;
+		droppedView[1].order = tempOrder;
+
+		gridView = views[TExplorerView.GRID];
+		listView = views[TExplorerView.LIST];
+		feedView = views[TExplorerView.FEED];
+		tableView = views[TExplorerView.TABLE];
 	}
 
 	function handleGroupDrop(e: CustomEvent) {
@@ -874,7 +935,10 @@
 		sortFilter,
 		currentView,
 		customFilter,
-		viewOrder,
+		listView,
+		gridView,
+		tableView,
+		feedView,
 		shouldCollapseFilters,
 		saveSettings();
 
@@ -891,6 +955,22 @@
 	$: startIndex = (currentPage - 1) * pageSize;
 	$: pageLength = Math.min(pageSize, renderData.length - startIndex);
 	$: endIndex = startIndex + pageLength;
+
+	let views: Record<
+		TExplorerView,
+		TGridView | TListView | TFeedView | TTableView
+	>;
+	$: views = {
+		[TExplorerView.GRID]: gridView,
+		[TExplorerView.LIST]: listView,
+		[TExplorerView.FEED]: feedView,
+		[TExplorerView.TABLE]: tableView,
+	};
+
+	$: orderedViews = Object.entries(views)
+		.filter((view) => view[1].order >= 0) // Filter out views with negative order values
+		.sort((a, b) => a[1].order - b[1].order)
+		.map((entry) => entry[0]) as TExplorerView[]; // Sort by order value
 </script>
 
 <div class="vault-explorer" bind:this={ref}>
@@ -921,30 +1001,20 @@
 	{/if}
 	<Wrap align="center" spacingY="sm" justify="space-between">
 		<div class="vault-explorer-view-select">
-			<!-- <Stack spacing="sm"> -->
-			<TabList
-				initialSelectedIndex={viewOrder.findIndex(
-					(view) => view === currentView,
-				)}
-			>
-				{#each viewOrder as view}
-					<Tab
-						draggable={true}
-						on:click={() => (currentView = view)}
-						on:dragstart={(e) => handleViewDragStart(e, view)}
-						on:dragover={handleViewDragOver}
-						on:drop={(e) => handleViewDrop(e, view)}
-						>{getDisplayNameForView(view)}</Tab
-					>
-				{/each}
-			</TabList>
-			<!-- <IconButton
-					iconId="ellipsis-vertical"
-					ariaLabel="View options"
-					noPadding
-					on:click={() => {}}
-				/> -->
-			<!-- </Stack> -->
+			{#if currentView !== null}
+				<TabList initialSelectedIndex={views[currentView].order}>
+					{#each orderedViews as view}
+						<Tab
+							draggable={true}
+							on:click={() => (currentView = view)}
+							on:dragstart={(e) => handleViewDragStart(e, view)}
+							on:dragover={handleViewDragOver}
+							on:drop={(e) => handleViewDrop(e, view)}
+							>{getDisplayNameForView(view)}</Tab
+						>
+					{/each}
+				</TabList>
+			{/if}
 		</div>
 		<Flex>
 			{#if searchFilter.isEnabled}
@@ -982,7 +1052,6 @@
 		<ListView
 			data={renderData}
 			{isSmallScreenSize}
-			showTags={showListViewTags}
 			{startIndex}
 			{pageLength}
 			{enablePremiumFeatures}

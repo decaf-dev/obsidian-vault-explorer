@@ -14,7 +14,12 @@ import {
 } from "src/logger/constants";
 import Logger from "js-logger";
 import { stringToLogLevel } from "src/logger";
-import { CollapseStyle, CoverImageFit, TExplorerView } from "src/types";
+import {
+	CollapseStyle,
+	CoverImageFit,
+	TExplorerView,
+	VaultExplorerPluginSettings,
+} from "src/types";
 import EventManager from "src/event/event-manager";
 import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 import ImageSourceApp from "../svelte/image-source-app/index.svelte";
@@ -158,25 +163,16 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Views").setHeading();
 
-		// new Setting(containerEl).setName("Dashboard view").addToggle((toggle) =>
-		// 	toggle
-		// 		.setValue(this.plugin.settings.views.dashboard.isEnabled)
-		// 		.onChange(async (value) => {
-		// 			this.plugin.settings.views.dashboard.isEnabled = value;
-		// 			this.updateViewOrder(TExplorerView.DASHBOARD, value);
-		// 			await this.plugin.saveSettings();
-		// 			EventManager.getInstance().emit(
-		// 				PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
-		// 			);
-		// 		})
-		// );
-
 		new Setting(containerEl).setName("Grid view").addToggle((toggle) =>
 			toggle
 				.setValue(this.plugin.settings.views.grid.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.grid.isEnabled = value;
-					this.updateViewOrder(TExplorerView.GRID, value);
+					this.updateViewOrder(
+						this.plugin.settings,
+						TExplorerView.GRID,
+						value
+					);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
 						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
@@ -189,7 +185,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.list.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.list.isEnabled = value;
-					this.updateViewOrder(TExplorerView.LIST, value);
+					this.updateViewOrder(
+						this.plugin.settings,
+						TExplorerView.LIST,
+						value
+					);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
 						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
@@ -202,7 +202,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.feed.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.feed.isEnabled = value;
-					this.updateViewOrder(TExplorerView.FEED, value);
+					this.updateViewOrder(
+						this.plugin.settings,
+						TExplorerView.FEED,
+						value
+					);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
 						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
@@ -215,42 +219,17 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.views.table.isEnabled)
 				.onChange(async (value) => {
 					this.plugin.settings.views.table.isEnabled = value;
-					this.updateViewOrder(TExplorerView.TABLE, value);
+					this.updateViewOrder(
+						this.plugin.settings,
+						TExplorerView.TABLE,
+						value
+					);
 					await this.plugin.saveSettings();
 					EventManager.getInstance().emit(
 						PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
 					);
 				})
 		);
-
-		// new Setting(containerEl)
-		// 	.setName("Recommended view")
-		// 	.addToggle((toggle) =>
-		// 		toggle
-		// 			.setValue(this.plugin.settings.views.recommended.isEnabled)
-		// 			.onChange(async (value) => {
-		// 				this.plugin.settings.views.recommended.isEnabled =
-		// 					value;
-		// 				this.updateViewOrder(TExplorerView.RECOMMENDED, value);
-		// 				await this.plugin.saveSettings();
-		// 				EventManager.getInstance().emit(
-		// 					PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
-		// 				);
-		// 			})
-		// 	);
-
-		// new Setting(containerEl).setName("Related view").addToggle((toggle) =>
-		// 	toggle
-		// 		.setValue(this.plugin.settings.views.related.isEnabled)
-		// 		.onChange(async (value) => {
-		// 			this.plugin.settings.views.related.isEnabled = value;
-		// 			this.updateViewOrder(TExplorerView.RELATED, value);
-		// 			await this.plugin.saveSettings();
-		// 			EventManager.getInstance().emit(
-		// 				PluginEvent.VIEW_TOGGLE_SETTING_CHANGE
-		// 			);
-		// 		})
-		// );
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
@@ -717,26 +696,47 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		this.imageSourceApp?.$destroy();
 	}
 
-	private updateViewOrder(view: TExplorerView, value: boolean) {
+	private updateViewOrder(
+		settings: VaultExplorerPluginSettings,
+		view: TExplorerView,
+		value: boolean
+	) {
+		const views = {
+			[TExplorerView.GRID]: { ...settings.views.grid },
+			[TExplorerView.LIST]: { ...settings.views.list },
+			[TExplorerView.FEED]: { ...settings.views.feed },
+			[TExplorerView.TABLE]: { ...settings.views.table },
+		};
+
+		const maxOrder = Math.max(
+			views[TExplorerView.GRID].order,
+			views[TExplorerView.LIST].order,
+			views[TExplorerView.FEED].order,
+			views[TExplorerView.TABLE].order
+		);
+
+		const viewToUpdate = views[view];
+
 		if (value) {
-			this.plugin.settings.viewOrder.push(view);
-
-			//If the user turned off all views, set the current view to the first view that is turned on
-			if (this.plugin.settings.currentView == null)
-				this.plugin.settings.currentView = view;
+			viewToUpdate.order = maxOrder + 1;
 		} else {
-			const filtered = this.plugin.settings.viewOrder.filter(
-				(v) => v !== view
-			);
-			this.plugin.settings.viewOrder = filtered;
-
-			//If the user turned off the current view, set the current view to the first view
-			//that is turned on, otherwise set it to null
-			if (filtered.length > 0) {
-				this.plugin.settings.currentView = filtered[0];
-			} else {
-				this.plugin.settings.currentView = null;
-			}
+			Object.values(views).forEach((view) => {
+				if (view.order > viewToUpdate.order) {
+					view.order--;
+				}
+			});
+			viewToUpdate.order = -1;
 		}
+
+		const currentViewEntry = Object.entries(views).find(
+			(v) => v[1].order === 0
+		);
+
+		this.plugin.settings.currentView = (currentViewEntry?.[0] ??
+			null) as TExplorerView | null;
+		this.plugin.settings.views.grid = views[TExplorerView.GRID];
+		this.plugin.settings.views.list = views[TExplorerView.LIST];
+		this.plugin.settings.views.feed = views[TExplorerView.FEED];
+		this.plugin.settings.views.table = views[TExplorerView.TABLE];
 	}
 }
