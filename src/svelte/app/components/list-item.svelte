@@ -18,7 +18,8 @@
 	export let extension: string;
 	export let path: string;
 	export let tags: string[] | null;
-	export let showTags: boolean;
+
+	let showTags: boolean;
 	export let isSmallScreenSize: boolean;
 	export let enablePremiumFeatures: boolean;
 
