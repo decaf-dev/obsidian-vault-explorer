@@ -17,3 +17,19 @@ export const isVersionLessThan = (oldVersion: string, newVersion: string) => {
 
 	return false;
 };
+
+export const parseStringToObject = (input: string): Record<string, string> => {
+	const lines = input.split("\n");
+	let obj: Record<string, string> = {};
+
+	const regex = /(\w+):\s*(\w+)/;
+
+	for (const line of lines) {
+		const match = line.match(regex);
+		if (match) {
+			obj[match[1]] = match[2];
+		}
+	}
+
+	return obj;
+};
