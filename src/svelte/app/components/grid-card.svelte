@@ -357,9 +357,14 @@
 <style>
 	.vault-explorer-grid-card {
 		width: 100%;
-		max-width: 425px;
 		box-shadow: var(--shadow-s);
 		border-radius: var(--radius-m);
+	}
+
+	@container grid-container (min-width: 500px) {
+		.vault-explorer-grid-card {
+			max-width: min(50% - 1rem, 425px);
+		}
 	}
 
 	.vault-explorer-grid-card:focus-visible {

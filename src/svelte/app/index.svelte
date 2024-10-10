@@ -142,6 +142,14 @@
 
 	let initialRender = true;
 
+	// Embedded settings
+	export let embedSettings: Record<string, any> = {};
+
+	let embedded = embedSettings?.embedded ?? false;
+	let embeddedGroup = embedSettings?.group ?? null;
+	let embeddedView = embedSettings?.view ?? null;
+
+
 	// ============================================
 	// Lifecycle hooks
 	// ============================================
@@ -607,6 +615,23 @@
 		};
 	});
 
+	onMount(() => {
+		if (embedded && embeddedGroup) {
+			selectGroupByName(embeddedGroup);
+		}
+		if (embedded && embeddedView) {
+			if (embeddedView === "grid") {
+				currentView = TExplorerView.GRID;
+			} else if (embeddedView === "list") {
+				currentView = TExplorerView.LIST;
+			} else if (embeddedView === "feed") {
+				currentView = TExplorerView.FEED;
+			} else if (embeddedView === "table") {
+				currentView = TExplorerView.TABLE;
+			}
+		}
+	});
+
 	// ============================================
 	// Functions
 	// ============================================
@@ -660,6 +685,22 @@
 		plugin.settings.views.table = tableView;
 		plugin.settings.views.feed = feedView;
 		await plugin.saveSettings();
+	}
+
+	// Note: Multiple groups can be the same name, in which case the first group found will be selected
+	function selectGroupByName(name: string) {
+		const { groups } = customFilter;
+		const group = groups.find((group) => group.name === name);
+		if (group) {
+			customFilter.selectedGroupId = group.id;
+			customFilter.groups = groups.map((group) => {
+				if (group.id === customFilter.selectedGroupId) {
+					return { ...group, isEnabled: true };
+				} else {
+					return { ...group, isEnabled: false };
+				}
+			});
+		}
 	}
 
 	//TODO refactor
@@ -974,7 +1015,7 @@
 </script>
 
 <div class="vault-explorer" bind:this={ref}>
-	{#if shouldCollapseFilters === false}
+	{#if shouldCollapseFilters === false && !embedded || (embedded && !embeddedGroup)}
 		<div class="vault-explorer-filters">
 			<Stack spacing="sm" direction="column">
 				<Flex justify="space-between">

@@ -49,6 +49,8 @@
 		flex-wrap: wrap;
 		row-gap: 2rem;
 		column-gap: 2rem;
+		container-type: inline-size;
+		container-name: grid-container;
 		/* grid-template-columns: repeat(auto-fit, minmax(200px, 300px)); */
 	}
 </style>

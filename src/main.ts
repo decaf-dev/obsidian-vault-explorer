@@ -16,11 +16,13 @@ import Logger from "js-logger";
 import { formatMessageForLogger, stringToLogLevel } from "./logger";
 import { moveFocus } from "./focus-utils";
 import { PluginEvent } from "./event/types";
-import { isVersionLessThan } from "./utils";
+import { isVersionLessThan, parseStringToObject } from "./utils";
 import License from "./svelte/shared/services/license";
 import { clearSMICache } from "./svelte/app/services/smi-cache";
 import store from "./svelte/shared/services/store";
 import "./styles.css";
+
+import App from "./svelte/app/index.svelte";
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -61,6 +63,20 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.app.workspace.onLayoutReady(() => {
 			this.layoutReady = true;
 		});
+
+		this.registerMarkdownCodeBlockProcessor(
+			"vault-explorer",
+			(source, el) => {
+				const embedSettings = parseStringToObject(source);
+
+				new App({
+					target: el,
+					props: {
+						embedSettings: { ...embedSettings, embedded: true },
+					},
+				});
+			}
+		);
 	}
 
 	private registerEvents() {
