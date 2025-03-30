@@ -20,7 +20,7 @@
 		TTableView,
 	} from "src/types";
 
-	import { TExplorerView, } from "src/types";
+	import { TExplorerView } from "src/types";
 	import { onMount } from "svelte";
 	import Flex from "../shared/components/flex.svelte";
 	import IconButton from "../shared/components/icon-button.svelte";
@@ -29,7 +29,6 @@
 	import TabList from "../shared/components/tab-list.svelte";
 	import Tab from "../shared/components/tab.svelte";
 	import Wrap from "../shared/components/wrap.svelte";
-	import License from "../shared/services/license";
 	import store from "../shared/services/store";
 	import {
 		getStartOfLastWeekMillis,
@@ -109,7 +108,6 @@
 	let randomSortCache: RandomFileSortCache = new Map();
 
 	let isSmallScreenSize: boolean = false;
-	let enablePremiumFeatures: boolean = false;
 
 	//Views
 	let gridView: TGridView = {
@@ -150,12 +148,6 @@
 	onMount(() => {
 		initialRender = false;
 	});
-
-	License.getInstance()
-		.getHasValidKeyStore()
-		.subscribe((hasValidKey) => {
-			enablePremiumFeatures = hasValidKey;
-		});
 
 	randomFileSortStore.subscribe((value) => {
 		randomSortCache = value;
@@ -1046,7 +1038,6 @@
 			data={renderData}
 			{startIndex}
 			{pageLength}
-			{enablePremiumFeatures}
 			on:coverImageFitChange={handleCoverImageFitChange}
 		/>
 	{:else if currentView === "list"}
@@ -1055,22 +1046,11 @@
 			{isSmallScreenSize}
 			{startIndex}
 			{pageLength}
-			{enablePremiumFeatures}
 		/>
 	{:else if currentView === "table"}
-		<TableView
-			data={renderData}
-			{startIndex}
-			{pageLength}
-			{enablePremiumFeatures}
-		/>
+		<TableView data={renderData} {startIndex} {pageLength} />
 	{:else if currentView === "feed"}
-		<FeedView
-			data={renderData}
-			{startIndex}
-			{pageLength}
-			{enablePremiumFeatures}
-		/>
+		<FeedView data={renderData} {startIndex} {pageLength} />
 	{/if}
 	<PaginationIndicator
 		{startIndex}

@@ -16,7 +16,6 @@ import { formatMessageForLogger, stringToLogLevel } from "./logger";
 import { preformMigrations } from "./migrations";
 import "./styles.css";
 import { clearSMICache } from "./svelte/app/services/smi-cache";
-import License from "./svelte/shared/services/license";
 import store from "./svelte/shared/services/store";
 import type { VaultExplorerPluginSettings } from "./types";
 import { isVersionLessThan } from "./utils";
@@ -30,8 +29,6 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.setupLogger();
 
 		store.plugin.set(this);
-
-		await License.getInstance().loadStoredKey();
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
@@ -202,11 +199,6 @@ export default class VaultExplorerPlugin extends Plugin {
 					//Clean up the old device id from the versioning system
 					const LOCAL_STORAGE_ID = "vault-explorer-id";
 					localStorage.removeItem(LOCAL_STORAGE_ID);
-
-					//Clean up the old device id from the versioning system
-					const LOCAL_STORAGE_LICENSE_KEY =
-						"vault-explorer-license-key";
-					localStorage.removeItem(LOCAL_STORAGE_LICENSE_KEY);
 				}
 				if (isVersionLessThan(loadedVersion, "1.37.1")) {
 					console.log("Clearing image cache");

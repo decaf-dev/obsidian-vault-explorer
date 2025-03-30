@@ -1,17 +1,17 @@
 <script lang="ts">
-	import VaultExplorerPlugin from "src/main";
-	import store from "../../shared/services/store";
-	import Tag from "src/svelte/shared/components/tag.svelte";
-	import Wrap from "src/svelte/shared/components/wrap.svelte";
-	import Icon from "src/svelte/shared/components/icon.svelte";
-	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { getIconIdForFile } from "../services/file-icon";
-	import { onMount } from "svelte";
+	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
+	import VaultExplorerPlugin from "src/main";
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import Stack from "src/svelte/shared/components/stack.svelte";
+	import Tag from "src/svelte/shared/components/tag.svelte";
+	import Wrap from "src/svelte/shared/components/wrap.svelte";
+	import { onMount } from "svelte";
+	import store from "../../shared/services/store";
 	import { openContextMenu } from "../services/context-menu";
+	import { getIconIdForFile } from "../services/file-icon";
 	import { openInCurrentTab } from "../services/open-file";
-	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -21,7 +21,6 @@
 
 	let showTags: boolean;
 	export let isSmallScreenSize: boolean;
-	export let enablePremiumFeatures: boolean;
 
 	let enableFileIcons: boolean = false;
 	let ref: HTMLElement | null = null;
@@ -78,14 +77,7 @@
 	function handleItemContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
 		const { app, settings } = plugin;
-		openContextMenu(
-			nativeEvent,
-			path,
-			app,
-			settings,
-			enablePremiumFeatures,
-			{},
-		);
+		openContextMenu(nativeEvent, path, app, settings, {});
 	}
 
 	function handleItemMouseOver(e: MouseEvent) {
