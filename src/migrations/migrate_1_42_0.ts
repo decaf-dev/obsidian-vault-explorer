@@ -1,6 +1,6 @@
+import type { VaultExplorerPluginSettings_1_41_1 } from "src/types/types-1.41.1";
+import type { VaultExplorerPluginSettings_1_44_6 } from "src/types/types-1.44.6";
 import MigrationInterface from "./migration_interface";
-import { VaultExplorerPluginSettings_1_41_1 } from "src/types/types-1.41.1";
-import { VaultExplorerPluginSettings_1_44_6 } from "src/types/types-1.44.6";
 
 export default class Migrate_1_42_0 implements MigrationInterface {
 	migrate(data: Record<string, unknown>) {

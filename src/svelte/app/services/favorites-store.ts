@@ -1,8 +1,8 @@
 import Logger from "js-logger";
 import _ from "lodash";
 import { App, normalizePath, Notice } from "obsidian";
-import { VaultExplorerPluginSettings } from "src/types";
-import { Writable, writable } from "svelte/store";
+import type { VaultExplorerPluginSettings } from "src/types";
+import { type Writable, writable } from "svelte/store";
 import { parseItems, stringifyItems } from "./utils/json-utils";
 
 interface FavoritesItem {

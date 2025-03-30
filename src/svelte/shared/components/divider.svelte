@@ -5,7 +5,7 @@
 	$: className = `vault-explorer-divider vault-explorer-divider--${direction}`;
 </script>
 
-<div class={className} style="border-width: {borderWidth}" />
+<div class={className} style="border-width: {borderWidth}"></div>
 
 <style>
 	.vault-explorer-divider--horizontal {

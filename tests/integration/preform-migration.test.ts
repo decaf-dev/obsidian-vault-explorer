@@ -2,7 +2,7 @@ import { preformMigrations } from "src/migrations";
 import { isVaultExplorerPluginSettings } from "src/types/index.guard";
 import {
 	TextFilterCondition_0_3_3,
-	VaultExplorerPluginSettings_0_3_3,
+	type VaultExplorerPluginSettings_0_3_3,
 } from "src/types/types-0.3.3";
 import {
 	CheckboxFilterCondition_0_5_5,
@@ -11,7 +11,7 @@ import {
 	NumberFilterCondition_0_5_5,
 	PropertyFilterType_0_5_5,
 	TextFilterCondition_0_5_5,
-	VaultExplorerPluginSettings_0_5_5,
+	type VaultExplorerPluginSettings_0_5_5,
 } from "src/types/types-0.5.5";
 
 describe("preformMigrations", () => {

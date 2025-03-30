@@ -1,6 +1,6 @@
-import { FrontMatterCache } from "obsidian";
-import { PropertyType } from "src/types";
+import type { FrontMatterCache } from "obsidian";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
+import { PropertyType } from "src/types";
 
 describe("loadPropertyValue", () => {
 	it("returns null if frontmatter is undefined", () => {

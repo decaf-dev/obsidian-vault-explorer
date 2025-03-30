@@ -7,7 +7,7 @@ const DATE_FORMATS = ["YYYY-MM-DDTHH:mm:ss", "YYYY-MM-DDTHH:mm", "YYYY-MM-DD"];
  * @returns - The current time in milliseconds
  */
 export const getStartOfTodayMillis = () => {
-	return moment().startOf("day").valueOf();
+	return moment.default().startOf("day").valueOf();
 };
 
 /**
@@ -16,28 +16,28 @@ export const getStartOfTodayMillis = () => {
  * @returns - The start of the day in milliseconds
  */
 export const getStartOfDayMillis = (date: string) => {
-	return moment(date).startOf("day").valueOf();
-}
+	return moment.default(date).startOf("day").valueOf();
+};
 
 /**
  * Gets 12:00 AM of the current week in milliseconds. The week starts on Sunday.
  * @returns - The start of the week in milliseconds
  */
 export const getStartOfThisWeekMillis = () => {
-	return moment().startOf("week").valueOf();
+	return moment.default().startOf("week").valueOf();
 };
 
 export const getMomentDate = (date: string) => {
-	return moment(date, DATE_FORMATS, true);
-}
+	return moment.default(date, DATE_FORMATS, true);
+};
 
 export const getDateDaysAgo = (daysAgo: number) => {
-	return moment().subtract(daysAgo, "days").format("YYYY-MM-DD");
-}
+	return moment.default().subtract(daysAgo, "days").format("YYYY-MM-DD");
+};
 
 export const getDateDaysAhead = (daysAgo: number) => {
-	return moment().add(daysAgo, "days").format("YYYY-MM-DD");
-}
+	return moment.default().add(daysAgo, "days").format("YYYY-MM-DD");
+};
 
 /**
  * Gets 12:00 AM of the previous week in milliseconds. The week starts on Sunday.
@@ -45,10 +45,7 @@ export const getDateDaysAhead = (daysAgo: number) => {
  */
 export const getStartOfLastWeekMillis = () => {
 	//This is the Sunday the previous week
-	return moment()
-		.subtract(1, "weeks")
-		.startOf("week")
-		.valueOf();
+	return moment.default().subtract(1, "weeks").startOf("week").valueOf();
 };
 
 /**
@@ -57,13 +54,13 @@ export const getStartOfLastWeekMillis = () => {
  * @returns - The date in milliseconds
  */
 export const getTimeMillis = (date: string) => {
-	const momentDate = moment(date, DATE_FORMATS, true);
+	const momentDate = moment.default(date, DATE_FORMATS, true);
 
 	if (!momentDate.isValid()) {
 		throw new Error(`Date format not handled: ${date}`);
 	}
 	return momentDate.valueOf();
-}
+};
 
 /**
  * Checks if the date is supported
@@ -71,9 +68,9 @@ export const getTimeMillis = (date: string) => {
  * @returns - True if the date is supported, false otherwise
  */
 export const isDateSupported = (date: string) => {
-	const momentDate = moment(date, DATE_FORMATS, true);
+	const momentDate = moment.default(date, DATE_FORMATS, true);
 	return momentDate.isValid();
-}
+};
 
 /**
  * Gets 11:59 PM of the current day in milliseconds
@@ -81,12 +78,12 @@ export const isDateSupported = (date: string) => {
  * @returns - The end of the day in milliseconds
  */
 export const getEndOfDayMillis = (date: string) => {
-	const day = moment(date);
+	const day = moment.default(date);
 	day.set({
 		hour: 23,
 		minute: 59,
 		second: 59,
-		millisecond: 999
+		millisecond: 999,
 	});
 	return day.valueOf();
-}
+};

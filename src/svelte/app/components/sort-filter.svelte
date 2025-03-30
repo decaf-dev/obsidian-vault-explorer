@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Menu } from "obsidian";
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
-	import { SortFilterOption } from "src/types";
+	import type { SortFilterOption } from "src/types";
 	import { createEventDispatcher } from "svelte";
 
 	export let value: SortFilterOption;

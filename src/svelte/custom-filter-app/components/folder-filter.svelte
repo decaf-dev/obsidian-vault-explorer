@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { FilterCondition, FilterOperator, FilterRuleType } from "src/types";
-	import FilterRule from "./filter-rule.svelte";
-	import { createEventDispatcher, onMount } from "svelte";
-	import store from "src/svelte/shared/services/store";
 	import { TFolder } from "obsidian";
-	import VaultExplorerPlugin from "src/main";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
+	import VaultExplorerPlugin from "src/main";
 	import SearchSelect from "src/svelte/shared/components/search-select.svelte";
+	import store from "src/svelte/shared/services/store";
+	import { type FilterCondition, type FilterOperator, FilterRuleType } from "src/types";
+	import { createEventDispatcher, onMount } from "svelte";
+	import FilterRule from "./filter-rule.svelte";
 
 	export let index: number;
 	export let id: string;

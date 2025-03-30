@@ -1,8 +1,8 @@
 import { moment } from "obsidian";
 
 export const formatAsBearTimeString = (milliseconds: number) => {
-	const now = moment();
-	const time = moment(milliseconds);
+	const now = moment.default();
+	const time = moment.default(milliseconds);
 
 	const diffInSeconds = now.diff(time, "seconds");
 	const diffInMinutes = now.diff(time, "minutes");

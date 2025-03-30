@@ -1,5 +1,5 @@
 import { LOG_LEVEL_WARN } from "./logger/constants";
-import { VaultExplorerPluginSettings, TExplorerView } from "./types";
+import { type VaultExplorerPluginSettings, TExplorerView } from "./types";
 
 export const VAULT_EXPLORER_VIEW = "vault-explorer";
 

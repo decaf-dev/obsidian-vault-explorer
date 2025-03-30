@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ListItem from "./list-item.svelte";
 
-	import { FileRenderData } from "../types";
+	import type { FileRenderData } from "../types";
 
 	export let data: FileRenderData[];
 	export let startIndex: number;

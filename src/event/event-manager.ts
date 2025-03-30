@@ -1,5 +1,5 @@
 import Logger from "js-logger";
-import { PluginEvent, EventCallback } from "./types";
+import { PluginEvent, type EventCallback } from "./types";
 
 export default class EventManager {
 	private static instance: EventManager;

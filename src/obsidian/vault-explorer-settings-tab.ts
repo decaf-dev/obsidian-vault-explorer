@@ -1,9 +1,6 @@
+import Logger from "js-logger";
 import { App, PluginSettingTab, Setting, SliderComponent } from "obsidian";
-import VaultExplorerPlugin from "src/main";
-import {
-	getDropdownOptionsForProperties,
-	getObsidianPropertiesByType,
-} from "./utils";
+import { stringToLogLevel } from "src/logger";
 import {
 	LOG_LEVEL_DEBUG,
 	LOG_LEVEL_ERROR,
@@ -12,21 +9,25 @@ import {
 	LOG_LEVEL_TRACE,
 	LOG_LEVEL_WARN,
 } from "src/logger/constants";
-import Logger from "js-logger";
-import { stringToLogLevel } from "src/logger";
-import {
+import VaultExplorerPlugin from "src/main";
+import type {
 	CollapseStyle,
 	CoverImageFit,
-	TExplorerView,
 	VaultExplorerPluginSettings,
 } from "src/types";
-import EventManager from "src/event/event-manager";
-import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
-import ImageSourceApp from "../svelte/image-source-app/index.svelte";
-import { PluginEvent } from "src/event/types";
+import {
+	getDropdownOptionsForProperties,
+	getObsidianPropertiesByType,
+} from "./utils";
 
-import "./styles.css";
+import EventManager from "src/event/event-manager";
+import { PluginEvent } from "src/event/types";
+import { TExplorerView } from "src/types";
+import ImageSourceApp from "../svelte/image-source-app/index.svelte";
+import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
+
 import { clearSMICache } from "src/svelte/app/services/smi-cache";
+import "./styles.css";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;

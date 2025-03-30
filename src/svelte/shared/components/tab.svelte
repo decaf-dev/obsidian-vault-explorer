@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { createEventDispatcher, getContext } from "svelte";
-	import { onMount } from "svelte";
-	import { Writable } from "svelte/store";
+	import { createEventDispatcher, getContext, onMount } from "svelte";
+	import type { Writable } from "svelte/store";
 	import { generateRandomId } from "../services/random";
 
 	const dispatch = createEventDispatcher();
@@ -105,3 +104,4 @@
 		background-color: var(--background-modifier-hover);
 	}
 </style>
+``

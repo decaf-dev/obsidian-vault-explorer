@@ -1,33 +1,33 @@
-import { App, FrontMatterCache, TFile } from "obsidian";
-import {
-	CoverImageFit,
-	PropertyType,
-	VaultExplorerPluginSettings,
-} from "src/types";
-import { FileRenderData } from "../types";
 import Logger from "js-logger";
+import { App, type FrontMatterCache, TFile } from "obsidian";
 import {
-	FileTextProperties,
+	type FileTextProperties,
 	loadPropertyValue,
 	loadTextProperties,
 } from "src/svelte/shared/services/load-property-value";
 import {
-	isDateSupported,
 	getTimeMillis,
+	isDateSupported,
 } from "src/svelte/shared/services/time-utils";
-import { isImageExtension } from "./utils/image-utils";
-import { removeFrontmatter } from "./utils/content-utils";
-import { getURIForWikiLinkTarget } from "./utils/wiki-link-utils";
-import { isUrl, isWikiLink } from "./link-utils/link-validators";
+import {
+	type CoverImageFit,
+	PropertyType,
+	type VaultExplorerPluginSettings,
+} from "src/types";
+import type { FileRenderData } from "../types";
+import {
+	getFirstExternalEmbed,
+	getFirstInternalEmbed,
+} from "./link-utils/link-getters";
 import {
 	getExternalEmbedTarget,
 	getInternalEmbedTarget,
 	getWikiLinkTarget,
 } from "./link-utils/link-target-getters";
-import {
-	getFirstExternalEmbed,
-	getFirstInternalEmbed,
-} from "./link-utils/link-getters";
+import { isUrl, isWikiLink } from "./link-utils/link-validators";
+import { removeFrontmatter } from "./utils/content-utils";
+import { isImageExtension } from "./utils/image-utils";
+import { getURIForWikiLinkTarget } from "./utils/wiki-link-utils";
 
 /**
  * Formats the file's data for rendering

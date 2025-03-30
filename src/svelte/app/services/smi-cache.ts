@@ -1,4 +1,4 @@
-import { DBSchema, openDB } from "idb";
+import { type DBSchema, openDB } from "idb";
 import Logger from "js-logger";
 import { Notice } from "obsidian";
 

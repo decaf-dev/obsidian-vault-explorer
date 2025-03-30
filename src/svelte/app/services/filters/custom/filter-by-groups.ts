@@ -1,28 +1,28 @@
-import { FrontMatterCache } from "obsidian";
-import {
-	TFilterRule,
-	TFilterGroup,
-	DatePropertyFilterValue,
-	PropertyFilterRule,
-	FilterRuleType,
+import type { FrontMatterCache } from "obsidian";
+import type {
+	ContentFilterRule,
 	FileNameFilterRule,
 	FolderFilterRule,
-	ContentFilterRule,
+	PropertyFilterRule,
+	TFilterGroup,
+	TFilterRule,
 } from "src/types";
+
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
-import { matchTextPropertyFilter } from "./match-text-property-filter";
-import { matchCheckboxPropertyFilter } from "./match-checkbox-property-filter";
-import { matchListPropertyFilter } from "./match-list-property-filter";
-import { matchDatePropertyFilter } from "./match-date-property-filter";
-import { matchNumberPropertyFilter } from "./match-number-property-filter";
 import {
 	getDateDaysAgo,
 	getDateDaysAhead,
 } from "src/svelte/shared/services/time-utils";
-import { matchFileNameFilter } from "./match-file-name-filter";
-import { matchContentFilter } from "./match-content-filter";
-import { matchFolderFilter } from "./match-folder-filter";
+import { DatePropertyFilterValue, FilterRuleType } from "src/types";
 import { removeFrontmatter } from "../../utils/content-utils";
+import { matchCheckboxPropertyFilter } from "./match-checkbox-property-filter";
+import { matchContentFilter } from "./match-content-filter";
+import { matchDatePropertyFilter } from "./match-date-property-filter";
+import { matchFileNameFilter } from "./match-file-name-filter";
+import { matchFolderFilter } from "./match-folder-filter";
+import { matchListPropertyFilter } from "./match-list-property-filter";
+import { matchNumberPropertyFilter } from "./match-number-property-filter";
+import { matchTextPropertyFilter } from "./match-text-property-filter";
 
 export const filterByGroups = (
 	fileName: string,

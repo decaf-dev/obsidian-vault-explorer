@@ -2,7 +2,7 @@ import {
 	FilterRuleType,
 	PropertyType,
 	TextFilterCondition,
-	TextPropertyFilterRule,
+	type TextPropertyFilterRule,
 } from "src/types";
 import { generateRandomId } from "../../shared/services/random";
 

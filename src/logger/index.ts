@@ -1,7 +1,13 @@
-import Logger, { ILogLevel } from "js-logger";
-import { LOG_LEVEL_OFF, LOG_LEVEL_ERROR, LOG_LEVEL_WARN, LOG_LEVEL_INFO, LOG_LEVEL_DEBUG, LOG_LEVEL_TRACE } from "./constants";
-import { FormattedLogMessage, LogMessageHeader } from "./types";
-
+import Logger, { type ILogLevel } from "js-logger";
+import {
+	LOG_LEVEL_DEBUG,
+	LOG_LEVEL_ERROR,
+	LOG_LEVEL_INFO,
+	LOG_LEVEL_OFF,
+	LOG_LEVEL_TRACE,
+	LOG_LEVEL_WARN,
+} from "./constants";
+import type { FormattedLogMessage, LogMessageHeader } from "./types";
 
 export const logLevelToString = (level: ILogLevel) => {
 	switch (level) {
@@ -20,7 +26,7 @@ export const logLevelToString = (level: ILogLevel) => {
 		default:
 			throw new Error("Unhandled log level");
 	}
-}
+};
 
 export const stringToLogLevel = (value: string) => {
 	switch (value) {
@@ -39,16 +45,21 @@ export const stringToLogLevel = (value: string) => {
 		default:
 			throw new Error(`Unhandled log level: ${value}`);
 	}
-}
+};
 
-export const formatMessageForLogger = (...args: unknown[]): FormattedLogMessage => {
+export const formatMessageForLogger = (
+	...args: unknown[]
+): FormattedLogMessage => {
 	const head: unknown = args[0];
 	const body = args[1] as unknown as Record<string, unknown>;
 	if (typeof args[0] == "object") {
 		const headers = head as LogMessageHeader;
 		const { fileName, functionName, message } = headers;
-		return { message: `[${fileName}:${functionName}] ${message}`, data: body };
+		return {
+			message: `[${fileName}:${functionName}] ${message}`,
+			data: body,
+		};
 	} else {
 		return { message: String(head), data: body };
 	}
-}
+};

@@ -1,26 +1,25 @@
 import { Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 
-import VaultExplorerView from "./obsidian/vault-explorer-view";
 import VaultExplorerSettingsTab from "./obsidian/vault-explorer-settings-tab";
+import VaultExplorerView from "./obsidian/vault-explorer-view";
 
-import { VaultExplorerPluginSettings } from "./types";
+import Logger from "js-logger";
 import {
 	DEFAULT_SETTINGS,
 	HOVER_LINK_SOURCE_ID,
 	VAULT_EXPLORER_VIEW,
 } from "./constants";
-import _ from "lodash";
 import EventManager from "./event/event-manager";
-import { preformMigrations } from "./migrations";
-import Logger from "js-logger";
-import { formatMessageForLogger, stringToLogLevel } from "./logger";
-import { moveFocus } from "./focus-utils";
 import { PluginEvent } from "./event/types";
-import { isVersionLessThan } from "./utils";
-import License from "./svelte/shared/services/license";
-import { clearSMICache } from "./svelte/app/services/smi-cache";
-import store from "./svelte/shared/services/store";
+import { moveFocus } from "./focus-utils";
+import { formatMessageForLogger, stringToLogLevel } from "./logger";
+import { preformMigrations } from "./migrations";
 import "./styles.css";
+import { clearSMICache } from "./svelte/app/services/smi-cache";
+import License from "./svelte/shared/services/license";
+import store from "./svelte/shared/services/store";
+import type { VaultExplorerPluginSettings } from "./types";
+import { isVersionLessThan } from "./utils";
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;

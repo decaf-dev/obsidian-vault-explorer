@@ -1,16 +1,11 @@
 import Migrate_0_4_0 from "./migrate_0_4_0";
-import Migrate_1_1_0 from "./migrate_1_1_0";
 import Migrate_1_0_0 from "./migrate_1_0_0";
-import Migrate_1_2_1 from "./migrate_1_2_1";
-import Migrate_1_3_0 from "./migrate_1_3_0";
-import Migrate_1_6_0 from "./migrate_1_6_0";
-import Migrate_1_6_1 from "./migrate_1_6_1";
-import Migrate_1_9_0 from "./migrate_1_9_0";
+import Migrate_1_10_0 from "./migrate_1_10_0";
+import Migrate_1_13_0 from "./migrate_1_13_0";
 import Migrate_1_14_0 from "./migrate_1_14_0";
 import Migrate_1_15_0 from "./migrate_1_15_0";
 import Migrate_1_17_0 from "./migrate_1_17_0";
-import Migrate_1_13_0 from "./migrate_1_13_0";
-import Migrate_1_10_0 from "./migrate_1_10_0";
+import Migrate_1_1_0 from "./migrate_1_1_0";
 import Migrate_1_21_0 from "./migrate_1_21_0";
 import Migrate_1_22_0 from "./migrate_1_22_0";
 import Migrate_1_23_0 from "./migrate_1_23_0";
@@ -18,8 +13,12 @@ import Migrate_1_23_1 from "./migrate_1_23_1";
 import Migrate_1_24_0 from "./migrate_1_24_0";
 import Migrate_1_25_0 from "./migrate_1_25_0";
 import Migrate_1_26_0 from "./migrate_1_26_0";
+import Migrate_1_2_1 from "./migrate_1_2_1";
+import Migrate_1_3_0 from "./migrate_1_3_0";
+import Migrate_1_6_0 from "./migrate_1_6_0";
+import Migrate_1_6_1 from "./migrate_1_6_1";
+import Migrate_1_9_0 from "./migrate_1_9_0";
 
-import { TMigration } from "./types";
 import { isVersionLessThan } from "src/utils";
 import Migrate_1_27_0 from "./migrate_1_27_0";
 import Migrate_1_29_0 from "./migrate_1_29_0";
@@ -34,6 +33,7 @@ import Migrate_1_41_0 from "./migrate_1_41_0";
 import Migrate_1_42_0 from "./migrate_1_42_0";
 import Migrate_1_45_0 from "./migrate_1_45_0";
 import Migrate_1_46_0 from "./migrate_1_46_0";
+import type { TMigration } from "./types";
 
 const migrations: TMigration[] = [
 	{

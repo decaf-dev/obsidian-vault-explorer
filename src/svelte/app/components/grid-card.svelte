@@ -1,29 +1,29 @@
 <script lang="ts">
-	import Tag from "../../shared/components/tag.svelte";
-	import Property from "../../shared/components/property.svelte";
-	import VaultExplorerPlugin from "src/main";
-	import store from "../../shared/services/store";
-	import Wrap from "src/svelte/shared/components/wrap.svelte";
-	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { createEventDispatcher, onMount } from "svelte";
+	import Logger from "js-logger";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
-	import Icon from "src/svelte/shared/components/icon.svelte";
-	import { getIconIdForFile } from "../services/file-icon";
 	import { PluginEvent } from "src/event/types";
-	import { openContextMenu } from "../services/context-menu";
-	import { openInCurrentTab } from "../services/open-file";
-	import { getDomainFromUrl } from "../services/utils/url-utils";
-	import Spacer from "src/svelte/shared/components/spacer.svelte";
+	import VaultExplorerPlugin from "src/main";
 	import Divider from "src/svelte/shared/components/divider.svelte";
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import Spacer from "src/svelte/shared/components/spacer.svelte";
+	import Stack from "src/svelte/shared/components/stack.svelte";
+	import Wrap from "src/svelte/shared/components/wrap.svelte";
+	import type { CoverImageFit } from "src/types";
+	import { createEventDispatcher, onMount } from "svelte";
+	import Property from "../../shared/components/property.svelte";
+	import Tag from "../../shared/components/tag.svelte";
+	import store from "../../shared/services/store";
+	import { openContextMenu } from "../services/context-menu";
 	import { fetchSocialMediaImage } from "../services/fetch-social-media-image";
+	import { getIconIdForFile } from "../services/file-icon";
+	import { openInCurrentTab } from "../services/open-file";
 	import {
 		getSMICacheEntry,
 		isSMICacheEntryExpired,
 		putSMICacheEntry,
 	} from "../services/smi-cache";
-	import { CoverImageFit } from "src/types";
-	import Logger from "js-logger";
+	import { getDomainFromUrl } from "../services/utils/url-utils";
 
 	type SocialMediaImageResult = {
 		status: "SUCCESS" | "NOT_FOUND" | "EXPIRED" | "NO_IMAGE";

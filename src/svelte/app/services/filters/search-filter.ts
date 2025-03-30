@@ -1,4 +1,4 @@
-import { FileRenderData } from "../../types";
+import type { FileRenderData } from "../../types";
 
 //TODO add tests
 export const filterBySearch = (file: FileRenderData, value: string) => {

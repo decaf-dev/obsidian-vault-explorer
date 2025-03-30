@@ -1,33 +1,32 @@
 <script lang="ts">
+	import Logger from "js-logger";
 	import EventManager from "src/event/event-manager";
-	import { onMount } from "svelte";
-	import store from "../shared/services/store";
+	import { PluginEvent } from "src/event/types";
 	import VaultExplorerPlugin from "src/main";
 	import {
 		CheckboxFilterCondition,
+		ContentFilterCondition,
 		DateFilterCondition,
+		DatePropertyFilterValue,
+		FileNameFilterCondition,
+		FilterRuleType,
+		FolderFilterCondition,
 		ListFilterCondition,
 		NumberFilterCondition,
-		TextFilterCondition,
-		DatePropertyFilterValue,
 		PropertyType,
-		FilterRuleType,
-		ContentFilterCondition,
-		FolderFilterCondition,
-		FileNameFilterCondition,
-		TFilterRule,
-		TFilterGroup,
+		TextFilterCondition,
+		type TFilterGroup,
+		type TFilterRule,
 	} from "src/types";
-	import { generateRandomId } from "../shared/services/random";
-	import { createPropertyFilter } from "./services/utils";
-	import GroupList from "./components/group-list.svelte";
+	import { onMount } from "svelte";
 	import Divider from "../shared/components/divider.svelte";
-	import Logger from "js-logger";
-	import { PluginEvent } from "src/event/types";
 	import IconButton from "../shared/components/icon-button.svelte";
-	import Stack from "../shared/components/stack.svelte";
 	import Spacer from "../shared/components/spacer.svelte";
+	import Stack from "../shared/components/stack.svelte";
+	import { generateRandomId } from "../shared/services/random";
+	import store from "../shared/services/store";
 	import FilterRuleList from "./components/filter-rule-list.svelte";
+	import { createPropertyFilter } from "./services/utils";
 
 	let selectedGroupId: string = "";
 	let groups: TFilterGroup[] = [];

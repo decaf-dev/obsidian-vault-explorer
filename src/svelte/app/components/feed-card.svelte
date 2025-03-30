@@ -1,11 +1,19 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { CollapseStyle } from "src/types";
+	import { HOVER_LINK_SOURCE_ID } from "src/constants";
 	import EventManager from "src/event/event-manager";
+	import { PluginEvent } from "src/event/types";
 	import VaultExplorerPlugin from "src/main";
-	import store from "src/svelte/shared/services/store";
-	import { formatAsBearTimeString } from "../services/time-string";
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import Spacer from "src/svelte/shared/components/spacer.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
+	import store from "src/svelte/shared/services/store";
+	import type { CollapseStyle } from "src/types";
+	import { onMount } from "svelte";
+	import { SCREEN_SIZE_LG, SCREEN_SIZE_MD } from "../constants";
+	import { openContextMenu } from "../services/context-menu";
+	import { getIconIdForFile } from "../services/file-icon";
+	import { openInCurrentTab } from "../services/open-file";
+	import { formatAsBearTimeString } from "../services/time-string";
 	import {
 		removeBoldMarkdown,
 		removeCodeBlocks,
@@ -20,14 +28,6 @@
 		removeNewLines,
 		removeWikiLinks,
 	} from "../services/utils/content-utils";
-	import Icon from "src/svelte/shared/components/icon.svelte";
-	import { getIconIdForFile } from "../services/file-icon";
-	import { PluginEvent } from "src/event/types";
-	import { openInCurrentTab } from "../services/open-file";
-	import { openContextMenu } from "../services/context-menu";
-	import { HOVER_LINK_SOURCE_ID } from "src/constants";
-	import { SCREEN_SIZE_LG, SCREEN_SIZE_MD } from "../constants";
-	import Spacer from "src/svelte/shared/components/spacer.svelte";
 
 	export let displayName: string;
 	export let baseName: string;
@@ -295,6 +295,7 @@
 		white-space: pre-wrap;
 		text-overflow: ellipsis;
 		-webkit-line-clamp: unset;
+		line-clamp: unset;
 	}
 
 	.vault-explorer-feed-card__title-text {

@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { openContextMenu } from "../services/context-menu";
-	import { FileRenderData } from "../types";
-	import store from "src/svelte/shared/services/store";
-	import VaultExplorerPlugin from "src/main";
-	import Tag from "src/svelte/shared/components/tag.svelte";
-	import Wrap from "src/svelte/shared/components/wrap.svelte";
-	import { openInCurrentTab } from "../services/open-file";
 	import { HOVER_LINK_SOURCE_ID } from "src/constants";
-	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { getIconIdForFile } from "../services/file-icon";
-	import Icon from "src/svelte/shared/components/icon.svelte";
 	import EventManager from "src/event/event-manager";
 	import { PluginEvent } from "src/event/types";
+	import VaultExplorerPlugin from "src/main";
+	import Icon from "src/svelte/shared/components/icon.svelte";
+	import Stack from "src/svelte/shared/components/stack.svelte";
+	import Tag from "src/svelte/shared/components/tag.svelte";
+	import Wrap from "src/svelte/shared/components/wrap.svelte";
+	import store from "src/svelte/shared/services/store";
+	import { onMount } from "svelte";
+	import { openContextMenu } from "../services/context-menu";
+	import { getIconIdForFile } from "../services/file-icon";
+	import { openInCurrentTab } from "../services/open-file";
+	import type { FileRenderData } from "../types";
 
 	interface TColumn {
 		key: string;

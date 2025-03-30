@@ -2,66 +2,67 @@
 	// ============================================
 	// Imports
 	// ============================================
-	import Stack from "../shared/components/stack.svelte";
-	import Flex from "../shared/components/flex.svelte";
-	import TabList from "../shared/components/tab-list.svelte";
-	import Tab from "../shared/components/tab.svelte";
+	import Logger from "js-logger";
+	import _ from "lodash";
 	import { TFile } from "obsidian";
-	import {
+	import EventManager from "src/event/event-manager";
+	import { PluginEvent } from "src/event/types";
+	import VaultExplorerPlugin from "src/main";
+	import CustomFilterModal from "src/obsidian/custom-filter-modal";
+	import type {
+		CoverImageFit,
 		TCustomFilter,
+		TFeedView,
+		TGridView,
+		TListView,
 		TSearchFilter,
 		TSortFilter,
-		TExplorerView,
-		CoverImageFit,
-		TGridView,
-		TFeedView,
 		TTableView,
-		TListView,
 	} from "src/types";
-	import store from "../shared/services/store";
-	import VaultExplorerPlugin from "src/main";
-	import GridView from "./components/grid-view.svelte";
-	import ListView from "./components/list-view.svelte";
-	import { filterBySearch } from "./services/filters/search-filter";
-	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
-	import { formatFileDataForRender } from "./services/render-data";
-	import _ from "lodash";
+
+	import { TExplorerView, } from "src/types";
 	import { onMount } from "svelte";
-	import EventManager from "src/event/event-manager";
-	import { getDisplayNameForView } from "./services/display-name";
+	import Flex from "../shared/components/flex.svelte";
+	import IconButton from "../shared/components/icon-button.svelte";
+	import Spacer from "../shared/components/spacer.svelte";
+	import Stack from "../shared/components/stack.svelte";
+	import TabList from "../shared/components/tab-list.svelte";
+	import Tab from "../shared/components/tab.svelte";
+	import Wrap from "../shared/components/wrap.svelte";
+	import License from "../shared/services/license";
+	import store from "../shared/services/store";
 	import {
 		getStartOfLastWeekMillis,
-		getStartOfTodayMillis,
 		getStartOfThisWeekMillis,
+		getStartOfTodayMillis,
 	} from "../shared/services/time-utils";
-	import { FileRenderData } from "./types";
-	import Logger from "js-logger";
+	import FeedView from "./components/feed-view.svelte";
+	import FilterGroupList from "./components/filter-group-list.svelte";
+	import GridView from "./components/grid-view.svelte";
+	import ListView from "./components/list-view.svelte";
+	import PaginationIndicator from "./components/pagination-indicator.svelte";
 	import SearchFilter from "./components/search-filter.svelte";
 	import SortFilter from "./components/sort-filter.svelte";
+	import TableView from "./components/table-view.svelte";
 	import { DEBOUNCE_INPUT_TIME, SCREEN_SIZE_MD } from "./constants";
-	import FeedView from "./components/feed-view.svelte";
-	import PaginationIndicator from "./components/pagination-indicator.svelte";
-	import Wrap from "../shared/components/wrap.svelte";
-	import {
-		RandomFileSortCache,
-		randomFileSortStore,
-	} from "./services/random-file-sort-store";
-	import {
-		FileContentCache,
-		fileContentStore,
-	} from "./services/file-content-store";
-	import { fileStore, LoadedFile } from "./services/file-store";
-	import IconButton from "../shared/components/icon-button.svelte";
-	import CustomFilterModal from "src/obsidian/custom-filter-modal";
-	import FilterGroupList from "./components/filter-group-list.svelte";
-	import { PluginEvent } from "src/event/types";
+	import { getDisplayNameForView } from "./services/display-name";
 	import {
 		favoritesStore,
-		TFavoritesCache,
+		type TFavoritesCache,
 	} from "./services/favorites-store";
-	import TableView from "./components/table-view.svelte";
-	import Spacer from "../shared/components/spacer.svelte";
-	import License from "../shared/services/license";
+	import {
+		type FileContentCache,
+		fileContentStore,
+	} from "./services/file-content-store";
+	import { fileStore, type LoadedFile } from "./services/file-store";
+	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
+	import { filterBySearch } from "./services/filters/search-filter";
+	import {
+		type RandomFileSortCache,
+		randomFileSortStore,
+	} from "./services/random-file-sort-store";
+	import { formatFileDataForRender } from "./services/render-data";
+	import type { FileRenderData } from "./types";
 
 	// ============================================
 	// Variables

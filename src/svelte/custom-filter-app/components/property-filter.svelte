@@ -1,15 +1,15 @@
 <script lang="ts">
+	import { getAllObsidianProperties } from "src/obsidian/utils";
 	import {
 		CheckboxFilterCondition,
 		DateFilterCondition,
-		FilterCondition,
-		FilterOperator,
-		TextFilterCondition,
 		DatePropertyFilterValue,
-		PropertyType,
+		type FilterCondition,
+		type FilterOperator,
 		FilterRuleType,
+		PropertyType,
+		TextFilterCondition,
 	} from "src/types";
-	import { getAllObsidianProperties } from "src/obsidian/utils";
 
 	export let index: number;
 	export let id: string;
@@ -31,12 +31,12 @@
 		obsidianProperties = getAllObsidianProperties(plugin.app);
 	});
 
-	import { createEventDispatcher } from "svelte";
-	import store from "src/svelte/shared/services/store";
 	import VaultExplorerPlugin from "src/main";
-	import { ObsidianProperty } from "src/obsidian/types";
-	import FilterRule from "./filter-rule.svelte";
+	import type { ObsidianProperty } from "src/obsidian/types";
+	import store from "src/svelte/shared/services/store";
+	import { createEventDispatcher } from "svelte";
 	import { getDisplayNameForDatePropertyFilterValue } from "../services/display-name-utils";
+	import FilterRule from "./filter-rule.svelte";
 
 	const dispatch = createEventDispatcher();
 

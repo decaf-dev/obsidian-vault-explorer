@@ -1,5 +1,5 @@
 import Logger from "js-logger";
-import { App } from "obsidian";
+import type { App } from "obsidian";
 import { writable } from "svelte/store";
 
 export type RandomFileSortCache = Map<string, number>;

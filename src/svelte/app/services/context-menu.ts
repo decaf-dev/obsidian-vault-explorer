@@ -1,5 +1,5 @@
 import { App, Menu, Notice } from "obsidian";
-import { CoverImageFit, VaultExplorerPluginSettings } from "src/types";
+import type { CoverImageFit, VaultExplorerPluginSettings } from "src/types";
 
 export const openContextMenu = (
 	e: MouseEvent,

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {
 		ContentFilterCondition,
-		FilterCondition,
-		FilterOperator,
+		type FilterCondition,
+		type FilterOperator,
 		FilterRuleType,
 	} from "src/types";
 	import FilterRule from "./filter-rule.svelte";
@@ -15,10 +15,10 @@
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
 
-	import { createEventDispatcher } from "svelte";
-	import License from "src/svelte/shared/services/license";
 	import PremiumLink from "src/svelte/shared/components/premium-link.svelte";
 	import PremiumMessage from "src/svelte/shared/components/premium-message.svelte";
+	import License from "src/svelte/shared/services/license";
+	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
 
 	let hasValidLicenseKey = false;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FileRenderData } from "../types";
+	import type { FileRenderData } from "../types";
 	import GridCard from "./grid-card.svelte";
 
 	export let data: FileRenderData[];

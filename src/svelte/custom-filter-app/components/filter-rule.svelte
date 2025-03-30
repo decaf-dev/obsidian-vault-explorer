@@ -1,25 +1,25 @@
 <script lang="ts">
+	import { Menu } from "obsidian";
 	import IconButton from "src/svelte/shared/components/icon-button.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Switch from "src/svelte/shared/components/switch.svelte";
-	import {
-		CheckboxFilterCondition,
-		DateFilterCondition,
-		FilterCondition,
-		FilterOperator,
-		ListFilterCondition,
-		NumberFilterCondition,
-		TextFilterCondition,
-		PropertyType,
-		FilterRuleType,
-		FolderFilterCondition,
-		FileNameFilterCondition,
-		ContentFilterCondition,
-	} from "src/types";
-	import { createEventDispatcher } from "svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
 	import License from "src/svelte/shared/services/license";
-	import { Menu } from "obsidian";
+	import {
+		CheckboxFilterCondition,
+		ContentFilterCondition,
+		DateFilterCondition,
+		FileNameFilterCondition,
+		type FilterCondition,
+		type FilterOperator,
+		FilterRuleType,
+		FolderFilterCondition,
+		ListFilterCondition,
+		NumberFilterCondition,
+		PropertyType,
+		TextFilterCondition,
+	} from "src/types";
+	import { createEventDispatcher } from "svelte";
 	import {
 		getDisplayNameForFilterCondition,
 		getDisplayNameForFilterRuleType,

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FileRenderData } from "../types";
+	import type { FileRenderData } from "../types";
 	import FeedCard from "./feed-card.svelte";
 
 	export let data: FileRenderData[] = [];
