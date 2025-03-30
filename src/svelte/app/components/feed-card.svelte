@@ -35,7 +35,6 @@
 	export let path: string;
 	export let createdMillis: number;
 	export let content: string | null;
-	export let enablePremiumFeatures: boolean;
 
 	let ref: HTMLElement | null = null;
 	let enableFileIcons = false;
@@ -147,14 +146,7 @@
 	function handleCardContextMenu(e: Event) {
 		const nativeEvent = e as MouseEvent;
 		const { app, settings } = plugin;
-		openContextMenu(
-			nativeEvent,
-			path,
-			app,
-			settings,
-			enablePremiumFeatures,
-			{},
-		);
+		openContextMenu(nativeEvent, path, app, settings, {});
 	}
 
 	function handleCardMouseOver(e: MouseEvent) {

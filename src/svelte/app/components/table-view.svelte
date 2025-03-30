@@ -24,7 +24,6 @@
 	export let data: FileRenderData[];
 	export let startIndex: number;
 	export let pageLength: number;
-	export let enablePremiumFeatures: boolean;
 
 	let filteredItems: FileRenderData[] = [];
 	let plugin: VaultExplorerPlugin | null = null;
@@ -100,14 +99,7 @@
 
 		const nativeEvent = e as MouseEvent;
 		const { app, settings } = plugin;
-		openContextMenu(
-			nativeEvent,
-			path,
-			app,
-			settings,
-			enablePremiumFeatures,
-			{},
-		);
+		openContextMenu(nativeEvent, path, app, settings, {});
 	}
 
 	function getValue(item: FileRenderData, column: TColumn): unknown {

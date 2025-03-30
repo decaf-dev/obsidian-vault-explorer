@@ -4,7 +4,6 @@
 	import Stack from "src/svelte/shared/components/stack.svelte";
 	import Switch from "src/svelte/shared/components/switch.svelte";
 	import Wrap from "src/svelte/shared/components/wrap.svelte";
-	import License from "src/svelte/shared/services/license";
 	import {
 		CheckboxFilterCondition,
 		ContentFilterCondition,
@@ -33,15 +32,7 @@
 	export let condition: FilterCondition;
 	export let isEnabled: boolean;
 
-	let hasValidLicenseKey = false;
-
 	const dispatch = createEventDispatcher();
-
-	License.getInstance()
-		.getHasValidKeyStore()
-		.subscribe((hasValidKey) => {
-			hasValidLicenseKey = hasValidKey;
-		});
 
 	function handleActionsClick(e: CustomEvent) {
 		const nativeEvent = e.detail.nativeEvent as MouseEvent;
@@ -141,11 +132,7 @@
 			{/each}
 		</select>
 		<slot name="before-condition"></slot>
-		<select
-			disabled={type === FilterRuleType.CONTENT && !hasValidLicenseKey}
-			value={condition}
-			on:change={handleConditionChange}
-		>
+		<select value={condition} on:change={handleConditionChange}>
 			{#each filterConditions as condition}
 				<option value={condition}>
 					{getDisplayNameForFilterCondition(condition)}

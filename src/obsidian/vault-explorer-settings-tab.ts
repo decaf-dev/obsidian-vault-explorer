@@ -24,21 +24,17 @@ import EventManager from "src/event/event-manager";
 import { PluginEvent } from "src/event/types";
 import { TExplorerView } from "src/types";
 import ImageSourceApp from "../svelte/image-source-app/index.svelte";
-import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
 
 import { clearSMICache } from "src/svelte/app/services/smi-cache";
-import "./styles.css";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
 
-	licenseKeyApp: LicenseKeyApp | null;
 	imageSourceApp: ImageSourceApp | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.licenseKeyApp = null;
 		this.imageSourceApp = null;
 	}
 
@@ -629,12 +625,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl).setName("Premium").setHeading();
-
-		this.licenseKeyApp = new LicenseKeyApp({
-			target: containerEl,
-		});
-
 		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
 			.setName("Log level")
@@ -693,7 +683,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	}
 
 	onClose() {
-		this.licenseKeyApp?.$destroy();
 		this.imageSourceApp?.$destroy();
 	}
 

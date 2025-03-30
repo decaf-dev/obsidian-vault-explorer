@@ -1,4 +1,4 @@
-import { App, Menu, Notice } from "obsidian";
+import { App, Menu } from "obsidian";
 import type { CoverImageFit, VaultExplorerPluginSettings } from "src/types";
 
 export const openContextMenu = (
@@ -6,7 +6,6 @@ export const openContextMenu = (
 	filePath: string,
 	app: App,
 	settings: VaultExplorerPluginSettings,
-	enablePremiumFeatures: boolean,
 	{
 		coverImageFit,
 		onCoverImageFitChange,
@@ -51,12 +50,6 @@ export const openContextMenu = (
 	menu.addItem((item) => {
 		item.setTitle("Delete");
 		item.onClick(async () => {
-			if (!enablePremiumFeatures) {
-				new Notice(
-					"This feature requires a premium Vault Explorer license."
-				);
-				return;
-			}
 			if (confirmBeforeDelete) {
 				if (confirm("Are you sure you want to delete this file?")) {
 					await deleteFile(app, filePath);
