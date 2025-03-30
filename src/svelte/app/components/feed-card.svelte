@@ -295,6 +295,7 @@
 		white-space: pre-wrap;
 		text-overflow: ellipsis;
 		-webkit-line-clamp: unset;
+		line-clamp: unset;
 	}
 
 	.vault-explorer-feed-card__title-text {
