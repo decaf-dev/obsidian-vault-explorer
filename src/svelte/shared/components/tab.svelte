@@ -104,4 +104,3 @@
 		background-color: var(--background-modifier-hover);
 	}
 </style>
-``

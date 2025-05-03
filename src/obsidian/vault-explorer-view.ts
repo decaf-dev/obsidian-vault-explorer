@@ -1,18 +1,19 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 
 import { VAULT_EXPLORER_VIEW } from "src/constants";
-import VaultExplorerApp from "../svelte/app/index.svelte";
-import VaultExplorerPlugin from "src/main";
 import EventManager from "src/event/event-manager";
 import { PluginEvent } from "src/event/types";
+import VaultExplorerPlugin from "src/main";
+import { mount, unmount } from "svelte";
+import VaultExplorerApp from "../svelte/app/index.svelte";
 
 export default class VaultExplorerView extends ItemView {
-	component: VaultExplorerApp | null;
+	vaultExplorerApp: ReturnType<typeof mount> | null;
 	plugin: VaultExplorerPlugin;
 
 	constructor(leaf: WorkspaceLeaf, plugin: VaultExplorerPlugin) {
 		super(leaf);
-		this.component = null;
+		this.vaultExplorerApp = null;
 		this.plugin = plugin;
 		this.navigation = true;
 	}
@@ -43,12 +44,14 @@ export default class VaultExplorerView extends ItemView {
 
 		const containerEl = this.containerEl.children[1];
 
-		this.component = new VaultExplorerApp({
+		this.vaultExplorerApp = mount(VaultExplorerApp, {
 			target: containerEl
 		});
 	}
 
 	async onClose() {
-		this.component?.$destroy();
+		if (this.vaultExplorerApp) {
+			unmount(this.vaultExplorerApp);
+		}
 	}
 }
