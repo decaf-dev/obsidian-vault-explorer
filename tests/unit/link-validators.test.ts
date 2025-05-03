@@ -1,7 +1,7 @@
 import {
 	isExternalEmbed,
 	isInternalEmbed,
-	isWikiLink,
+	isWikiLink
 } from "src/svelte/app/services/link-utils/link-validators";
 
 describe("isWikiLink", () => {

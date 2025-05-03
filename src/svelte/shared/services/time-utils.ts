@@ -83,7 +83,7 @@ export const getEndOfDayMillis = (date: string) => {
 		hour: 23,
 		minute: 59,
 		second: 59,
-		millisecond: 999,
+		millisecond: 999
 	});
 	return day.valueOf();
 };

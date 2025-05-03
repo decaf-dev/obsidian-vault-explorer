@@ -7,7 +7,7 @@ export const parseItems = <T>(rawData: string): T[] => {
 export const stringifyItems = (items: unknown[]) => {
 	return JSON.stringify(
 		{
-			items,
+			items
 		},
 		null,
 		2

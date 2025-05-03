@@ -13,25 +13,25 @@ export default class Migrate_1_46_0 implements MigrationInterface {
 				grid: {
 					...typedData.views.grid,
 					isEnabled: true,
-					order: 0,
+					order: 0
 				},
 				list: {
 					...typedData.views.list,
 					isEnabled: true,
-					order: 1,
+					order: 1
 				},
 				feed: {
 					...typedData.views.feed,
 					isEnabled: true,
-					order: 2,
+					order: 2
 				},
 				table: {
 					...typedData.views.table,
 					isEnabled: true,
-					order: 3,
-				},
+					order: 3
+				}
 			},
-			currentView: TExplorerView.GRID,
+			currentView: TExplorerView.GRID
 		};
 		delete (newData as any).views.recommended;
 		delete (newData as any).views.related;

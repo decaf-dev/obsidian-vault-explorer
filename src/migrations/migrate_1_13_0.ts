@@ -9,7 +9,7 @@ export default class Migrate_1_13_0 implements MigrationInterface {
 			...typedData,
 			views: {
 				...typedData.views,
-				enableClockUpdates: true,
+				enableClockUpdates: true
 			},
 			filters: {
 				...typedData.filters,
@@ -18,11 +18,11 @@ export default class Migrate_1_13_0 implements MigrationInterface {
 					groups: typedData.filters.custom.groups.map((group) => {
 						return {
 							...group,
-							isSticky: false,
+							isSticky: false
 						};
-					}),
-				},
-			},
+					})
+				}
+			}
 		};
 		return newData as unknown as Record<string, unknown>;
 	}

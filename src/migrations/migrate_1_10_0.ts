@@ -1,6 +1,6 @@
 import {
 	FilterRuleType_1_12_1,
-	type VaultExplorerPluginSettings_1_12_1,
+	type VaultExplorerPluginSettings_1_12_1
 } from "src/types/types-1.12.1";
 import type { VaultExplorerPluginSettings_1_9_1 } from "src/types/types-1.9.1";
 import MigrationInterface from "./migration_interface";
@@ -19,16 +19,16 @@ export default class Migrate_1_10_0 implements MigrationInterface {
 							return {
 								...rule,
 								type: FilterRuleType_1_12_1.PROPERTY as any,
-								propertyType: rule.type as any,
+								propertyType: rule.type as any
 							};
 						});
 						return {
 							...group,
-							rules,
+							rules
 						};
-					}),
-				},
-			},
+					})
+				}
+			}
 		};
 		delete (newData.filters as any).folder;
 		delete (newData.filters as any).properties;

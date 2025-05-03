@@ -14,27 +14,27 @@ export default class Migrate_1_37_0 implements MigrationInterface {
 					coverImageSources: [
 						{
 							type: "image-property",
-							isEnabled: true,
+							isEnabled: true
 						},
 						{
 							type: "url-property",
-							isEnabled: true,
+							isEnabled: true
 						},
 						{
 							type: "frontmatter",
-							isEnabled: true,
+							isEnabled: true
 						},
 						{
 							type: "body",
-							isEnabled: true,
-						},
-					],
-				},
+							isEnabled: true
+						}
+					]
+				}
 			},
 			properties: {
 				...typedData.properties,
-				image: typedData.properties.imageUrl,
-			},
+				image: typedData.properties.imageUrl
+			}
 		};
 
 		delete (newData as any).enableScrollButtons;

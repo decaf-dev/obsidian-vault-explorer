@@ -2,7 +2,7 @@ import { preformMigrations } from "src/migrations";
 import { isVaultExplorerPluginSettings } from "src/types/index.guard";
 import {
 	TextFilterCondition_0_3_3,
-	type VaultExplorerPluginSettings_0_3_3,
+	type VaultExplorerPluginSettings_0_3_3
 } from "src/types/types-0.3.3";
 import {
 	CheckboxFilterCondition_0_5_5,
@@ -11,7 +11,7 @@ import {
 	NumberFilterCondition_0_5_5,
 	PropertyFilterType_0_5_5,
 	TextFilterCondition_0_5_5,
-	type VaultExplorerPluginSettings_0_5_5,
+	type VaultExplorerPluginSettings_0_5_5
 } from "src/types/types-0.5.5";
 
 describe("preformMigrations", () => {
@@ -23,7 +23,7 @@ describe("preformMigrations", () => {
 				url: "https://example.com",
 				custom1: "custom-value-1",
 				custom2: "custom-value-2",
-				custom3: "custom-value-3",
+				custom3: "custom-value-3"
 			},
 			filters: {
 				folder: "MyNotes",
@@ -44,7 +44,7 @@ describe("preformMigrations", () => {
 									operator: "and",
 									isEnabled: true,
 									condition: TextFilterCondition_0_3_3.IS,
-									value: "active",
+									value: "active"
 								},
 								{
 									id: "filter-2",
@@ -53,11 +53,11 @@ describe("preformMigrations", () => {
 									isEnabled: false,
 									condition:
 										TextFilterCondition_0_3_3.CONTAINS,
-									value: "high",
-								},
+									value: "high"
+								}
 							],
 							position: 0,
-							isEnabled: true,
+							isEnabled: true
 						},
 						{
 							id: "group-2",
@@ -70,7 +70,7 @@ describe("preformMigrations", () => {
 									isEnabled: true,
 									condition:
 										TextFilterCondition_0_3_3.STARTS_WITH,
-									value: "work",
+									value: "work"
 								},
 								{
 									id: "filter-4",
@@ -79,18 +79,18 @@ describe("preformMigrations", () => {
 									isEnabled: true,
 									condition:
 										TextFilterCondition_0_3_3.IS_NOT_EMPTY,
-									value: "",
-								},
+									value: ""
+								}
 							],
 							position: 1,
-							isEnabled: false,
-						},
-					],
-				},
+							isEnabled: false
+						}
+					]
+				}
 			},
 			currentView: "grid",
 			pageSize: 20,
-			pluginVersion: "0.3.3",
+			pluginVersion: "0.3.3"
 		};
 
 		//Same guard clause as in main.js
@@ -114,7 +114,7 @@ describe("preformMigrations", () => {
 				url: "https://example.com",
 				custom1: "customValue1",
 				custom2: "customValue2",
-				custom3: "customValue3",
+				custom3: "customValue3"
 			},
 			filters: {
 				folder: "root",
@@ -137,7 +137,7 @@ describe("preformMigrations", () => {
 									isEnabled: true,
 									value: "example",
 									condition:
-										TextFilterCondition_0_5_5.CONTAINS,
+										TextFilterCondition_0_5_5.CONTAINS
 								},
 								{
 									id: "filter2",
@@ -147,11 +147,11 @@ describe("preformMigrations", () => {
 									isEnabled: true,
 									value: "100",
 									condition:
-										NumberFilterCondition_0_5_5.IS_GREATER,
-								},
+										NumberFilterCondition_0_5_5.IS_GREATER
+								}
 							],
 							position: 1,
-							isEnabled: true,
+							isEnabled: true
 						},
 						{
 							id: "group2",
@@ -165,7 +165,7 @@ describe("preformMigrations", () => {
 									isEnabled: true,
 									value: "important",
 									condition:
-										ListFilterCondition_0_5_5.CONTAINS,
+										ListFilterCondition_0_5_5.CONTAINS
 								},
 								{
 									id: "filter4",
@@ -174,7 +174,7 @@ describe("preformMigrations", () => {
 									type: PropertyFilterType_0_5_5.CHECKBOX,
 									isEnabled: true,
 									value: "true",
-									condition: CheckboxFilterCondition_0_5_5.IS,
+									condition: CheckboxFilterCondition_0_5_5.IS
 								},
 								{
 									id: "filter5",
@@ -184,18 +184,18 @@ describe("preformMigrations", () => {
 									isEnabled: true,
 									value: "2023-01-01",
 									condition:
-										DateFilterCondition_0_5_5.IS_AFTER,
-								},
+										DateFilterCondition_0_5_5.IS_AFTER
+								}
 							],
 							position: 2,
-							isEnabled: true,
-						},
-					],
-				},
+							isEnabled: true
+						}
+					]
+				}
 			},
 			currentView: "list",
 			pageSize: 20,
-			pluginVersion: "0.4.0",
+			pluginVersion: "0.4.0"
 		};
 
 		//This the same guard clause as in main.js

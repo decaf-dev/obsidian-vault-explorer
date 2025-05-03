@@ -19,11 +19,11 @@ export default class Migrate_1_0_0 implements MigrationInterface {
 							id,
 							name,
 							filters,
-							isEnabled,
+							isEnabled
 						};
-					}),
-				},
-			},
+					})
+				}
+			}
 		};
 		return newData as unknown as Record<string, unknown>;
 	}

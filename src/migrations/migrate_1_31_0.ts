@@ -7,7 +7,7 @@ export default class Migrate_1_31_0 implements MigrationInterface {
 		const typedData = data as unknown as VaultExplorerPluginSettings_1_30_5;
 		const newData: VaultExplorerPluginSettings_1_32_2 = {
 			...typedData,
-			shouldWrapFilterGroups: typedData.filterGroupsWrapping === "wrap",
+			shouldWrapFilterGroups: typedData.filterGroupsWrapping === "wrap"
 		};
 
 		delete (newData as any).filterGroupsWrapping;

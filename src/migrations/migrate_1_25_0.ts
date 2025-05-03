@@ -7,7 +7,7 @@ export default class Migrate_1_25_0 implements MigrationInterface {
 		const typedData = data as unknown as VaultExplorerPluginSettings_1_24_2;
 		const newData: VaultExplorerPluginSettings_1_25_2 = {
 			...typedData,
-			fileInteractionStyle: "content",
+			fileInteractionStyle: "content"
 		};
 
 		return newData as unknown as Record<string, unknown>;

@@ -40,7 +40,7 @@ export default class EventManager {
 		Logger.trace({
 			fileName: "event-manager.ts",
 			functionName: "emit",
-			message: "called",
+			message: "called"
 		});
 
 		if (!this.eventListeners[eventName]) {
@@ -48,7 +48,7 @@ export default class EventManager {
 				{
 					fileName: "event-manager.ts",
 					functionName: "emit",
-					message: "no event listeners found for event. returning...",
+					message: "no event listeners found for event. returning..."
 				},
 				{ eventName }
 			);
@@ -59,7 +59,7 @@ export default class EventManager {
 			{
 				fileName: "event-manager.ts",
 				functionName: "emit",
-				message: "emiting event",
+				message: "emiting event"
 			},
 			{ eventName }
 		);

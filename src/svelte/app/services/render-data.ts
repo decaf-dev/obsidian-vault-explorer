@@ -3,26 +3,26 @@ import { App, type FrontMatterCache, TFile } from "obsidian";
 import {
 	type FileTextProperties,
 	loadPropertyValue,
-	loadTextProperties,
+	loadTextProperties
 } from "src/svelte/shared/services/load-property-value";
 import {
 	getTimeMillis,
-	isDateSupported,
+	isDateSupported
 } from "src/svelte/shared/services/time-utils";
 import {
 	type CoverImageFit,
 	PropertyType,
-	type VaultExplorerPluginSettings,
+	type VaultExplorerPluginSettings
 } from "src/types";
 import type { FileRenderData } from "../types";
 import {
 	getFirstExternalEmbed,
-	getFirstInternalEmbed,
+	getFirstInternalEmbed
 } from "./link-utils/link-getters";
 import {
 	getExternalEmbedTarget,
 	getInternalEmbedTarget,
-	getWikiLinkTarget,
+	getWikiLinkTarget
 } from "./link-utils/link-target-getters";
 import { isUrl, isWikiLink } from "./link-utils/link-validators";
 import { removeFrontmatter } from "./utils/content-utils";
@@ -45,7 +45,7 @@ export const formatFileDataForRender = ({
 	settings,
 	file,
 	fileId,
-	fileContent,
+	fileContent
 }: {
 	app: App;
 	settings: VaultExplorerPluginSettings;
@@ -67,7 +67,7 @@ export const formatFileDataForRender = ({
 		coverImageFit: coverImageFitProp,
 		custom1: custom1Prop,
 		custom2: custom2Prop,
-		custom3: custom3Prop,
+		custom3: custom3Prop
 	} = settings.properties;
 
 	let tags: string[] | null = loadPropertyValue<string[]>(
@@ -240,7 +240,7 @@ export const formatFileDataForRender = ({
 		modifiedMillis,
 		custom1,
 		custom2,
-		custom3,
+		custom3
 	};
 };
 

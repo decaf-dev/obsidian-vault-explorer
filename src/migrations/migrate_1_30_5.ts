@@ -11,9 +11,9 @@ export default class Migrate_1_30_0 implements MigrationInterface {
 				...typedData.views,
 				grid: {
 					...typedData.views.grid,
-					coverImageSource: "frontmatter-and-body",
-				},
-			},
+					coverImageSource: "frontmatter-and-body"
+				}
+			}
 		};
 
 		return newData as unknown as Record<string, unknown>;

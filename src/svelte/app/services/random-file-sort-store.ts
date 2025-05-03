@@ -11,7 +11,7 @@ function createRandomFileSortStore() {
 		Logger.trace({
 			fileName: "random-file-sort-store.ts",
 			functionName: "load",
-			message: "called",
+			message: "called"
 		});
 
 		const files = app.vault.getFiles();
@@ -59,7 +59,7 @@ function createRandomFileSortStore() {
 		subscribe,
 		onFileCreate: handleFileCreate,
 		onFileRename: handleFileRename,
-		onFileDelete: handleFileDelete,
+		onFileDelete: handleFileDelete
 	};
 }
 

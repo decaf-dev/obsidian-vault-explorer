@@ -6,7 +6,7 @@ export default class Migrate_1_33_0 implements MigrationInterface {
 	migrate(data: Record<string, unknown>) {
 		const typedData = data as unknown as VaultExplorerPluginSettings_1_32_2;
 		const newData: VaultExplorerPluginSettings_1_36_3 = {
-			...typedData,
+			...typedData
 		};
 
 		delete (newData as any).fileInteractionStyle;

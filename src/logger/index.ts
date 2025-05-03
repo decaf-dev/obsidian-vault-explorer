@@ -5,7 +5,7 @@ import {
 	LOG_LEVEL_INFO,
 	LOG_LEVEL_OFF,
 	LOG_LEVEL_TRACE,
-	LOG_LEVEL_WARN,
+	LOG_LEVEL_WARN
 } from "./constants";
 import type { FormattedLogMessage, LogMessageHeader } from "./types";
 
@@ -57,7 +57,7 @@ export const formatMessageForLogger = (
 		const { fileName, functionName, message } = headers;
 		return {
 			message: `[${fileName}:${functionName}] ${message}`,
-			data: body,
+			data: body
 		};
 	} else {
 		return { message: String(head), data: body };

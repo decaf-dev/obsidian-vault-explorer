@@ -16,7 +16,7 @@ function createFileStore() {
 		const files = app.vault.getFiles();
 		const loadedFiles: LoadedFile[] = files.map((file) => ({
 			id: generateRandomId(),
-			file,
+			file
 		}));
 		set(loadedFiles);
 	}
@@ -24,7 +24,7 @@ function createFileStore() {
 	async function handleFileCreate(file: TFile) {
 		const newLoadedFile: LoadedFile = {
 			id: generateRandomId(),
-			file,
+			file
 		};
 
 		update((loadedFiles) => {
@@ -39,7 +39,7 @@ function createFileStore() {
 				if (loadedFile.file.path === oldPath) {
 					return {
 						...loadedFile,
-						file: updatedFile,
+						file: updatedFile
 					};
 				}
 				return loadedFile;
@@ -60,7 +60,7 @@ function createFileStore() {
 		subscribe,
 		onFileCreate: handleFileCreate,
 		onFileRename: handleFileRename,
-		onFileDelete: handleFileDelete,
+		onFileDelete: handleFileDelete
 	};
 }
 

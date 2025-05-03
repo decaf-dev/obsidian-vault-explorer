@@ -11,13 +11,13 @@ export default class Migrate_1_29_0 implements MigrationInterface {
 				...typedData.views,
 				list: {
 					...typedData.views.list,
-					showTags: true,
+					showTags: true
 				},
 				grid: {
 					...typedData.views.grid,
-					loadSocialMediaImage: true,
-				},
-			},
+					loadSocialMediaImage: true
+				}
+			}
 		};
 
 		return newData as unknown as Record<string, unknown>;

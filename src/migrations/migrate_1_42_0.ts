@@ -12,8 +12,8 @@ export default class Migrate_1_42_0 implements MigrationInterface {
 				image: typedData.properties.image || "image",
 				coverImageFit:
 					typedData.properties.coverImageFit || "image-fit",
-				url: typedData.properties.url || "url",
-			},
+				url: typedData.properties.url || "url"
+			}
 		};
 		delete (newData as any).filterGroupsWidth;
 		delete (newData as any).shouldWrapFilterGroups;

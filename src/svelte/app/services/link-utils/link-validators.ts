@@ -2,7 +2,7 @@ import {
 	INTERNAL_EMBED_REGEX,
 	EXTERNAL_EMBED_REGEX,
 	URL_REGEX,
-	WIKI_LINK_REGEX,
+	WIKI_LINK_REGEX
 } from "./constants";
 
 export const isInternalEmbed = (value: string) => {

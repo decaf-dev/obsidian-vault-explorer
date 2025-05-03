@@ -2,7 +2,6 @@ import { matchDatePropertyFilter } from "src/svelte/app/services/filters/custom/
 import { DateFilterCondition } from "src/types";
 
 describe("matchDatePropertyFilter", () => {
-
 	describe("Normal Cases", () => {
 		it("should return true for matchDatePropertyFilter(YYYY-MM-DDTHH:mm:ss, YYYY-MM-DD, IS, false)", () => {
 			// Arrange
@@ -12,7 +11,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -26,7 +30,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -40,7 +49,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -54,7 +68,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -68,7 +87,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -82,7 +106,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -98,7 +127,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -112,7 +146,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -126,7 +165,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -142,7 +186,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -156,7 +205,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -170,7 +224,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -184,7 +243,12 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchDatePropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -200,7 +264,14 @@ describe("matchDatePropertyFilter", () => {
 			const matchIfNull = false;
 
 			// Act & Assert
-			expect(() => matchDatePropertyFilter(propertyValue, compare, condition, matchIfNull)).toThrow();
+			expect(() =>
+				matchDatePropertyFilter(
+					propertyValue,
+					compare,
+					condition,
+					matchIfNull
+				)
+			).toThrow();
 		});
 	});
 });

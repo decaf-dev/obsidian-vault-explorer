@@ -17,16 +17,16 @@ export default class Migrate_1_9_0 implements MigrationInterface {
 							return {
 								...filter,
 								valueData: "",
-								type: filter.type as any,
+								type: filter.type as any
 							};
 						});
 						return {
 							...group,
-							rules,
+							rules
 						};
-					}),
-				},
-			},
+					})
+				}
+			}
 		};
 		delete (newData.filters as any).properties;
 		for (const group of newData.filters.custom.groups as any) {

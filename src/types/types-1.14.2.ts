@@ -8,20 +8,20 @@ export interface VaultExplorerPluginSettings_1_14_2 {
 		custom1: string;
 		custom2: string;
 		custom3: string;
-	},
+	};
 	filters: {
 		search: SearchFilter;
 		favorites: FavoritesFilter;
 		sort: SortFilter;
 		timestamp: TimestampFilter;
 		custom: CustomFilter;
-	},
+	};
 	views: {
 		currentView: ViewType;
 		order: ViewType[];
 		titleWrapping: WordBreak;
 		enableClockUpdates: boolean;
-	}
+	};
 	enableScrollButtons: boolean;
 	pageSize: number;
 	pluginVersion: string | null;
@@ -35,12 +35,12 @@ interface SearchFilter {
 interface FavoritesFilter {
 	isEnabled: boolean;
 	value: boolean;
-};
+}
 
 interface SortFilter {
 	isEnabled: boolean;
 	value: SortFilterOption;
-};
+}
 
 interface TimestampFilter {
 	isEnabled: boolean;
@@ -53,15 +53,26 @@ interface CustomFilter {
 	groups: FilterGroup[];
 }
 
-type TimestampFilterOption = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
+type TimestampFilterOption =
+	| "created-today"
+	| "modified-today"
+	| "created-this-week"
+	| "modified-this-week"
+	| "created-2-weeks"
+	| "modified-2-weeks"
+	| "all";
 
-type SortFilterOption = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
+type SortFilterOption =
+	| "file-name-asc"
+	| "file-name-desc"
+	| "modified-asc"
+	| "modified-desc";
 
 type WordBreak = "normal" | "break-word";
 
 enum ViewType {
 	GRID = "grid",
-	LIST = "list",
+	LIST = "list"
 }
 
 type FilterOperator = "and" | "or";
@@ -74,14 +85,14 @@ enum TextFilterCondition {
 	STARTS_WITH = "starts-with",
 	ENDS_WITH = "ends-with",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum ListFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum NumberFilterCondition {
@@ -92,14 +103,14 @@ enum NumberFilterCondition {
 	IS_GREATER_OR_EQUAL = "is-greater-or-equal",
 	IS_LESS_OR_EQUAL = "is-less-or-equal",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum CheckboxFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum DateFilterCondition {
@@ -109,19 +120,19 @@ enum DateFilterCondition {
 	IS_ON_OR_BEFORE = "is-on-or-before",
 	IS_ON_OR_AFTER = "is-on-or-after",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum ContentFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	IS_EMPTY = "is-empty",
-	IS_NOT_EMPTY = "is-not-empty",
+	IS_NOT_EMPTY = "is-not-empty"
 }
 
 enum FolderFilterCondition {
 	IS = "is",
-	IS_NOT = "is-not",
+	IS_NOT = "is-not"
 }
 
 enum FileNameFilterCondition {
@@ -130,10 +141,18 @@ enum FileNameFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	STARTS_WITH = "starts-with",
-	ENDS_WITH = "ends-with",
+	ENDS_WITH = "ends-with"
 }
 
-type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition | ContentFilterCondition | FolderFilterCondition | FileNameFilterCondition;
+type FilterCondition =
+	| TextFilterCondition
+	| NumberFilterCondition
+	| DateFilterCondition
+	| CheckboxFilterCondition
+	| ListFilterCondition
+	| ContentFilterCondition
+	| FolderFilterCondition
+	| FileNameFilterCondition;
 
 //This matches the Obsidian property types
 enum PropertyType {
@@ -142,14 +161,14 @@ enum PropertyType {
 	LIST = "list",
 	CHECKBOX = "checkbox",
 	DATE = "date",
-	DATETIME = "datetime",
+	DATETIME = "datetime"
 }
 
 enum FilterRuleType {
 	PROPERTY = "property",
 	FOLDER = "folder",
 	FILE_NAME = "file-name",
-	CONTENT = "content",
+	CONTENT = "content"
 }
 
 enum DatePropertyFilterValue {
@@ -225,8 +244,17 @@ interface ContentFilterRule extends BaseFilterRule {
 	condition: ContentFilterCondition;
 }
 
-type FilterRule = PropertyFilterRule | FolderFilterRule | FileNameFilterRule | ContentFilterRule;
-type PropertyFilterRule = TextPropertyFilterRule | NumberPropertyFilterRule | ListPropertyFilterRule | CheckboxPropertyFilterRule | DatePropertyFilterRule;
+type FilterRule =
+	| PropertyFilterRule
+	| FolderFilterRule
+	| FileNameFilterRule
+	| ContentFilterRule;
+type PropertyFilterRule =
+	| TextPropertyFilterRule
+	| NumberPropertyFilterRule
+	| ListPropertyFilterRule
+	| CheckboxPropertyFilterRule
+	| DatePropertyFilterRule;
 
 interface FilterGroup {
 	id: string;

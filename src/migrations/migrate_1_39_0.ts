@@ -1,7 +1,7 @@
 import type { VaultExplorerPluginSettings_1_38_0 } from "src/types/types-1.38.0";
 import {
 	TExplorerView_1_39_0,
-	type VaultExplorerPluginSettings_1_39_0,
+	type VaultExplorerPluginSettings_1_39_0
 } from "src/types/types-1.39.0";
 import MigrationInterface from "./migration_interface";
 
@@ -14,14 +14,14 @@ export default class Migrate_1_39_0 implements MigrationInterface {
 				TExplorerView_1_39_0.GRID,
 				TExplorerView_1_39_0.LIST,
 				TExplorerView_1_39_0.TABLE,
-				TExplorerView_1_39_0.FEED,
+				TExplorerView_1_39_0.FEED
 			],
 			views: {
 				...typedData.views,
 				table: {
-					isEnabled: true,
-				},
-			},
+					isEnabled: true
+				}
+			}
 		};
 
 		return newData as unknown as Record<string, unknown>;

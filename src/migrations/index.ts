@@ -39,168 +39,168 @@ const migrations: TMigration[] = [
 	{
 		from: "0.3.3",
 		to: "0.4.0",
-		migrate: Migrate_0_4_0,
+		migrate: Migrate_0_4_0
 	},
 	{
 		from: "0.5.5",
 		to: "1.0.0",
-		migrate: Migrate_1_0_0,
+		migrate: Migrate_1_0_0
 	},
 	{
 		from: "1.0.1",
 		to: "1.1.0",
-		migrate: Migrate_1_1_0,
+		migrate: Migrate_1_1_0
 	},
 	{
 		from: "1.2.0",
 		to: "1.2.1",
-		migrate: Migrate_1_2_1,
+		migrate: Migrate_1_2_1
 	},
 	{
 		from: "1.2.1",
 		to: "1.3.0",
-		migrate: Migrate_1_3_0,
+		migrate: Migrate_1_3_0
 	},
 	{
 		from: "1.5.0",
 		to: "1.6.0",
-		migrate: Migrate_1_6_0,
+		migrate: Migrate_1_6_0
 	},
 	{
 		from: "1.6.0",
 		to: "1.6.1",
-		migrate: Migrate_1_6_1,
+		migrate: Migrate_1_6_1
 	},
 	{
 		from: "1.8.1",
 		to: "1.9.0",
-		migrate: Migrate_1_9_0,
+		migrate: Migrate_1_9_0
 	},
 	{
 		from: "1.9.1",
 		to: "1.10.0",
-		migrate: Migrate_1_10_0,
+		migrate: Migrate_1_10_0
 	},
 	{
 		from: "1.12.1",
 		to: "1.13.0",
-		migrate: Migrate_1_13_0,
+		migrate: Migrate_1_13_0
 	},
 	{
 		from: "1.13.1",
 		to: "1.14.0",
-		migrate: Migrate_1_14_0,
+		migrate: Migrate_1_14_0
 	},
 	{
 		from: "1.14.2",
 		to: "1.15.0",
-		migrate: Migrate_1_15_0,
+		migrate: Migrate_1_15_0
 	},
 	{
 		from: "1.16.0",
 		to: "1.17.0",
-		migrate: Migrate_1_17_0,
+		migrate: Migrate_1_17_0
 	},
 	{
 		from: "1.20.0",
 		to: "1.21.0",
-		migrate: Migrate_1_21_0,
+		migrate: Migrate_1_21_0
 	},
 	{
 		from: "1.21.2",
 		to: "1.22.0",
-		migrate: Migrate_1_22_0,
+		migrate: Migrate_1_22_0
 	},
 	{
 		from: "1.22.0",
 		to: "1.23.0",
-		migrate: Migrate_1_23_0,
+		migrate: Migrate_1_23_0
 	},
 	{
 		from: "1.23.0",
 		to: "1.23.1",
-		migrate: Migrate_1_23_1,
+		migrate: Migrate_1_23_1
 	},
 	{
 		from: "1.23.2",
 		to: "1.24.0",
-		migrate: Migrate_1_24_0,
+		migrate: Migrate_1_24_0
 	},
 	{
 		from: "1.24.2",
 		to: "1.25.0",
-		migrate: Migrate_1_25_0,
+		migrate: Migrate_1_25_0
 	},
 	{
 		from: "1.25.2",
 		to: "1.26.0",
-		migrate: Migrate_1_26_0,
+		migrate: Migrate_1_26_0
 	},
 	{
 		from: "1.26.3",
 		to: "1.27.0",
-		migrate: Migrate_1_27_0,
+		migrate: Migrate_1_27_0
 	},
 	{
 		from: "1.28.0",
 		to: "1.29.0",
-		migrate: Migrate_1_29_0,
+		migrate: Migrate_1_29_0
 	},
 	{
 		from: "1.29.0",
 		to: "1.30.0",
-		migrate: Migrate_1_30_0,
+		migrate: Migrate_1_30_0
 	},
 	{
 		from: "1.30.5",
 		to: "1.31.0",
-		migrate: Migrate_1_31_0,
+		migrate: Migrate_1_31_0
 	},
 	{
 		from: "1.32.2",
 		to: "1.33.0",
-		migrate: Migrate_1_33_0,
+		migrate: Migrate_1_33_0
 	},
 	{
 		from: "1.36.3",
 		to: "1.37.0",
-		migrate: Migrate_1_37_0,
+		migrate: Migrate_1_37_0
 	},
 	{
 		from: "1.37.2",
 		to: "1.38.0",
-		migrate: Migrate_1_38_0,
+		migrate: Migrate_1_38_0
 	},
 	{
 		from: "1.38.0",
 		to: "1.39.0",
-		migrate: Migrate_1_39_0,
+		migrate: Migrate_1_39_0
 	},
 	{
 		from: "1.39.0",
 		to: "1.40.0",
-		migrate: Migrate_1_40_0,
+		migrate: Migrate_1_40_0
 	},
 	{
 		from: "1.40.2",
 		to: "1.41.0",
-		migrate: Migrate_1_41_0,
+		migrate: Migrate_1_41_0
 	},
 	{
 		from: "1.41.1",
 		to: "1.42.0",
-		migrate: Migrate_1_42_0,
+		migrate: Migrate_1_42_0
 	},
 	{
 		from: "1.44.6",
 		to: "1.45.0",
-		migrate: Migrate_1_45_0,
+		migrate: Migrate_1_45_0
 	},
 	{
 		from: "1.45.0",
 		to: "1.46.0",
-		migrate: Migrate_1_46_0,
-	},
+		migrate: Migrate_1_46_0
+	}
 ];
 
 export const preformMigrations = (

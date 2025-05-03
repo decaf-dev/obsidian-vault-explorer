@@ -5,7 +5,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 	Logger.trace({
 		fileName: "fetch-social-media-image.ts",
 		functionName: "fetchSocialMediaImage",
-		message: "called",
+		message: "called"
 	});
 
 	try {
@@ -13,8 +13,8 @@ export const fetchSocialMediaImage = async (url: string) => {
 			url,
 			method: "GET",
 			headers: {
-				Cookie: "", // Clear any cookies
-			},
+				Cookie: "" // Clear any cookies
+			}
 		});
 
 		const html = response.text;
@@ -52,7 +52,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 				{
 					fileName: "social-media-image.ts",
 					functionName: "fetchSocialMediaImage",
-					message: "found image",
+					message: "found image"
 				},
 				{ imageUrl }
 			);
@@ -61,7 +61,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 				{
 					fileName: "social-media-image.ts",
 					functionName: "fetchSocialMediaImage",
-					message: "no image found",
+					message: "no image found"
 				},
 				{ url }
 			);
@@ -73,7 +73,7 @@ export const fetchSocialMediaImage = async (url: string) => {
 			{
 				fileName: "social-media-image.ts",
 				functionName: "fetchSocialMediaImage",
-				message: "failed to fetch",
+				message: "failed to fetch"
 			},
 			error
 		);

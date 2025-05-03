@@ -8,7 +8,7 @@ export const openContextMenu = (
 	settings: VaultExplorerPluginSettings,
 	{
 		coverImageFit,
-		onCoverImageFitChange,
+		onCoverImageFitChange
 	}: {
 		coverImageFit?: CoverImageFit;
 		onCoverImageFitChange?: (
@@ -71,7 +71,7 @@ const deleteFile = async (app: App, filePath: string) => {
 
 const openToTheRight = (app: App, filePath: string) => {
 	app.workspace.openLinkText("", filePath, "split", {
-		active: false,
+		active: false
 	});
 };
 
@@ -80,8 +80,8 @@ const openInNewTab = (app: App, filePath: string) => {
 		type: "markdown",
 		active: false,
 		state: {
-			file: filePath,
-		},
+			file: filePath
+		}
 	});
 };
 

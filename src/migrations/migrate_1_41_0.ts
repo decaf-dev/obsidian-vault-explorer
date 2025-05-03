@@ -9,15 +9,15 @@ export default class Migrate_1_41_0 implements MigrationInterface {
 			...typedData,
 			properties: {
 				...typedData.properties,
-				coverImageFit: "",
+				coverImageFit: ""
 			},
 			views: {
 				...typedData.views,
 				grid: {
 					...typedData.views.grid,
-					coverImageFit: "cover",
-				},
-			},
+					coverImageFit: "cover"
+				}
+			}
 		};
 
 		return newData as unknown as Record<string, unknown>;

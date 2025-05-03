@@ -3,13 +3,25 @@ import { FileNameFilterCondition } from "src/types";
 export const matchFileNameFilter = (
 	fileName: string,
 	compare: string,
-	condition: FileNameFilterCondition,
+	condition: FileNameFilterCondition
 ): boolean => {
-	console.assert(fileName === fileName.toLowerCase(), `FileNameFilter fileName "${fileName}" must be lowercase`);
-	console.assert(/^\s/.test(fileName) === false, `FileNameFilter fileName "${fileName}" must not contain whitespace`);
+	console.assert(
+		fileName === fileName.toLowerCase(),
+		`FileNameFilter fileName "${fileName}" must be lowercase`
+	);
+	console.assert(
+		/^\s/.test(fileName) === false,
+		`FileNameFilter fileName "${fileName}" must not contain whitespace`
+	);
 
-	console.assert(compare === compare.toLowerCase(), `FileNameFilter compare "${compare}" must be lowercase`);
-	console.assert(/\s$/.test(compare) === false, `FileNameFilter compare "${compare}" must not contain whitespace`);
+	console.assert(
+		compare === compare.toLowerCase(),
+		`FileNameFilter compare "${compare}" must be lowercase`
+	);
+	console.assert(
+		/\s$/.test(compare) === false,
+		`FileNameFilter compare "${compare}" must not contain whitespace`
+	);
 
 	switch (condition) {
 		case FileNameFilterCondition.IS:
@@ -33,6 +45,8 @@ export const matchFileNameFilter = (
 			return fileName.endsWith(compare);
 
 		default:
-			throw new Error(`FileNameFilterCondition not supported: ${condition}`);
+			throw new Error(
+				`FileNameFilterCondition not supported: ${condition}`
+			);
 	}
 };

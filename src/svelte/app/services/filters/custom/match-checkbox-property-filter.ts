@@ -24,6 +24,8 @@ export const matchCheckboxPropertyFilter = (
 			return propertyValue === null;
 
 		default:
-			throw new Error(`CheckboxFilterCondition not supported: ${condition}`);
+			throw new Error(
+				`CheckboxFilterCondition not supported: ${condition}`
+			);
 	}
-}
+};

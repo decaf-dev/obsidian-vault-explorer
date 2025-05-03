@@ -1,7 +1,7 @@
 import {
 	getExternalEmbedTarget,
 	getInternalEmbedTarget,
-	getWikiLinkTarget,
+	getWikiLinkTarget
 } from "src/svelte/app/services/link-utils/link-target-getters";
 
 describe("getWikiLinkTarget", () => {

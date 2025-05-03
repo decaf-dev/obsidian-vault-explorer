@@ -14,7 +14,7 @@ import {
 	PropertyType,
 	TExplorerView,
 	TextFilterCondition,
-	type VaultExplorerPluginSettings,
+	type VaultExplorerPluginSettings
 } from "./index";
 
 export function isVaultExplorerPluginSettings(

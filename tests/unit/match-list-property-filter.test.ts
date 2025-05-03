@@ -1,9 +1,8 @@
 import { matchListPropertyFilter } from "src/svelte/app/services/filters/custom/match-list-property-filter";
 import { ListFilterCondition } from "src/types";
 
-describe('matchListPropertyFilter', () => {
-
-	describe('Normal Cases', () => {
+describe("matchListPropertyFilter", () => {
+	describe("Normal Cases", () => {
 		it('should return true for matchListPropertyFilter(["apple", "banana", "cherry"], ["banana"], ListFilterCondition.CONTAINS, false)', () => {
 			// Arrange
 			const propertyValue = ["apple", "banana", "cherry"];
@@ -12,7 +11,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -26,7 +30,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -40,7 +49,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -54,7 +68,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -68,7 +87,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -82,7 +106,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -96,7 +125,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -110,7 +144,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -124,7 +163,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -138,14 +182,19 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 	});
 
-	describe('Invalid Cases', () => {
+	describe("Invalid Cases", () => {
 		it('should return false for matchListPropertyFilter(null, ["apple"], ListFilterCondition.CONTAINS, false)', () => {
 			// Arrange
 			const propertyValue = null;
@@ -154,7 +203,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -168,14 +222,19 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(false);
 		});
 	});
 
-	describe('Edge Cases', () => {
+	describe("Edge Cases", () => {
 		it('should return false for matchListPropertyFilter(null, ["apple"], ListFilterCondition.EXISTS, false)', () => {
 			// Arrange
 			const propertyValue = null;
@@ -184,7 +243,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(false);
@@ -198,7 +262,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = false;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -212,7 +281,12 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
@@ -226,23 +300,35 @@ describe('matchListPropertyFilter', () => {
 			const matchIfNull = true;
 
 			// Act
-			const result = matchListPropertyFilter(propertyValue, compare, condition, matchIfNull);
+			const result = matchListPropertyFilter(
+				propertyValue,
+				compare,
+				condition,
+				matchIfNull
+			);
 
 			// Assert
 			expect(result).toEqual(true);
 		});
 	});
 
-	describe('Error Cases', () => {
+	describe("Error Cases", () => {
 		it('should throw an error for matchListPropertyFilter(["apple"], ["apple"], "unsupported-condition", false)', () => {
 			// Arrange
 			const propertyValue = ["apple"];
 			const compare = ["apple"];
-			const condition = 'unsupported-condition' as ListFilterCondition;
+			const condition = "unsupported-condition" as ListFilterCondition;
 			const matchIfNull = false;
 
 			// Act & Assert
-			expect(() => matchListPropertyFilter(propertyValue, compare, condition, matchIfNull)).toThrow();
+			expect(() =>
+				matchListPropertyFilter(
+					propertyValue,
+					compare,
+					condition,
+					matchIfNull
+				)
+			).toThrow();
 		});
 	});
 });

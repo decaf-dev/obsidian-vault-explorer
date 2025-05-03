@@ -11,26 +11,26 @@ export default class Migrate_1_14_0 implements MigrationInterface {
 				...typedData.filters,
 				search: {
 					isEnabled: true,
-					value: typedData.filters.search,
+					value: typedData.filters.search
 				},
 				favorites: {
 					isEnabled: true,
-					value: typedData.filters.onlyFavorites,
+					value: typedData.filters.onlyFavorites
 				},
 				timestamp: {
 					isEnabled: true,
-					value: typedData.filters.timestamp,
+					value: typedData.filters.timestamp
 				},
 				sort: {
 					isEnabled: true,
-					value: typedData.filters.sort,
+					value: typedData.filters.sort
 				},
 				custom: {
 					isEnabled: true,
-					...typedData.filters.custom,
-				},
+					...typedData.filters.custom
+				}
 			},
-			enableScrollButtons: true,
+			enableScrollButtons: true
 		};
 		delete (newData.filters as any).onlyFavorites;
 		return newData as unknown as Record<string, unknown>;

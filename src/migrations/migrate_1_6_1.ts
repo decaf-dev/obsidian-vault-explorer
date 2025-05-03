@@ -10,8 +10,8 @@ export default class Migrate_1_6_1 implements MigrationInterface {
 			properties: {
 				...typedData.properties,
 				createdDate: "",
-				modifiedDate: "",
-			},
+				modifiedDate: ""
+			}
 		};
 		delete (newData.properties as any).creationDate;
 		return newData as unknown as Record<string, unknown>;

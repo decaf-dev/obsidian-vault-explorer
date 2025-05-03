@@ -11,9 +11,9 @@ export default class Migrate_1_23_0 implements MigrationInterface {
 				...typedData.views,
 				grid: {
 					...typedData.views.grid,
-					fetchSocialMediaImage: false,
-				},
-			},
+					fetchSocialMediaImage: false
+				}
+			}
 		};
 		return newData as unknown as Record<string, unknown>;
 	}

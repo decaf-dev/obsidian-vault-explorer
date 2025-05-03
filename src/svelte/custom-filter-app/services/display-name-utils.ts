@@ -9,7 +9,7 @@ import {
 	FolderFilterCondition,
 	ListFilterCondition,
 	NumberFilterCondition,
-	TextFilterCondition,
+	TextFilterCondition
 } from "src/types";
 
 export const getDisplayNameForFilterRuleType = (type: FilterRuleType) => {

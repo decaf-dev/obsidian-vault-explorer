@@ -43,7 +43,7 @@ class FavoritesStore {
 		Logger.trace({
 			fileName: "favorites-store.ts",
 			functionName: "load",
-			message: "called",
+			message: "called"
 		});
 
 		const directoryExists = await app.vault.adapter.exists(
@@ -80,7 +80,7 @@ class FavoritesStore {
 				{
 					fileName: "favorites-store.ts",
 					functionName: "load",
-					message: "loaded favorites cache",
+					message: "loaded favorites cache"
 				},
 				{ cache }
 			);
@@ -90,7 +90,7 @@ class FavoritesStore {
 				{
 					fileName: "favorites-store.ts",
 					functionName: "load",
-					message: "error loading favorites cache",
+					message: "error loading favorites cache"
 				},
 				error.message
 			);
@@ -102,7 +102,7 @@ class FavoritesStore {
 		Logger.trace({
 			fileName: "favorites-store.ts",
 			functionName: "update",
-			message: "called",
+			message: "called"
 		});
 
 		this.store.update((currentCache) => {
@@ -117,7 +117,7 @@ class FavoritesStore {
 		Logger.trace({
 			fileName: "favorites-store.ts",
 			functionName: "onFileRename",
-			message: "called",
+			message: "called"
 		});
 
 		this.store.update((currentCache) => {
@@ -136,7 +136,7 @@ class FavoritesStore {
 		Logger.trace({
 			fileName: "favorites-store.ts",
 			functionName: "onFileDelete",
-			message: "called",
+			message: "called"
 		});
 
 		this.store.update((currentCache) => {
@@ -151,7 +151,7 @@ class FavoritesStore {
 		Logger.trace({
 			fileName: "favorites-store.ts",
 			functionName: "save",
-			message: "called",
+			message: "called"
 		});
 
 		if (!this.app) {
@@ -166,7 +166,7 @@ class FavoritesStore {
 			const items = Array.from(cache.entries()).map(
 				([filePath, isFavorite]) => ({
 					filePath,
-					isFavorite,
+					isFavorite
 				})
 			);
 
@@ -178,7 +178,7 @@ class FavoritesStore {
 				{
 					fileName: "favorites-store.ts",
 					functionName: "save",
-					message: "error saving favorites cache",
+					message: "error saving favorites cache"
 				},
 				error.message
 			);
@@ -190,7 +190,7 @@ class FavoritesStore {
 		Logger.debug({
 			fileName: "favorites-store.ts",
 			functionName: "createConfigDir",
-			message: "called",
+			message: "called"
 		});
 
 		try {
@@ -202,7 +202,7 @@ class FavoritesStore {
 				{
 					fileName: "favorites-store.ts",
 					functionName: "load",
-					message: "error creating config directory",
+					message: "error creating config directory"
 				},
 				error.message
 			);
@@ -216,7 +216,7 @@ class FavoritesStore {
 			Logger.debug({
 				fileName: "favorites-store.ts",
 				functionName: "load",
-				message: "creating new file...",
+				message: "creating new file..."
 			});
 			const rawData = stringifyItems([]);
 			await app.vault.create(filePath, rawData);
@@ -227,7 +227,7 @@ class FavoritesStore {
 				{
 					fileName: "favorites-store.ts",
 					functionName: "load",
-					message: "error creating favorites file",
+					message: "error creating favorites file"
 				},
 				error.message
 			);

@@ -12,13 +12,13 @@ export default class Migrate_1_24_0 implements MigrationInterface {
 				grid: {
 					...typedData.views.grid,
 					loadSocialMediaImage:
-						typedData.views.grid.fetchSocialMediaImage,
+						typedData.views.grid.fetchSocialMediaImage
 				},
 				feed: {
 					...typedData.views.feed,
-					collapseContent: true,
-				},
-			},
+					collapseContent: true
+				}
+			}
 		};
 
 		delete (newData as any).views.grid.fetchSocialMediaImage;

@@ -31,17 +31,17 @@ export const getSMICacheEntry = async (websiteUrl: string) => {
 	Logger.trace({
 		fileName: "smi-cache.ts",
 		functionName: "getSMICacheEntry",
-		message: "called",
+		message: "called"
 	});
 
 	Logger.debug(
 		{
 			fileName: "grid-card.svelte",
 			functionName: "getCachedSocialMediaUrl",
-			message: "getting cached entry",
+			message: "getting cached entry"
 		},
 		{
-			websiteUrl,
+			websiteUrl
 		}
 	);
 	const db = await openDatabase();
@@ -58,18 +58,18 @@ export const putSMICacheEntry = async (url: string, smiUrl: string | null) => {
 	Logger.trace({
 		fileName: "smi-cache.ts",
 		functionName: "putSMICacheEntry",
-		message: "called",
+		message: "called"
 	});
 
 	Logger.debug(
 		{
 			fileName: "smi-cache.ts",
 			functionName: "putSMICacheEntry",
-			message: "putting entry",
+			message: "putting entry"
 		},
 		{
 			url,
-			smiUrl,
+			smiUrl
 		}
 	);
 
@@ -77,7 +77,7 @@ export const putSMICacheEntry = async (url: string, smiUrl: string | null) => {
 	await db.put(STORE_NAME, {
 		url,
 		smiUrl,
-		timestamp: Date.now(),
+		timestamp: Date.now()
 	});
 };
 
@@ -85,7 +85,7 @@ export const clearSMICache = async () => {
 	Logger.trace({
 		fileName: "smi-cache.ts",
 		functionName: "clearSMICache",
-		message: "called",
+		message: "called"
 	});
 	try {
 		const db = await openDatabase();
@@ -98,7 +98,7 @@ export const clearSMICache = async () => {
 			{
 				fileName: "smi-cache.ts",
 				functionName: "clearSMICache",
-				message: "failed to clear cache",
+				message: "failed to clear cache"
 			},
 			error.message
 		);
@@ -109,6 +109,6 @@ const openDatabase = () => {
 	return openDB<SocialMediaImageDB>(DATABASE_NAME, 1, {
 		upgrade(db) {
 			db.createObjectStore(STORE_NAME, { keyPath: "url" });
-		},
+		}
 	});
 };

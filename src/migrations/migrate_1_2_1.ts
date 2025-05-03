@@ -9,8 +9,8 @@ export default class Migrate_1_2_1 implements MigrationInterface {
 			...typedData,
 			views: {
 				...typedData.views,
-				titleWrapping: "normal",
-			},
+				titleWrapping: "normal"
+			}
 		};
 		return newData as unknown as Record<string, unknown>;
 	}

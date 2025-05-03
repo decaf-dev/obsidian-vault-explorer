@@ -106,7 +106,7 @@ export enum TExplorerView {
 	GRID = "grid",
 	LIST = "list",
 	FEED = "feed",
-	TABLE = "table",
+	TABLE = "table"
 }
 
 export type FilterOperator = "and" | "or";
@@ -119,14 +119,14 @@ export enum TextFilterCondition {
 	STARTS_WITH = "starts-with",
 	ENDS_WITH = "ends-with",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 export enum ListFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 export enum NumberFilterCondition {
@@ -137,14 +137,14 @@ export enum NumberFilterCondition {
 	IS_GREATER_OR_EQUAL = "is-greater-or-equal",
 	IS_LESS_OR_EQUAL = "is-less-or-equal",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 export enum CheckboxFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 export enum DateFilterCondition {
@@ -154,19 +154,19 @@ export enum DateFilterCondition {
 	IS_ON_OR_BEFORE = "is-on-or-before",
 	IS_ON_OR_AFTER = "is-on-or-after",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 export enum ContentFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	IS_EMPTY = "is-empty",
-	IS_NOT_EMPTY = "is-not-empty",
+	IS_NOT_EMPTY = "is-not-empty"
 }
 
 export enum FolderFilterCondition {
 	IS = "is",
-	IS_NOT = "is-not",
+	IS_NOT = "is-not"
 }
 
 export enum FileNameFilterCondition {
@@ -175,7 +175,7 @@ export enum FileNameFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	STARTS_WITH = "starts-with",
-	ENDS_WITH = "ends-with",
+	ENDS_WITH = "ends-with"
 }
 
 export type FilterCondition =
@@ -195,14 +195,14 @@ export enum PropertyType {
 	LIST = "list",
 	CHECKBOX = "checkbox",
 	DATE = "date",
-	DATETIME = "datetime",
+	DATETIME = "datetime"
 }
 
 export enum FilterRuleType {
 	PROPERTY = "property",
 	FOLDER = "folder",
 	FILE_NAME = "file-name",
-	CONTENT = "content",
+	CONTENT = "content"
 }
 
 export enum DatePropertyFilterValue {
@@ -213,7 +213,7 @@ export enum DatePropertyFilterValue {
 	ONE_WEEK_AGO = "one-week-ago",
 	ONE_MONTH_FROM_NOW = "one-month-from-now",
 	ONE_MONTH_AGO = "one-month-ago",
-	CUSTOM = "custom",
+	CUSTOM = "custom"
 }
 
 interface BaseFilterRule {

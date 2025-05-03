@@ -6,7 +6,7 @@ const IMAGE_EXTENSIONS = [
 	"webp",
 	"svg",
 	"avif",
-	"bmp",
+	"bmp"
 ];
 
 export const isImageExtension = (extension: string) => {

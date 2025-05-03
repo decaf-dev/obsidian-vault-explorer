@@ -5,13 +5,13 @@ import type {
 	FolderFilterRule,
 	PropertyFilterRule,
 	TFilterGroup,
-	TFilterRule,
+	TFilterRule
 } from "src/types";
 
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
 import {
 	getDateDaysAgo,
-	getDateDaysAhead,
+	getDateDaysAhead
 } from "src/svelte/shared/services/time-utils";
 import { DatePropertyFilterValue, FilterRuleType } from "src/types";
 import { removeFrontmatter } from "../../utils/content-utils";
@@ -108,7 +108,7 @@ const filterByPropertyType = (
 		type,
 		matchWhenPropertyDNE,
 		propertyType,
-		propertyName,
+		propertyName
 	} = filter;
 
 	///The property is empty when the user has not chosen a property.
@@ -260,7 +260,7 @@ const filterByFolder = (
 	const compare = filter.value.toLowerCase().trim();
 
 	const doesMatch = matchFolderFilter(value, compare, condition, {
-		includeSubfolders,
+		includeSubfolders
 	});
 	return doesMatch;
 };

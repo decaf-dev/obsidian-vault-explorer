@@ -1,3 +1,5 @@
 export default abstract class MigrationInterface {
-	abstract migrate(previous: Record<string, unknown>): Record<string, unknown>;
+	abstract migrate(
+		previous: Record<string, unknown>
+	): Record<string, unknown>;
 }

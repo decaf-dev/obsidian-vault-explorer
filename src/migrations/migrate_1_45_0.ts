@@ -24,7 +24,7 @@ export default class Migrate_1_45_0 implements MigrationInterface {
 		const newData: VaultExplorerPluginSettings_1_45_0 = {
 			...typedData,
 			confirmBeforeDelete: true,
-			viewOrder,
+			viewOrder
 		};
 		return newData as unknown as Record<string, unknown>;
 	}

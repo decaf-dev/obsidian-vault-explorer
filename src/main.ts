@@ -7,7 +7,7 @@ import Logger from "js-logger";
 import {
 	DEFAULT_SETTINGS,
 	HOVER_LINK_SOURCE_ID,
-	VAULT_EXPLORER_VIEW,
+	VAULT_EXPLORER_VIEW
 } from "./constants";
 import EventManager from "./event/event-manager";
 import { PluginEvent } from "./event/types";
@@ -44,13 +44,13 @@ export default class VaultExplorerPlugin extends Plugin {
 			name: "Open vault explorer view",
 			callback: async () => {
 				this.openVaultExplorerView();
-			},
+			}
 		});
 
 		this.registerEvents();
 		this.registerHoverLinkSource(HOVER_LINK_SOURCE_ID, {
 			display: this.manifest.name,
-			defaultMod: true,
+			defaultMod: true
 		});
 		this.addSettingTab(new VaultExplorerSettingsTab(this.app, this));
 
@@ -223,13 +223,13 @@ export default class VaultExplorerPlugin extends Plugin {
 		Logger.trace({
 			fileName: "main.ts",
 			functionName: "saveSettings",
-			message: "called",
+			message: "called"
 		});
 		Logger.debug(
 			{
 				fileName: "main.ts",
 				functionName: "saveSettings",
-				message: "saving settings",
+				message: "saving settings"
 			},
 			this.settings
 		);
@@ -244,7 +244,7 @@ export default class VaultExplorerPlugin extends Plugin {
 		} else {
 			this.app.workspace.getLeaf("tab").setViewState({
 				type: VAULT_EXPLORER_VIEW,
-				active: true,
+				active: true
 			});
 		}
 	}

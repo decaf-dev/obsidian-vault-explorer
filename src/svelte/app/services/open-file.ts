@@ -14,7 +14,7 @@ export const openInCurrentTab = (
 		plugin.app.workspace.setActiveLeaf(leaf);
 	} else {
 		plugin.app.workspace.openLinkText("", filePath, "tab", {
-			active: true,
+			active: true
 		});
 	}
 };

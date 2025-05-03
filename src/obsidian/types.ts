@@ -4,4 +4,12 @@ export interface ObsidianProperty {
 	count: number;
 }
 
-export type ObsidianPropertyType = "text" | "multitext" | "date" | "datetime" | "checkbox" | "tags" | "aliases" | "number";
+export type ObsidianPropertyType =
+	| "text"
+	| "multitext"
+	| "date"
+	| "datetime"
+	| "checkbox"
+	| "tags"
+	| "aliases"
+	| "number";

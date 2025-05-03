@@ -29,12 +29,12 @@ const rebuildPlugin = {
 				);
 			} catch (err) {}
 		});
-	},
+	}
 };
 
 const context = await esbuild.context({
 	banner: {
-		js: banner,
+		js: banner
 	},
 	entryPoints: ["src/main.ts"],
 	bundle: true,
@@ -52,7 +52,7 @@ const context = await esbuild.context({
 		"@lezer/common",
 		"@lezer/highlight",
 		"@lezer/lr",
-		...builtins,
+		...builtins
 	],
 	format: "cjs",
 	target: "es2018",
@@ -64,9 +64,9 @@ const context = await esbuild.context({
 		rebuildPlugin,
 		esbuildSvelte({
 			compilerOptions: { css: "external" },
-			preprocess: sveltePreprocess(),
-		}),
-	],
+			preprocess: sveltePreprocess()
+		})
+	]
 });
 
 if (prod) {

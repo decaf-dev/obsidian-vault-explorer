@@ -7,7 +7,7 @@ export default class Migrate_1_38_0 implements MigrationInterface {
 		const typedData = data as unknown as VaultExplorerPluginSettings_1_37_2;
 		const newData: VaultExplorerPluginSettings_1_38_0 = {
 			...typedData,
-			loadBodyTags: true,
+			loadBodyTags: true
 		};
 
 		return newData as unknown as Record<string, unknown>;

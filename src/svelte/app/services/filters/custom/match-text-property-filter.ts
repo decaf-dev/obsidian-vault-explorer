@@ -7,13 +7,31 @@ export const matchTextPropertyFilter = (
 	matchIfNull: boolean
 ): boolean => {
 	if (propertyValue) {
-		console.assert(propertyValue === propertyValue.toLowerCase(), `TextFilter propertyValue "${propertyValue}" must be lowercase`);
-		console.assert(/^\s/.test(propertyValue) === false, `TextFilter propertyValue "${propertyValue}" must not contain whitespace`);
-		console.assert(/\s$/.test(propertyValue) === false, `TextFilter propertyValue "${propertyValue}" must not contain whitespace`);
+		console.assert(
+			propertyValue === propertyValue.toLowerCase(),
+			`TextFilter propertyValue "${propertyValue}" must be lowercase`
+		);
+		console.assert(
+			/^\s/.test(propertyValue) === false,
+			`TextFilter propertyValue "${propertyValue}" must not contain whitespace`
+		);
+		console.assert(
+			/\s$/.test(propertyValue) === false,
+			`TextFilter propertyValue "${propertyValue}" must not contain whitespace`
+		);
 	}
-	console.assert(compare === compare.toLowerCase(), `TextFilter compare "${compare}" must be lowercase`);
-	console.assert(/^\s/.test(compare) === false, `TextFilter compare "${compare}" must not contain whitespace`);
-	console.assert(/\s$/.test(compare) === false, `TextFilter compare "${compare}" must not contain whitespace`);
+	console.assert(
+		compare === compare.toLowerCase(),
+		`TextFilter compare "${compare}" must be lowercase`
+	);
+	console.assert(
+		/^\s/.test(compare) === false,
+		`TextFilter compare "${compare}" must not contain whitespace`
+	);
+	console.assert(
+		/\s$/.test(compare) === false,
+		`TextFilter compare "${compare}" must not contain whitespace`
+	);
 
 	switch (condition) {
 		case TextFilterCondition.IS:

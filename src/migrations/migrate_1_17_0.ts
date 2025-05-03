@@ -10,32 +10,32 @@ export default class Migrate_1_17_0 implements MigrationInterface {
 			...typedData,
 			views: {
 				dashboard: {
-					isEnabled: false,
+					isEnabled: false
 				},
 				grid: {
-					isEnabled: true,
+					isEnabled: true
 				},
 				list: {
-					isEnabled: true,
+					isEnabled: true
 				},
 				table: {
-					isEnabled: false,
+					isEnabled: false
 				},
 				feed: {
-					isEnabled: true,
+					isEnabled: true
 				},
 				recommended: {
-					isEnabled: false,
+					isEnabled: false
 				},
 				related: {
-					isEnabled: false,
-				},
+					isEnabled: false
+				}
 			},
 			viewOrder: typedData.views.order as unknown as TExplorerView[],
 			enableClockUpdates: typedData.views.enableClockUpdates,
 			currentView: typedData.views
 				.currentView as unknown as TExplorerView,
-			titleWrapping: typedData.views.titleWrapping,
+			titleWrapping: typedData.views.titleWrapping
 		};
 		delete (newData as any).views.order;
 		delete (newData as any).views.currentView;

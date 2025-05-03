@@ -11,9 +11,9 @@ export default class Migrate_0_4_0 implements MigrationInterface {
 				...typedData.filters,
 				properties: {
 					...typedData.filters.properties,
-					groups: [],
-				},
-			},
+					groups: []
+				}
+			}
 		};
 		return newData as unknown as Record<string, unknown>;
 	}

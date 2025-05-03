@@ -36,7 +36,7 @@ export const loadTextProperties = (
 
 			textProperties.push({
 				name: key,
-				value: value as string,
+				value: value as string
 			});
 		}
 	}

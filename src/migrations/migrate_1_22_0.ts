@@ -9,10 +9,10 @@ export default class Migrate_1_22_0 implements MigrationInterface {
 			...typedData,
 			properties: {
 				...typedData.properties,
-				imageUrl: "",
+				imageUrl: ""
 			},
 			filterGroupsWidth: 300,
-			filterGroupsWrapping: "nowrap",
+			filterGroupsWrapping: "nowrap"
 		};
 		return newData as unknown as Record<string, unknown>;
 	}

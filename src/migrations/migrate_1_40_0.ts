@@ -7,7 +7,7 @@ export default class Migrate_1_40_0 implements MigrationInterface {
 		const typedData = data as unknown as VaultExplorerPluginSettings_1_39_0;
 		const newData: VaultExplorerPluginSettings_1_40_2 = {
 			...typedData,
-			shouldCollapseFilters: false,
+			shouldCollapseFilters: false
 		};
 
 		return newData as unknown as Record<string, unknown>;

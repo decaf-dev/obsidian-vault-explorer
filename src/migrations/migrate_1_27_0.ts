@@ -15,9 +15,9 @@ export default class Migrate_1_27_0 implements MigrationInterface {
 					collapseStyle: "no-new-lines",
 					lineClampLarge: 5,
 					lineClampMedium: 3,
-					lineClampSmall: 2,
-				},
-			},
+					lineClampSmall: 2
+				}
+			}
 		};
 
 		delete (newData as any).views.feed.collapseContent;
