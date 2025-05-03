@@ -54,7 +54,7 @@ export const getStartOfLastWeekMillis = () => {
  * @returns - The date in milliseconds
  */
 export const getTimeMillis = (date: string) => {
-	const momentDate = (moment as any)()(date, DATE_FORMATS, true);
+	const momentDate = (moment as any)(date, DATE_FORMATS, true);
 
 	if (!momentDate.isValid()) {
 		throw new Error(`Date format not handled: ${date}`);
@@ -68,7 +68,7 @@ export const getTimeMillis = (date: string) => {
  * @returns - True if the date is supported, false otherwise
  */
 export const isDateSupported = (date: string) => {
-	const momentDate = (moment as any)()(date, DATE_FORMATS, true);
+	const momentDate = (moment as any)(date, DATE_FORMATS, true);
 	return momentDate.isValid();
 };
 
@@ -78,7 +78,7 @@ export const isDateSupported = (date: string) => {
  * @returns - The end of the day in milliseconds
  */
 export const getEndOfDayMillis = (date: string) => {
-	const day = (moment as any)()(date);
+	const day = (moment as any)(date);
 	day.set({
 		hour: 23,
 		minute: 59,
