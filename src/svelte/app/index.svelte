@@ -17,7 +17,7 @@
 		TListView,
 		TSearchFilter,
 		TSortFilter,
-		TTableView,
+		TTableView
 	} from "src/types";
 
 	import { TExplorerView } from "src/types";
@@ -33,7 +33,7 @@
 	import {
 		getStartOfLastWeekMillis,
 		getStartOfThisWeekMillis,
-		getStartOfTodayMillis,
+		getStartOfTodayMillis
 	} from "../shared/services/time-utils";
 	import FeedView from "./components/feed-view.svelte";
 	import FilterGroupList from "./components/filter-group-list.svelte";
@@ -47,18 +47,18 @@
 	import { getDisplayNameForView } from "./services/display-name";
 	import {
 		favoritesStore,
-		type TFavoritesCache,
+		type TFavoritesCache
 	} from "./services/favorites-store";
 	import {
 		type FileContentCache,
-		fileContentStore,
+		fileContentStore
 	} from "./services/file-content-store";
 	import { fileStore, type LoadedFile } from "./services/file-store";
 	import { filterByGroups } from "./services/filters/custom/filter-by-groups";
 	import { filterBySearch } from "./services/filters/search-filter";
 	import {
 		type RandomFileSortCache,
-		randomFileSortStore,
+		randomFileSortStore
 	} from "./services/random-file-sort-store";
 	import { formatFileDataForRender } from "./services/render-data";
 	import type { FileRenderData } from "./types";
@@ -78,18 +78,18 @@
 	let pageSize: number = 0;
 	let searchFilter: TSearchFilter = {
 		isEnabled: false,
-		value: "",
+		value: ""
 	};
 
 	let sortFilter: TSortFilter = {
 		isEnabled: false,
-		value: "file-name-asc",
+		value: "file-name-asc"
 	};
 
 	let customFilter: TCustomFilter = {
 		isEnabled: false,
 		selectedGroupId: "",
-		groups: [],
+		groups: []
 	};
 
 	let currentView: TExplorerView | null = null;
@@ -101,7 +101,7 @@
 	let loadBodyTagsTime: number = Date.now();
 
 	let loadedFiles: LoadedFile[] = [];
-	let timeValuesUpdateInterval: NodeJS.Timer | null = null;
+	let timeValuesUpdateInterval: NodeJS.Timeout | null = null;
 
 	let favoritesCache: TFavoritesCache = new Map();
 	let contentCache: FileContentCache = new Map();
@@ -115,13 +115,13 @@
 		order: 0,
 		coverImageSources: [],
 		coverImageFit: "contain",
-		loadSocialMediaImage: false,
+		loadSocialMediaImage: false
 	};
 
 	let listView: TListView = {
 		showTags: false,
 		isEnabled: true,
-		order: 1,
+		order: 1
 	};
 
 	let feedView: TFeedView = {
@@ -131,12 +131,12 @@
 		removeH1: true,
 		lineClampSmall: 2,
 		lineClampMedium: 3,
-		lineClampLarge: 5,
+		lineClampLarge: 5
 	};
 
 	let tableView: TTableView = {
 		isEnabled: true,
-		order: 3,
+		order: 3
 	};
 
 	let initialRender = true;
@@ -195,7 +195,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleFilterToggleSettingChange",
-				message: "called",
+				message: "called"
 			});
 
 			searchFilter = plugin.settings.filters.search;
@@ -205,13 +205,13 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.FILTER_TOGGLE_SETTING_CHANGE,
-			handleFilterToggleSettingChange,
+			handleFilterToggleSettingChange
 		);
 
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.FILTER_TOGGLE_SETTING_CHANGE,
-				handleFilterToggleSettingChange,
+				handleFilterToggleSettingChange
 			);
 		};
 	});
@@ -221,7 +221,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleClockUpdatesSettingChange",
-				message: "called",
+				message: "called"
 			});
 
 			const isEnabled = plugin.settings.enableClockUpdates;
@@ -237,7 +237,7 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.CLOCK_UPDATES_SETTING_CHANGE,
-			handleClockUpdatesSettingChange,
+			handleClockUpdatesSettingChange
 		);
 
 		return () => {
@@ -246,7 +246,7 @@
 
 			EventManager.getInstance().off(
 				PluginEvent.CLOCK_UPDATES_SETTING_CHANGE,
-				handleClockUpdatesSettingChange,
+				handleClockUpdatesSettingChange
 			);
 		};
 	});
@@ -258,12 +258,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.COLLAPSE_FILTERS_CHANGE,
-			handleToggleFiltersChange,
+			handleToggleFiltersChange
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.COLLAPSE_FILTERS_CHANGE,
-				handleToggleFiltersChange,
+				handleToggleFiltersChange
 			);
 		};
 	});
@@ -273,19 +273,19 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handlePropertiesFilterUpdate",
-				message: "called",
+				message: "called"
 			});
 			customFilter.groups = plugin.settings.filters.custom.groups;
 		}
 
 		EventManager.getInstance().on(
 			PluginEvent.PROPERTIES_FILTER_UPDATE,
-			handlePropertiesFilterUpdate,
+			handlePropertiesFilterUpdate
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.PROPERTIES_FILTER_UPDATE,
-				handlePropertiesFilterUpdate,
+				handlePropertiesFilterUpdate
 			);
 		};
 	});
@@ -295,7 +295,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleCreateFile",
-				message: "called",
+				message: "called"
 			});
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const newFile = data[0] as TFile;
@@ -308,12 +308,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.FILE_CREATE,
-			handleCreateFile,
+			handleCreateFile
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.FILE_CREATE,
-				handleCreateFile,
+				handleCreateFile
 			);
 		};
 	});
@@ -323,7 +323,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleDeleteFile",
-				message: "called",
+				message: "called"
 			});
 			if (data.length > 0 && typeof data[0] === "string") {
 				const path = data[0] as string;
@@ -337,12 +337,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.FILE_DELETE,
-			handleDeleteFile,
+			handleDeleteFile
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.FILE_DELETE,
-				handleDeleteFile,
+				handleDeleteFile
 			);
 		};
 	});
@@ -352,7 +352,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleFileRename",
-				message: "called",
+				message: "called"
 			});
 			if (data.length < 2) return;
 			if (typeof data[0] === "string" && data[1] instanceof TFile) {
@@ -368,12 +368,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.FILE_RENAME,
-			handleFileRename,
+			handleFileRename
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.FILE_RENAME,
-				handleFileRename,
+				handleFileRename
 			);
 		};
 	});
@@ -383,7 +383,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleFileModify",
-				message: "called",
+				message: "called"
 			});
 			if (data.length > 0 && data[0] instanceof TFile) {
 				const file = data[0] as TFile;
@@ -395,12 +395,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.FILE_MODIFY,
-			handleFileModify,
+			handleFileModify
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.FILE_MODIFY,
-				handleFileModify,
+				handleFileModify
 			);
 		};
 	});
@@ -410,7 +410,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleMetadataChange",
-				message: "called",
+				message: "called"
 			});
 
 			if (data.length > 0 && data[0] instanceof TFile) {
@@ -420,12 +420,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.METADATA_CHANGE,
-			handleMetadataChange,
+			handleMetadataChange
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.METADATA_CHANGE,
-				handleMetadataChange,
+				handleMetadataChange
 			);
 		};
 	});
@@ -435,7 +435,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleViewToggleSettingChange",
-				message: "called",
+				message: "called"
 			});
 
 			currentView = plugin.settings.currentView;
@@ -447,12 +447,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.VIEW_TOGGLE_SETTING_CHANGE,
-			handleViewToggleSettingChange,
+			handleViewToggleSettingChange
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.VIEW_TOGGLE_SETTING_CHANGE,
-				handleViewToggleSettingChange,
+				handleViewToggleSettingChange
 			);
 		};
 	});
@@ -462,7 +462,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handlePageSizeSettingChange",
-				message: "called",
+				message: "called"
 			});
 
 			pageSize = plugin.settings.pageSize;
@@ -470,12 +470,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.PAGE_SIZE_SETTING_CHANGE,
-			handlePageSizeSettingChange,
+			handlePageSizeSettingChange
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.PAGE_SIZE_SETTING_CHANGE,
-				handlePageSizeSettingChange,
+				handlePageSizeSettingChange
 			);
 		};
 	});
@@ -485,19 +485,19 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handlePropertySettingChange",
-				message: "called",
+				message: "called"
 			});
 			updatePropertySettingTime();
 		}
 
 		EventManager.getInstance().on(
 			PluginEvent.PROPERTY_SETTING_CHANGE,
-			handlePropertySettingChange,
+			handlePropertySettingChange
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.PROPERTY_SETTING_CHANGE,
-				handlePropertySettingChange,
+				handlePropertySettingChange
 			);
 		};
 	});
@@ -507,7 +507,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleCoverImageFitSettingChange",
-				message: "called",
+				message: "called"
 			});
 
 			coverImageFitTime = Date.now();
@@ -515,12 +515,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.COVER_IMAGE_FIT_SETTING_CHANGE,
-			handleCoverImageFitSettingChange,
+			handleCoverImageFitSettingChange
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.COVER_IMAGE_FIT_SETTING_CHANGE,
-				handleCoverImageFitSettingChange,
+				handleCoverImageFitSettingChange
 			);
 		};
 	});
@@ -530,7 +530,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleCoverImageSourceSettingChange",
-				message: "called",
+				message: "called"
 			});
 
 			coverImageSourcesTime = Date.now();
@@ -538,12 +538,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE,
-			handleCoverImageSourceSettingChange,
+			handleCoverImageSourceSettingChange
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.COVER_IMAGE_SOURCE_SETTING_CHANGE,
-				handleCoverImageSourceSettingChange,
+				handleCoverImageSourceSettingChange
 			);
 		};
 	});
@@ -561,7 +561,7 @@
 		}
 
 		const leafEl = ref?.closest(
-			".workspace-leaf-content",
+			".workspace-leaf-content"
 		) as HTMLElement | null;
 		if (leafEl) {
 			checkLeafWidth(leafEl);
@@ -582,7 +582,7 @@
 			Logger.trace({
 				fileName: "app/index.svelte",
 				functionName: "handleLoadBodyTagsSettingChange",
-				message: "called",
+				message: "called"
 			});
 
 			loadBodyTagsTime = Date.now();
@@ -590,12 +590,12 @@
 
 		EventManager.getInstance().on(
 			PluginEvent.LOAD_BODY_TAGS_SETTING_CHANGE,
-			handleLoadBodyTagsSettingChange,
+			handleLoadBodyTagsSettingChange
 		);
 		return () => {
 			EventManager.getInstance().off(
 				PluginEvent.LOAD_BODY_TAGS_SETTING_CHANGE,
-				handleLoadBodyTagsSettingChange,
+				handleLoadBodyTagsSettingChange
 			);
 		};
 	});
@@ -615,7 +615,7 @@
 		Logger.trace({
 			fileName: "app/index.svelte",
 			functionName: "updateTimeValues",
-			message: "called",
+			message: "called"
 		});
 		startOfTodayMillis = getStartOfTodayMillis();
 		startOfThisWeekMillis = getStartOfThisWeekMillis();
@@ -631,7 +631,7 @@
 		Logger.trace({
 			fileName: "app/index.svelte",
 			functionName: "updateFrontmatterCacheTime",
-			message: "called",
+			message: "called"
 		});
 		frontmatterCacheTime = Date.now();
 	}
@@ -681,7 +681,7 @@
 					return {
 						...group,
 						isSticky: newSticky,
-						isEnabled: newSticky,
+						isEnabled: newSticky
 					};
 				} else {
 					return { ...group, isEnabled: !group.isEnabled };
@@ -718,11 +718,11 @@
 			[TExplorerView.GRID]: gridView,
 			[TExplorerView.LIST]: listView,
 			[TExplorerView.FEED]: feedView,
-			[TExplorerView.TABLE]: tableView,
+			[TExplorerView.TABLE]: tableView
 		};
 
 		const draggedView = Object.entries(views).find(
-			([key]) => key === dragId,
+			([key]) => key === dragId
 		);
 
 		const droppedView = Object.entries(views).find(([key]) => key === type);
@@ -789,7 +789,7 @@
 		nativeEvent.dataTransfer.setDragImage(
 			dragImage,
 			rect.width / 2,
-			rect.height / 2,
+			rect.height / 2
 		);
 
 		nativeEvent.target.addEventListener("dragend", () => {
@@ -821,7 +821,7 @@
 			Logger.error({
 				fileName: "app/index.svelte",
 				functionName: "handleCoverImageFitChange",
-				message: "file not found. returning...",
+				message: "file not found. returning..."
 			});
 			return;
 		}
@@ -859,7 +859,7 @@
 				path,
 				frontmatter,
 				content,
-				customFilter.groups,
+				customFilter.groups
 			);
 		});
 	}
@@ -880,7 +880,7 @@
 				settings: plugin.settings,
 				fileId: id,
 				file,
-				fileContent: content,
+				fileContent: content
 			});
 		});
 	}
@@ -957,7 +957,7 @@
 		[TExplorerView.GRID]: gridView,
 		[TExplorerView.LIST]: listView,
 		[TExplorerView.FEED]: feedView,
-		[TExplorerView.TABLE]: tableView,
+		[TExplorerView.TABLE]: tableView
 	};
 
 	$: orderedViews = Object.entries(views)
