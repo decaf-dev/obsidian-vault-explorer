@@ -1,8 +1,8 @@
 import Logger from "js-logger";
-import { App, FrontMatterCache } from "obsidian";
+import { App, type FrontMatterCache } from "obsidian";
+import { getObsidianPropertiesByType } from "src/obsidian/utils";
 import { PropertyType } from "src/types";
 import { isDateSupported } from "./time-utils";
-import { getObsidianPropertiesByType } from "src/obsidian/utils";
 
 export type FileTextProperties = Record<string, string>[];
 
@@ -36,7 +36,7 @@ export const loadTextProperties = (
 
 			textProperties.push({
 				name: key,
-				value: value as string,
+				value: value as string
 			});
 		}
 	}

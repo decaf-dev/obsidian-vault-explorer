@@ -1,15 +1,14 @@
-import { App, Menu, Notice } from "obsidian";
-import { CoverImageFit, VaultExplorerPluginSettings } from "src/types";
+import { App, Menu } from "obsidian";
+import type { CoverImageFit, VaultExplorerPluginSettings } from "src/types";
 
 export const openContextMenu = (
 	e: MouseEvent,
 	filePath: string,
 	app: App,
 	settings: VaultExplorerPluginSettings,
-	enablePremiumFeatures: boolean,
 	{
 		coverImageFit,
-		onCoverImageFitChange,
+		onCoverImageFitChange
 	}: {
 		coverImageFit?: CoverImageFit;
 		onCoverImageFitChange?: (
@@ -51,12 +50,6 @@ export const openContextMenu = (
 	menu.addItem((item) => {
 		item.setTitle("Delete");
 		item.onClick(async () => {
-			if (!enablePremiumFeatures) {
-				new Notice(
-					"This feature requires a premium Vault Explorer license."
-				);
-				return;
-			}
 			if (confirmBeforeDelete) {
 				if (confirm("Are you sure you want to delete this file?")) {
 					await deleteFile(app, filePath);
@@ -78,7 +71,7 @@ const deleteFile = async (app: App, filePath: string) => {
 
 const openToTheRight = (app: App, filePath: string) => {
 	app.workspace.openLinkText("", filePath, "split", {
-		active: false,
+		active: false
 	});
 };
 
@@ -87,8 +80,8 @@ const openInNewTab = (app: App, filePath: string) => {
 		type: "markdown",
 		active: false,
 		state: {
-			file: filePath,
-		},
+			file: filePath
+		}
 	});
 };
 

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import PropertyFilter from "./property-filter.svelte";
-	import { TFilterRule, FilterRuleType, PropertyType } from "src/types";
+	import { type TFilterRule, FilterRuleType, PropertyType } from "src/types";
 	import ContentFilter from "./content-filter.svelte";
-	import FolderFilter from "./folder-filter.svelte";
 	import FileNameFilter from "./file-name-filter.svelte";
+	import FolderFilter from "./folder-filter.svelte";
+	import PropertyFilter from "./property-filter.svelte";
 
 	export let rules: TFilterRule[] = [];
 </script>

@@ -1,10 +1,10 @@
-import { VaultExplorerPluginSettings_1_14_2 } from "src/types/types-1.14.2";
+import type { VaultExplorerPluginSettings_1_13_1 } from "src/types/types-1.13.1";
+import type { VaultExplorerPluginSettings_1_14_2 } from "src/types/types-1.14.2";
 import MigrationInterface from "./migration_interface";
-import { VaultExplorerPluginSettings_1_13_1 } from "src/types/types-1.13.1";
 
 export default class Migrate_1_14_0 implements MigrationInterface {
 	migrate(data: Record<string, unknown>) {
-		const typedData = (data as unknown) as VaultExplorerPluginSettings_1_13_1;
+		const typedData = data as unknown as VaultExplorerPluginSettings_1_13_1;
 		const newData: VaultExplorerPluginSettings_1_14_2 = {
 			...typedData,
 			filters: {
@@ -28,10 +28,10 @@ export default class Migrate_1_14_0 implements MigrationInterface {
 				custom: {
 					isEnabled: true,
 					...typedData.filters.custom
-				},
+				}
 			},
-			enableScrollButtons: true,
-		}
+			enableScrollButtons: true
+		};
 		delete (newData.filters as any).onlyFavorites;
 		return newData as unknown as Record<string, unknown>;
 	}

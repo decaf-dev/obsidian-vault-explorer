@@ -54,7 +54,7 @@ enum TextFilterCondition {
 	STARTS_WITH = "starts-with",
 	ENDS_WITH = "ends-with",
 	IS_EMPTY = "is-empty",
-	IS_NOT_EMPTY = "is-not-empty",
+	IS_NOT_EMPTY = "is-not-empty"
 }
 
 type FilterOperator = "and" | "or";

@@ -1,4 +1,4 @@
-import { CoverImageFit } from "src/types";
+import type { CoverImageFit } from "src/types";
 
 export interface FileRenderData {
 	id: string;

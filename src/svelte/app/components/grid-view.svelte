@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { FileRenderData } from "../types";
+	import type { FileRenderData } from "../types";
 	import GridCard from "./grid-card.svelte";
 
 	export let data: FileRenderData[];
 	export let startIndex: number;
 	export let pageLength: number;
-	export let enablePremiumFeatures: boolean;
 
 	let filteredItems: FileRenderData[] = [];
 
@@ -25,7 +24,6 @@
 	<div class="vault-explorer-grid-view__container">
 		{#each filteredItems as fileRenderData (fileRenderData.id)}
 			<GridCard
-				{enablePremiumFeatures}
 				displayName={fileRenderData.displayName}
 				path={fileRenderData.path}
 				coverImageFit={fileRenderData.coverImageFit}

@@ -21,7 +21,6 @@ Vault Explorer is a work in progress. Please check the GitHub repository and doc
 -   [Screenshots](#screenshots)
 -   [Installation](#installation)
 -   [Usage](#usage)
--   [Premium](#premium)
 -   [Features](#features)
 -   [Network use](#network-use)
 -   [Contributing](#contributing)
@@ -78,12 +77,6 @@ Vault Explorer is a work in progress. Please check the GitHub repository and doc
 ## Usage
 
 Click the compass button on the left-hand sidebar to open the vault explorer view.
-
-## Premium
-
-Premium features are available to users who purchase a [Vault Explorer license](https://vaultexplorer.com/docs/premium/).
-
-Please do not share your license key with anyone. Shared license keys will be deactivated.
 
 ## Features
 

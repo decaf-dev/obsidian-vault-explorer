@@ -2,7 +2,7 @@ import {
 	FilterRuleType,
 	PropertyType,
 	TextFilterCondition,
-	TextPropertyFilterRule,
+	type TextPropertyFilterRule
 } from "src/types";
 import { generateRandomId } from "../../shared/services/random";
 
@@ -16,6 +16,6 @@ export const createPropertyFilter = (): TextPropertyFilterRule => {
 		isEnabled: true,
 		condition: TextFilterCondition.IS,
 		value: "",
-		matchWhenPropertyDNE: false,
+		matchWhenPropertyDNE: false
 	};
 };

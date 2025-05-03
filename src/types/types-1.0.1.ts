@@ -33,14 +33,14 @@ enum TextFilterCondition {
 	STARTS_WITH = "starts-with",
 	ENDS_WITH = "ends-with",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum ListFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum NumberFilterCondition {
@@ -51,14 +51,14 @@ enum NumberFilterCondition {
 	IS_GREATER_OR_EQUAL = "is-greater-or-equal",
 	IS_LESS_OR_EQUAL = "is-less-or-equal",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum CheckboxFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum DateFilterCondition {
@@ -66,7 +66,7 @@ enum DateFilterCondition {
 	IS_BEFORE = "is-before",
 	IS_AFTER = "is-after",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 type FilterCondition =
@@ -91,7 +91,7 @@ enum PropertyFilterType {
 	LIST = "list",
 	CHECKBOX = "checkbox",
 	DATE = "date",
-	DATETIME = "datetime",
+	DATETIME = "datetime"
 }
 
 interface TextPropertyFilter extends BasePropertyFilter {

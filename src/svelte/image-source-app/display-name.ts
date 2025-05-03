@@ -1,4 +1,4 @@
-import { CoverImageSourceType } from "src/types";
+import type { CoverImageSourceType } from "src/types";
 
 export const getDisplayNameForImageSource = (type: CoverImageSourceType) => {
 	switch (type) {

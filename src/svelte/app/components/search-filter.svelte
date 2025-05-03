@@ -48,7 +48,7 @@
 						handleClearClick();
 					}
 				}}
-			/>
+			></div>
 		{/if}
 	</div>
 	<IconButton

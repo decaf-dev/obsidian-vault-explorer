@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FilterCondition, FilterOperator, FilterRuleType } from "src/types";
+	import { type FilterCondition, type FilterOperator, FilterRuleType } from "src/types";
 	import FilterRule from "./filter-rule.svelte";
 
 	export let index: number;

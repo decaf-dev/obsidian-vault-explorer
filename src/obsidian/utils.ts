@@ -1,5 +1,5 @@
 import { App } from "obsidian";
-import { ObsidianProperty, ObsidianPropertyType } from "./types";
+import type { ObsidianProperty, ObsidianPropertyType } from "./types";
 
 /**
  * Gets all Obsidian properties

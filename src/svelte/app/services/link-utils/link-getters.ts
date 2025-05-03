@@ -1,6 +1,6 @@
 import {
 	EXTERNAL_EMBED_REGEX as EXTERNAL_EMBED_REGEX,
-	INTERNAL_EMBED_REGEX,
+	INTERNAL_EMBED_REGEX
 } from "./constants";
 
 export const getFirstInternalEmbed = (content: string) => {

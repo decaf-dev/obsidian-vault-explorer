@@ -1,26 +1,24 @@
 import { Plugin, TAbstractFile, TFile, TFolder } from "obsidian";
 
-import VaultExplorerView from "./obsidian/vault-explorer-view";
 import VaultExplorerSettingsTab from "./obsidian/vault-explorer-settings-tab";
+import VaultExplorerView from "./obsidian/vault-explorer-view";
 
-import { VaultExplorerPluginSettings } from "./types";
+import Logger from "js-logger";
 import {
 	DEFAULT_SETTINGS,
 	HOVER_LINK_SOURCE_ID,
-	VAULT_EXPLORER_VIEW,
+	VAULT_EXPLORER_VIEW
 } from "./constants";
-import _ from "lodash";
 import EventManager from "./event/event-manager";
-import { preformMigrations } from "./migrations";
-import Logger from "js-logger";
-import { formatMessageForLogger, stringToLogLevel } from "./logger";
-import { moveFocus } from "./focus-utils";
 import { PluginEvent } from "./event/types";
-import { isVersionLessThan } from "./utils";
-import License from "./svelte/shared/services/license";
+import { moveFocus } from "./focus-utils";
+import { formatMessageForLogger, stringToLogLevel } from "./logger";
+import { preformMigrations } from "./migrations";
+import "./styles.css";
 import { clearSMICache } from "./svelte/app/services/smi-cache";
 import store from "./svelte/shared/services/store";
-import "./styles.css";
+import type { VaultExplorerPluginSettings } from "./types";
+import { isVersionLessThan } from "./utils";
 
 export default class VaultExplorerPlugin extends Plugin {
 	settings: VaultExplorerPluginSettings = DEFAULT_SETTINGS;
@@ -31,8 +29,6 @@ export default class VaultExplorerPlugin extends Plugin {
 		this.setupLogger();
 
 		store.plugin.set(this);
-
-		await License.getInstance().loadStoredKey();
 
 		this.registerView(
 			VAULT_EXPLORER_VIEW,
@@ -48,13 +44,13 @@ export default class VaultExplorerPlugin extends Plugin {
 			name: "Open vault explorer view",
 			callback: async () => {
 				this.openVaultExplorerView();
-			},
+			}
 		});
 
 		this.registerEvents();
 		this.registerHoverLinkSource(HOVER_LINK_SOURCE_ID, {
 			display: this.manifest.name,
-			defaultMod: true,
+			defaultMod: true
 		});
 		this.addSettingTab(new VaultExplorerSettingsTab(this.app, this));
 
@@ -203,11 +199,6 @@ export default class VaultExplorerPlugin extends Plugin {
 					//Clean up the old device id from the versioning system
 					const LOCAL_STORAGE_ID = "vault-explorer-id";
 					localStorage.removeItem(LOCAL_STORAGE_ID);
-
-					//Clean up the old device id from the versioning system
-					const LOCAL_STORAGE_LICENSE_KEY =
-						"vault-explorer-license-key";
-					localStorage.removeItem(LOCAL_STORAGE_LICENSE_KEY);
 				}
 				if (isVersionLessThan(loadedVersion, "1.37.1")) {
 					console.log("Clearing image cache");
@@ -232,13 +223,13 @@ export default class VaultExplorerPlugin extends Plugin {
 		Logger.trace({
 			fileName: "main.ts",
 			functionName: "saveSettings",
-			message: "called",
+			message: "called"
 		});
 		Logger.debug(
 			{
 				fileName: "main.ts",
 				functionName: "saveSettings",
-				message: "saving settings",
+				message: "saving settings"
 			},
 			this.settings
 		);
@@ -253,7 +244,7 @@ export default class VaultExplorerPlugin extends Plugin {
 		} else {
 			this.app.workspace.getLeaf("tab").setViewState({
 				type: VAULT_EXPLORER_VIEW,
-				active: true,
+				active: true
 			});
 		}
 	}

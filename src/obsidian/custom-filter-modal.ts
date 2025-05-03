@@ -16,7 +16,7 @@ export default class CustomFilterModal extends Modal {
 		const { contentEl } = this;
 
 		this.component = new CustomFilterApp({
-			target: contentEl,
+			target: contentEl
 		});
 	}
 

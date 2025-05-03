@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {
 		ContentFilterCondition,
-		FilterCondition,
-		FilterOperator,
+		type FilterCondition,
+		type FilterOperator,
 		FilterRuleType,
 	} from "src/types";
 	import FilterRule from "./filter-rule.svelte";
@@ -16,18 +16,7 @@
 	export let isEnabled: boolean;
 
 	import { createEventDispatcher } from "svelte";
-	import License from "src/svelte/shared/services/license";
-	import PremiumLink from "src/svelte/shared/components/premium-link.svelte";
-	import PremiumMessage from "src/svelte/shared/components/premium-message.svelte";
 	const dispatch = createEventDispatcher();
-
-	let hasValidLicenseKey = false;
-
-	License.getInstance()
-		.getHasValidKeyStore()
-		.subscribe((hasValidKey) => {
-			hasValidLicenseKey = hasValidKey;
-		});
 
 	function handleValueChange(e: Event) {
 		const value = (e.target as HTMLInputElement).value;
@@ -54,19 +43,10 @@
 		{#if condition !== ContentFilterCondition.IS_EMPTY && condition !== ContentFilterCondition.IS_NOT_EMPTY}
 			<input
 				type="text"
-				disabled={!hasValidLicenseKey}
 				placeholder="value"
 				{value}
 				on:input={handleValueChange}
 			/>
-		{/if}
-	</svelte:fragment>
-	<svelte:fragment slot="after-toggle">
-		{#if type === FilterRuleType.CONTENT && !hasValidLicenseKey}
-			<div>
-				<PremiumMessage />
-				<PremiumLink />
-			</div>
 		{/if}
 	</svelte:fragment>
 </FilterRule>

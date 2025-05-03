@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { TFilterGroup } from "src/types";
-	import _ from "lodash";
 	import VaultExplorerPlugin from "src/main";
-	import store from "src/svelte/shared/services/store";
-	import FilterGroup from "./filter-group.svelte";
 	import Stack from "src/svelte/shared/components/stack.svelte";
+	import store from "src/svelte/shared/services/store";
+	import type { TFilterGroup } from "src/types";
+	import FilterGroup from "./filter-group.svelte";
 
 	export let groups: TFilterGroup[] = [];
 

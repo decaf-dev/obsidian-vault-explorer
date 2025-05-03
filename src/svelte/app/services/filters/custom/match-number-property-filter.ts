@@ -44,6 +44,8 @@ export const matchNumberPropertyFilter = (
 			return propertyValue === null;
 
 		default:
-			throw new Error(`NumberFilterCondition not supported: ${condition}`);
+			throw new Error(
+				`NumberFilterCondition not supported: ${condition}`
+			);
 	}
 };

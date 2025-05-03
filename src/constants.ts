@@ -1,5 +1,5 @@
 import { LOG_LEVEL_WARN } from "./logger/constants";
-import { VaultExplorerPluginSettings, TExplorerView } from "./types";
+import { type VaultExplorerPluginSettings, TExplorerView } from "./types";
 
 export const VAULT_EXPLORER_VIEW = "vault-explorer";
 
@@ -14,22 +14,22 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 		modifiedDate: "",
 		custom1: "",
 		custom2: "",
-		custom3: "",
+		custom3: ""
 	},
 	filters: {
 		search: {
 			isEnabled: true,
-			value: "",
+			value: ""
 		},
 		sort: {
 			isEnabled: true,
-			value: "file-name-asc",
+			value: "file-name-asc"
 		},
 		custom: {
 			isEnabled: true,
 			selectedGroupId: "",
-			groups: [],
-		},
+			groups: []
+		}
 	},
 	views: {
 		grid: {
@@ -39,27 +39,27 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			coverImageSources: [
 				{
 					type: "image-property",
-					isEnabled: true,
+					isEnabled: true
 				},
 				{
 					type: "url-property",
-					isEnabled: true,
+					isEnabled: true
 				},
 				{
 					type: "frontmatter",
-					isEnabled: true,
+					isEnabled: true
 				},
 				{
 					type: "body",
-					isEnabled: true,
-				},
+					isEnabled: true
+				}
 			],
-			loadSocialMediaImage: true,
+			loadSocialMediaImage: true
 		},
 		list: {
 			isEnabled: true,
 			order: 1,
-			showTags: true,
+			showTags: true
 		},
 		feed: {
 			isEnabled: true,
@@ -68,12 +68,12 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 			collapseStyle: "no-new-lines",
 			lineClampLarge: 5,
 			lineClampMedium: 3,
-			lineClampSmall: 2,
+			lineClampSmall: 2
 		},
 		table: {
 			isEnabled: false,
-			order: 3,
-		},
+			order: 3
+		}
 	},
 	confirmBeforeDelete: true,
 	currentView: TExplorerView.GRID,
@@ -85,5 +85,5 @@ export const DEFAULT_SETTINGS: VaultExplorerPluginSettings = {
 	pageSize: 25,
 	configDir: ".vaultexplorer",
 	pluginVersion: null,
-	logLevel: LOG_LEVEL_WARN,
+	logLevel: LOG_LEVEL_WARN
 };

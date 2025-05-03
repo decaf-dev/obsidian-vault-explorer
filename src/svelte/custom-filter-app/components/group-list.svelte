@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Stack from "src/svelte/shared/components/stack.svelte";
-	import { TFilterGroup } from "src/types";
-	import { tick } from "svelte";
-	import Flex from "src/svelte/shared/components/flex.svelte";
+	import type { TFilterGroup } from "src/types";
 	import GroupListItem from "./group-list-item.svelte";
 
 	export let groups: TFilterGroup[];

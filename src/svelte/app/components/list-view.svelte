@@ -1,13 +1,12 @@
 <script lang="ts">
 	import ListItem from "./list-item.svelte";
 
-	import { FileRenderData } from "../types";
+	import type { FileRenderData } from "../types";
 
 	export let data: FileRenderData[];
 	export let startIndex: number;
 	export let pageLength: number;
 	export let isSmallScreenSize: boolean;
-	export let enablePremiumFeatures: boolean;
 
 	let filteredItems: FileRenderData[] = [];
 
@@ -26,7 +25,6 @@
 <div class="vault-explorer-list-view">
 	{#each filteredItems as fileRenderData (fileRenderData.id)}
 		<ListItem
-			{enablePremiumFeatures}
 			displayName={fileRenderData.displayName}
 			extension={fileRenderData.extension}
 			baseName={fileRenderData.baseName}

@@ -1,43 +1,40 @@
+import Logger from "js-logger";
 import { App, PluginSettingTab, Setting, SliderComponent } from "obsidian";
-import VaultExplorerPlugin from "src/main";
-import {
-	getDropdownOptionsForProperties,
-	getObsidianPropertiesByType,
-} from "./utils";
+import { stringToLogLevel } from "src/logger";
 import {
 	LOG_LEVEL_DEBUG,
 	LOG_LEVEL_ERROR,
 	LOG_LEVEL_INFO,
 	LOG_LEVEL_OFF,
 	LOG_LEVEL_TRACE,
-	LOG_LEVEL_WARN,
+	LOG_LEVEL_WARN
 } from "src/logger/constants";
-import Logger from "js-logger";
-import { stringToLogLevel } from "src/logger";
-import {
+import VaultExplorerPlugin from "src/main";
+import type {
 	CollapseStyle,
 	CoverImageFit,
-	TExplorerView,
-	VaultExplorerPluginSettings,
+	VaultExplorerPluginSettings
 } from "src/types";
-import EventManager from "src/event/event-manager";
-import LicenseKeyApp from "../svelte/license-key-app/index.svelte";
-import ImageSourceApp from "../svelte/image-source-app/index.svelte";
-import { PluginEvent } from "src/event/types";
+import {
+	getDropdownOptionsForProperties,
+	getObsidianPropertiesByType
+} from "./utils";
 
-import "./styles.css";
+import EventManager from "src/event/event-manager";
+import { PluginEvent } from "src/event/types";
+import { TExplorerView } from "src/types";
+import ImageSourceApp from "../svelte/image-source-app/index.svelte";
+
 import { clearSMICache } from "src/svelte/app/services/smi-cache";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
 
-	licenseKeyApp: LicenseKeyApp | null;
 	imageSourceApp: ImageSourceApp | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-		this.licenseKeyApp = null;
 		this.imageSourceApp = null;
 	}
 
@@ -97,7 +94,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 						"50": "50",
 						"100": "100",
 						"250": "250",
-						"500": "500",
+						"500": "500"
 					})
 					.setValue(this.plugin.settings.pageSize.toString())
 					.onChange(async (value) => {
@@ -234,7 +231,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Grid view").setHeading();
 
 		this.imageSourceApp = new ImageSourceApp({
-			target: containerEl,
+			target: containerEl
 		});
 
 		new Setting(containerEl)
@@ -264,7 +261,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				cb
 					.addOptions({
 						cover: "Cover",
-						contain: "Contain",
+						contain: "Contain"
 					})
 					.setValue(this.plugin.settings.views.grid.coverImageFit)
 					.onChange(async (value) => {
@@ -318,7 +315,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				cb
 					.addOptions({
 						"no-new-lines": "No new lines",
-						"no-extra-new-lines": "No extra new lines",
+						"no-extra-new-lines": "No extra new lines"
 					})
 					.setValue(this.plugin.settings.views.feed.collapseStyle)
 					.onChange(async (value) => {
@@ -444,7 +441,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				dropdown
 					.addOptions(
 						getDropdownOptionsForProperties(textProperties, {
-							image: "image",
+							image: "image"
 						})
 					)
 					.setValue(this.plugin.settings.properties.image)
@@ -466,7 +463,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				dropdown
 					.addOptions(
 						getDropdownOptionsForProperties(textProperties, {
-							"image-fit": "image-fit",
+							"image-fit": "image-fit"
 						})
 					)
 					.setValue(this.plugin.settings.properties.coverImageFit)
@@ -488,7 +485,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 				dropdown
 					.addOptions(
 						getDropdownOptionsForProperties(textProperties, {
-							url: "url",
+							url: "url"
 						})
 					)
 					.setValue(this.plugin.settings.properties.url)
@@ -503,10 +500,10 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		const creationDateDesc = new DocumentFragment();
 		creationDateDesc.createDiv({
-			text: "Property used to store a creation date. This must be a date or datetime property.",
+			text: "Property used to store a creation date. This must be a date or datetime property."
 		});
 		creationDateDesc.createDiv({
-			text: "If set, the property will be preferred over the file's creation date.",
+			text: "If set, the property will be preferred over the file's creation date."
 		});
 
 		new Setting(containerEl)
@@ -517,7 +514,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					.addOptions(
 						getDropdownOptionsForProperties([
 							...dateProperties,
-							...dateTimeProperties,
+							...dateTimeProperties
 						])
 					)
 					.setValue(this.plugin.settings.properties.createdDate)
@@ -532,10 +529,10 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		const modificationDateDesc = new DocumentFragment();
 		modificationDateDesc.createDiv({
-			text: "Property used to store a modification date. This must be a date or datetime property.",
+			text: "Property used to store a modification date. This must be a date or datetime property."
 		});
 		modificationDateDesc.createDiv({
-			text: "If set, the property will be preferred over the file's modification date.",
+			text: "If set, the property will be preferred over the file's modification date."
 		});
 
 		new Setting(containerEl)
@@ -546,7 +543,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					.addOptions(
 						getDropdownOptionsForProperties([
 							...dateProperties,
-							...dateTimeProperties,
+							...dateTimeProperties
 						])
 					)
 					.setValue(this.plugin.settings.properties.modifiedDate)
@@ -628,12 +625,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					})
 			);
 
-		new Setting(containerEl).setName("Premium").setHeading();
-
-		this.licenseKeyApp = new LicenseKeyApp({
-			target: containerEl,
-		});
-
 		new Setting(containerEl).setName("Debugging").setHeading();
 		new Setting(containerEl)
 			.setName("Log level")
@@ -647,7 +638,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 					[LOG_LEVEL_WARN]: "Warn",
 					[LOG_LEVEL_INFO]: "Info",
 					[LOG_LEVEL_DEBUG]: "Debug",
-					[LOG_LEVEL_TRACE]: "Trace",
+					[LOG_LEVEL_TRACE]: "Trace"
 				});
 				cb.setValue(this.plugin.settings.logLevel).onChange(
 					async (value) => {
@@ -662,11 +653,11 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		const configFolderDesc = new DocumentFragment();
 		configFolderDesc.createDiv({
-			text: "Set the plugin configuration folder.",
+			text: "Set the plugin configuration folder."
 		});
 		configFolderDesc.createDiv({
 			text: "Restart Obsidian after changing this setting.",
-			cls: "mod-warning",
+			cls: "mod-warning"
 		});
 
 		new Setting(containerEl)
@@ -692,7 +683,6 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	}
 
 	onClose() {
-		this.licenseKeyApp?.$destroy();
 		this.imageSourceApp?.$destroy();
 	}
 
@@ -705,7 +695,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 			[TExplorerView.GRID]: { ...settings.views.grid },
 			[TExplorerView.LIST]: { ...settings.views.list },
 			[TExplorerView.FEED]: { ...settings.views.feed },
-			[TExplorerView.TABLE]: { ...settings.views.table },
+			[TExplorerView.TABLE]: { ...settings.views.table }
 		};
 
 		const maxOrder = Math.max(

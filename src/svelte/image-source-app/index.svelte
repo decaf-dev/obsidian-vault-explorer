@@ -1,11 +1,11 @@
 <script lang="ts">
-	import store from "../shared/services/store";
-	import VaultExplorerPlugin from "src/main";
-	import { CoverImageSource, CoverImageSourceType } from "src/types";
-	import { getDisplayNameForImageSource } from "./display-name";
-	import Icon from "../shared/components/icon.svelte";
-	import { PluginEvent } from "src/event/types";
 	import EventManager from "src/event/event-manager";
+	import { PluginEvent } from "src/event/types";
+	import VaultExplorerPlugin from "src/main";
+	import type { CoverImageSource, CoverImageSourceType } from "src/types";
+	import Icon from "../shared/components/icon.svelte";
+	import store from "../shared/services/store";
+	import { getDisplayNameForImageSource } from "./display-name";
 
 	let plugin: VaultExplorerPlugin | null = null;
 	let coverImageSources: CoverImageSource[] = [];

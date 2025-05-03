@@ -8,7 +8,7 @@ export interface VaultExplorerPluginSettings_1_9_1 {
 		custom1: string;
 		custom2: string;
 		custom3: string;
-	},
+	};
 	filters: {
 		folder: string;
 		search: string;
@@ -18,13 +18,13 @@ export interface VaultExplorerPluginSettings_1_9_1 {
 		custom: {
 			selectedGroupId: string;
 			groups: FilterGroup[];
-		}
-	},
+		};
+	};
 	views: {
 		currentView: ViewType;
 		order: ViewType[];
 		titleWrapping: WordBreak;
-	}
+	};
 	pageSize: number;
 	pluginVersion: string | null;
 }
@@ -33,7 +33,7 @@ type WordBreak = "normal" | "break-word";
 
 enum ViewType {
 	GRID = "grid",
-	LIST = "list",
+	LIST = "list"
 }
 
 type FilterOperator = "and" | "or";
@@ -46,14 +46,14 @@ enum TextFilterCondition {
 	STARTS_WITH = "starts-with",
 	ENDS_WITH = "ends-with",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum ListFilterCondition {
 	CONTAINS = "contains",
 	DOES_NOT_CONTAIN = "does-not-contain",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum NumberFilterCondition {
@@ -64,14 +64,14 @@ enum NumberFilterCondition {
 	IS_GREATER_OR_EQUAL = "is-greater-or-equal",
 	IS_LESS_OR_EQUAL = "is-less-or-equal",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum CheckboxFilterCondition {
 	IS = "is",
 	IS_NOT = "is-not",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
 enum DateFilterCondition {
@@ -81,10 +81,15 @@ enum DateFilterCondition {
 	IS_ON_OR_BEFORE = "is-on-or-before",
 	IS_ON_OR_AFTER = "is-on-or-after",
 	EXISTS = "exists",
-	DOES_NOT_EXIST = "does-not-exist",
+	DOES_NOT_EXIST = "does-not-exist"
 }
 
-type FilterCondition = TextFilterCondition | NumberFilterCondition | DateFilterCondition | CheckboxFilterCondition | ListFilterCondition;
+type FilterCondition =
+	| TextFilterCondition
+	| NumberFilterCondition
+	| DateFilterCondition
+	| CheckboxFilterCondition
+	| ListFilterCondition;
 
 enum FilterRuleType {
 	TEXT = "text",
@@ -92,7 +97,7 @@ enum FilterRuleType {
 	LIST = "list",
 	CHECKBOX = "checkbox",
 	DATE = "date",
-	DATETIME = "datetime",
+	DATETIME = "datetime"
 }
 
 enum DatePropertyFilterValue {
@@ -128,7 +133,7 @@ interface NumberPropertyFilter extends BaseFilterRule {
 }
 
 interface ListPropertyFilter extends BaseFilterRule {
-	type: FilterRuleType.LIST
+	type: FilterRuleType.LIST;
 	propertyName: string;
 	condition: ListFilterCondition;
 }
@@ -146,7 +151,12 @@ interface DatePropertyFilter extends BaseFilterRule {
 	valueData: string;
 }
 
-type FilterRule = TextPropertyFilter | NumberPropertyFilter | ListPropertyFilter | CheckboxPropertyFilter | DatePropertyFilter;
+type FilterRule =
+	| TextPropertyFilter
+	| NumberPropertyFilter
+	| ListPropertyFilter
+	| CheckboxPropertyFilter
+	| DatePropertyFilter;
 
 interface FilterGroup {
 	id: string;
@@ -155,6 +165,17 @@ interface FilterGroup {
 	isEnabled: boolean;
 }
 
-type SortFilter = "file-name-asc" | "file-name-desc" | "modified-asc" | "modified-desc";
+type SortFilter =
+	| "file-name-asc"
+	| "file-name-desc"
+	| "modified-asc"
+	| "modified-desc";
 
-type TimestampFilter = "created-today" | "modified-today" | "created-this-week" | "modified-this-week" | "created-2-weeks" | "modified-2-weeks" | "all";
+type TimestampFilter =
+	| "created-today"
+	| "modified-today"
+	| "created-this-week"
+	| "modified-this-week"
+	| "created-2-weeks"
+	| "modified-2-weeks"
+	| "all";

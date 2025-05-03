@@ -1,6 +1,6 @@
-import { FrontMatterCache } from "obsidian";
-import { PropertyType } from "src/types";
+import type { FrontMatterCache } from "obsidian";
 import { loadPropertyValue } from "src/svelte/shared/services/load-property-value";
+import { PropertyType } from "src/types";
 
 describe("loadPropertyValue", () => {
 	it("returns null if frontmatter is undefined", () => {
@@ -245,7 +245,7 @@ describe("loadPropertyValue", () => {
 	it("returns null if expectedType is PropertyType.DATETIME and value is not a supported format", () => {
 		//Arrange
 		const frontmatter: FrontMatterCache = {
-			test: "<% tp.file.creation_date() %>",
+			test: "<% tp.file.creation_date() %>"
 		};
 		const propertyName = "test";
 
@@ -295,7 +295,7 @@ describe("loadPropertyValue", () => {
 	it("returns null if expectedType is PropertyType.DATETIME and value is not a supported format", () => {
 		//Arrange
 		const frontmatter: FrontMatterCache = {
-			test: '<% tp.file.last_modified_date("dddd Do MMMM YYYY HH: mm: ss") %>',
+			test: '<% tp.file.last_modified_date("dddd Do MMMM YYYY HH: mm: ss") %>'
 		};
 		const propertyName = "test";
 

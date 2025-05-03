@@ -26,12 +26,12 @@ function createFileContentStore() {
 						const content = await app.vault.cachedRead(file);
 						return {
 							path: file.path,
-							content,
+							content
 						};
 					}
 					return {
 						path: file.path,
-						content: null,
+						content: null
 					};
 				})()
 			);
@@ -93,7 +93,7 @@ function createFileContentStore() {
 		onFileCreate: handleFileCreate,
 		onFileModify: handleFileModify,
 		onFileRename: handleFileRename,
-		onFileDelete: handleFileDelete,
+		onFileDelete: handleFileDelete
 	};
 }
 

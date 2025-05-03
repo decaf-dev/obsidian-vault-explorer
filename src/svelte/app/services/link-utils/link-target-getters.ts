@@ -1,7 +1,7 @@
 import {
 	WIKI_LINK_REGEX,
 	INTERNAL_EMBED_REGEX,
-	EXTERNAL_EMBED_REGEX,
+	EXTERNAL_EMBED_REGEX
 } from "./constants";
 
 export const getWikiLinkTarget = (value: string) => {
