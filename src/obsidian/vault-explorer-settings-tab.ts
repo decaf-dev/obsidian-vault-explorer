@@ -26,11 +26,12 @@ import { TExplorerView } from "src/types";
 import ImageSourceApp from "../svelte/image-source-app/index.svelte";
 
 import { clearSMICache } from "src/svelte/app/services/smi-cache";
+import { mount, unmount } from "svelte";
 
 export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	plugin: VaultExplorerPlugin;
 
-	imageSourceApp: ImageSourceApp | null;
+	imageSourceApp: ReturnType<typeof mount> | null;
 
 	constructor(app: App, plugin: VaultExplorerPlugin) {
 		super(app, plugin);
@@ -230,7 +231,7 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Grid view").setHeading();
 
-		this.imageSourceApp = new ImageSourceApp({
+		this.imageSourceApp = mount(ImageSourceApp, {
 			target: containerEl
 		});
 
@@ -683,7 +684,9 @@ export default class VaultExplorerSettingsTab extends PluginSettingTab {
 	}
 
 	onClose() {
-		this.imageSourceApp?.$destroy();
+		if (this.imageSourceApp) {
+			unmount(this.imageSourceApp);
+		}
 	}
 
 	private updateViewOrder(

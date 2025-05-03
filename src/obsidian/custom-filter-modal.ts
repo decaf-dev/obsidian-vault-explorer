@@ -1,28 +1,33 @@
 import { Modal } from "obsidian";
-import CustomFilterApp from "../svelte/custom-filter-app/index.svelte";
 import VaultExplorerPlugin from "src/main";
+import { mount, unmount } from "svelte";
+import CustomFilterApp from "../svelte/custom-filter-app/index.svelte";
 
 export default class CustomFilterModal extends Modal {
-	component: CustomFilterApp | null;
+	customFilterApp: ReturnType<typeof mount> | null;
 	plugin: VaultExplorerPlugin;
 
 	constructor(plugin: VaultExplorerPlugin) {
 		super(plugin.app);
 		this.plugin = plugin;
-		this.component = null;
+		this.customFilterApp = null;
 	}
 
 	onOpen(): void {
 		const { contentEl } = this;
 
-		this.component = new CustomFilterApp({
+		this.customFilterApp = mount(CustomFilterApp, {
 			target: contentEl
 		});
 	}
 
 	onClose(): void {
 		const { contentEl } = this;
-		this.component?.$destroy();
+
+		if (this.customFilterApp) {
+			unmount(this.customFilterApp);
+		}
+
 		contentEl.empty();
 	}
 }

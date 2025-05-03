@@ -8,12 +8,12 @@ import { mount, unmount } from "svelte";
 import VaultExplorerApp from "../svelte/app/index.svelte";
 
 export default class VaultExplorerView extends ItemView {
-	svelteApp: ReturnType<typeof mount> | null;
+	vaultExplorerApp: ReturnType<typeof mount> | null;
 	plugin: VaultExplorerPlugin;
 
 	constructor(leaf: WorkspaceLeaf, plugin: VaultExplorerPlugin) {
 		super(leaf);
-		this.svelteApp = null;
+		this.vaultExplorerApp = null;
 		this.plugin = plugin;
 		this.navigation = true;
 	}
@@ -44,14 +44,14 @@ export default class VaultExplorerView extends ItemView {
 
 		const containerEl = this.containerEl.children[1];
 
-		this.svelteApp = mount(VaultExplorerApp, {
+		this.vaultExplorerApp = mount(VaultExplorerApp, {
 			target: containerEl
 		});
 	}
 
 	async onClose() {
-		if (this.svelteApp) {
-			unmount(this.svelteApp);
+		if (this.vaultExplorerApp) {
+			unmount(this.vaultExplorerApp);
 		}
 	}
 }
